@@ -141,6 +141,38 @@ mapSprite=pygame.sprite.Sprite()
 mapSprite.image=pygame.image.load("/home/olpc/images/TreasureMap.jpg")
 mapSprite.rect=(0,700,300,200)
 
+3DoorRoomSprite=pygame.sprite.Sprite()
+3DoorRoomSprite.image=pygame.image.load("/home/olpc/images/3Doors.png")
+3DoorRoomSprite.rect=pygame.Rect(0,0,1200,700)
+
+FrontRightDoorsSprite=pygame.sprite.Sprite()
+FrontRightDoorsSprite.image=pygame.image.load("/home/olpc/images/FandRDoors.png")
+FrontRightDoorsSprite.rect=currentRoomSprite.rect
+
+FrontDoorRoomSprite=pygame.sprite.Sprite()
+FrontDoorRoomSprite.image=pygame.image.load("/home/olpc/images/FDoor.png")
+FrontDoorRoomSprite.rect=(0,700,300,200)
+
+LeftFrontDoorsRoomSprite=pygame.sprite.Sprite()
+LeftFrontDoorsRoomSprite.image=pygame.image.load("/home/olpc/images/LandFDoors.png")
+LeftFrontDoorsRoomSprite.rect=pygame.Rect(0,0,1200,700)
+
+LeftRightDoorsRoomSprite=pygame.sprite.Sprite()
+LeftRightDoorsRoomSprite.image=pygame.image.load("/home/olpc/images/LandRDoors.png")
+LeftRightDoorsRoomSprite.rect=currentRoomSprite.rect
+
+LeftDoorRoomSprite=pygame.sprite.Sprite()
+LeftDoorRoomSprite.image=pygame.image.load("/home/olpc/images/LDoor.png")
+LeftDoorRoomSprite.rect=(0,700,300,200)
+
+NoDoorsRoomSprite=pygame.sprite.Sprite()
+NoDoorsRoomSprite.image=pygame.image.load("/home/olpc/images/NoDoors.png")
+NoDoorsRoomSprite.rect=currentRoomSprite.rect
+
+RightDoorRoomSprite=pygame.sprite.Sprite()
+RightDoorRoomSprite.image=pygame.image.load("/home/olpc/images/RDoor.png")
+RightDoorRoomSprite.rect=(0,700,300,200)
+
 
 currentRoomGraphic=pygame.sprite.Group(currentRoomSprite)
 mapScreen=pygame.sprite.Group(mapSprite)
@@ -290,5 +322,4 @@ while pippy.pygame.next_frame():
 
   # update the display
   pygame.display.flip()
-
 
