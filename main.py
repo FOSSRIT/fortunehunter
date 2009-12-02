@@ -180,6 +180,8 @@ class Menu:
         self.background.image=pygame.image.load(bgImageFile)
         self.background.rect=pygame.Rect(0,0,1290,900)
         self.optionsImages=[]
+        self.numPad=False
+
         i=0
         for name in optionImageFiles:
             sprite=pygame.sprite.Sprite()
@@ -193,16 +195,34 @@ class Menu:
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
         i=0
-        for image in self.optionsImages:
-            if i==self.currentOption:
+        sel=0
+        if self.numPad==False:
+          for image in self.optionsImages:
+              if i==self.currentOption:
                 image.rect=pygame.Rect(xStart+30,yStart+(i*height),1290,height)
 
-            else:
+              else:
                 image.rect=pygame.Rect(xStart,yStart+(i*height),1290,height)
-
+ 
+              menuGroup.add(image)
+              i+=1
+        elif self.numPad==True:
+          for image in self.optionsImages:
+            if i==3:
+              i=0
+              yStart+=height
+            image.rect=pygame.Rect(xStart+(i*height),yStart,height,height)
             menuGroup.add(image)
+            if sel==self.currentOption:
+              fillRect=image.rect
+              fillRect.top-=5
+              fillRect.left-=5
+              fillRect.width+=10
+              fillRect.height+=10
+              screen.fill((50,50,255),fillRect,0)
             i+=1
-
+            sel+=1
+            
         bgGroup=pygame.sprite.Group(self.background)
         bgGroup.draw(screen)
         menuGroup.draw(screen)
@@ -218,11 +238,11 @@ class Menu:
             else:
                 self.currentOption=0
         else:
-            if self.currentOption<self.size:
+            if self.currentOption<self.size-1:
                 self.currentOption+=1
 
             else:
-                self.currentOption=self.size
+                self.currentOption=self.size-1
 
     def progress(self,player,screen):
         if type(self.options[self.currentOption])==type(self):
@@ -255,20 +275,25 @@ class Menu:
             player.mainMenu=False
 
         elif name=="Attack":
+            seed()
+            crit=randint(0,2)
+            if crit==1:
+              player.curBattle.critical(player)
+            else:
+              player.curBattle.attack(player.battlePlayer,"basic")
+        elif name=="0" or name=="1"or name=="2" or name=="3" or name=="4" or name=="5" or name=="6" or name=="7"or name=="8"or name=="9":
+          player.battlePlayer.currentInput+=name
+        elif name=="Enter Answer":
+          if player.battlePlayer.currentAnswer==int(player.battlePlayer.currentInput):
+            player.curBattle.attack(player.battlePlayer,"critical")
+          else:
             player.curBattle.attack(player.battlePlayer,"basic")
-
-        elif name=="Do Nothing":
-          player.curBattle.doNothing()   
-
-        #WILL ADD MORE OPTIONS LATER
-		# LATER IS NOW - Preston 11-7-09
-	elif name=="Attack":
-	  player.traversal = False
-	  player.battle = True
-	  optArr = ["0","1","2","3","4","5","6","7","8","9"]
-	  Menu(optArr,
-"/home/olpc/images/numPadbackground.gif",["/home/olpc/images/0.gif","/home/olpc/images/1.gif","/home/olpc/images/2.gif","/home/olpc/images/3.gif","/home/olpc/images/4.gif","/home/olpc/images/5.gif","/home/olpc/images/6.gif","/home/olpc/images/7.gif","/home/olpc/images/8.gif","/home/olpc/images/9.gif"],"Number Pad")
-	  optArr.draw(player.currentRoomGroup,screen,400,300,200)
+        elif name=="Division":
+          player.curBattle.doNothing()
+        elif name=="Geometry":
+          player.curBattle.doNothing()
+        elif name=="Use Item":
+          player.curBattle.doNothing()
 
 	else:
 	    sys.exit()
@@ -327,7 +352,7 @@ class Player:
     self.loadTutorial()
     self.loadImages()
     self.battlePlayer=Hero(self)
-    self.curBattle=BattleEngine(self.battlePlayer,["Goblin"])
+    self.curBattle=BattleEngine(self.battlePlayer,[Enemy()])
 
     #state variables
     self.inTutorial=False
@@ -358,6 +383,7 @@ class Player:
 
     #sound
     self.doorEffect=pygame.mixer.Sound("/home/olpc/images/door.wav")
+
   def initializeMenu(self):
     mainMenuImages=["/home/olpc/images/TutorialButton.gif","/home/olpc/images/NewGameButton.gif","/home/olpc/images/CloseButton.gif"]
     self.MainMenu=Menu(["Tutorial","New Game","Close"],self,"/home/olpc/images/TitleImage.gif",mainMenuImages,"Main Menu")
@@ -432,6 +458,10 @@ class Hero:
 	self.attacks_Ar = []	#associated array for attack string names and attack power values
 	self.inv_Ar = []
 	self.attacks_Ar = []
+        self.currentInput=""
+        self.currentProb1=0
+        self.currentProb2=0
+        self.currentAnswer=0
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -445,7 +475,9 @@ class Hero:
   #returns player's current attack power
   def attackPower(self,name):
     if name=="basic":
-      return self.ATT+self.BAB+self.BAE
+      return self.ATT+self.BAE
+    elif name=="critical":
+      return self.ATT+self.BAB
 
   #returns player's current defense power
   def defensePower(self):
@@ -470,7 +502,7 @@ class Hero:
 
   #sets player's bonus attack power (from battle timer)
   def setBonusAP(self,_BAP):
-    self.BAP = _BAP
+    self.BAB = _BAP
 
   #sets player's bonus attack power (from equipment)
   def setBonusAE(self,_BAE):
@@ -550,6 +582,7 @@ class Enemy:
 	self.inv_Ar = []
 	self.attacks_Ar = []
         self.sprite=pygame.sprite.Sprite()
+        self.place=0
         #load image based on type later
         self.sprite.image=pygame.image.load("/home/olpc/images/concept_wizard.gif")
         self.sprite.rect=(200,200,50,300) 
@@ -650,36 +683,60 @@ class BattleEngine:
 	self.maxBonusTime = 0
         self.initializeMenus()
         self.selEnemyIndex=0
-
+        self.timeBonus=1
+        i=0
+	for enemy in self.enemies:
+          enemy.place=i
+          i+=1
 	self.player.msg5= "Enemies are present, prepare to fight."
 
   def initializeMenus(self):
-    battleOptions=["Attack","Do Nothing"]
+    battleOptions=["Attack","Division","Geometry","Item"]
     battleBackground="/home/olpc/images/battleMenubackground.gif"
-    battleOptImg=["/home/olpc/images/attackButton.gif","/home/olpc/images/nothing.gif"]
+    battleOptImg=["/home/olpc/images/attackButton.gif","/home/olpc/images/DivPH.gif","/home/olpc/images/GeomPH.gif","/home/olpc/images/ItemPH.gif"]
     
     self.battleMenu=Menu(battleOptions,self.player,battleBackground,battleOptImg,"Battle")
     self.battleMenu.background.rect=(200,580,200,200)
-    self.battleMenu.size=1
-    #self.numPad=Menu()
+    self.battleMenu.size=4
+
+    numOptArr = ["1","2","3","4","5","6","7","8","9","0","Enter Answer"]
+    numBG="/home/olpc/images/numPadbackground.gif"
+    numOptImg=["/home/olpc/images/1.gif","/home/olpc/images/2.gif","/home/olpc/images/3.gif","/home/olpc/images/4.gif","/home/olpc/images/5.gif","/home/olpc/images/6.gif","/home/olpc/images/7.gif","/home/olpc/images/8.gif","/home/olpc/images/9.gif","/home/olpc/images/0.gif","/home/olpc/images/EnterAnswer.gif"]
+    self.numPadMenu=Menu(numOptArr,self.player,numBG,numOptImg,"Number Pad")
+    self.numPadMenu.numPad=True
+   
     self.player.currentMenu=self.battleMenu
+    self.player.previousMenu=self.numPadMenu
 
   def draw(self,player,screen):
     #draw enemies
-    x=50
+    x=250
     y=150
     enemyGroup=pygame.sprite.Group()
-
+    i=0
     for enemy in self.enemies:
-      x+=200
-      enemy.sprite.rect=(x,y,200,200)
+      enemy.sprite.rect=(x+(enemy.place*200),y,200,200)
+      if i==self.selEnemyIndex:
+        sel=pygame.sprite.Sprite()
+        sel.image=pygame.image.load("/home/olpc/images/EnterAnswer.gif")
+        sel.rect=pygame.Rect(x+(enemy.place*200)+30,y+100,40,20)
+        enemyGroup.add(sel)
+      i+=1
       enemyGroup.add(enemy.sprite)
 
     player.currentRoomGroup.draw(screen)
     enemyGroup.draw(screen)
 
     #draw player
-    player.currentMenu.draw(player,screen,200,580,60)
+    if player.currentMenu.numPad==False:
+      player.currentMenu.draw(player,screen,200,580,45)
+    else:
+      player.currentMenu.draw(player,screen,200,580,23)
+      probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
+      inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
+      screen.blit(probText,pygame.Rect(200,500,200,30))
+      screen.blit(inputText,pygame.Rect(200,550,200,30))
+      screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
     pygame.display.flip()
 
   ###
@@ -692,19 +749,18 @@ class BattleEngine:
     self.playerTurn=False
 
   def attack(self,attacker,attackName):
-    attacker.setBonusAP(self.maxBonusTime)
+    if attackName=="critical":
+      attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
+    pygame.time.set_timer(USEREVENT+1,0)
+      
     defender=self.enemies[self.selEnemyIndex]
     defender.defendAttack(attacker.attackPower(attackName))
-
-    print("Player Attack")
-    print("Enemy HP:")
-    print(defender.HP)
 
     player.msg1=player.msg2
     player.msg2=player.msg3
     player.msg3=player.msg4
     player.msg4=player.msg5
-    player.msg5="You attack for "+repr(attacker.ATT+attacker.BAP)+" damage"
+    player.msg5="You attack for "+repr(attacker.attackPower(attackName))+" damage"
 
     player.msg1=player.msg2
     player.msg2=player.msg3
@@ -712,7 +768,19 @@ class BattleEngine:
     player.msg4=player.msg5
     player.msg5="Enemy HP is "+repr(defender.HP)
     self.playerTurn=False
-
+    self.CheckEndBattle()
+    player.currentMenu=self.battleMenu
+  def critical(self,player):
+    pygame.time.set_timer(USEREVENT+1,500)
+    player.battlePlayer.currentInput=""
+    player.currentMenu=self.numPadMenu
+    prob1=randint(0,12)
+    prob2=randint(0,12)
+    player.battlePlayer.currentProb1=prob1
+    player.battlePlayer.currentProb2=prob2
+    player.battlePlayer.currentAnswer=prob1*prob2
+  def decrementBonus(self):
+    self.timeBonus-=.05
   ###
   #Returns a list of attacks for any player or enemy passed in
   ###
@@ -786,9 +854,14 @@ class BattleEngine:
     #self.player.defeatScreen=True
     self.player.battle=False
     self.player.currentMenu=self.player.MainMenu
+    self.player.currentMenu.select("up")
     self.player.mainMenu=True	
     #end the game
-
+  def bringOutYerDead(self,enemies):
+    for enemy in enemies:
+      if enemy.HP<=0:
+        enemies.remove(enemy)
+    return enemies
   ###
   #Checks if the battle is over
   ###
@@ -801,7 +874,8 @@ class BattleEngine:
 	for enem in self.enemies:
 	    if enem.HP > 0:
 	      allDead = False
-	      break
+	for i in range(3):
+          self.enemies=self.bringOutYerDead(self.enemies)
 
 	if allDead == True:
           self.Victory()
@@ -810,14 +884,15 @@ class BattleEngine:
 # Run updates the battle and keeps things progressing
 ##
   def Run(self,event,screen):
-    print("Run Method")
 #Insert logic that updates the battle here
 
     #If player turn, wait for player to select attack then start timer
     if self.playerTurn==True:
       if event.type == QUIT:
         sys.exit()
-
+      elif event.type==USEREVENT+1:
+        self.decrementBonus()
+        self.draw(self.player,screen)
       #handle key input
       elif event.type == KEYDOWN:
         newKey=pygame.key.name(event.key)
@@ -825,31 +900,50 @@ class BattleEngine:
         if newKey=='escape':
           sys.exit()
 
-        elif newKey=='[1]':
+        elif newKey=='[1]' or newKey=='right':
           #Right
-          player.currentMenu.progress(player,screen)
+          if player.currentMenu.numPad==True:
+              player.currentMenu.select("down")
+          else:
+            if self.selEnemyIndex<len(self.enemies)-1:
+              self.selEnemyIndex+=1
+            else:
+              self.selEnemyIndex=len(self.enemies)-1
 
-        elif newKey=='[2]':
+        elif newKey=='[2]' or newKey=='down':
           #Down
-          player.currentMenu.select("down")
+          if player.currentMenu.numPad==True:
+            for i in range(3):
+              player.currentMenu.select("down")
+          else:
+            player.currentMenu.select("down")
 
-        elif newKey=='[3]':
+        elif newKey=='[3]' or newKey=='left':
           #Left
-          player.currentMenu.regress(player)
-
-        elif newKey=='[8]':
+          if player.currentMenu.numPad==True:
+            player.currentMenu.select('up')
+          else:
+            if self.selEnemyIndex>0:
+              self.selEnemyIndex-=1
+            else:
+              self.selEnemyIndex=0
+        elif newKey=='[8]' or newKey=='up':
           #Up
-          player.currentMenu.select("up")
+          if player.currentMenu.numPad==True:
+            for i in range(3):
+              player.currentMenu.select("up")
+          else:
+            player.currentMenu.select("up")
 
         elif newKey=='[4]':
           #Left
           print(newKey)
 
-        elif newKey=='[5]':
+        elif newKey=='[5]' or newKey=='backspace':
           #X
           player.currentMenu.regress(player)
 
-        elif newKey=='[6]':
+        elif newKey=='[6]' or newKey=='return':
           #Check
           player.currentMenu.progress(player,screen)
 
@@ -861,7 +955,9 @@ class BattleEngine:
           msg5='circle'
 
     else: 
-      self.GenerateEnemyAttack(self.enemies[self.selEnemyIndex])
+      print("Easy Mode")
+      self.playerTurn=True
+      #self.GenerateEnemyAttack(self.enemies[self.selEnemyIndex])
       #if enemy turn, randomly select enemy attack using GenerateEnemeyAttack() and attack
 
     #Run a check to see if battle is over
@@ -1149,13 +1245,13 @@ def updateMenu(event,player):
       if newKey=='escape':
         sys.exit()
 
-      elif newKey=='[1]':
+      elif newKey=='[1]' or newKey=='return':
         menu.progress(player,screen)
 
-      elif newKey=='[2]':
+      elif newKey=='[2]' or newKey=='down':
         menu.select("down")
 
-      elif newKey=='[3]':
+      elif newKey=='[3]' or newKey=='backspace':
         menu.regress(player)
 
       elif newKey=='[4]':
@@ -1170,7 +1266,7 @@ def updateMenu(event,player):
       elif newKey=='[7]':
         print('square')
 
-      elif newKey=='[8]':
+      elif newKey=='[8]' or newKey=='up':
         menu.select("up")
 
       elif newKey=='[9]':
@@ -1186,17 +1282,19 @@ def updateTraversal(event,player,screen):
       player.msg2=player.msg3
       player.msg3=player.msg4
       player.msg4=player.msg5
-
+      player.msg5=newKey
       if newKey=='escape':
         sys.exit()
 
       elif newKey=='[1]':
+        ##square
         player.msg5='not implemented'
 
       elif newKey=='[2]':
         player.msg5=checkDoor('down',player,screen)
 
       elif newKey=='[3]':
+        ##x
         player.msg5='initiating battle...'
         player.traversal=False
         player.battle=True
@@ -1217,19 +1315,19 @@ def updateTraversal(event,player,screen):
 
 #	batMen.draw(player.currentRoomGroup,screen,400,300,200)
 
-      elif newKey=='[4]':
+      elif newKey=='[4]' or newKey=='left':
         player.msg5=checkDoor('left',player,screen)
 
       elif newKey=='[5]':
         player.msg5='check'
 
-      elif newKey=='[6]':
+      elif newKey=='[6]' or newKey=='right':
         player.msg5=checkDoor('right',player,screen)
 
       elif newKey=='[7]':
         player.msg5='square'
 
-      elif newKey=='[8]':
+      elif newKey=='[8]' or newKey=='up':
         player.msg5=checkDoor('up',player,screen)
 
       elif newKey=='[9]':
@@ -1245,22 +1343,22 @@ def updateTutorial(event,player):
       if newKey=='escape':
         sys.exit()
 
-      elif newKey=='[1]':
+      elif newKey=='[1]' or newKey=='right':
         player.tutorial.next()
 
       elif newKey=='[2]':
         player.msg5='down'
 
-      elif newKey=='[3]':
+      elif newKey=='[3]' or newKey=='left':
         player.tutorial.previous()
 
-      elif newKey=='[4]':
+      elif newKey=='[4]' or newKey=='backspace':
         player.tutorial.previous()
 
       elif newKey=='[5]':
         player.msg5='check'
 
-      elif newKey=='[6]':
+      elif newKey=='[6]' or newKey=='return':
         player.tutorial.next()
 
       elif newKey=='[7]':
@@ -1275,15 +1373,21 @@ def updateTutorial(event,player):
 def updateWaiting(event,player):
   pygame.time.wait(500)
   player.waiting=False
-
+  enemyList=[]
+  if  player.currentRoom.en1=='1':
+    enemyList.append(Enemy())
+  if  player.currentRoom.en2=='1':
+    enemyList.append(Enemy())
+  if  player.currentRoom.en3=='1':
+    enemyList.append(Enemy())
   if  player.currentRoom.en4=='1':
+    enemyList.append(Enemy())
+  if len(enemyList)>0:
     player.msg5='initiating battle...'
     player.traversal=False
     player.battle=True
-    enemyList=[Enemy()]
     player.curBattle=BattleEngine(player,enemyList)
     setImage(player)
-
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
 
@@ -1344,7 +1448,6 @@ while pippy.pygame.next_frame():
     screen.blit(tl3,line3)
     screen.blit(tl4,line4)
     screen.blit(tl5,line5)
-
     if player.traversal:
       if player.waiting:
         drawWaiting(player,screen)
@@ -1359,5 +1462,4 @@ while pippy.pygame.next_frame():
   if player.traversal:
     player.currentRoomGroup.draw(screen)
     pygame.display.flip()
-  # update the display  
-
+  # update the display
