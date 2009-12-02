@@ -258,12 +258,16 @@ class Menu:
 
     def updateByName(self,name,player,screen):
         if name=="New Game":
+	    player.dgn=Dungeon(5,5,"/home/olpc/images/dungeon2.txt")
+    	    player.dgn.fill()
+	    player.currentRoom=player.dgn.rooms.get((0,0))
+	    player.dgnMap=Map(player.dgn)
+
             player.traversal=True
             player.mainMenu=False
 
             setImage(player)
             player.battlePlayer=Hero(player)
-            player.currentRoom=player.dgn.rooms.get((0,0))
             player.currentRoomGroup.draw(screen)
             pygame.display.flip()
 
@@ -691,7 +695,7 @@ class BattleEngine:
 	self.player.msg5= "Enemies are present, prepare to fight."
 
   def initializeMenus(self):
-    battleOptions=["Attack","Division","Geometry","Item"]
+    battleOptions=["Attack","Division","Geometry","Use Item"]
     battleBackground="/home/olpc/images/battleMenubackground.gif"
     battleOptImg=["/home/olpc/images/attackButton.gif","/home/olpc/images/DivPH.gif","/home/olpc/images/GeomPH.gif","/home/olpc/images/ItemPH.gif"]
     
@@ -841,6 +845,10 @@ class BattleEngine:
   ##
   def Victory(self):
     #self.player.winScreen(self)
+    self.player.currentRoom.en1=0
+    self.player.currentRoom.en2=0
+    self.player.currentRoom.en3=0
+    self.player.currentRoom.en4=0
     self.player.battle=False
     self.player.traversal=True
     self.player.msg5="You Win!"
@@ -860,6 +868,14 @@ class BattleEngine:
   def bringOutYerDead(self,enemies):
     for enemy in enemies:
       if enemy.HP<=0:
+        if enemy.place==0:
+          self.player.currentRoom.en1='0'
+        elif enemy.place==1:
+          self.player.currentRoom.en2='0'
+        elif enemy.place==2:
+          self.player.currentRoom.en3='0'
+        elif enemy.place==3:
+          self.player.currentRoom.en4='0'
         enemies.remove(enemy)
     return enemies
   ###
@@ -957,7 +973,8 @@ class BattleEngine:
     else: 
       print("Easy Mode")
       self.playerTurn=True
-      #self.GenerateEnemyAttack(self.enemies[self.selEnemyIndex])
+      #for enemy in self.enemies:
+      #  self.GenerateEnemyAttack(enemy)
       #if enemy turn, randomly select enemy attack using GenerateEnemeyAttack() and attack
 
     #Run a check to see if battle is over
@@ -1375,12 +1392,20 @@ def updateWaiting(event,player):
   player.waiting=False
   enemyList=[]
   if  player.currentRoom.en1=='1':
+    en=Enemy()
+    en.place=0
     enemyList.append(Enemy())
   if  player.currentRoom.en2=='1':
+    en=Enemy()
+    en.place=1
     enemyList.append(Enemy())
   if  player.currentRoom.en3=='1':
+    en=Enemy()
+    en.place=2
     enemyList.append(Enemy())
   if  player.currentRoom.en4=='1':
+    en=Enemy()
+    en.place=3
     enemyList.append(Enemy())
   if len(enemyList)>0:
     player.msg5='initiating battle...'
