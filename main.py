@@ -294,7 +294,19 @@ class Menu:
           else:
             player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="Division":
-          player.curBattle.doNothing()
+          player.curBattle.divisionAttack()
+        elif name=="1/2":
+	  player.battlePlayer.fractionSum += .5
+	  player.curBattle.checkFraction()
+	elif name=="1/3":
+	  player.battlePlayer.fractionSum += .33
+	  player.curBattle.checkFraction()
+	elif name=="1/4":
+	  player.battlePlayer.fractionSum += .25
+	  player.curBattle.checkFraction()
+	elif name=="1/6":
+	  player.battlePlayer.fractionSum += .166
+	  player.curBattle.checkFraction()
         elif name=="Geometry":
           player.curBattle.magic(player)
         elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
@@ -449,6 +461,13 @@ class Player:
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
 
+  def migrateMessages(self,msg):
+    self.msg1=self.msg2
+    self.msg2=self.msg3
+    self.msg3=self.msg4
+    self.msg4=self.msg5
+    self.msg5=msg
+    
 #######################################################################
 
 #Hero class - represents the player in battle and holds all of their data
@@ -496,6 +515,8 @@ class Hero:
       return self.BAB-10
     elif name=="Lightning":
       return self.ATT+self.BAB
+    elif name=="Division":
+      return self.ATT*1.5
     elif name=="Missile":
       return 0
 
@@ -783,7 +804,12 @@ class BattleEngine:
     self.magicMenu=Menu(magicOptions,self.player,magicBackground,magicOptImg,"Magic Menu")
     self.magicMenu.background.rect=(200,580,200,200)
 
-   
+    divisionOptions=["1/2","1/3","1/4","1/6"]
+    divisionBackground="/home/olpc/images/battleMenubackground.gif"
+    divisionOptImg=["/home/olpc/images/1.gif","/home/olpc/images/2.gif","/home/olpc/images/3.gif","/home/olpc/images/4.gif"]
+    self.divisionMenu=Menu(divisionOptions,self.player,divisionBackground,divisionOptImg,"Division Menu")
+    self.divisionMenu.background.rect=(200,580,200,200) 
+
     self.player.currentMenu=self.battleMenu
     self.player.previousMenu=self.numPadMenu
 
@@ -851,6 +877,9 @@ class BattleEngine:
     elif attackName=="Missile":
       attacker.setBonusAP(0)
       self.player.currentMenu=self.battleMenu
+    elif attackName=="Division":
+      self.player.currentMenu=self.battleMenu
+
     pygame.time.set_timer(USEREVENT+1,0)
     self.timeBonus=1
 
@@ -859,17 +888,9 @@ class BattleEngine:
       defender=attacker
     defender.defendAttack(attacker.attackPower(attackName))
 
-    player.msg1=player.msg2
-    player.msg2=player.msg3
-    player.msg3=player.msg4
-    player.msg4=player.msg5
-    player.msg5="You attack for "+repr(attacker.attackPower(attackName))+" damage"
+    player.migrateMessages("You attack for "+repr(attacker.attackPower(attackName))+" damage")
+    player.migrateMessages("Enemy HP is "+repr(defender.HP))
 
-    player.msg1=player.msg2
-    player.msg2=player.msg3
-    player.msg3=player.msg4
-    player.msg4=player.msg5
-    player.msg5="Enemy HP is "+repr(defender.HP)
     self.playerTurn=False
     self.CheckEndBattle()
     player.currentMenu=self.battleMenu
@@ -1011,6 +1032,24 @@ class BattleEngine:
   def ListAttacks(self,char):
     return char.avaliableAttacks()
 
+  #checks the fraction sum, close to 1 results in a division attack, over 1 is a miss
+  def checkFraction(self):
+    if player.battlePlayer.fractionSum > .98 and player.battlePlayer.fractionSum < 1.01:
+      player.migrateMessages("YOU RULE AT FRACTIONS!!!")
+      print(player.battlePlayer.fractionSum)
+      self.attack(self.player.battlePlayer,"Division")
+      
+    elif player.battlePlayer.fractionSum > 1.01:
+      print(repr(player.battlePlayer.fractionSum) +"Incorrect")
+      self.player.migrateMessages("YOU SUCK AT FRACTIONS")
+      self.playerTurn=False
+      self.player.currentMenu=self.battleMenu	
+      self.player.battlePlayer.fractionSum=0
+      
+
+  def divisionAttack(self):
+    self.player.battlePlayer.fractionSum=0
+    self.player.currentMenu=self.divisionMenu
   ###
   # Keeps track of the Bonus Timer, 
   # takes in how long the timer should run
@@ -1044,19 +1083,9 @@ class BattleEngine:
     defender=self.player.battlePlayer
     defender.defendAttack(enemy.attackPower())
     self.playerTurn=True
-    print("Enemy Attack")
-    print("Player HP")
-    print(self.player.battlePlayer.HP)
-    player.msg1=player.msg2
-    player.msg2=player.msg3
-    player.msg3=player.msg4
-    player.msg4=player.msg5
-    player.msg5="Enemy attacks for "+repr(enemy.ATT+enemy.BAP)+" damage"
-    player.msg1=player.msg2
-    player.msg2=player.msg3
-    player.msg3=player.msg4
-    player.msg4=player.msg5
-    player.msg5="Your HP is "+repr(defender.HP)
+
+    player.migrateMessages("Enemy attacks for "+repr(enemy.ATT+enemy.BAP)+" damage")
+    player.migrateMessages("Your HP is "+repr(defender.HP))
     #Fill in AI logic here to pick an attack, for now Math.random
     #return AvalAttacks(random.randrange((len(AvalAttacks)-1)))
 
@@ -1096,6 +1125,7 @@ class BattleEngine:
           self.player.currentRoom.en3='0'
         elif enemy.place==3:
           self.player.currentRoom.en4='0'
+        self.selEnemyIndex=0
         enemies.remove(enemy)
     return enemies
   ###
@@ -1136,7 +1166,7 @@ class BattleEngine:
         if newKey=='escape':
           sys.exit()
 
-        elif newKey=='[1]' or newKey=='right':
+        elif newKey=='[6]' or newKey=='right':
           #Right
           if player.currentMenu.numPad==True:
               player.currentMenu.select("down")
@@ -1154,7 +1184,7 @@ class BattleEngine:
           else:
             player.currentMenu.select("down")
 
-        elif newKey=='[3]' or newKey=='left':
+        elif newKey=='[4]' or newKey=='left':
           #Left
           if player.currentMenu.numPad==True:
             player.currentMenu.select('up')
@@ -1171,15 +1201,11 @@ class BattleEngine:
           else:
             player.currentMenu.select("up")
 
-        elif newKey=='[4]':
-          #Left
-          print(newKey)
-
-        elif newKey=='[5]' or newKey=='backspace':
+        elif newKey=='[3]' or newKey=='backspace':
           #X
           player.currentMenu.regress(player)
 
-        elif newKey=='[6]' or newKey=='return':
+        elif newKey=='[1]' or newKey=='return':
           #Check
           player.currentMenu.progress(player,screen)
 
@@ -1515,60 +1541,42 @@ def updateTraversal(event,player,screen):
 
     elif event.type == KEYDOWN:
       newKey=pygame.key.name(event.key)
-      player.msg1=player.msg2
-      player.msg2=player.msg3
-      player.msg3=player.msg4
-      player.msg4=player.msg5
-      player.msg5=newKey
       if newKey=='escape':
         sys.exit()
 
       elif newKey=='[1]':
         ##square
-        player.msg5='not implemented'
+        player.migrateMessages('not implemented')
 
       elif newKey=='[2]':
-        player.msg5=checkDoor('down',player,screen)
+        player.migrateMessages(checkDoor('down',player,screen))
 
       elif newKey=='[3]':
         ##x
-        player.msg5='initiating battle...'
-        player.traversal=False
-        player.battle=True
-        enemyList=[Enemy()]
-        player.curBattle=BattleEngine(player,enemyList)
+        player.migrateMessages('x')
+        #player.traversal=False
+        #player.battle=True
+        #enemyList=[Enemy()]
+        #player.curBattle=BattleEngine(player,enemyList)
 
-		#ENTER BATTLE MODE ENTRACNE LOGIC
-
-		# FOR NOW JUST CREATE A MENU WITH AN ATTACK OPTION ON IT THEN LEAD UP WITH A NUMBER PAD
-
-		#(self,options,player,bgImageFile,optionImageFiles,name):
-
-	#batMen = Menu(["Attack"],player,
-
-#"/home/olpc/images/battleMenubackground.gif",
-
-##["/home/olpc/images/attackButton.gif"],"Main Battle Menu")
-
-#	batMen.draw(player.currentRoomGroup,screen,400,300,200)
 
       elif newKey=='[4]' or newKey=='left':
-        player.msg5=checkDoor('left',player,screen)
+        player.migrateMessages(checkDoor('left',player,screen))
 
       elif newKey=='[5]':
-        player.msg5='check'
+        player.migrateMessages('check')
 
       elif newKey=='[6]' or newKey=='right':
-        player.msg5=checkDoor('right',player,screen)
+        player.migrateMessages(checkDoor('right',player,screen))
 
       elif newKey=='[7]':
-        player.msg5='square'
+        player.migrateMessages('square')
 
       elif newKey=='[8]' or newKey=='up':
-        player.msg5=checkDoor('up',player,screen)
+        player.migrateMessages(checkDoor('up',player,screen))
 
       elif newKey=='[9]':
-        player.msg5='circle'
+        player.migrateMessages('circle')
 
 def updateTutorial(event,player):
     if event.type == QUIT:
@@ -1584,7 +1592,7 @@ def updateTutorial(event,player):
         player.tutorial.next()
 
       elif newKey=='[2]':
-        player.msg5='down'
+        player.migrateMessages('down')
 
       elif newKey=='[3]' or newKey=='left':
         player.tutorial.previous()
@@ -1593,19 +1601,19 @@ def updateTutorial(event,player):
         player.tutorial.previous()
 
       elif newKey=='[5]':
-        player.msg5='check'
+        player.migrateMessages('check')
 
       elif newKey=='[6]' or newKey=='return':
         player.tutorial.next()
 
       elif newKey=='[7]':
-        player.msg5='square'
+        player.migrateMessages('square')
 
       elif newKey=='[8]':
-        player.msg5='up'
+        player.migrateMessages('up')
 
       elif newKey=='[9]':
-        player.msg5='circle'
+        player.migrateMessages('circle')
 
 def updateWaiting(event,player):
   pygame.time.set_timer(USEREVENT+2,500)
@@ -1629,7 +1637,7 @@ def updateWaiting(event,player):
     en.place=3
     enemyList.append(Enemy())
   if len(enemyList)>0:
-    player.msg5='initiating battle...'
+    player.migrateMessages('initiating battle...')
     player.traversal=False
     player.curBattle=BattleEngine(player,enemyList)
 
