@@ -194,6 +194,8 @@ class Menu:
 
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
+	bgGroup=pygame.sprite.Group(self.background)
+        bgGroup.draw(screen)
         i=0
         sel=0
         if self.numPad==False:
@@ -223,8 +225,7 @@ class Menu:
             i+=1
             sel+=1
             
-        bgGroup=pygame.sprite.Group(self.background)
-        bgGroup.draw(screen)
+
         menuGroup.draw(screen)
 
         if player.battle==False:
@@ -295,7 +296,14 @@ class Menu:
         elif name=="Division":
           player.curBattle.doNothing()
         elif name=="Geometry":
-          player.curBattle.doNothing()
+          player.curBattle.magic(player)
+        elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
+          player.battlePlayer.currentProb1=""
+          player.battlePlayer.currentProb2=""
+          player.battlePlayer.currentInput=""
+          player.curBattle.startGlyph(name)
+	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4":
+	  player.curBattle.checkGlyph(name)
         elif name=="Use Item":
           player.curBattle.doNothing()
 
@@ -482,6 +490,14 @@ class Hero:
       return self.ATT+self.BAE
     elif name=="critical":
       return self.ATT+self.BAB
+    elif name=="Fire":
+      return self.ATT+self.BAB
+    elif name=="Heal":
+      return self.BAB-10
+    elif name=="Lightning":
+      return self.ATT+self.BAB
+    elif name=="Missile":
+      return 0
 
   #returns player's current defense power
   def defensePower(self):
@@ -574,7 +590,7 @@ class Enemy:
   def __init__(self):
 #****property********value**********************description**********************#
 	self.MHP 	= 40				#maximum health points (base HP)
-	self.HP		= 40				#current health points
+	self.HP		= 40				#cur print "Fire"rent health points
 	self.BHP 	= 0				#bonus health points (from equipment)
 	self.ATT 	= 10 				#base attack power
 	self.BAE	= 0				#bonus attack power (from equipment)
@@ -688,6 +704,57 @@ class BattleEngine:
         self.initializeMenus()
         self.selEnemyIndex=0
         self.timeBonus=1
+        #load glyphs and buttons
+        self.fire=pygame.sprite.Sprite()
+        self.fire.image=pygame.image.load("/home/olpc/images/FireGlyph.gif")
+        self.fire1=pygame.sprite.Sprite()
+        self.fire1.image=pygame.image.load("/home/olpc/images/FireGlyph1.gif")
+        self.fire1btn="/home/olpc/images/FireGlyph1btn.gif"
+        self.fire2=pygame.sprite.Sprite()
+        self.fire2.image=pygame.image.load("/home/olpc/images/FireGlyph2.gif")
+        self.fire2btn="/home/olpc/images/FireGlyph2btn.gif"
+        self.fire3=pygame.sprite.Sprite()
+        self.fire3.image=pygame.image.load("/home/olpc/images/FireGlyph3.gif")
+        self.fire3btn="/home/olpc/images/FireGlyph3btn.gif"
+        self.fire4=pygame.sprite.Sprite()
+        self.fire4.image=pygame.image.load("/home/olpc/images/FireGlyph4.gif")
+        self.fire4btn="/home/olpc/images/FireGlyph4btn.gif"
+
+        self.lightning=pygame.sprite.Sprite()
+	self.lightning.image=pygame.image.load("/home/olpc/images/LightningGlyph.gif")
+        self.lightning1btn="/home/olpc/images/LigGlyph1btn.gif"
+        self.lightning1=pygame.sprite.Sprite()
+	self.lightning1.image=pygame.image.load("/home/olpc/images/LigGlyph1.gif")
+        self.lightning2btn="/home/olpc/images/LigGlyph2btn.gif"
+        self.lightning2=pygame.sprite.Sprite()
+	self.lightning2.image=pygame.image.load("/home/olpc/images/LigGlyph2.gif")
+        self.lightning3btn="/home/olpc/images/LigGlyph3btn.gif"
+        self.lightning3=pygame.sprite.Sprite()
+	self.lightning3.image=pygame.image.load("/home/olpc/images/LigGlyph3.gif")
+        self.lightning4btn="/home/olpc/images/LigGlyph4btn.gif"
+        self.lightning4=pygame.sprite.Sprite()
+	self.lightning4.image=pygame.image.load("/home/olpc/images/LigGlyph4.gif")
+
+        self.missile=pygame.sprite.Sprite()
+	self.missile.image=pygame.image.load("/home/olpc/images/MagicGlyph.gif")
+
+        self.heal=pygame.sprite.Sprite()
+	self.heal.image=pygame.image.load("/home/olpc/images/HealGlyph.gif")
+        self.heal1btn="/home/olpc/images/HealGlyph1btn.gif"
+        self.heal1=pygame.sprite.Sprite()
+	self.heal1.image=pygame.image.load("/home/olpc/images/HealGlyph1.gif")
+        self.heal2btn="/home/olpc/images/HealGlyph2btn.gif"
+        self.heal2=pygame.sprite.Sprite()
+	self.heal2.image=pygame.image.load("/home/olpc/images/HealGlyph2.gif")
+        self.heal3btn="/home/olpc/images/HealGlyph3btn.gif"
+        self.heal3=pygame.sprite.Sprite()
+	self.heal3.image=pygame.image.load("/home/olpc/images/HealGlyph3.gif")
+        self.heal4btn="/home/olpc/images/HealGlyph4btn.gif"
+        self.heal4=pygame.sprite.Sprite()
+	self.heal4.image=pygame.image.load("/home/olpc/images/HealGlyph4.gif")
+
+	self.glyphGroup=pygame.sprite.Group()
+	self.glyphOverlayGroup=pygame.sprite.Group()
         i=0
 	for enemy in self.enemies:
           enemy.place=i
@@ -707,7 +774,15 @@ class BattleEngine:
     numBG="/home/olpc/images/numPadbackground.gif"
     numOptImg=["/home/olpc/images/1.gif","/home/olpc/images/2.gif","/home/olpc/images/3.gif","/home/olpc/images/4.gif","/home/olpc/images/5.gif","/home/olpc/images/6.gif","/home/olpc/images/7.gif","/home/olpc/images/8.gif","/home/olpc/images/9.gif","/home/olpc/images/0.gif","/home/olpc/images/EnterAnswer.gif"]
     self.numPadMenu=Menu(numOptArr,self.player,numBG,numOptImg,"Number Pad")
+    self.numPadMenu.background.rect=(200,580,200,200)
     self.numPadMenu.numPad=True
+
+    magicOptions=["Fire","Lightning","Missile","Heal"]
+    magicBackground="/home/olpc/images/battleMenubackground.gif"
+    magicOptImg=["/home/olpc/images/1.gif","/home/olpc/images/2.gif","/home/olpc/images/3.gif","/home/olpc/images/4.gif"]
+    self.magicMenu=Menu(magicOptions,self.player,magicBackground,magicOptImg,"Magic Menu")
+    self.magicMenu.background.rect=(200,580,200,200)
+
    
     self.player.currentMenu=self.battleMenu
     self.player.previousMenu=self.numPadMenu
@@ -719,7 +794,7 @@ class BattleEngine:
     enemyGroup=pygame.sprite.Group()
     i=0
     for enemy in self.enemies:
-      enemy.sprite.rect=(x+(enemy.place*200),y,200,200)
+      enemy.sprite.rect=pygame.Rect((x+(enemy.place*200),y,200,200))
       if i==self.selEnemyIndex:
         sel=pygame.sprite.Sprite()
         sel.image=pygame.image.load("/home/olpc/images/EnterAnswer.gif")
@@ -730,16 +805,19 @@ class BattleEngine:
 
     player.currentRoomGroup.draw(screen)
     enemyGroup.draw(screen)
+    self.glyphGroup.draw(screen)
+    self.glyphOverlayGroup.draw(screen)
 
     #draw player
     if player.currentMenu.numPad==False:
       player.currentMenu.draw(player,screen,200,580,45)
     else:
       player.currentMenu.draw(player,screen,200,580,23)
-      probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
-      inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
-      screen.blit(probText,pygame.Rect(200,500,200,30))
-      screen.blit(inputText,pygame.Rect(200,550,200,30))
+      if not player.battlePlayer.currentProb1=="":
+        probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
+        inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
+        screen.blit(probText,pygame.Rect(200,500,200,30))
+        screen.blit(inputText,pygame.Rect(200,550,200,30))
       screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
     pygame.display.flip()
 
@@ -755,9 +833,30 @@ class BattleEngine:
   def attack(self,attacker,attackName):
     if attackName=="critical":
       attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
+    elif attackName=="Fire":
+      attacker.setBonusAP(int(self.timeBonus*20)+50)
+      self.glyphGroup.empty()
+      self.glyphOverlayGroup.empty()
+      self.player.currentMenu=self.battleMenu
+    elif attackName=="Heal":
+      attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
+      self.glyphGroup.empty()
+      self.glyphOverlayGroup.empty()
+      self.player.currentMenu=self.battleMenu
+    elif attackName=="Lightning":
+      attacker.setBonusAP(int(self.timeBonus)+70)
+      self.glyphGroup.empty()
+      self.glyphOverlayGroup.empty()
+      self.player.currentMenu=self.battleMenu
+    elif attackName=="Missile":
+      attacker.setBonusAP(0)
+      self.player.currentMenu=self.battleMenu
     pygame.time.set_timer(USEREVENT+1,0)
-      
+    self.timeBonus=1
+
     defender=self.enemies[self.selEnemyIndex]
+    if attackName=="Heal":
+      defender=attacker
     defender.defendAttack(attacker.attackPower(attackName))
 
     player.msg1=player.msg2
@@ -783,8 +882,129 @@ class BattleEngine:
     player.battlePlayer.currentProb1=prob1
     player.battlePlayer.currentProb2=prob2
     player.battlePlayer.currentAnswer=prob1*prob2
+
+  def magic(self,player):
+    player.currentMenu=self.magicMenu
+    pygame.time.set_timer(USEREVENT+1,500)
+  def startGlyph(self,name):
+    self.glyphGroup.empty()
+    self.glyphOverlayGroup.empty()
+    if name=="Fire":
+      shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn),("Not",self.heal1btn)]
+      shuffle(shuffle2D)
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenu=Menu(glyphMenuOptions,self.player,"/home/olpc/images/battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu.numPad=True
+      glyphMenu.background.rect=(200,580,200,200)
+      player.currentMenu=glyphMenu
+      self.fire.rect=(self.enemies[self.selEnemyIndex].sprite.rect.left-40,self.enemies[self.selEnemyIndex].sprite.rect.top+40,300,300)
+      self.glyphGroup.add(self.fire)
+    elif name=="Lightning":
+      shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn),("Not",self.fire1btn)]
+      shuffle(shuffle2D)
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenu=Menu(glyphMenuOptions,self.player,"/home/olpc/images/battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu.numPad=True
+      glyphMenu.background.rect=(200,580,200,200)
+      player.currentMenu=glyphMenu
+      self.lightning.rect=(self.enemies[self.selEnemyIndex].sprite.rect.left+40,self.enemies[self.selEnemyIndex].sprite.rect.top+40,300,300)
+      self.glyphGroup.add(self.lightning)
+
+    elif name=="Missile":
+	self.attack(self.player.battlePlayer,"Missile")
+    elif name=="Heal":
+      shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn),("Not",self.fire1btn)]
+      shuffle(shuffle2D)
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenu=Menu(glyphMenuOptions,self.player,"/home/olpc/images/battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu.numPad=True
+      glyphMenu.background.rect=(200,580,200,200)
+      player.currentMenu=glyphMenu
+      self.heal.rect=(500,300,300,300)
+      self.glyphGroup.add(self.heal)
+    #set glyph menu
+
+  def checkGlyph(self,name):
+    if name=="Fire1":
+      if self.glyphOverlayGroup.has(self.fire1)==False:
+        self.fire1.rect=self.fire.rect
+        self.glyphOverlayGroup.add(self.fire1)
+        #check if glyph is complete
+        if self.glyphOverlayGroup.has([self.fire1,self.fire2,self.fire3,self.fire4])==True:
+	  self.attack(self.player.battlePlayer,"Fire")
+    elif name=="Fire2":
+      if self.glyphOverlayGroup.has(self.fire2)==False:
+	self.fire2.rect=self.fire.rect
+        self.glyphOverlayGroup.add(self.fire2)
+        if self.glyphOverlayGroup.has([self.fire1,self.fire2,self.fire3,self.fire4])==True:
+	  self.attack(self.player.battlePlayer,"Fire")
+    elif name=="Fire3":
+      if self.glyphOverlayGroup.has(self.fire3)==False:
+	self.fire3.rect=self.fire.rect
+        self.glyphOverlayGroup.add(self.fire3)
+        if self.glyphOverlayGroup.has([self.fire2,self.fire1,self.fire3,self.fire4])==True:
+	  self.attack(self.player.battlePlayer,"Fire")
+    elif name=="Fire4":
+      if self.glyphOverlayGroup.has(self.fire4)==False:
+	self.fire4.rect=self.fire.rect
+        self.glyphOverlayGroup.add(self.fire4)
+        if self.glyphOverlayGroup.has([self.fire4,self.fire2,self.fire3,self.fire1])==True:
+	  self.attack(self.player.battlePlayer,"Fire")
+    elif name=="Heal1":
+      if self.glyphOverlayGroup.has(self.heal1)==False:
+	self.heal1.rect=self.heal.rect
+        self.glyphOverlayGroup.add(self.heal1)
+        if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
+	  self.attack(self.player.battlePlayer,"Heal")
+    elif name=="Heal2":
+      if self.glyphOverlayGroup.has(self.heal2)==False:
+	self.heal2.rect=self.heal.rect
+        self.glyphOverlayGroup.add(self.heal2)
+        if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
+	  self.attack(self.player.battlePlayer,"Heal")
+    elif name=="Heal3":
+      if self.glyphOverlayGroup.has(self.heal3)==False:
+	self.heal3.rect=self.heal.rect
+        self.glyphOverlayGroup.add(self.heal3)
+        if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
+	  self.attack(self.player.battlePlayer,"Heal")
+    elif name=="Heal4":
+      if self.glyphOverlayGroup.has(self.heal4)==False:
+	self.heal4.rect=self.heal.rect
+        self.glyphOverlayGroup.add(self.heal4)
+        if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
+	  self.attack(self.player.battlePlayer,"Heal")
+    elif name=="Lightning1":
+      if self.glyphOverlayGroup.has(self.lightning1)==False:
+	self.lightning1.rect=self.lightning.rect
+        self.glyphOverlayGroup.add(self.lightning1)
+        if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
+	  self.attack(self.player.battlePlayer,"Lightning")
+    elif name=="Lightning2":
+      if self.glyphOverlayGroup.has(self.lightning2)==False:
+	self.lightning2.rect=self.lightning.rect
+        self.glyphOverlayGroup.add(self.lightning2)
+        if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
+	  self.attack(self.player.battlePlayer,"Lightning")
+    elif name=="Lightning3":
+      if self.glyphOverlayGroup.has(self.lightning3)==False:
+	self.lightning3.rect=self.lightning.rect
+        self.glyphOverlayGroup.add(self.lightning3)
+        if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
+	  self.attack(self.player.battlePlayer,"Lightning")
+    elif name=="Lightning4":
+      if self.glyphOverlayGroup.has(self.lightning4)==False:
+	self.lightning4.rect=self.lightning.rect
+        self.glyphOverlayGroup.add(self.lightning4)
+        if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
+	  self.attack(self.player.battlePlayer,"Lightning")
   def decrementBonus(self):
     self.timeBonus-=.05
+    if self.timeBonus==0:
+      pygame.time.set_timer(USEREVENT+1,0)
   ###
   #Returns a list of attacks for any player or enemy passed in
   ###
@@ -1388,9 +1608,10 @@ def updateTutorial(event,player):
         player.msg5='circle'
 
 def updateWaiting(event,player):
-  pygame.time.wait(500)
-  player.waiting=False
+  pygame.time.set_timer(USEREVENT+2,500)
   enemyList=[]
+  player.traversal=False
+  player.waiting=False
   if  player.currentRoom.en1=='1':
     en=Enemy()
     en.place=0
@@ -1410,9 +1631,8 @@ def updateWaiting(event,player):
   if len(enemyList)>0:
     player.msg5='initiating battle...'
     player.traversal=False
-    player.battle=True
     player.curBattle=BattleEngine(player,enemyList)
-    setImage(player)
+
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
 
@@ -1428,10 +1648,19 @@ setImage(player)
 while pippy.pygame.next_frame():
 
   for event in pygame.event.get():
+    if event.type==USEREVENT+2:
+      pygame.time.set_timer(USEREVENT+2,0)
+      player.waiting=False
+      if player.msg5=='Enemies are present, prepare to fight.':
+        player.battle=True
+      if player.battle==False:
+        player.traversal=True
+      setImage(player)
+    if event.type==QUIT:
+      sys.exit()
     if player.traversal:
-      if player.waiting:
+      if player.waiting==True:
         updateWaiting(event,player)
-
       else:
         #################UPDATE##############################
         updateTraversal(event,player,screen)
@@ -1444,12 +1673,10 @@ while pippy.pygame.next_frame():
     elif player.battle:
       ##battle processes
       updateBattle(event,player)
-      print(player.battle)
 
     elif player.mainMenu:
       ## main menu processes
       updateMenu(event,player)
-      print(player.mainMenu)
     elif player.inTutorial:
       updateTutorial(event,player)
 
