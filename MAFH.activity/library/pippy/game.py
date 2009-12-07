@@ -13,28 +13,28 @@ def pause():
     old_screen = screen.copy()  # save this for later.
 
     # dim the screen and display the 'paused' message in the center.
-    BLACK = (0,0,0)
-    WHITE = (255,255,255)
-    dimmed = screen.copy()
-    dimmed.set_alpha(128)
-    screen.fill(BLACK)
-    screen.blit(dimmed, (0,0))
-    font = pygame.font.Font(None, 36) # 36px high
-    msg = _("PAUSED")
-    msg_surf = font.render(msg, True, BLACK, WHITE)
-    def center(rect, screen):
-        rect.center = (screen.get_width()/2, screen.get_height()/2)
+   # BLACK = (0,0,0)
+   # WHITE = (255,255,255)
+   # dimmed = screen.copy()
+   # dimmed.set_alpha(128)
+   # screen.fill(BLACK)
+   # screen.blit(dimmed, (0,0))
+   # font = pygame.font.Font(None, 36) # 36px high
+   # msg = _("PAUSED")
+   # msg_surf = font.render(msg, True, BLACK, WHITE)
+   # def center(rect, screen):
+   #     rect.center = (screen.get_width()/2, screen.get_height()/2)
     
-    rect = pygame.Rect((0,0),msg_surf.get_size())
-    rect.inflate_ip(rect.width, rect.height)
-    center(rect, screen)
-    screen.fill(WHITE, rect)
-    rect = msg_surf.get_rect()
-    center(rect, screen)
-    screen.blit(msg_surf, rect)
-    pygame.display.flip()
+   # rect = pygame.Rect((0,0),msg_surf.get_size())
+   # rect.inflate_ip(rect.width, rect.height)
+   # center(rect, screen)
+   # screen.fill(WHITE, rect)
+   # rect = msg_surf.get_rect()
+   # center(rect, screen)
+   # screen.blit(msg_surf, rect)
+   # pygame.display.flip()
 
-    # SUSPEND
+    # SUSPEND without changing screen or interrupting gameplay
     try:
         raise RuntimeError() # XXX don't try this yet. we should use ohm.
         open('/sys/power/state','w').write('mem')

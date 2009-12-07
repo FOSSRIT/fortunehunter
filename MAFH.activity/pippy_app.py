@@ -5,8 +5,9 @@ import os.path
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
-IMG_PATH = os.path.dirname(__file__) + "/images/"
 
+IMG_PATH = os.path.dirname(__file__) + "/images/"
+#IMG_PATH="/home/olpc/images/"
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
@@ -17,6 +18,7 @@ class Dungeon:
     self.sizeX=sizeX
     self.sizeY=sizeY
     self.fileName=fileName
+    self.types=["none","Wizard","Goblin","Gru","Eye","Octopus"]
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
 
@@ -58,8 +60,8 @@ class Dungeon:
         shop=True
 
       rm=Room(doorN,doorS,doorE,doorW,shop,line[5],line[6],line[7],line[8])
-      #print(rm.getData())
-      #print(repr(currentX)+", "+repr(currentY))
+      if line[4]=='T':
+        rm.transport=True
       self.rooms[(currentX,currentY)]=rm
       ###update position in array###
       currentX+=1
@@ -87,7 +89,7 @@ class Room:
     self.en3=en3
     self.en4=en4
     self.image=0
-
+    self.transport=False
   #######To string method########
   def getData(self):
     string=""
@@ -261,10 +263,10 @@ class Menu:
 
     def updateByName(self,name,player,screen):
         if name=="New Game":
-	    player.dgn=Dungeon(5,5,IMG_PATH + "dungeon2.txt")
-    	    player.dgn.fill()
-	    player.currentRoom=player.dgn.rooms.get((0,0))
-	    player.dgnMap=Map(player.dgn)
+            player.dgnIndex=-1
+            player.currentX=0
+            player.currentY=0
+            player.nextDungeon()
 
             player.traversal=True
             player.mainMenu=False
@@ -291,8 +293,11 @@ class Menu:
         elif name=="0" or name=="1"or name=="2" or name=="3" or name=="4" or name=="5" or name=="6" or name=="7"or name=="8"or name=="9":
           player.battlePlayer.currentInput+=name
         elif name=="Enter Answer":
-          if player.battlePlayer.currentAnswer==int(player.battlePlayer.currentInput):
-            player.curBattle.attack(player.battlePlayer,"critical")
+          if not player.battlePlayer.currentInput =="":
+            if player.battlePlayer.currentAnswer==int(player.battlePlayer.currentInput):
+              player.curBattle.attack(player.battlePlayer,"critical")
+            else:
+              player.curBattle.attack(player.battlePlayer,"basic")
           else:
             player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="Division":
@@ -374,11 +379,17 @@ class Player:
     SOUTH=3
     EAST=0
     WEST=2
+    
     self.initializeMenu()
     self.loadTutorial()
     self.loadImages()
+    self.currentX=x
+    self.currentY=y
+    self.dgnIndex=-1
+    self.dungeons=[("Dungeon.txt",4,5),("dungeon2.txt",5,5)]
+    self.nextDungeon()
     self.battlePlayer=Hero(self)
-    self.curBattle=BattleEngine(self.battlePlayer,[Enemy()])
+    self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
 
     #state variables
     self.inTutorial=False
@@ -398,67 +409,60 @@ class Player:
     self.currentX=x
     self.currentY=y
 
-    self.dgn=Dungeon(5,5,IMG_PATH + "dungeon2.txt")
-    self.dgn.fill()
-    #self.currentRoom=Room(False,False,False,False,False,0,0,0,0)
-    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
-    self.dgnMap=Map(self.dgn)
-    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
-
     self.playerFacing=SOUTH
 
     #sound
-    self.doorEffect=pygame.mixer.Sound(IMG_PATH + "door.wav")
+    self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
 
   def initializeMenu(self):
-    mainMenuImages=[IMG_PATH + "TutorialButton.gif",IMG_PATH + "NewGameButton.gif",IMG_PATH + "CloseButton.gif"]
-    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH + "TitleImage.gif",mainMenuImages,"Main Menu")
+    mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
+    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH+"TitleImage.gif",mainMenuImages,"Main Menu")
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
 
   def loadTutorial(self):
-    tutorialImages=[IMG_PATH + "t1.gif",IMG_PATH + "t2.gif",IMG_PATH + "t3.gif"]
+    tutorialImages=[IMG_PATH+"t1.gif",IMG_PATH+"t2.gif",IMG_PATH+"t3.gif"]
     self.tutorial=Tutorial(tutorialImages)
 
   def loadImages(self):
     self.currentRoomSprite=pygame.sprite.Sprite()
-    self.currentRoomSprite.image=pygame.image.load(IMG_PATH + "Black.gif")
+    self.currentRoomSprite.image=pygame.image.load(IMG_PATH+"Black.gif")
     self.currentRoomSprite.rect=pygame.Rect(0,0,1200,700)
 
     self.Black=pygame.sprite.Sprite()
-    self.Black.image=pygame.image.load(IMG_PATH + "Black.gif")
+    self.Black.image=pygame.image.load(IMG_PATH+"Black.gif")
     self.Black.rect=pygame.Rect(0,0,1200,700)
 
     self.FLRSprite=pygame.sprite.Sprite()
-    self.FLRSprite.image=pygame.image.load(IMG_PATH + "flr.gif")
+    self.FLRSprite.image=pygame.image.load(IMG_PATH+"flr.gif")
     self.FLRSprite.rect=self.currentRoomSprite.rect
 
     self.FRSprite=pygame.sprite.Sprite()
-    self.FRSprite.image=pygame.image.load(IMG_PATH + "fr.gif")
+    self.FRSprite.image=pygame.image.load(IMG_PATH+"fr.gif")
     self.FRSprite.rect=self.currentRoomSprite.rect
 
     self.FSprite=pygame.sprite.Sprite()
-    self.FSprite.image=pygame.image.load(IMG_PATH + "f.gif")
+    self.FSprite.image=pygame.image.load(IMG_PATH+"f.gif")
     self.FSprite.rect=self.currentRoomSprite.rect
 
     self.FLSprite=pygame.sprite.Sprite()
-    self.FLSprite.image=pygame.image.load(IMG_PATH + "fl.gif")
+    self.FLSprite.image=pygame.image.load(IMG_PATH+"fl.gif")
     self.FLSprite.rect=self.currentRoomSprite.rect
 
     self.LRSprite=pygame.sprite.Sprite()
-    self.LRSprite.image=pygame.image.load(IMG_PATH + "lr.gif")
+    self.LRSprite.image=pygame.image.load(IMG_PATH+"lr.gif")
     self.LRSprite.rect=self.currentRoomSprite.rect
 
     self.LSprite=pygame.sprite.Sprite()
-    self.LSprite.image=pygame.image.load(IMG_PATH + "l.gif")
+    self.LSprite.image=pygame.image.load(IMG_PATH+"l.gif")
     self.LSprite.rect=self.currentRoomSprite.rect
 
     self.NoSprite=pygame.sprite.Sprite()
-    self.NoSprite.image=pygame.image.load(IMG_PATH + "_.gif")
+    self.NoSprite.image=pygame.image.load(IMG_PATH+"_.gif")
     self.NoSprite.rect=self.currentRoomSprite.rect
 
     self.RSprite=pygame.sprite.Sprite()
-    self.RSprite.image=pygame.image.load(IMG_PATH + "r.gif")
+    self.RSprite.image=pygame.image.load(IMG_PATH+"r.gif")
     self.RSprite.rect=self.currentRoomSprite.rect
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
@@ -469,7 +473,18 @@ class Player:
     self.msg3=self.msg4
     self.msg4=self.msg5
     self.msg5=msg
-    
+  def nextDungeon(self):
+    self.currentX=0
+    self.currentY=0
+    self.dgnIndex+=1
+    dgnWidth=self.dungeons[self.dgnIndex][1]
+    dgnHeight=self.dungeons[self.dgnIndex][2]
+    self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
+    self.dgn.fill()
+    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+    self.dgnMap=Map(self.dgn)
+    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+
 #######################################################################
 
 #Hero class - represents the player in battle and holds all of their data
@@ -489,13 +504,11 @@ class Hero:
 	self.eqItems_Ar	= []	#equipped items
 	self.inv_Ar 	= []	#inventory
 	self.attacks_Ar = []	#associated array for attack string names and attack power values
-	self.inv_Ar = []
 	self.attacks_Ar = []
         self.currentInput=""
         self.currentProb1=0
         self.currentProb2=0
         self.currentAnswer=0
-
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
   def maxHealthPoints(self):
@@ -610,7 +623,7 @@ class Hero:
 #Enemy class - represents an enemy and holds all of its data
 #############################################################
 class Enemy:
-  def __init__(self):
+  def __init__(self,player,name):
 #****property********value**********************description**********************#
 	self.MHP 	= 40				#maximum health points (base HP)
 	self.HP		= 40				#cur print "Fire"rent health points
@@ -627,7 +640,14 @@ class Enemy:
         self.sprite=pygame.sprite.Sprite()
         self.place=0
         #load image based on type later
-        self.sprite.image=pygame.image.load(IMG_PATH + "concept_wizard.gif")
+        self.name=player.dgn.types[int(name)]
+        print(self.name)
+        if self.name=="Wizard":
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
+          self.HP=20
+          self.ATT=40
+        else:
+          self.sprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
         self.sprite.rect=(200,200,50,300) 
 
 #****ENEMY ACCESSORS*********************************************#
@@ -641,7 +661,7 @@ class Enemy:
 
   #returns enemy's current attack power
   def attackPower(self):
-    return (self.ATT + self.BAP + self.BAE)
+    return (self.ATT)
 
   #returns enemy's current defense power
   def defensePower(self):
@@ -724,57 +744,57 @@ class BattleEngine:
 	self.t = 0
 	self.tTracker = 0
 	self.maxBonusTime = 0
-        self.initializeMenus()
+        self.initializeMenus(player)
         self.selEnemyIndex=0
         self.timeBonus=1
         #load glyphs and buttons
         self.fire=pygame.sprite.Sprite()
-        self.fire.image=pygame.image.load(IMG_PATH + "FireGlyph.gif")
+        self.fire.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
         self.fire1=pygame.sprite.Sprite()
-        self.fire1.image=pygame.image.load(IMG_PATH + "FireGlyph1.gif")
-        self.fire1btn=IMG_PATH + "FireGlyph1btn.gif"
+        self.fire1.image=pygame.image.load(IMG_PATH+"FireGlyph1.gif")
+        self.fire1btn=IMG_PATH+"FireGlyph1btn.gif"
         self.fire2=pygame.sprite.Sprite()
-        self.fire2.image=pygame.image.load(IMG_PATH + "FireGlyph2.gif")
-        self.fire2btn=IMG_PATH + "FireGlyph2btn.gif"
+        self.fire2.image=pygame.image.load(IMG_PATH+"FireGlyph2.gif")
+        self.fire2btn=IMG_PATH+"FireGlyph2btn.gif"
         self.fire3=pygame.sprite.Sprite()
-        self.fire3.image=pygame.image.load(IMG_PATH + "FireGlyph3.gif")
-        self.fire3btn=IMG_PATH + "FireGlyph3btn.gif"
+        self.fire3.image=pygame.image.load(IMG_PATH+"FireGlyph3.gif")
+        self.fire3btn=IMG_PATH+"FireGlyph3btn.gif"
         self.fire4=pygame.sprite.Sprite()
-        self.fire4.image=pygame.image.load(IMG_PATH + "FireGlyph4.gif")
-        self.fire4btn=IMG_PATH + "FireGlyph4btn.gif"
+        self.fire4.image=pygame.image.load(IMG_PATH+"FireGlyph4.gif")
+        self.fire4btn=IMG_PATH+"FireGlyph4btn.gif"
 
         self.lightning=pygame.sprite.Sprite()
-	self.lightning.image=pygame.image.load(IMG_PATH + "LightningGlyph.gif")
-        self.lightning1btn=IMG_PATH + "LigGlyph1btn.gif"
+	self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
+        self.lightning1btn=IMG_PATH+"LigGlyph1btn.gif"
         self.lightning1=pygame.sprite.Sprite()
-	self.lightning1.image=pygame.image.load(IMG_PATH + "LigGlyph1.gif")
-        self.lightning2btn=IMG_PATH + "LigGlyph2btn.gif"
+	self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
+        self.lightning2btn=IMG_PATH+"LigGlyph2btn.gif"
         self.lightning2=pygame.sprite.Sprite()
-	self.lightning2.image=pygame.image.load(IMG_PATH + "LigGlyph2.gif")
-        self.lightning3btn=IMG_PATH + "LigGlyph3btn.gif"
+	self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
+        self.lightning3btn=IMG_PATH+"LigGlyph3btn.gif"
         self.lightning3=pygame.sprite.Sprite()
-	self.lightning3.image=pygame.image.load(IMG_PATH + "LigGlyph3.gif")
-        self.lightning4btn=IMG_PATH + "LigGlyph4btn.gif"
+	self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
+        self.lightning4btn=IMG_PATH+"LigGlyph4btn.gif"
         self.lightning4=pygame.sprite.Sprite()
-	self.lightning4.image=pygame.image.load(IMG_PATH + "LigGlyph4.gif")
+	self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
-	self.missile.image=pygame.image.load(IMG_PATH + "MagicGlyph.gif")
+	self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
 
         self.heal=pygame.sprite.Sprite()
-	self.heal.image=pygame.image.load(IMG_PATH + "HealGlyph.gif")
-        self.heal1btn=IMG_PATH + "HealGlyph1btn.gif"
+	self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
+        self.heal1btn=IMG_PATH+"HealGlyph1btn.gif"
         self.heal1=pygame.sprite.Sprite()
-	self.heal1.image=pygame.image.load(IMG_PATH + "HealGlyph1.gif")
-        self.heal2btn=IMG_PATH + "HealGlyph2btn.gif"
+	self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
+        self.heal2btn=IMG_PATH+"HealGlyph2btn.gif"
         self.heal2=pygame.sprite.Sprite()
-	self.heal2.image=pygame.image.load(IMG_PATH + "HealGlyph2.gif")
-        self.heal3btn=IMG_PATH + "HealGlyph3btn.gif"
+	self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
+        self.heal3btn=IMG_PATH+"HealGlyph3btn.gif"
         self.heal3=pygame.sprite.Sprite()
-	self.heal3.image=pygame.image.load(IMG_PATH + "HealGlyph3.gif")
-        self.heal4btn=IMG_PATH + "HealGlyph4btn.gif"
+	self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
+        self.heal4btn=IMG_PATH+"HealGlyph4btn.gif"
         self.heal4=pygame.sprite.Sprite()
-	self.heal4.image=pygame.image.load(IMG_PATH + "HealGlyph4.gif")
+	self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
 
 	self.glyphGroup=pygame.sprite.Group()
 	self.glyphOverlayGroup=pygame.sprite.Group()
@@ -784,32 +804,33 @@ class BattleEngine:
           i+=1
 	self.player.msg5= "Enemies are present, prepare to fight."
 
-  def initializeMenus(self):
+  def initializeMenus(self,player):
+
     battleOptions=["Attack","Division","Geometry","Use Item"]
-    battleBackground=IMG_PATH + "battleMenubackground.gif"
-    battleOptImg=[IMG_PATH + "attackButton.gif",IMG_PATH + "DivPH.gif",IMG_PATH + "GeomPH.gif",IMG_PATH + "ItemPH.gif"]
+    battleBackground=IMG_PATH+"battleMenubackground.gif"
+    battleOptImg=[IMG_PATH+"attackButton.gif",IMG_PATH+"DivPH.gif",IMG_PATH+"GeomPH.gif",IMG_PATH+"ItemPH.gif"]
     
-    self.battleMenu=Menu(battleOptions,self.player,battleBackground,battleOptImg,"Battle")
+    self.battleMenu=Menu(battleOptions,player,battleBackground,battleOptImg,"Battle")
     self.battleMenu.background.rect=(200,580,200,200)
     self.battleMenu.size=4
 
     numOptArr = ["1","2","3","4","5","6","7","8","9","0","Enter Answer"]
-    numBG=IMG_PATH + "numPadbackground.gif"
-    numOptImg=[IMG_PATH + "1.gif",IMG_PATH + "2.gif",IMG_PATH + "3.gif",IMG_PATH + "4.gif",IMG_PATH + "5.gif",IMG_PATH + "6.gif",IMG_PATH + "7.gif",IMG_PATH + "8.gif",IMG_PATH + "9.gif",IMG_PATH + "0.gif",IMG_PATH + "EnterAnswer.gif"]
-    self.numPadMenu=Menu(numOptArr,self.player,numBG,numOptImg,"Number Pad")
+    numBG=IMG_PATH+"numPadbackground.gif"
+    numOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"EnterAnswer.gif"]
+    self.numPadMenu=Menu(numOptArr,player,numBG,numOptImg,"Number Pad")
     self.numPadMenu.background.rect=(200,580,200,200)
     self.numPadMenu.numPad=True
 
     magicOptions=["Fire","Lightning","Missile","Heal"]
-    magicBackground=IMG_PATH + "battleMenubackground.gif"
-    magicOptImg=[IMG_PATH + "1.gif",IMG_PATH + "2.gif",IMG_PATH + "3.gif",IMG_PATH + "4.gif"]
-    self.magicMenu=Menu(magicOptions,self.player,magicBackground,magicOptImg,"Magic Menu")
+    magicBackground=IMG_PATH+"battleMenubackground.gif"
+    magicOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
+    self.magicMenu=Menu(magicOptions,player,magicBackground,magicOptImg,"Magic Menu")
     self.magicMenu.background.rect=(200,580,200,200)
 
     divisionOptions=["1/2","1/3","1/4","1/6"]
-    divisionBackground=IMG_PATH + "battleMenubackground.gif"
-    divisionOptImg=[IMG_PATH + "1.gif",IMG_PATH + "2.gif",IMG_PATH + "3.gif",IMG_PATH + "4.gif"]
-    self.divisionMenu=Menu(divisionOptions,self.player,divisionBackground,divisionOptImg,"Division Menu")
+    divisionBackground=IMG_PATH+"battleMenubackground.gif"
+    divisionOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
+    self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
     self.divisionMenu.background.rect=(200,580,200,200) 
 
     self.player.currentMenu=self.battleMenu
@@ -825,7 +846,7 @@ class BattleEngine:
       enemy.sprite.rect=pygame.Rect((x+(enemy.place*200),y,200,200))
       if i==self.selEnemyIndex:
         sel=pygame.sprite.Sprite()
-        sel.image=pygame.image.load(IMG_PATH + "EnterAnswer.gif")
+        sel.image=pygame.image.load(IMG_PATH+"EnterAnswer.gif")
         sel.rect=pygame.Rect(x+(enemy.place*200)+30,y+100,40,20)
         enemyGroup.add(sel)
       i+=1
@@ -917,7 +938,7 @@ class BattleEngine:
       shuffle(shuffle2D)
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
-      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH + "battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(200,580,200,200)
       player.currentMenu=glyphMenu
@@ -928,7 +949,7 @@ class BattleEngine:
       shuffle(shuffle2D)
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
-      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH + "battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(200,580,200,200)
       player.currentMenu=glyphMenu
@@ -942,7 +963,7 @@ class BattleEngine:
       shuffle(shuffle2D)
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
-      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH + "battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(200,580,200,200)
       player.currentMenu=glyphMenu
@@ -1037,13 +1058,11 @@ class BattleEngine:
   #checks the fraction sum, close to 1 results in a division attack, over 1 is a miss
   def checkFraction(self):
     if player.battlePlayer.fractionSum > .98 and player.battlePlayer.fractionSum < 1.01:
-      player.migrateMessages("YOU RULE AT FRACTIONS!!!")
-      print(player.battlePlayer.fractionSum)
+      player.migrateMessages("Fraction correct!")
       self.attack(self.player.battlePlayer,"Division")
       
     elif player.battlePlayer.fractionSum > 1.01:
-      print(repr(player.battlePlayer.fractionSum) +"Incorrect")
-      self.player.migrateMessages("YOU SUCK AT FRACTIONS")
+      self.player.migrateMessages("Fraction sum incorrect")
       self.playerTurn=False
       self.player.currentMenu=self.battleMenu	
       self.player.battlePlayer.fractionSum=0
@@ -1081,12 +1100,15 @@ class BattleEngine:
   ###
   def GenerateEnemyAttack(self,enemy):
     #AvalAttacks = ListAttacks(enemy)
-    enemy.setBonusAP(self.maxBonusTime)
+    #TODO:  make ListAttacks(enemy) return an array of strings based on enemy.name
+    #       create random int (max of len(listAttacks))
+    #       change line 1093 to enemy.attackPower(listAttacks[randint])
+    #        add statements in enemy.attackPower defining powers of various attacks
     defender=self.player.battlePlayer
     defender.defendAttack(enemy.attackPower())
     self.playerTurn=True
 
-    player.migrateMessages("Enemy attacks for "+repr(enemy.ATT+enemy.BAP)+" damage")
+    player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower())+" damage")
     player.migrateMessages("Your HP is "+repr(defender.HP))
     #Fill in AI logic here to pick an attack, for now Math.random
     #return AvalAttacks(random.randrange((len(AvalAttacks)-1)))
@@ -1219,10 +1241,10 @@ class BattleEngine:
           msg5='circle'
 
     else: 
-      print("Easy Mode")
-      self.playerTurn=True
-      #for enemy in self.enemies:
-      #  self.GenerateEnemyAttack(enemy)
+      #print("Easy Mode")
+      #self.playerTurn=True
+      for enemy in self.enemies:
+        self.GenerateEnemyAttack(enemy)
       #if enemy turn, randomly select enemy attack using GenerateEnemeyAttack() and attack
 
     #Run a check to see if battle is over
@@ -1556,11 +1578,6 @@ def updateTraversal(event,player,screen):
       elif newKey=='[3]':
         ##x
         player.migrateMessages('x')
-        #player.traversal=False
-        #player.battle=True
-        #enemyList=[Enemy()]
-        #player.curBattle=BattleEngine(player,enemyList)
-
 
       elif newKey=='[4]' or newKey=='left':
         player.migrateMessages(checkDoor('left',player,screen))
@@ -1622,27 +1639,28 @@ def updateWaiting(event,player):
   enemyList=[]
   player.traversal=False
   player.waiting=False
-  if  player.currentRoom.en1=='1':
-    en=Enemy()
+  if  not int(player.currentRoom.en1)==0:
+    en=Enemy(player,player.currentRoom.en1)
     en.place=0
-    enemyList.append(Enemy())
-  if  player.currentRoom.en2=='1':
-    en=Enemy()
+    enemyList.append(en)
+  if  not int(player.currentRoom.en2)==0:
+    en=Enemy(player,player.currentRoom.en2)
     en.place=1
-    enemyList.append(Enemy())
-  if  player.currentRoom.en3=='1':
-    en=Enemy()
+    enemyList.append(en)
+  if  not int(player.currentRoom.en3)==0:
+    en=Enemy(player,player.currentRoom.en3)
     en.place=2
-    enemyList.append(Enemy())
-  if  player.currentRoom.en4=='1':
-    en=Enemy()
+    enemyList.append(en)
+  if  not int(player.currentRoom.en4)==0:
+    en=Enemy(player,player.currentRoom.en4)
     en.place=3
-    enemyList.append(Enemy())
-  if len(enemyList)>0:
+    enemyList.append(en)
+  if len(enemyList)>0:   
     player.migrateMessages('initiating battle...')
     player.traversal=False
     player.curBattle=BattleEngine(player,enemyList)
-
+  if player.currentRoom.transport==True:
+    player.nextDungeon()
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
 
