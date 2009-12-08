@@ -1,4 +1,4 @@
-import pippy, pygame, sys, math
+mport pippy, pygame, sys, math
 from pygame.locals import *
 from random import *
 import os.path
@@ -11,7 +11,7 @@ IMG_PATH = os.path.dirname(__file__) + "/images/"
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
-  #######################################################################3
+  #######################################################################
 
 class Dungeon:
   def __init__(self,sizeX=5,sizeY=5,fileName="dungeon2.txt"):
@@ -185,7 +185,7 @@ class Menu:
         self.background.rect=pygame.Rect(0,0,1290,900)
         self.optionsImages=[]
         self.numPad=False
-
+        self.name=name
         i=0
         for name in optionImageFiles:
             sprite=pygame.sprite.Sprite()
@@ -202,14 +202,13 @@ class Menu:
         bgGroup.draw(screen)
         i=0
         sel=0
-        if self.numPad==False:
+        if self.numPad==False and not self.name=="Stats":
           for image in self.optionsImages:
               if i==self.currentOption:
                 image.rect=pygame.Rect(xStart+30,yStart+(i*height),1290,height)
 
               else:
                 image.rect=pygame.Rect(xStart,yStart+(i*height),1290,height)
- 
               menuGroup.add(image)
               i+=1
         elif self.numPad==True:
@@ -217,6 +216,10 @@ class Menu:
             if i==3:
               i=0
               yStart+=height
+            if self.options[sel]=="Enter Answer":
+              yStart+=height
+              height*=3
+              i=0
             image.rect=pygame.Rect(xStart+(i*height),yStart,height,height)
             menuGroup.add(image)
             if sel==self.currentOption:
@@ -228,7 +231,56 @@ class Menu:
               screen.fill((50,50,255),fillRect,0)
             i+=1
             sel+=1
-            
+          
+        if self.name=="Stats":
+          #add screen-sized image with transparency
+          bgGroup.empty()
+          screen.fill((250,250,50),pygame.Rect(200,0,800,900))
+          screen.fill((0,0,0),pygame.Rect(200,0,250,250))
+          font=pygame.font.Font(None,42)
+          hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
+          hpRect=pygame.Rect(210,320,200,42)
+          screen.blit(hp,hpRect)
+          att=font.render("Attack: "+repr(player.battlePlayer.ATT),True,(0,0,0))
+          attRect=pygame.Rect(210,370,200,42)
+          screen.blit(att,attRect)
+          defense=font.render("Defense: "+repr(player.battlePlayer.DEF),True,(0,0,0))
+          defenseRect=pygame.Rect(210,420,200,42)
+          screen.blit(defense,defenseRect)
+          #define rectangles
+          weaponRect=pygame.Rect(470,20,200,42)
+          self.optionsImages[0].rect=weaponRect
+          armorRect=pygame.Rect(470,70,200,42)
+          self.optionsImages[1].rect=armorRect
+          accessoryRect=pygame.Rect(470,120,200,42)
+          self.optionsImages[2].rect=accessoryRect
+          itemRect=pygame.Rect(500,220,200,42)
+          self.optionsImages[3].rect=itemRect
+          item2Rect=pygame.Rect(500,270,200,42)
+          self.optionsImages[4].rect=item2Rect
+          item3Rect=pygame.Rect(500,320,200,42)
+          self.optionsImages[5].rect=item3Rect
+          item4Rect=pygame.Rect(500,370,200,42)
+          self.optionsImages[6].rect=item4Rect
+          self.optionsImages[self.currentOption].rect.left+=10
+          #draw buttons
+          bgButtonGroup=pygame.sprite.Group(self.optionsImages)
+          bgButtonGroup.draw(screen)
+	  #draw dynamic text
+          weapon=font.render(player.battlePlayer.weapon.name,True,(0,0,0))
+          screen.blit(weapon,weaponRect)
+          armor=font.render(player.battlePlayer.armor.name,True,(0,0,0))
+          screen.blit(armor,armorRect)
+          accessory=font.render(player.battlePlayer.accessory.name,True,(0,0,0))
+          screen.blit(accessory,accessoryRect)
+          item1=font.render(player.battlePlayer.eqItem[0].name,True,(0,0,0))
+          screen.blit(item1,itemRect)
+          item2=font.render(player.battlePlayer.eqItem[1].name,True,(0,0,0))
+          screen.blit(item2,item2Rect)
+          item3=font.render(player.battlePlayer.eqItem[2].name,True,(0,0,0))
+          screen.blit(item3,item3Rect)
+          item4=font.render(player.battlePlayer.eqItem[3].name,True,(0,0,0))
+          screen.blit(item4,item4Rect)
 
         menuGroup.draw(screen)
 
@@ -257,9 +309,13 @@ class Menu:
             self.updateByName(self.options[self.currentOption],player,screen)
 
     def regress(self,player):
-        temp=player.currentMenu
-        player.currentMenu=player.previousMenu
-        player.previousMenu=temp
+        if self.name=="Stats":
+          player.mainMenu=False
+          player.traversal=True
+        else:
+          temp=player.currentMenu
+          player.currentMenu=player.previousMenu
+          player.previousMenu=temp
 
     def updateByName(self,name,player,screen):
         if name=="New Game":
@@ -292,6 +348,8 @@ class Menu:
               player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="0" or name=="1"or name=="2" or name=="3" or name=="4" or name=="5" or name=="6" or name=="7"or name=="8"or name=="9":
           player.battlePlayer.currentInput+=name
+        elif name=="Clear":
+          player.battlePlayer.currentInput=""
         elif name=="Enter Answer":
           if not player.battlePlayer.currentInput =="":
             if player.battlePlayer.currentAnswer==int(player.battlePlayer.currentInput):
@@ -324,8 +382,16 @@ class Menu:
 	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4":
 	  player.curBattle.checkGlyph(name)
         elif name=="Use Item":
-          player.curBattle.doNothing()
-
+          player.currentMenu=player.curBattle.itemMenu
+        elif name=="Item1" or name=="Item2" or name=="Item3" or name=="Item4":
+          index=int(repr(name)[5])-1
+          if index<len(player.battlePlayer.eqItem):
+            player.curBattle.useItem(player.battlePlayer.eqItem[int(repr(name)[5])-1])
+          else:
+            player.currentMenu=player.curBattle.battleMenu
+	  #if we decide to add puzzle/minigame items, here's where they'd go
+        elif name=="Weapon" or name=="Armor" or name=="Accessory" or name=="ItemSlot1" or name=="ItemSlot2" or name=="ItemSlot3" or name=="ItemSlot4":
+          player.currentMenu=player.statsMenu
 	else:
 	    sys.exit()
 
@@ -397,7 +463,7 @@ class Player:
     self.traversal=False
     self.waiting=False
     self.battle=False
-    self.statMenu=False
+    #self.statMenu=False
 
     self.msg1=""
     self.msg2=""
@@ -417,9 +483,18 @@ class Player:
   def initializeMenu(self):
     mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
     self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH+"TitleImage.gif",mainMenuImages,"Main Menu")
+    
+    statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
+    statMenuImages=[IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif"]
+    self.statsMenu=Menu(statMenuOptions,self,IMG_PATH+"battleMenubackground.gif",statMenuImages,"Stats")
+
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
 
+ # def createInventoryMenu(self):
+  #  inventoryMenuOptions=[]
+  #  for item in self.battlePlayer.int_Ar:
+    
   def loadTutorial(self):
     tutorialImages=[IMG_PATH+"t1.gif",IMG_PATH+"t2.gif",IMG_PATH+"t3.gif"]
     self.tutorial=Tutorial(tutorialImages)
@@ -485,6 +560,23 @@ class Player:
     self.dgnMap=Map(self.dgn)
     self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
 
+#################################################################################
+#Item class: stores info about items
+#################################################################################
+class Item:
+  def __init__(self,player,name,typ):
+    self.name=name
+    self.type=typ
+    self.power=0
+    
+    if self.name=="Potion":
+      self.power=20
+    elif self.name=="Sword":
+      self.power=25
+    elif self.name=="Vest":
+      self.power=10
+    elif self.name=="Ring":
+      self.power=5
 #######################################################################
 
 #Hero class - represents the player in battle and holds all of their data
@@ -501,14 +593,33 @@ class Hero:
 	self.BAE	= 0		#bonus attack power (from equipment)
 	self.DEF	= 1		#base defense power
 	self.BDE	= 0		#bonus defense  power(from equipment)
-	self.eqItems_Ar	= []	#equipped items
-	self.inv_Ar 	= []	#inventory
-	self.attacks_Ar = []	#associated array for attack string names and attack power values
-	self.attacks_Ar = []
+
+	self.weapon=Item(player,"","")
+	self.armor=Item(player,"","")
+	self.accessory=Item(player,"","")
+        self.eqItem=[]			#player can equip up to 4 usable items to use in battle
+	self.inv_Ar 	= []		#inventory
+	self.attacks_Ar = []		#associated array for attack string names and attack power values
         self.currentInput=""
         self.currentProb1=0
         self.currentProb2=0
         self.currentAnswer=0
+
+        basicSword=Item(player,"Sword","Weapon")
+        basicArmor=Item(player,"Vest","Armor")
+        potion=Item(player,"Potion","Usable")
+        grenade=Item(player,"Grenade","Usable")
+        basicRing=Item(player,"Ring","Accessory")
+
+        self.equip(basicSword)
+        self.equip(basicArmor)
+        self.equip(basicRing)
+        self.equip(potion)
+        self.equip(grenade)
+        self.equip(grenade)
+        self.equip(potion)
+        self.inv_Ar=[basicSword,basicArmor,potion,basicRing]
+
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
   def maxHealthPoints(self):
@@ -523,7 +634,7 @@ class Hero:
     if name=="basic":
       return self.ATT+self.BAE
     elif name=="critical":
-      return self.ATT+self.BAB
+      return self.ATT+self.BAE+self.BAB
     elif name=="Fire":
       return self.ATT+self.BAB
     elif name=="Heal":
@@ -577,7 +688,8 @@ class Hero:
   #player is attacked by given damage
   def defendAttack(self,dmg):
     self.HP -= (dmg - self.defensePower())
-
+    if self.HP<0:
+      self.HP=0
 #****BATTLE ACCESSORS***********************************************#
   #returns player's list of attacks that are currently available for use
   def availableAttacks(self):
@@ -586,36 +698,47 @@ class Hero:
 
 #****INVENTORY MUTATORS********************************************#
   #add item to equipment
-  def addEquipment(self,_item):
+  def equip(self,item):
     #add  _item to equipment
-
-    if _item.getType() is "WEAPON":
-      eqItem_Ar[0] = _item
-
-    elif _item.getType() is "ARMOR":
-      eqItem_Ar[1] = _item
-
+    if item.type=="Weapon":
+      self.weapon=item
+      self.BAE=item.power
+    elif item.type=="Armor":
+      self.armor=item
+      self.BDE=item.power
+    elif item.type=="Accessory":
+      self.accessory=item
+      self.BHP=item.power
     else:
-      for i in range(2,5):
-        print(i)  # go through the rest of the equipped items, trade out values
-		#look through last 4 slots, find empty cell and add. Otherwise you must unequip an item first to have an empty cell
-
-		#alternative
-
-		#depending on item type - only give access to certain cells. So, if item is WEAP, only allow equip on slot 0, if item is ARM, only allow equip on slot1, if item is ITEM, only allow equip on slots2-5, whatever slot is picked -trade values (unequip item and equip new)
+      if len(self.eqItem)<4:
+        self.eqItem.append(item)
+      else:
+        self.eqItem.remove(0)
+        self.eqip(item)
 
   #remove item from equipment
-  def remEquipment(self,_item):
-    print("equipement removed")
+  def remEquipment(self,item):
+    if item.type=="Weapon":
+      self.weapon=0
+      self.BAE=0
+    elif item.type=="Armor":
+      self.armor=0
+      self.BDE=0
+    elif item.type=="Accessory":
+      self.accessory=0
+      self.BHP=0
+    else:
+      if self.eqItem.has(item):
+        self.eqItem.remove(item)
     #remove _item from equipment -- leave cell empty
 
   #add item to inventory
-  def addInventory(self,_item):
-    print("item added")
+  def addInventory(self,item):
+    self.inv_Ar.append(item)
     #add _item to end of inventory
 
-  def remInventory(self,_item):
-    print("item dropped")
+  def remInventory(self,item):
+    self.inv_Ar.remove(item)
     #remove _item from inventory
 #end class Hero
 
@@ -646,6 +769,14 @@ class Enemy:
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
           self.HP=20
           self.ATT=40
+        elif self.name=="Goblin":
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
+          self.HP=40
+          self.ATT=10
+        elif self.name=="Orc":
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          self.HP=60
+          self.ATT=35
         else:
           self.sprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
         self.sprite.rect=(200,200,50,300) 
@@ -705,6 +836,8 @@ class Enemy:
   #enemy is attacked by given damage
   def defendAttack(self,dmg):
     self.HP -= (dmg - self.defensePower())
+    if self.HP<0:
+      self.HP=0
 
 #****BATTLE ACCESSORS***********************************************#
   #returns player's list of attacks that are currently available for use
@@ -814,11 +947,11 @@ class BattleEngine:
     self.battleMenu.background.rect=(200,580,200,200)
     self.battleMenu.size=4
 
-    numOptArr = ["1","2","3","4","5","6","7","8","9","0","Enter Answer"]
+    numOptArr = ["1","2","3","4","5","6","7","8","9","0","Clear","Enter Answer"]
     numBG=IMG_PATH+"numPadbackground.gif"
-    numOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"EnterAnswer.gif"]
+    numOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"Clear.gif",IMG_PATH+"Enter.gif"]
     self.numPadMenu=Menu(numOptArr,player,numBG,numOptImg,"Number Pad")
-    self.numPadMenu.background.rect=(200,580,200,200)
+    self.numPadMenu.background.rect=(800,500,200,200)
     self.numPadMenu.numPad=True
 
     magicOptions=["Fire","Lightning","Missile","Heal"]
@@ -832,6 +965,13 @@ class BattleEngine:
     divisionOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
     self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
     self.divisionMenu.background.rect=(200,580,200,200) 
+
+    itemOptions=["Item1","Item2","Item3","Item4"]
+    itemBackground=IMG_PATH+"battleMenubackground.gif"
+    itemOptImg=[IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif"]
+    
+    self.itemMenu=Menu(itemOptions,player,itemBackground,itemOptImg,"Item")
+    self.itemMenu.background.rect=(200,550,200,200)
 
     self.player.currentMenu=self.battleMenu
     self.player.previousMenu=self.numPadMenu
@@ -859,14 +999,24 @@ class BattleEngine:
 
     #draw player
     if player.currentMenu.numPad==False:
-      player.currentMenu.draw(player,screen,200,580,45)
+      player.currentMenu.draw(player,screen,200,500,45)
+      if player.currentMenu.name=="Item":
+        i=0
+        for image in player.currentMenu.optionsImages:
+          if i<len(player.battlePlayer.eqItem):
+            font = pygame.font.Font(None, 36)
+            t=font.render(player.battlePlayer.eqItem[i].name,True,(255,255,255))
+            screen.blit(t,image.rect) 
+            i+=1     
     else:
-      player.currentMenu.draw(player,screen,200,580,23)
+      player.currentMenu.draw(player,screen,700,500,40)
       if not player.battlePlayer.currentProb1=="":
+        font = pygame.font.Font(None, 36)
         probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
         inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
-        screen.blit(probText,pygame.Rect(200,500,200,30))
-        screen.blit(inputText,pygame.Rect(200,550,200,30))
+        screen.blit(probText,pygame.Rect(700,450,200,30))
+        screen.blit(inputText,pygame.Rect(700,480,200,30))
+      
       screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
     pygame.display.flip()
 
@@ -909,14 +1059,16 @@ class BattleEngine:
     defender=self.enemies[self.selEnemyIndex]
     if attackName=="Heal":
       defender=attacker
+      player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
+    else:
+      player.migrateMessages("You attack for "+repr(int(attacker.attackPower(attackName)))+" damage")
+      player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
+
     defender.defendAttack(attacker.attackPower(attackName))
-
-    player.migrateMessages("You attack for "+repr(attacker.attackPower(attackName))+" damage")
-    player.migrateMessages("Enemy HP is "+repr(defender.HP))
-
     self.playerTurn=False
     self.CheckEndBattle()
     player.currentMenu=self.battleMenu
+
   def critical(self,player):
     pygame.time.set_timer(USEREVENT+1,500)
     player.battlePlayer.currentInput=""
@@ -1045,6 +1197,20 @@ class BattleEngine:
         self.glyphOverlayGroup.add(self.lightning4)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
 	  self.attack(self.player.battlePlayer,"Lightning")
+
+  ###
+  #uses an item in the player's equipped item list
+  ###
+  def useItem(self,item):
+    if item.name=="Potion":
+      self.attack(self.player.battlePlayer,"Heal")
+      
+    elif item.name=="Grenade":
+      self.attack(self.player.battlePlayer,"Fire")
+    else:
+      self.doNothing()
+    self.player.battlePlayer.eqItem.remove(item)
+
   def decrementBonus(self):
     self.timeBonus-=.05
     if self.timeBonus==0:
@@ -1156,7 +1322,7 @@ class BattleEngine:
   #Checks if the battle is over
   ###
   def CheckEndBattle(self):
-    if player.battlePlayer.HP < 0:
+    if player.battlePlayer.HP <= 0:
       self.Defeat()
 
     else:
@@ -1250,16 +1416,6 @@ class BattleEngine:
     #Run a check to see if battle is over
     self.CheckEndBattle()
 
-  ###
-  # Uses an item
-  ###
-  def useItem(self,inventoryID):
-		#Access players inventory and use the selected item
-		#Add Health or do damage according to the items description
-		#Delete Item From Inventory
-		#Resume
-    self.Run()
-
 #############################################################################
 #End External Classes
 ######################################################################
@@ -1292,7 +1448,7 @@ player.traversal=False
 player.waiting=False
 player.battle=False
 player.mainMenu=True
-player.statMenu=False
+#player.statMenu=False
 
 # Font.render draws text onto a new surface.
 #
@@ -1575,9 +1731,12 @@ def updateTraversal(event,player,screen):
       elif newKey=='[2]':
         player.migrateMessages(checkDoor('down',player,screen))
 
-      elif newKey=='[3]':
+      elif newKey=='[3]' or newKey=='space':
         ##x
-        player.migrateMessages('x')
+        player.traversal=False
+        player.mainMenu=True
+        player.currentMenu=player.statsMenu
+        player.previousMenu=player.statsMenu
 
       elif newKey=='[4]' or newKey=='left':
         player.migrateMessages(checkDoor('left',player,screen))
@@ -1693,10 +1852,10 @@ while pippy.pygame.next_frame():
         #################UPDATE##############################
         updateTraversal(event,player,screen)
 
-    elif player.statMenu:
+    #elif player.statMenu:
       ##stat menu processes
       #updateStatMenu
-      print(player.stat)
+     # print(player.stat)
 
     elif player.battle:
       ##battle processes
@@ -1733,8 +1892,8 @@ while pippy.pygame.next_frame():
         drawWaiting(player,screen)
       else:
         drawTraversal(player,screen)
-    elif player.statMenu:
-      drawStatMenu(player,screen)
+    #elif player.statMenu:
+    #  drawStatMenu(player,screen)
     elif player.battle:
       player.curBattle.draw(player,screen)
     elif player.inTutorial:
