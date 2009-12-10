@@ -1,4 +1,4 @@
-mport pippy, pygame, sys, math
+import pippy, pygame, sys, math
 from pygame.locals import *
 from random import *
 import os.path
