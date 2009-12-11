@@ -1,4 +1,4 @@
-import pippy, pygame, sys, math
+mport pippy, pygame, sys, math
 from pygame.locals import *
 from random import *
 import os.path
@@ -18,6 +18,7 @@ class Dungeon:
     self.sizeX=sizeX
     self.sizeY=sizeY
     self.fileName=fileName
+    self.start=(0,0)
     self.types=["none","Wizard","Goblin","Gru","Eye","Octopus"]
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
@@ -27,26 +28,30 @@ class Dungeon:
     dgnFile=open(self.fileName,'r')
     currentX=0
     currentY=0
+    ###ENUM###
+    NONE=-1
+    PUZZLE=0
+    LOCKED=1
+    BOTH=2
+    UNLOCKED=3
+    EXIT=4
+    ENTRANCE=5
+    SHOP=6
+    PUZZLEROOM=7
+    HIDDEN=8
     for line in dgnFile:
       ###print line for testing###
 
       ###initialize room variables###
       doorN=False
-      doorNLock=False
-      doorNPuzzle=False
+      doorNFlag=NONE
       doorS=False
-      doorSLock=False
-      doorSPuzzle=False
+      doorSFlag=NONE
       doorE=False
-      doorELock=False
-      doorEPuzzle=False
+      doorEFlag=NONE
       doorW=False
-      doorWLock=False
-      doorWPuzzle=False
-      shop=False
-      puzzle=False
-      event=None
-      transport=False
+      doorWFlag=NONE
+      roomFlag=NONE
       en1=0
       en2=0
       en3=0
@@ -65,46 +70,79 @@ class Dungeon:
 
       if line[0]=='N':
         doorN=True
-      elif line[1]=='L':
-        doorNLocked=True
-      elif line[1]=='P':
-        doorNPuzzle=True
+        if line[1]=='l':
+          doorNFlag=LOCKED
+        elif line[1]=='p':
+          doorNFlag=PUZZLE
+        elif line[1]=='b':
+          doorNFlag=BOTH
+        elif line[1]=='u':
+          doorNFlag=UNLOCKED
+        elif line[1]=='e':
+          doorNFlag=ENTRANCE
+        elif line[1]=='x':
+          doorNFlag=EXIT
 
       if line[2]=='S':
         doorS=True
-      elif line[3]=='L':
-        doorSLocked=True
-      elif line[3]=='P':
-        doorSPuzzle=True
+        if line[3]=='l':
+          doorSFlag=LOCKED
+        elif line[3]=='p':
+          doorSFlag=PUZZLE
+        elif line[3]=='b':
+          doorSFlag=BOTH
+        elif line[3]=='u':
+          doorSFlag=UNLOCKED
+        elif line[3]=='e':
+          doorSFlag=ENTRANCE
+        elif line[3]=='x':
+          doorSFlag=EXIT
 
-      if line[4]=='E':
-        doorE=True
-      elif line[5]=='L':
-        doorELocked=True
-      elif line[5]=='P':
-        doorEPuzzle=True
-
-      if line[6]=='W':
+      if line[4]=='W':
         doorW=True
-      elif line[7]=='L':
-        doorWLocked=True
-      elif line[7]=='P':
-        doorWPuzzle=True
+        if line[5]=='l':
+          doorWFlag=LOCKED
+        elif line[5]=='p':
+          doorWFlag=PUZZLE
+        elif line[5]=='b':
+          doorWFlag=BOTH
+        elif line[5]=='u':
+          doorWFlag=UNLOCKED
+        elif line[5]=='e':
+          doorWFlag=ENTRANCE
+        elif line[5]=='x':
+          doorWFlag=EXIT
 
-      if line[8]=='S':
-        shop=True
-      elif line[8]=='T':
-        transport=True
+      if line[6]=='E':
+        doorE=True
+        if line[7]=='l':
+          doorEFlag=LOCKED
+        elif line[7]=='p':
+          doorEFlag=PUZZLE
+        elif line[7]=='b':
+          doorEFlag=BOTH
+        elif line[7]=='u':
+          doorEFlag=UNLOCKED
+        elif line[7]=='e':
+          doorEFlag=ENTRANCE
+        elif line[7]=='x':
+          doorEFlag=EXIT
+
+      if line[8]=='M':
+        roomFlag=SHOP
       elif line[8]=='P':
-        puzzle=True
-      elif line[8]=='_':
-        event=None
+        roomFlag=PUZZLE
+      elif line[14]=='h':
+        roomFlag=HIDDEN
       else:
         event=int(line[8])
 
-      rm=Room(doorN,doorNLock,doorNPuzzle,doorS,doorSLock,doorSPuzzle,doorE,doorELock,doorEPuzzle,doorW,doorWLock,doorWPuzzle,shop,puzzle,event,line[9],line[10],line[11],line[12],line[13],line[14],line[15],line[16])
+      rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
 
-      rm.transport=transport
+      #if doorSFlag==ENTRANCE or doorNFlag==ENTRANCE or doorWFlag==ENTRANCE or doorEFlag==ENTRANCE:
+      #  self.start=(currentX,currentY)
+      #rm.transport=transport
+      self.start=[1,4]
       
       self.rooms[(currentX,currentY)]=rm
       ###update position in array###
@@ -122,25 +160,22 @@ class Dungeon:
 #Room class: stores data about a room in the dungeon.  IE doors, enemies, mood etc
 ####################################################################################
 class Room:
-  def __init__(self,doorN,doorNLock,doorNPuzzle,doorS,doorSLock,doorSPuzzle,doorE,doorELock,doorEPuzzle,doorW,doorWLock,doorWPuzzle,shop,puzzle,event,en1,en2,en3,en4,it1,it2,it3,it4):
+  def __init__(self,doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,en1,en2,en3,en4,it1,it2,it3,it4):
     self.doorN=doorN
-    self.doorNLock=doorNLock
-    self.doorNPuzzle=doorNPuzzle
+    self.doorNFlag=doorNFlag
     self.doorS=doorS
-    self.doorSLock=doorSLock
-    self.doorSPuzzle=doorSPuzzle
+    self.doorSFlag=doorSFlag
     self.doorE=doorE
-    self.doorELock=doorELock
-    self.doorEPuzzle=doorEPuzzle
+    self.doorEFlag=doorEFlag
     self.doorW=doorW
-    self.doorWLock=doorWLock
-    self.doorWPuzzle=doorWPuzzle
-    self.shop=shop
-    self.puzzle=puzzle
+    self.doorWFlag=doorWFlag
+    self.roomFlag=roomFlag
+
     self.en1=en1
     self.en2=en2
     self.en3=en3
     self.en4=en4
+
     self.it1=it1
     self.it2=it2
     self.it3=it3
@@ -258,6 +293,7 @@ class Menu:
         bgGroup.draw(screen)
         i=0
         sel=0
+        font=pygame.font.Font(None,42)
         if self.numPad==False and not self.name=="Stats" and not self.name=="Inventory":
           for image in self.optionsImages:
               if i==self.currentOption:
@@ -293,7 +329,6 @@ class Menu:
           bgGroup.empty()
           screen.fill((250,250,50),pygame.Rect(200,0,800,900))
           screen.fill((0,0,0),pygame.Rect(200,0,250,250))
-          font=pygame.font.Font(None,42)
           hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
           hpRect=pygame.Rect(210,320,200,42)
           screen.blit(hp,hpRect)
@@ -385,6 +420,25 @@ class Menu:
               screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX,self.sY+y,200,40))
               y+=40
               sel+=1
+        if self.name=="AttTut":
+          screen.fill((255,255,255),(600,500,200,300))
+          screen.blit(font.render("To perform a basic attack\nselect the attack button",True,(0,200,0)))
+        elif self.name=="CritTut":
+          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((50,255,50),(200,20,400,30))
+          screen.blit(font.render("Sometimes, when performing a\nbasic attack, you will get\na critical hit!\nWhen this happens, you must solve a multiplication\nproblem before the green timer runs out",True,(0,200,0)),(600,500,200,300))
+        elif self.name=="DivTut":
+          screen.fill((255,255,255),(600,500,200,300))
+          screen.blit(font.render("To perform a special attack,\nselect the special button",True,(0,200,0)),(600,500,200,300))
+        elif self.name=="DivTut2":
+          screen.fill((255,255,255),(600,500,200,300))
+          screen.blit(font.render("In special attack, you\ncan select the power of\nmultiple slashes.\nIf this power adds up to one\nthe attack is successful. Otherwise\nit will miss",True,(0,200,0)),(600,500,200,300))
+        elif self.name=="GeomTut":
+          screen.fill((255,255,255),(600,500,200,300))
+          screen.blit(font.render("To cast a magic spell,\nselect the magic button",True,(0,200,0)),(600,500,200,300))
+        elif self.name=="GeomTut2":
+          screen.fill((255,255,255),(600,500,200,300))
+          screen.blit(font.render("When casting magic,\nyou must select pieces\nwhich match parts of the\nglyph on screen",True,(0,200,0)),(600,500,200,300))
         menuGroup.draw(screen)
 
         if player.battle==False:
@@ -502,6 +556,8 @@ class Menu:
         elif name[0:9]=="Equipment":
           player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:10])],self.target)
           player.currentMenu=player.statsMenu
+        elif name=="Wrong":
+          print("Wrong choice")
 	else:
 	    sys.exit()
     def createInventory(self,player,name):
@@ -575,7 +631,7 @@ class Player:
     self.currentX=x
     self.currentY=y
     self.dgnIndex=-1
-    self.dungeons=[("Dungeon.txt",4,5),("dungeon2.txt",5,5)]
+    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",5,5)]
     self.nextDungeon()
     self.battlePlayer=Hero(self)
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
@@ -586,6 +642,7 @@ class Player:
     self.traversal=False
     self.waiting=False
     self.battle=False
+    self.inGameTutorial=False
     #self.statMenu=False
 
     self.msg1=""
@@ -594,11 +651,7 @@ class Player:
     self.msg4=""
     self.msg5=""
 
-    #traversal variables
-    self.currentX=x
-    self.currentY=y
-
-    self.playerFacing=SOUTH
+    self.playerFacing=NORTH
 
     #sound
     self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
@@ -672,16 +725,36 @@ class Player:
     self.msg4=self.msg5
     self.msg5=msg
   def nextDungeon(self):
-    self.currentX=0
-    self.currentY=0
+
     self.dgnIndex+=1
     dgnWidth=self.dungeons[self.dgnIndex][1]
     dgnHeight=self.dungeons[self.dgnIndex][2]
     self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
     self.dgn.fill()
+    self.currentX=self.dgn.start[0]
+    self.currentY=self.dgn.start[1]
     self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
     self.dgnMap=Map(self.dgn)
     self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+  def initInGameBattleTutorial(self):
+    batImages=[IMG_PATH+"attackButton.gif",IMG_PATH+"DivPH.gif",IMG_PATH+"GeomPH.gif",IMG_PATH+"ItemPH.gif"]
+    batBg=IMG_PATH+"battleMenubackground.gif"
+    geomImages=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
+    itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
+    itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
+    geomMenu2Option=[itemMenu,"Wrong","Wrong","Wrong"]
+    geomMenu2=Menu(geomMenu2Option,self,batBg,geomImages,"GeomTut2")
+    geomMenuOption=["Wrong","Wrong",geomMenu2,"Wrong"]
+    geomMenu=Menu(geomMenuOption,self,batBg,batImages,"GeomTut")
+    divMenu2Option=[geomMenu]
+    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"DivPH.gif"],"DivTut2")
+    divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
+    divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
+    critMenuOption=[divMenu]
+    critMenu=Menu(critMenuOption,self,batBg,batImages,"CritTut")
+    atkMenuOption=[critMenu,"Wrong","Wrong","Wrong"]
+    atkMenu=Menu(atkMenuOption,self,batBg,batImages,"AtkTut")
+    self.currentMenu=atkMenu
 
 #################################################################################
 #Item class: stores info about items
@@ -880,10 +953,10 @@ class Hero:
 class Enemy:
   def __init__(self,player,name):
 #****property********value**********************description**********************#
-	self.MHP 	= 40				#maximum health points (base HP)
-	self.HP		= 40				#cur print "Fire"rent health points
+	self.MHP 	= 12				#maximum health points (base HP)
+	self.HP		= 12				#cur print "Fire"rent health points
 	self.BHP 	= 0				#bonus health points (from equipment)
-	self.ATT 	= 10 				#base attack power
+	self.ATT 	= 13 				#base attack power
 	self.BAE	= 0				#bonus attack power (from equipment)
 	self.DEF	= 1				#base defense power
 	self.BDE	= 0				#bonus defense  power(from equipment)
@@ -900,7 +973,7 @@ class Enemy:
         if self.name=="Wizard":
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
           self.HP=20
-          self.ATT=40
+          self.ATT=3
         elif self.name=="Goblin":
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
           self.HP=40
@@ -1641,6 +1714,7 @@ def enterRoom(direction,player,screen):
     player.currentRoomGroup.add(player.currentRoomSprite)
     player.currentRoomGroup.draw(screen)
     player.waiting=True
+
     #player.traversal=False
     #setImage(player)
     return("You enter room at "+repr(player.currentX)+", "+repr(player.currentY))
@@ -1726,6 +1800,18 @@ def checkDoor(direction,player,screen):
     SOUTH=3
     EAST=0
     WEST=2
+
+    NONE=-1
+    PUZZLE=0
+    LOCKED=1
+    BOTH=2
+    UNLOCKED=3
+    EXIT=4
+    ENTRANCE=5
+    SHOP=6
+    PUZZLEROOM=7
+    HIDDEN=8
+
     currentX=player.currentX
     currentY=player.currentY
     playerFacing=player.playerFacing
@@ -1737,28 +1823,40 @@ def checkDoor(direction,player,screen):
     elif direction=='up':
          if playerFacing==NORTH:
             if currentRoom.doorN:
-                return(enterRoom('north',player,screen))
+                if currentRoom.doorNFlag==EXIT:
+                  player.nextDungeon()
+                else:
+                  return(enterRoom('north',player,screen))
 
             else:
                 return("There is no door in front of you")
 
          elif playerFacing==SOUTH:
             if currentRoom.doorS:
-                return(enterRoom('south',player,screen))
+                if currentRoom.doorSFlag==EXIT:
+                  player.nextDungeon()
+                else:
+                  return(enterRoom('south',player,screen))
 
             else:
                 return("There is no door in front of you")
 
          elif playerFacing==EAST:
             if currentRoom.doorE:
-                return(enterRoom('east',player,screen))
+                if currentRoom.doorEFlag==EXIT:
+                  player.nextDungeon()
+                else:
+                  return(enterRoom('east',player,screen))
 
             else:
                 return("There is no door in front of you")
 
          elif playerFacing==WEST:
             if currentRoom.doorW:
-                return(enterRoom('west',player,screen))
+                if currentRoom.doorWFlag==EXIT:
+                  player.nextDungeon()
+                else:
+                  return(enterRoom('west',player,screen))
 
             else:
                 return("There is no door in front of you")
@@ -1953,8 +2051,6 @@ def updateWaiting(event,player):
     player.migrateMessages('initiating battle...')
     player.traversal=False
     player.curBattle=BattleEngine(player,enemyList)
-  if player.currentRoom.transport==True:
-    player.nextDungeon()
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
 
@@ -1976,7 +2072,16 @@ while pippy.pygame.next_frame():
       if player.msg5=='Enemies are present, prepare to fight.':
         player.battle=True
       if player.battle==False:
-        player.traversal=True
+####################################
+###TEST FOR IN GAME TUTORIALS
+####################################
+        if player.currentX==0 and player.currentY==2:
+          player.traversal=False
+          player.battle=True
+          player.curBattle=BattleEngine(player,[Enemy(player,3)])
+          player.initInGameBattleTutorial()
+        else:
+          player.traversal=True
       setImage(player)
     if event.type==QUIT:
       sys.exit()
