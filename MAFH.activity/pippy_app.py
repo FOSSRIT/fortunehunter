@@ -1010,6 +1010,15 @@ class Enemy:
   #returns enemy's current inventory
   def inventory(self):
     return self.inv_Ar
+    
+  #returns player's current attack power
+  def attackPower(self,name):
+    if name=="basic":
+      return self.ATT+self.BAE
+    elif name=="critical":
+      return (self.ATT+self.BAE) * 1.5
+    elif name=="special":
+      return (self.ATT+self.BAE) * 1.3
 
 #****ENEMY MUTATORS************************************************#
   #sets enemy's current health
@@ -1471,19 +1480,30 @@ class BattleEngine:
   # takes in which enemy is attacking.
   ###
   def GenerateEnemyAttack(self,enemy):
-    #AvalAttacks = ListAttacks(enemy)
-    #TODO:  make ListAttacks(enemy) return an array of strings based on enemy.name
-    #       create random int (max of len(listAttacks))
-    #       change line 1093 to enemy.attackPower(listAttacks[randint])
-    #        add statements in enemy.attackPower defining powers of various attacks
+    
+    #determines which attack the enemy should use by finding a random int b/w
+    #1-100 and using that to pick an attack in attackPower. 
+    seed()
+    temp = randint(1,100)
     defender=self.player.battlePlayer
-    defender.defendAttack(enemy.attackPower())
+    
+    if temp < 6:
+      defender.defendAttack(enemy.attackPower("critical"))
+      player.migrateMessages("Enemy critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
+    elif temp > 90:
+      defender.defendAttack(enemy.attackPower("special"))
+      #print special message differently depending on name
+      if enemy.name == "Wizard":
+        player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
+      elif enemy.name == "Goblin" or enemy.name == "Orc":
+        player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+    else:
+      player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower("basic"))+" damage")
+      defender.defendAttack(enemy.attackPower("basic"))
+      
     self.playerTurn=True
-
-    player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower())+" damage")
     player.migrateMessages("Your HP is "+repr(defender.HP))
-    #Fill in AI logic here to pick an attack, for now Math.random
-    #return AvalAttacks(random.randrange((len(AvalAttacks)-1)))
+
 
   ###
   #Called when battle is over and player wins
