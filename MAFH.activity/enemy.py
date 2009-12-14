@@ -3,13 +3,8 @@
 #############################################################
 import pippy, pygame, sys, math
 from player import *
-from hero import *
 from battleEngine import *
-from menu import *
-from dungeon import *
 from map import *
-from room import *
-from tutorial import *
 from item import *
 from pygame.locals import *
 from random import *
@@ -19,10 +14,10 @@ IMG_PATH = os.path.dirname(__file__) + "/images/"
 class Enemy:
   def __init__(self,player,name):
   #****property****value**********************description**********************#
-        self.MHP = 40				#maximum health points (base HP)
-        self.HP	= 40				#cur print "Fire"rent health points
+      self.MHP = 40				#maximum health points (base HP)
+      self.HP	 = 40				#cur print "Fire"rent health points
     	self.BHP = 0				#bonus health points (from equipment)
-    	self.ATT = 10 				#base attack power
+    	self.ATT = 10 			#base attack power
     	self.BAE = 0				#bonus attack power (from equipment)
     	self.DEF = 1				#base defense power
     	self.BDE = 0				#bonus defense  power(from equipment)
@@ -76,6 +71,15 @@ class Enemy:
   #returns enemy's current inventory
   def inventory(self):
     return self.inv_Ar
+    
+  #returns player's current attack power
+  def attackPower(self,name):
+    if name=="basic":
+      return self.ATT+self.BAE
+    elif name=="critical":
+      return (self.ATT+self.BAE) * 1.5
+    elif name=="special":
+      return (self.ATT+self.BAE) * 1.3
 
 #****ENEMY MUTATORS************************************************#
   #sets enemy's current health
@@ -123,9 +127,10 @@ class Enemy:
       #if _item is weapon - add to first slot
       #if _item is armor - add to second slot
       #if _item is consumable - add to slots 3-6
-      #remove item from equipment
-
+  
+  #remove item from equipment
   def remEquipment(self,_item):
     print("remove equip")
     #remove _item from equipment -- leave cell empty
+    
 #end class Enemy

@@ -51,52 +51,49 @@ class BattleEngine:
         self.fire4btn=IMG_PATH+"FireGlyph4btn.gif"
 
         self.lightning=pygame.sprite.Sprite()
-	self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
+	      self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
         self.lightning1btn=IMG_PATH+"LigGlyph1btn.gif"
         self.lightning1=pygame.sprite.Sprite()
-	self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
+	      self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
         self.lightning2btn=IMG_PATH+"LigGlyph2btn.gif"
         self.lightning2=pygame.sprite.Sprite()
-	self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
+	      self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
         self.lightning3btn=IMG_PATH+"LigGlyph3btn.gif"
         self.lightning3=pygame.sprite.Sprite()
-	self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
+	      self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
         self.lightning4btn=IMG_PATH+"LigGlyph4btn.gif"
         self.lightning4=pygame.sprite.Sprite()
-	self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
+	      self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
-	self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
+	      self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
 
         self.heal=pygame.sprite.Sprite()
-	self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
+	      self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
         self.heal1btn=IMG_PATH+"HealGlyph1btn.gif"
         self.heal1=pygame.sprite.Sprite()
-	self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
+	      self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
         self.heal2btn=IMG_PATH+"HealGlyph2btn.gif"
         self.heal2=pygame.sprite.Sprite()
-	self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
+	      self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
         self.heal3btn=IMG_PATH+"HealGlyph3btn.gif"
         self.heal3=pygame.sprite.Sprite()
-	self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
+	      self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
         self.heal4btn=IMG_PATH+"HealGlyph4btn.gif"
         self.heal4=pygame.sprite.Sprite()
-	self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
+	      self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
 
-#	self.halfpie.image=pygame.image.load(IMG_PATH+"12pie.gif")
-#	self.thirdpie.image=pygame.image.load(IMG_PATH+"13pie.gif")
-#	self.quarterpie.image=pygame.image.load(IMG_PATH+"14pie.gif")
-#	self.sixthpie.image=pygame.image.load(IMG_PATH+"16pie.gif")
+
 
         self.halfpie=pygame.sprite.Sprite()
         self.thirdpie=pygame.sprite.Sprite()
         self.quarterpie=pygame.sprite.Sprite()
         self.sixthpie=pygame.sprite.Sprite()
+        self.halfpie.image=pygame.image.load(IMG_PATH+"12pie.gif")
+        self.thirdpie.image=pygame.image.load(IMG_PATH+"13pie.gif")
+        self.quarterpie.image=pygame.image.load(IMG_PATH+"14pie.gif")
+        self.sixthpie.image=pygame.image.load(IMG_PATH+"16pie.gif")
 
-        self.halfpie.image=pygame.image.load(IMG_PATH+"2.gif")
-        self.thirdpie.image=pygame.image.load(IMG_PATH+"3.gif")
-        self.quarterpie.image=pygame.image.load(IMG_PATH+"4.gif")
-        self.sixthpie.image=pygame.image.load(IMG_PATH+"6.gif")
 
 	self.glyphGroup=pygame.sprite.Group()
 	self.glyphOverlayGroup=pygame.sprite.Group()
@@ -427,28 +424,39 @@ class BattleEngine:
   def trackerExpires(self):
     self.maxBonusTime = self.maxBonusTime - 1
 
-  def TimerEpxire(self):
+  def TimerExpire(self):
     print "The bonus time is up"
     #Change timer GUI bar color????
+    
 
   ###
   #Picks an attack for the enemy to perform. 
   # takes in which enemy is attacking.
   ###
   def GenerateEnemyAttack(self,enemy):
-    #AvalAttacks = ListAttacks(enemy)
-    #TODO:  make ListAttacks(enemy) return an array of strings based on enemy.name
-    #       create random int (max of len(listAttacks))
-    #       change line 1093 to enemy.attackPower(listAttacks[randint])
-    #        add statements in enemy.attackPower defining powers of various attacks
+    #determines which attack the enemy should use by finding a random int b/w
+    #1-100 and using that to pick an attack in attackPower. 
+    seed()
+    temp = randint(1,100)
     defender=self.player.battlePlayer
-    defender.defendAttack(enemy.attackPower())
+    
+    if temp < 6:
+      defender.defendAttack(enemy.attackPower("critical"))
+      player.migrateMessages("Enemy critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
+    elif temp > 90:
+      defender.defendAttack(enemy.attackPower("special"))
+      #print special message differently depending on name
+      if enemy.name == "Wizard":
+        player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
+      elif enemy.name == "Goblin" or enemy.name == "Orc":
+        player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+    else:
+      player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower("basic"))+" damage")
+      defender.defendAttack(enemy.attackPower("basic"))
+      
     self.playerTurn=True
-
-    player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower())+" damage")
     player.migrateMessages("Your HP is "+repr(defender.HP))
-    #Fill in AI logic here to pick an attack, for now Math.random
-    #return AvalAttacks(random.randrange((len(AvalAttacks)-1)))
+
 
   ###
   #Called when battle is over and player wins

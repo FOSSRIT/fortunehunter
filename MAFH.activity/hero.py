@@ -4,16 +4,8 @@
 ##########################################################################
 import pippy, pygame, sys, math
 from player import *
-from enemy import *
-from battleEngine import *
-from menu import *
-from dungeon import *
-from map import *
-from room import *
-from tutorial import *
 from item import *
 from pygame.locals import *
-from random import *
 import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
