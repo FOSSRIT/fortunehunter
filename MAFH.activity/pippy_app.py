@@ -132,12 +132,19 @@ class Dungeon:
         roomFlag=SHOP
       elif line[8]=='P':
         roomFlag=PUZZLE
-      elif line[14]=='h':
-        roomFlag=HIDDEN
       else:
         event=int(line[8])
 
       rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
+      
+      if line[14]=='h':
+        rm.it1.hidden=True
+      if line[16]=='h':
+        rm.it2.hidden=True
+      if line[18]=='h':
+        rm.it3.hidden=True
+      if line[20]=='h':
+        rm.it4.hidden=True
 
       if doorSFlag==ENTRANCE or doorNFlag==ENTRANCE or doorWFlag==ENTRANCE or doorEFlag==ENTRANCE:
         self.start=(currentX,currentY)
@@ -180,6 +187,7 @@ class Room:
     self.it2=it2
     self.it3=it3
     self.it4=it4
+    self.fillItems()
     self.image=0
     self.transport=False
   #######To string method########
@@ -191,7 +199,16 @@ class Room:
 
   def setImage(self,imagePath):
     self.image=pygame.image.load(imagePath)
-
+  def fillItems(self):
+    itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Sword","Weapon"),Item("Calculator","Special")]
+    if not int(self.it1)==0:
+      self.it1=itemList[int(self.it1)]
+    if not int(self.it2)==0:
+      self.it2=itemList[int(self.it2)]
+    if not int(self.it3)==0:
+      self.it3=itemList[int(self.it3)]
+    if not int(self.it4)==0:
+      self.it4=itemList[int(self.it4)]
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
 ###############################################################################
@@ -534,7 +551,6 @@ class Menu:
 
             player.traversal=True
             player.mainMenu=False
-
             setImage(player)
             player.battlePlayer=Hero(player)
             player.currentRoomGroup.draw(screen)
@@ -689,6 +705,7 @@ class Player:
     self.battlePlayer=Hero(self)
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
+    self.hpTutorial=False
     self.battleTutorial=False
     self.puzzleTutorial=False
     self.lockTutorial=False
@@ -716,7 +733,7 @@ class Player:
 
   def initializeMenu(self):
     mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
-    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH+"TitleImage.gif",mainMenuImages,"Main Menu")
+    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
     
     statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
     statMenuImages=[IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif"]
@@ -828,15 +845,37 @@ class Player:
       screen.blit(font.render(message,True,(0,200,0)),(400,200+y,200,300))
       y+=40
 
+  def checkRoom(self):
+    message="Your search reveals "
+    found=False
+    if type(self.currentRoom.it1)==type(Item("","")) and self.currentRoom.it1.hidden:
+      self.battlePlayer.inv_Ar.append(self.currentRoom.it1)
+      message+=" "+self.currentRoom.it1.name
+      found=True
+    if type(self.currentRoom.it2)==type(Item("","")) and self.currentRoom.it2.hidden:
+      self.battlePlayer.inv_Ar.append(self.currentRoom.it2)
+      message+=" "+self.currentRoom.it2.name
+      found=True
+    if type(self.currentRoom.it3)==type(Item("","")) and self.currentRoom.it3.hidden:
+      self.battlePlayer.inv_Ar.append(self.currentRoom.it3)
+      message+=" "+self.currentRoom.it3.name
+      found=True
+    if type(self.currentRoom.it4)==type(Item("","")) and self.currentRoom.it4.hidden:
+      self.battlePlayer.inv_Ar.append(self.currentRoom.it4)
+      message+=" "+self.currentRoom.it4.name
+      found=True
+    if found==False:
+      message+="nothing"
+    return(message)
 #################################################################################
 #Item class: stores info about items
 #################################################################################
 class Item:
-  def __init__(self,player,name,typ):
+  def __init__(self,name,typ):
     self.name=name
     self.type=typ
     self.power=0
-    
+    self.hidden=False
     if self.name=="Potion":
       self.power=20
     elif self.name=="Sword":
@@ -862,9 +901,9 @@ class Hero:
 	self.DEF	= 1		#base defense power
 	self.BDE	= 0		#bonus defense  power(from equipment)
 
-	self.weapon=Item(player,"","")
-	self.armor=Item(player,"","")
-	self.accessory=Item(player,"","")
+	self.weapon=Item("","")
+	self.armor=Item("","")
+	self.accessory=Item("","")
         self.eqItem=[]			#player can equip up to 4 usable items to use in battle
 	self.inv_Ar 	= []		#inventory
 	self.attacks_Ar = []		#associated array for attack string names and attack power values
@@ -873,13 +912,13 @@ class Hero:
         self.currentProb2=0
         self.currentAnswer=0
 
-        basicSword=Item(player,"Sword","Weapon")
-        amulet=Item(player,"Amulet","Weapon")
-        basicArmor=Item(player,"Vest","Armor")
-        potion=Item(player,"Potion","Usable")
-        grenade=Item(player,"Grenade","Usable")
-        basicRing=Item(player,"Ring","Accessory")
-        emptyItem=Item(player,"","Usable")
+        basicSword=Item("Sword","Weapon")
+        amulet=Item("Amulet","Weapon")
+        basicArmor=Item("Vest","Armor")
+        potion=Item("Remedy","Usable")
+        grenade=Item("Grenade","Usable")
+        basicRing=Item("Ring","Accessory")
+        emptyItem=Item("","Usable")
         #smallKey=Item(player,"Small Key","key")
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
         self.inv_Ar=[basicSword,amulet,basicArmor,potion,basicRing,grenade,potion]
@@ -1489,7 +1528,7 @@ class BattleEngine:
   #uses an item in the player's equipped item list
   ###
   def useItem(self,item):
-    if item.name=="Potion":
+    if item.name=="Remedy":
       self.attack(self.player.battlePlayer,"Heal")
       
     elif item.name=="Grenade":
@@ -2069,30 +2108,29 @@ def updateTraversal(event,player,screen):
       elif newKey=='[2]':
         player.migrateMessages(checkDoor('down',player,screen))
 
-      elif newKey=='[3]' or newKey=='space':
-        ##x
-        player.traversal=False
-        player.mainMenu=True
-        player.currentMenu=player.statsMenu
-        player.previousMenu=player.statsMenu
+      elif newKey=='[3]' or newKey=='i':
+        player.migrateMessages('information')
 
       elif newKey=='[4]' or newKey=='left':
         player.migrateMessages(checkDoor('left',player,screen))
 
-      elif newKey=='[5]':
-        player.migrateMessages('check')
+      elif newKey=='[5]' or newKey=='e':
+        player.migrateMessages(player.checkRoom())
 
       elif newKey=='[6]' or newKey=='right':
         player.migrateMessages(checkDoor('right',player,screen))
 
-      elif newKey=='[7]':
-        player.migrateMessages('square')
+      elif newKey=='[7]' or newKey=='m':
+        player.migrateMessages('minimap')
 
       elif newKey=='[8]' or newKey=='up':
         player.migrateMessages(checkDoor('up',player,screen))
 
-      elif newKey=='[9]':
-        player.migrateMessages('circle')
+      elif newKey=='[9]' or newKey=='space':
+        player.traversal=False
+        player.mainMenu=True
+        player.currentMenu=player.statsMenu
+        player.previousMenu=player.statsMenu
 
 def updateTutorial(event,player):
     if event.type == QUIT:
@@ -2130,12 +2168,15 @@ def updateTutorial(event,player):
 
       elif newKey=='[9]':
         player.migrateMessages('circle')
-
+#while waiting between rooms...
 def updateWaiting(event,player):
   pygame.time.set_timer(USEREVENT+2,500)
   enemyList=[]
   player.traversal=False
   player.waiting=False
+  ############################
+  #Check enemies in room
+  #####################
   if  not int(player.currentRoom.en1)==0:
     en=Enemy(player,player.currentRoom.en1)
     en.place=0
@@ -2156,6 +2197,25 @@ def updateWaiting(event,player):
     player.migrateMessages('initiating battle...')
     player.traversal=False
     player.curBattle=BattleEngine(player,enemyList)
+  #################
+  #check items in room
+  #################
+  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
+    player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
+    player.currentRoom.it1=0
+  if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
+    player.migrateMessages(player.currentRoom.it2.name+" added to inventory")
+    player.currentRoom.it2=0
+  if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
+    player.migrateMessages(player.currentRoom.it3.name+" added to inventory")
+    player.currentRoom.it3=0
+  if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
+    player.migrateMessages(player.currentRoom.it4.name+" added to inventory")
+    player.currentRoom.it4=0
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
 
@@ -2187,6 +2247,12 @@ while pippy.pygame.next_frame():
           player.initInGameBattleTutorial(screen)
         elif player.currentX==1 and player.currentY==4 and player.movTutorial==False:
           player.initMovTutorial(screen)
+        elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
+          player.battlePlayer.HP-=10
+          player.migrateMessages("You trip on a crack in the floor and lose 10 HP")
+          player.migrateMessages("But you can heal yourself with the remedy that you picked up")
+          player.hpTutorial=True
+          player.traversal=True
         else:
           player.traversal=True
       setImage(player)
@@ -2198,11 +2264,6 @@ while pippy.pygame.next_frame():
       else:
         #################UPDATE##############################
         updateTraversal(event,player,screen)
-
-    #elif player.statMenu:
-      ##stat menu processes
-      #updateStatMenu
-     # print(player.stat)
 
     elif player.battle:
       ##battle processes
@@ -2242,8 +2303,6 @@ while pippy.pygame.next_frame():
         drawWaiting(player,screen)
       else:
         drawTraversal(player,screen)
-    #elif player.statMenu:
-    #  drawStatMenu(player,screen)
     elif player.battle:
       player.curBattle.draw(player,screen)
     elif player.inTutorial:
