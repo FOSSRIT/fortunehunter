@@ -1,53 +1,46 @@
-
-#Hero class - represents the player in battle and holds all of their data
-
-##########################################################################
 import pippy, pygame, sys, math
-from player import *
 from item import *
 from pygame.locals import *
 import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
+
+################################################################################
+#Hero class - represents the player in battle and holds all of their data
+################################################################################
 class Hero:
   def __init__(self,player):
-#****property********value**********************description**********************#
-	self.MHP 	= 40		#maximum health points (base HP)
-	self.HP		= 40		#current health points
-	self.BHP 	= 0		#bonus health points (from equipment)
-	self.ATT 	= 10		#base attack power
-	self.BAB	= 0		#bonus attack power (from battle timer)
-	self.BAE	= 0		#bonus attack power (from equipment)
-	self.DEF	= 1		#base defense power
-	self.BDE	= 0		#bonus defense  power(from equipment)
-	
-	self.divArray = [0,0,0,0]	#Used to tally different amount of fractions used.
+#*property***value**********************description********************#
+  self.MHP   = 40    #maximum health points (base HP)
+  self.HP    = 40    #current health points
+  self.BHP   = 0    #bonus health points (from equipment)
+  self.ATT   = 10    #base attack power
+  self.BAB  = 0    #bonus attack power (from battle timer)
+  self.BAE  = 0    #bonus attack power (from equipment)
+  self.DEF  = 1    #base defense power
+  self.BDE  = 0    #bonus defense  power(from equipment)
 
-	self.weapon=Item(player,"","")
-	self.armor=Item(player,"","")
-	self.accessory=Item(player,"","")
-        self.eqItem=[]			#player can equip up to 4 usable items to use in battle
-	self.inv_Ar 	= []		#inventory
-	self.attacks_Ar = []		#associated array for attack string names and attack power values
-        self.currentInput=""
-        self.currentProb1=0
-        self.currentProb2=0
-        self.currentAnswer=0
+  self.weapon=Item("","")
+  self.armor=Item("","")
+  self.accessory=Item("","")
+  self.eqItem=[]      #player can equip up to 4 usable items to use in battle
+  self.inv_Ar   = []    #inventory
+  self.attacks_Ar = []    #associated array for attack string names and attack power values
+  self.currentInput=""
+  self.currentProb1=0
+  self.currentProb2=0
+  self.currentAnswer=0
 
-        basicSword=Item(player,"Sword","Weapon")
-        basicArmor=Item(player,"Vest","Armor")
-        potion=Item(player,"Potion","Usable")
-        grenade=Item(player,"Grenade","Usable")
-        basicRing=Item(player,"Ring","Accessory")
-
-        self.equip(basicSword)
-        self.equip(basicArmor)
-        self.equip(basicRing)
-        self.equip(potion)
-        self.equip(grenade)
-        self.equip(grenade)
-        self.equip(potion)
-        self.inv_Ar=[basicSword,basicArmor,potion,basicRing]
+  basicSword=Item("Sword","Weapon")
+  amulet=Item("Amulet","Weapon")
+  basicArmor=Item("Vest","Armor")
+  potion=Item("Remedy","Usable")
+  grenade=Item("Grenade","Usable")
+  basicRing=Item("Ring","Accessory")
+  emptyItem=Item("","Usable")
+  #smallKey=Item(player,"Small Key","key")
+  self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
+  self.inv_Ar=[basicSword,amulet,basicArmor,potion,basicRing,grenade,potion]
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -71,8 +64,7 @@ class Hero:
     elif name=="Lightning":
       return self.ATT+self.BAB
     elif name=="Division":
-      x = self.divArray.count(1)
-      return self.ATT*((x/4) + 1)
+      return self.ATT*1.5
     elif name=="Missile":
       return 0
 
@@ -82,7 +74,7 @@ class Hero:
 
   #returns player's equipped items
   def equipment(self):
-    return self.eqItems_Ar	
+    return self.eqItems_Ar  
 
   #returns player's current inventory
   def inventory(self):
@@ -113,7 +105,7 @@ class Hero:
   def giveHealth(self,_inc):
     self.HP += _inc
     if healthPoints() > maxHealthPoints():
-	setHealth(maxHealthPoints())
+      setHealth(maxHealthPoints())
 
   #player is attacked by given damage
   def defendAttack(self,dmg):
@@ -128,23 +120,37 @@ class Hero:
 
 #****INVENTORY MUTATORS********************************************#
   #add item to equipment
-  def equip(self,item):
+  def equip(self,item,target):
     #add  _item to equipment
-    if item.type=="Weapon":
+    if target=="Weapon" and item.type=="Weapon":
+      if not self.weapon.name=="":
+        self.inv_Ar.append(self.weapon)
       self.weapon=item
+      self.inv_Ar.remove(item)
       self.BAE=item.power
-    elif item.type=="Armor":
+    elif target=="Armor" and item.type=="Armor":
+      if not self.armor.name=="":
+        self.inv_Ar.append(self.armor)
       self.armor=item
+      self.inv_Ar.remove(item)
       self.BDE=item.power
-    elif item.type=="Accessory":
+    elif target=="Accessory" and item.type=="Accessory":
+      if not self.accessory.name=="":
+        self.inv_Ar.append(self.accessory)
       self.accessory=item
+      self.inv_Ar.remove(item)
       self.BHP=item.power
-    else:
+    elif target[0:8]=="ItemSlot" and item.type=="Usable":
       if len(self.eqItem)<4:
         self.eqItem.append(item)
       else:
-        self.eqItem.remove(0)
-        self.eqip(item)
+        if not self.eqItem[int(target[8])-1].name=="":
+          self.inv_Ar.append(self.eqItem[int(target[8])-1])
+        self.inv_Ar.remove(item)
+        self.eqItem[int(target[8])-1]=item
+
+
+
 
   #remove item from equipment
   def remEquipment(self,item):
@@ -171,4 +177,3 @@ class Hero:
     self.inv_Ar.remove(item)
     #remove _item from inventory
 #end class Hero
-

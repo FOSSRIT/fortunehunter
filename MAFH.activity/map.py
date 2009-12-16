@@ -1,5 +1,3 @@
-#Map class: stores information about the layout of the dungeon for easy display
-###############################################################################
 import pippy, pygame, sys, math
 from dungeon import *
 from room import *
@@ -8,8 +6,11 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
+###############################################################################
+#Map class: stores information about the layout of the dungeon for easy display
+###############################################################################
 class Map:
-  def __init__(self,dgn):
+  def __init__(self,dgn=Dungeon(0,0,'')):
     self.sizeX=dgn.sizeX
     self.sizeY=dgn.sizeY
     self.rectSizeX=38
@@ -20,27 +21,23 @@ class Map:
 
     for y in range(self.sizeY):
       for x in range(self.sizeX):
-          curRect=pygame.Rect(x*40,y*40,self.rectSizeX,self.rectSizeX)
-          self.rects[(x,y)]=curRect
-          if dgn.rooms.get((x,y)).doorN:
-            self.fullRooms[(x,y)]=True
-            print(repr(x)+", "+repr(y)+" True")
-            self.totalSurface.fill((255,255,255),curRect,0)
-  
-          elif dgn.rooms.get((x,y)).doorS:
-            self.fullRooms[(x,y)]=True
-            print(repr(x)+", "+repr(y)+" True")
-            self.totalSurface.fill((255,255,255),curRect,0)
-  
-          elif dgn.rooms.get((x,y)).doorE:
-            self.fullRooms[(x,y)]=True
-            print(repr(x)+", "+repr(y)+" True")
-            self.totalSurface.fill((255,255,255),curRect,0)
-  
-          elif dgn.rooms.get((x,y)).doorW:
-            self.fullRooms[(x,y)]=True
-            print(repr(x)+", "+repr(y)+" True")
-            self.totalSurface.fill((255,255,255),curRect,0)
+        curRect=pygame.Rect(x*40,y*40,self.rectSizeX,self.rectSizeX)
+        self.rects[(x,y)]=curRect
+        if dgn.rooms.get((x,y)).doorN:
+          self.fullRooms[(x,y)]=True
+          self.totalSurface.fill((255,255,255),curRect,0)
+
+        elif dgn.rooms.get((x,y)).doorS:
+          self.fullRooms[(x,y)]=True
+          self.totalSurface.fill((255,255,255),curRect,0)
+
+        elif dgn.rooms.get((x,y)).doorE:
+          self.fullRooms[(x,y)]=True
+          self.totalSurface.fill((255,255,255),curRect,0)
+
+        elif dgn.rooms.get((x,y)).doorW:
+          self.fullRooms[(x,y)]=True
+          self.totalSurface.fill((255,255,255),curRect,0)
 
   def display(self,player,screen):
     mapView=pygame.transform.chop(self.totalSurface,(0,0,0,0))
@@ -76,5 +73,3 @@ class Map:
     screen.fill(0,(0,700,200,300),0)
     screen.blit(mapView,curSect)
     screen.fill(0,(200,700,1200,300),0)
-        
-

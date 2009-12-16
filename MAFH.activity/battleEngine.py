@@ -1,6 +1,3 @@
-# Battle Engine Class
-
-################################################################
 import pippy, pygame, sys, math
 from player import *
 from hero import *
@@ -17,20 +14,23 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
+################################################################################
+# Begin Battle Engine Class
+################################################################################
 class BattleEngine:
   def __init__(self,player,enemyArr):
-	#Bool if it is the players turn or not
-	self.playerTurn = True
-	#Index that tracks which enemy is up to attack
-	self.enemyTurnIndex = 0
-	###
-	# Basic constructor, takes in the player and a group of enemies
-	###
-	self.player = player
-	self.enemies = enemyArr
-	self.t = 0
-	self.tTracker = 0
-	self.maxBonusTime = 0
+  #Bool if it is the players turn or not
+  self.playerTurn = True
+  #Index that tracks which enemy is up to attack
+  self.enemyTurnIndex = 0
+  ###
+  # Basic constructor, takes in the player and a group of enemies
+  ###
+  self.player = player
+  self.enemies = enemyArr
+  self.t = 0
+  self.tTracker = 0
+  self.maxBonusTime = 0
         self.initializeMenus(player)
         self.selEnemyIndex=0
         self.timeBonus=1
@@ -51,57 +51,45 @@ class BattleEngine:
         self.fire4btn=IMG_PATH+"FireGlyph4btn.gif"
 
         self.lightning=pygame.sprite.Sprite()
-	      self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
+  self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
         self.lightning1btn=IMG_PATH+"LigGlyph1btn.gif"
         self.lightning1=pygame.sprite.Sprite()
-	      self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
+  self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
         self.lightning2btn=IMG_PATH+"LigGlyph2btn.gif"
         self.lightning2=pygame.sprite.Sprite()
-	      self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
+  self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
         self.lightning3btn=IMG_PATH+"LigGlyph3btn.gif"
         self.lightning3=pygame.sprite.Sprite()
-	      self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
+  self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
         self.lightning4btn=IMG_PATH+"LigGlyph4btn.gif"
         self.lightning4=pygame.sprite.Sprite()
-	      self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
+  self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
-	      self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
+  self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
 
         self.heal=pygame.sprite.Sprite()
-	      self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
+  self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
         self.heal1btn=IMG_PATH+"HealGlyph1btn.gif"
         self.heal1=pygame.sprite.Sprite()
-	      self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
+  self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
         self.heal2btn=IMG_PATH+"HealGlyph2btn.gif"
         self.heal2=pygame.sprite.Sprite()
-	      self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
+  self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
         self.heal3btn=IMG_PATH+"HealGlyph3btn.gif"
         self.heal3=pygame.sprite.Sprite()
-	      self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
+  self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
         self.heal4btn=IMG_PATH+"HealGlyph4btn.gif"
         self.heal4=pygame.sprite.Sprite()
-	      self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
+  self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
 
-
-
-        self.halfpie=pygame.sprite.Sprite()
-        self.thirdpie=pygame.sprite.Sprite()
-        self.quarterpie=pygame.sprite.Sprite()
-        self.sixthpie=pygame.sprite.Sprite()
-        self.halfpie.image=pygame.image.load(IMG_PATH+"12pie.gif")
-        self.thirdpie.image=pygame.image.load(IMG_PATH+"13pie.gif")
-        self.quarterpie.image=pygame.image.load(IMG_PATH+"14pie.gif")
-        self.sixthpie.image=pygame.image.load(IMG_PATH+"16pie.gif")
-
-
-	self.glyphGroup=pygame.sprite.Group()
-	self.glyphOverlayGroup=pygame.sprite.Group()
+  self.glyphGroup=pygame.sprite.Group()
+  self.glyphOverlayGroup=pygame.sprite.Group()
         i=0
-	for enemy in self.enemies:
+  for enemy in self.enemies:
           enemy.place=i
           i+=1
-	self.player.msg5= "Enemies are present, prepare to fight."
+  self.player.msg5= "Enemies are present, prepare to fight."
 
   def initializeMenus(self,player):
 
@@ -128,8 +116,7 @@ class BattleEngine:
 
     divisionOptions=["1/2","1/3","1/4","1/6"]
     divisionBackground=IMG_PATH+"battleMenubackground.gif"
-    # divisionOptImg=[IMG_PATH+"12button.gif",IMG_PATH+"13button.gif",IMG_PATH+"14button.gif",IMG_PATH+"16button.gif"]
-    divisionOptImg=[IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"6.gif"]
+    divisionOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
     self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
     self.divisionMenu.background.rect=(200,580,200,200) 
 
@@ -176,7 +163,7 @@ class BattleEngine:
             screen.blit(t,image.rect) 
             i+=1     
     else:
-      player.currentMenu.draw(player,screen,700,500,40)
+      player.currentMenu.draw(player,screen,200,500,40)
       if not player.battlePlayer.currentProb1=="":
         font = pygame.font.Font(None, 36)
         probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
@@ -195,6 +182,7 @@ class BattleEngine:
   ###
   def doNothing(self):
     self.playerTurn=False
+    self.player.currentMenu=self.battleMenu
 
   def attack(self,attacker,attackName):
     if attackName=="critical":
@@ -276,7 +264,7 @@ class BattleEngine:
       self.glyphGroup.add(self.lightning)
 
     elif name=="Missile":
-	    self.attack(self.player.battlePlayer,"Missile")
+  self.attack(self.player.battlePlayer,"Missile")
     elif name=="Heal":
       shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn),("Not",self.fire1btn)]
       shuffle(shuffle2D)
@@ -297,79 +285,79 @@ class BattleEngine:
         self.glyphOverlayGroup.add(self.fire1)
         #check if glyph is complete
         if self.glyphOverlayGroup.has([self.fire1,self.fire2,self.fire3,self.fire4])==True:
-	  self.attack(self.player.battlePlayer,"Fire")
+    self.attack(self.player.battlePlayer,"Fire")
     elif name=="Fire2":
       if self.glyphOverlayGroup.has(self.fire2)==False:
-	self.fire2.rect=self.fire.rect
+  self.fire2.rect=self.fire.rect
         self.glyphOverlayGroup.add(self.fire2)
         if self.glyphOverlayGroup.has([self.fire1,self.fire2,self.fire3,self.fire4])==True:
-	  self.attack(self.player.battlePlayer,"Fire")
+    self.attack(self.player.battlePlayer,"Fire")
     elif name=="Fire3":
       if self.glyphOverlayGroup.has(self.fire3)==False:
-	self.fire3.rect=self.fire.rect
+  self.fire3.rect=self.fire.rect
         self.glyphOverlayGroup.add(self.fire3)
         if self.glyphOverlayGroup.has([self.fire2,self.fire1,self.fire3,self.fire4])==True:
-	  self.attack(self.player.battlePlayer,"Fire")
+    self.attack(self.player.battlePlayer,"Fire")
     elif name=="Fire4":
       if self.glyphOverlayGroup.has(self.fire4)==False:
-	self.fire4.rect=self.fire.rect
+  self.fire4.rect=self.fire.rect
         self.glyphOverlayGroup.add(self.fire4)
         if self.glyphOverlayGroup.has([self.fire4,self.fire2,self.fire3,self.fire1])==True:
-	  self.attack(self.player.battlePlayer,"Fire")
+    self.attack(self.player.battlePlayer,"Fire")
     elif name=="Heal1":
       if self.glyphOverlayGroup.has(self.heal1)==False:
-	self.heal1.rect=self.heal.rect
+  self.heal1.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal1)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-	  self.attack(self.player.battlePlayer,"Heal")
+    self.attack(self.player.battlePlayer,"Heal")
     elif name=="Heal2":
       if self.glyphOverlayGroup.has(self.heal2)==False:
-	self.heal2.rect=self.heal.rect
+  self.heal2.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal2)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-	  self.attack(self.player.battlePlayer,"Heal")
+    self.attack(self.player.battlePlayer,"Heal")
     elif name=="Heal3":
       if self.glyphOverlayGroup.has(self.heal3)==False:
-	self.heal3.rect=self.heal.rect
+  self.heal3.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal3)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-	  self.attack(self.player.battlePlayer,"Heal")
+    self.attack(self.player.battlePlayer,"Heal")
     elif name=="Heal4":
       if self.glyphOverlayGroup.has(self.heal4)==False:
-	self.heal4.rect=self.heal.rect
+  self.heal4.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal4)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-	  self.attack(self.player.battlePlayer,"Heal")
+    self.attack(self.player.battlePlayer,"Heal")
     elif name=="Lightning1":
       if self.glyphOverlayGroup.has(self.lightning1)==False:
-	self.lightning1.rect=self.lightning.rect
+  self.lightning1.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning1)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-	  self.attack(self.player.battlePlayer,"Lightning")
+    self.attack(self.player.battlePlayer,"Lightning")
     elif name=="Lightning2":
       if self.glyphOverlayGroup.has(self.lightning2)==False:
-	self.lightning2.rect=self.lightning.rect
+  self.lightning2.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning2)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-	  self.attack(self.player.battlePlayer,"Lightning")
+    self.attack(self.player.battlePlayer,"Lightning")
     elif name=="Lightning3":
       if self.glyphOverlayGroup.has(self.lightning3)==False:
-	self.lightning3.rect=self.lightning.rect
+  self.lightning3.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning3)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-	  self.attack(self.player.battlePlayer,"Lightning")
+    self.attack(self.player.battlePlayer,"Lightning")
     elif name=="Lightning4":
       if self.glyphOverlayGroup.has(self.lightning4)==False:
-	self.lightning4.rect=self.lightning.rect
+  self.lightning4.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning4)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-	  self.attack(self.player.battlePlayer,"Lightning")
+    self.attack(self.player.battlePlayer,"Lightning")
 
   ###
   #uses an item in the player's equipped item list
   ###
   def useItem(self,item):
-    if item.name=="Potion":
+    if item.name=="Remedy":
       self.attack(self.player.battlePlayer,"Heal")
       
     elif item.name=="Grenade":
@@ -397,13 +385,12 @@ class BattleEngine:
     elif player.battlePlayer.fractionSum > 1.01:
       self.player.migrateMessages("Fraction sum incorrect")
       self.playerTurn=False
-      self.player.currentMenu=self.battleMenu	
+      self.player.currentMenu=self.battleMenu  
       self.player.battlePlayer.fractionSum=0
       
 
   def divisionAttack(self):
     self.player.battlePlayer.fractionSum=0
-    self.player.battlePlayer.divArray=[0,0,0,0]
     self.player.currentMenu=self.divisionMenu
   ###
   # Keeps track of the Bonus Timer, 
@@ -417,45 +404,43 @@ class BattleEngine:
     self.maxBonusTime = timeLength
     self.tTracker = Timer(1,trackerExpires)
     #Update GUI Timer Bar
-	
+  
   ###
   # Tracks how long the bonus timer has been running
   ###
   def trackerExpires(self):
     self.maxBonusTime = self.maxBonusTime - 1
 
-  def TimerExpire(self):
+  def TimerEpxire(self):
     print "The bonus time is up"
     #Change timer GUI bar color????
-    
 
   ###
   #Picks an attack for the enemy to perform. 
   # takes in which enemy is attacking.
   ###
   def GenerateEnemyAttack(self,enemy):
+
     #determines which attack the enemy should use by finding a random int b/w
-    #1-100 and using that to pick an attack in attackPower. 
+    #1-100 and using that to pick an attack in attackPower.
     seed()
     temp = randint(1,100)
     defender=self.player.battlePlayer
-    
+
     if temp < 6:
       defender.defendAttack(enemy.attackPower("critical"))
       player.migrateMessages("Enemy critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
     elif temp > 90:
       defender.defendAttack(enemy.attackPower("special"))
-      #print special message differently depending on name
-      if enemy.name == "Wizard":
-        player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
-      elif enemy.name == "Goblin" or enemy.name == "Orc":
-        player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+    #print special message differently depending on name
+    if enemy.name == "Wizard":
+      player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
+    elif enemy.name == "Goblin" or enemy.name == "Orc":
+      player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
     else:
       player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower("basic"))+" damage")
       defender.defendAttack(enemy.attackPower("basic"))
-      
     self.playerTurn=True
-    player.migrateMessages("Your HP is "+repr(defender.HP))
 
 
   ###
@@ -481,7 +466,7 @@ class BattleEngine:
     self.player.battle=False
     self.player.currentMenu=self.player.MainMenu
     self.player.currentMenu.select("up")
-    self.player.mainMenu=True	
+    self.player.mainMenu=True  
     #end the game
   def bringOutYerDead(self,enemies):
     for enemy in enemies:
@@ -505,14 +490,14 @@ class BattleEngine:
       self.Defeat()
 
     else:
-	allDead = True
-	for enem in self.enemies:
-	    if enem.HP > 0:
-	      allDead = False
-	for i in range(3):
+  allDead = True
+  for enem in self.enemies:
+      if enem.HP > 0:
+        allDead = False
+  for i in range(3):
           self.enemies=self.bringOutYerDead(self.enemies)
 
-	if allDead == True:
+  if allDead == True:
           self.Victory()
 
 ###
@@ -594,4 +579,3 @@ class BattleEngine:
 
     #Run a check to see if battle is over
     self.CheckEndBattle()
-
