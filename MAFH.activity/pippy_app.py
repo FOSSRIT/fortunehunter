@@ -682,10 +682,8 @@ class Tutorial:
         pygame.display.flip()
 
 ################################################################################
-
 # Player Class: stores info about the player ie. current position in dungeon etc
-
-#########################################################################
+################################################################################
 class Player:
   ####LOADS EVERYTHING FOR THE GAME####
   def __init__(self,x=0,y=0):
@@ -867,9 +865,9 @@ class Player:
     if found==False:
       message+="nothing"
     return(message)
-#################################################################################
+################################################################################
 #Item class: stores info about items
-#################################################################################
+################################################################################
 class Item:
   def __init__(self,name,typ):
     self.name=name
@@ -884,14 +882,12 @@ class Item:
       self.power=10
     elif self.name=="Ring":
       self.power=5
-#######################################################################
-
+################################################################################
 #Hero class - represents the player in battle and holds all of their data
-
-##########################################################################
+################################################################################
 class Hero:
   def __init__(self,player):
-#****property********value**********************description**********************#
+#*property***value**********************description********************#
 	self.MHP 	= 40		#maximum health points (base HP)
 	self.HP		= 40		#current health points
 	self.BHP 	= 0		#bonus health points (from equipment)
@@ -904,24 +900,24 @@ class Hero:
 	self.weapon=Item("","")
 	self.armor=Item("","")
 	self.accessory=Item("","")
-        self.eqItem=[]			#player can equip up to 4 usable items to use in battle
+  self.eqItem=[]			#player can equip up to 4 usable items to use in battle
 	self.inv_Ar 	= []		#inventory
 	self.attacks_Ar = []		#associated array for attack string names and attack power values
-        self.currentInput=""
-        self.currentProb1=0
-        self.currentProb2=0
-        self.currentAnswer=0
+  self.currentInput=""
+  self.currentProb1=0
+  self.currentProb2=0
+  self.currentAnswer=0
 
-        basicSword=Item("Sword","Weapon")
-        amulet=Item("Amulet","Weapon")
-        basicArmor=Item("Vest","Armor")
-        potion=Item("Remedy","Usable")
-        grenade=Item("Grenade","Usable")
-        basicRing=Item("Ring","Accessory")
-        emptyItem=Item("","Usable")
-        #smallKey=Item(player,"Small Key","key")
-        self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
-        self.inv_Ar=[basicSword,amulet,basicArmor,potion,basicRing,grenade,potion]
+  basicSword=Item("Sword","Weapon")
+  amulet=Item("Amulet","Weapon")
+  basicArmor=Item("Vest","Armor")
+  potion=Item("Remedy","Usable")
+  grenade=Item("Grenade","Usable")
+  basicRing=Item("Ring","Accessory")
+  emptyItem=Item("","Usable")
+  #smallKey=Item(player,"Small Key","key")
+  self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
+  self.inv_Ar=[basicSword,amulet,basicArmor,potion,basicRing,grenade,potion]
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -1059,12 +1055,12 @@ class Hero:
     #remove _item from inventory
 #end class Hero
 
-##############################################################################		
+################################################################################
 #Enemy class - represents an enemy and holds all of its data
-#############################################################
+################################################################################
 class Enemy:
   def __init__(self,player,name):
-#****property********value**********************description**********************#
+#****property**value**********************description********************#
 	self.MHP 	= 12				#maximum health points (base HP)
 	self.HP		= 12				#cur print "Fire"rent health points
 	self.BHP 	= 0				#bonus health points (from equipment)
@@ -1077,26 +1073,26 @@ class Enemy:
 	self.eqItem_Ar = []
 	self.inv_Ar = []
 	self.attacks_Ar = []
-        self.sprite=pygame.sprite.Sprite()
-        self.place=0
-        #load image based on type later
-        self.name=player.dgn.types[int(name)]
-        print(self.name)
-        if self.name=="Wizard":
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
-          self.HP=20
-          self.ATT=3
-        elif self.name=="Goblin":
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
-          self.HP=40
-          self.ATT=10
-        elif self.name=="Orc":
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
-          self.HP=60
-          self.ATT=35
-        else:
-          self.sprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
-        self.sprite.rect=(200,200,50,300) 
+  self.sprite=pygame.sprite.Sprite()
+  self.place=0
+  #load image based on type later
+  self.name=player.dgn.types[int(name)]
+  print(self.name)
+  if self.name=="Wizard":
+    self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
+    self.HP=20
+    self.ATT=3
+  elif self.name=="Goblin":
+    self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
+    self.HP=40
+    self.ATT=10
+  elif self.name=="Orc":
+    self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+    self.HP=60
+    self.ATT=35
+  else:
+    self.sprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
+  self.sprite.rect=(200,200,50,300) 
 
 #****ENEMY ACCESSORS*********************************************#
   #returns enemy's maximum health
@@ -1183,11 +1179,10 @@ class Enemy:
     print("remove equip")
     #remove _item from equipment -- leave cell empty
 #end class Enemy
-###################################################################
 
+################################################################################
 # Begin Battle Engine Class
-
-################################################################
+################################################################################
 class BattleEngine:
   def __init__(self,player,enemyArr):
 	#Bool if it is the players turn or not
