@@ -241,10 +241,24 @@ class Map:
         elif dgn.rooms.get((x,y)).doorW:
           self.fullRooms[(x,y)]=True
           self.totalSurface.fill((255,255,255),curRect,0)
-
+  def drawMacro(self,player,screen):
+    player.currentRoomGroup.draw(screen)
+    #DRAW LEGEND
+    macroMap=pygame.transform.scale(self.totalSurface,(self.sizeX*100,self.sizeY*100))
+    screen.blit(macroMap,(200,0,800,700))
+    pygame.display.flip()
   def display(self,player,screen):
     mapView=pygame.transform.chop(self.totalSurface,(0,0,0,0))
     mapView.fill((255,0,0),(player.currentX*40,player.currentY*40,38,38))
+    self.totalSurface.fill((0,255,0),(player.currentX*40,player.currentY*40,38,38))
+    if player.currentRoom.doorN:
+      self.totalSurface.fill((255,255,0),(player.currentX*40+5,player.currentY*40,30,5))
+    if player.currentRoom.doorS:
+      self.totalSurface.fill((255,255,0),(player.currentX*40+5,player.currentY*40+35,30,5))
+    if player.currentRoom.doorE:
+      self.totalSurface.fill((255,255,0),(player.currentX*40+35,player.currentY*40+5,5,30))
+    if player.currentRoom.doorW:
+      self.totalSurface.fill((255,255,0),(player.currentX*40,player.currentY*40+5,5,30))
     NORTH=1
     SOUTH=3
     EAST=0
@@ -344,30 +358,33 @@ class Menu:
         if self.name=="Stats":
           bgGroup.empty()
           hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
-          hpRect=pygame.Rect(635,415,200,42)
+          hpRect=pygame.Rect(635,425,200,42)
           screen.blit(hp,hpRect)
           att=font.render("ATK: "+repr(player.battlePlayer.attackPower("basic")),True,(0,0,0))
-          attRect=pygame.Rect(635,435,200,42)
+          attRect=pygame.Rect(635,445,200,42)
           screen.blit(att,attRect)
           defense=font.render("DEF: "+repr(player.battlePlayer.defensePower()),True,(0,0,0))
-          defenseRect=pygame.Rect(635,455,200,42)
+          defenseRect=pygame.Rect(635,465,200,42)
           screen.blit(defense,defenseRect)
           #define rectangles
-          weaponRect=pygame.Rect(635,490,200,42)
+          weaponRect=pygame.Rect(635,500,200,42)
           self.optionsImages[0].rect=weaponRect
-          armorRect=pygame.Rect(635,525,200,42)
+          armorRect=pygame.Rect(635,535,200,42)
           self.optionsImages[1].rect=armorRect
-          accessoryRect=pygame.Rect(635,560,200,42)
+          accessoryRect=pygame.Rect(635,570,200,42)
           self.optionsImages[2].rect=accessoryRect
-          itemRect=pygame.Rect(508,415,200,42)
+          itemRect=pygame.Rect(508,435,200,42)
           self.optionsImages[3].rect=itemRect
-          item2Rect=pygame.Rect(508,465,200,42)
+          item2Rect=pygame.Rect(508,475,200,42)
           self.optionsImages[4].rect=item2Rect
-          item3Rect=pygame.Rect(508,505,200,42)
+          item3Rect=pygame.Rect(508,525,200,42)
           self.optionsImages[5].rect=item3Rect
-          item4Rect=pygame.Rect(508,555,200,42)
+          item4Rect=pygame.Rect(508,565,200,42)
           self.optionsImages[6].rect=item4Rect
-          self.optionsImages[self.currentOption].rect.left+=10
+          self.optionsImages[self.currentOption].rect.top-=5
+          self.optionsImages[self.currentOption].rect.width=115
+          self.optionsImages[self.currentOption].rect.height=33
+          screen.fill((125,125,255),self.optionsImages[self.currentOption].rect)
           #draw buttons
           #bgButtonGroup=pygame.sprite.Group(self.optionsImages)
           #bgButtonGroup.draw(screen)
@@ -639,6 +656,7 @@ class Menu:
       self.inventoryMenu=Menu(invOptions,player,IMG_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
       self.inventoryMenu.sX=self.optionsImages[self.currentOption].rect.left+50
       self.inventoryMenu.sY=self.optionsImages[self.currentOption].rect.top
+      self.inventoryMenu.background.rect.top=10
       self.inventoryMenu.target=name
       player.currentMenu=self.inventoryMenu
 
@@ -718,6 +736,7 @@ class Player:
     self.waiting=False
     self.battle=False
     self.inGameTutorial=False
+    self.macroMap=False
     #self.statMenu=False
 
     self.msg1=""
@@ -738,6 +757,7 @@ class Player:
     statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
     statMenuImages=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
     self.statsMenu=Menu(statMenuOptions,self,IMG_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
+    self.statsMenu.background.rect.top=10
 
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
@@ -930,7 +950,7 @@ class Hero:
         emptyItem=Item("","Usable")
         #smallKey=Item(player,"Small Key","key")
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
-        self.inv_Ar=[basicSword,amulet,basicArmor,potion,basicRing,grenade,potion]
+        self.inv_Ar=[basicSword,amulet,basicArmor,basicRing,grenade]
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -1537,13 +1557,14 @@ class BattleEngine:
   ###
   def useItem(self,item):
     if item.name=="Remedy":
-      self.attack(self.player.battlePlayer,"Heal")
-      
+      self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*.05)
     elif item.name=="Grenade":
       self.attack(self.player.battlePlayer,"Fire")
     else:
       self.doNothing()
     self.player.battlePlayer.eqItem.remove(item)
+    self.playerTurn=False
+    self.player.currentMenu=self.battleMenu
 
   def decrementBonus(self):
     self.timeBonus-=.05
@@ -2129,7 +2150,9 @@ def updateTraversal(event,player,screen):
         player.migrateMessages(checkDoor('right',player,screen))
 
       elif newKey=='[7]' or newKey=='m':
-        player.migrateMessages('minimap')
+        player.macroMap=True
+        player.traversal=False
+        player.dgnMap.drawMacro(player,screen)
 
       elif newKey=='[8]' or newKey=='up':
         player.migrateMessages(checkDoor('up',player,screen))
@@ -2226,6 +2249,15 @@ def updateWaiting(event,player):
     player.currentRoom.it4=0
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
+def updateMacroMap(event,player):
+  if event.type == QUIT:
+      sys.exit()
+
+  elif event.type == KEYDOWN:
+      newKey=pygame.key.name(event.key) 
+      if newKey=='m' or newKey=='[7]':
+        player.macroMap=False
+        player.traversal=True
 
 ###Draw methods###
 def drawTraversal(player,screen):
@@ -2233,6 +2265,25 @@ def drawTraversal(player,screen):
 
 def drawWaiting(player,screen):
   screen.fill(0,(0,0,1290,700),0)
+def drawMacroMap(player,screen):
+  player.dgnMap.drawMacro(player,screen)
+  
+def drawTextBox(player,screen):
+  screen.fill(0,bigRect,0)
+  # draw the text
+  tl1=font.render(player.msg1,True,(255,255,255))
+  tl2=font.render(player.msg2,True,(255,255,255))
+  tl3=font.render(player.msg3,True,(255,255,255))
+  tl4=font.render(player.msg4,True,(255,255,255))
+  tl5=font.render(player.msg5,True,(255,255,255))
+  player.dgnMap.display(player,screen)
+
+  #screen.blit(text, textRect)
+  screen.blit(tl1,line1)
+  screen.blit(tl2,line2)
+  screen.blit(tl3,line3)
+  screen.blit(tl4,line4)
+  screen.blit(tl5,line5)
 
 setImage(player)
 
@@ -2241,6 +2292,7 @@ while pippy.pygame.next_frame():
   for event in pygame.event.get():
     if event.type==USEREVENT+2:
       pygame.time.set_timer(USEREVENT+2,0)
+      drawWaiting(player,screen)
       player.waiting=False
       if player.msg5=='Enemies are present, prepare to fight.':
         player.battle=True
@@ -2286,35 +2338,28 @@ while pippy.pygame.next_frame():
       updateMenu(event,player)
     elif player.inTutorial:
       updateTutorial(event,player)
+    elif player.macroMap:
+      updateMacroMap(event,player)
 
   ###############DRAW#########################
   #draw based on state
-  if player.mainMenu:
+  if player.mainMenu==True:
     if player.currentMenu.name=="Inventory":
       player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
+    elif player.currentMenu.name=="Stats":
+      player.currentMenu.draw(player,screen,450,400,50)
+      drawTextBox(player,screen)
     else:
       player.currentMenu.draw(player,screen,450,400,50)
   else:
-    screen.fill(0,bigRect,0)
-    # draw the text
-    tl1=font.render(player.msg1,True,(255,255,255))
-    tl2=font.render(player.msg2,True,(255,255,255))
-    tl3=font.render(player.msg3,True,(255,255,255))
-    tl4=font.render(player.msg4,True,(255,255,255))
-    tl5=font.render(player.msg5,True,(255,255,255))
-    player.dgnMap.display(player,screen)
-
-    #screen.blit(text, textRect)
-    screen.blit(tl1,line1)
-    screen.blit(tl2,line2)
-    screen.blit(tl3,line3)
-    screen.blit(tl4,line4)
-    screen.blit(tl5,line5)
+    drawTextBox(player,screen)
     if player.traversal:
       if player.waiting:
         drawWaiting(player,screen)
       else:
         drawTraversal(player,screen)
+    elif player.macroMap:
+      player.dgnMap.drawMacro(player,screen)
     elif player.battle:
       player.curBattle.draw(player,screen)
     elif player.inTutorial:
