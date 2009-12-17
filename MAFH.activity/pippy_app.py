@@ -2127,12 +2127,13 @@ def updateTraversal(event,player,screen):
 
     elif event.type == KEYDOWN:
       newKey=pygame.key.name(event.key)
+     
       if newKey=='escape':
         sys.exit()
 
       elif newKey=='[1]':
-        ##square
-        player.migrateMessages('not implemented')
+        ##check
+        player.migrateMessages(player.checkRoom())
 
       elif newKey=='[2]':
         player.migrateMessages(checkDoor('down',player,screen))
