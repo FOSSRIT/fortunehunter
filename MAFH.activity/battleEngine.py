@@ -3,11 +3,6 @@ from player import *
 from hero import *
 from enemy import *
 from menu import *
-from dungeon import *
-from map import *
-from room import *
-from tutorial import *
-from item import *
 from pygame.locals import *
 from random import *
 import os.path
@@ -95,37 +90,36 @@ class BattleEngine:
 
     battleOptions=["Attack","Division","Geometry","Use Item"]
     battleBackground=IMG_PATH+"battleMenubackground.gif"
-    battleOptImg=[IMG_PATH+"attackButton.gif",IMG_PATH+"DivPH.gif",IMG_PATH+"GeomPH.gif",IMG_PATH+"ItemPH.gif"]
+    battleOptImg=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
     
     self.battleMenu=Menu(battleOptions,player,battleBackground,battleOptImg,"Battle")
-    self.battleMenu.background.rect=(200,580,200,200)
-    self.battleMenu.size=4
+    self.battleMenu.background.rect=(0,300,0,200)
 
     numOptArr = ["1","2","3","4","5","6","7","8","9","0","Clear","Enter Answer"]
-    numBG=IMG_PATH+"numPadbackground.gif"
+    numBG=IMG_PATH+"battleMenubackground.gif"
     numOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"Clear.gif",IMG_PATH+"Enter.gif"]
     self.numPadMenu=Menu(numOptArr,player,numBG,numOptImg,"Number Pad")
-    self.numPadMenu.background.rect=(800,500,200,200)
+    self.numPadMenu.background.rect=(0,300,200,200)
     self.numPadMenu.numPad=True
 
     magicOptions=["Fire","Lightning","Missile","Heal"]
     magicBackground=IMG_PATH+"battleMenubackground.gif"
-    magicOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
+    magicOptImg=[IMG_PATH+"Fire.gif",IMG_PATH+"Lightning.gif",IMG_PATH+"Missile.gif",IMG_PATH+"Heal.gif"]
     self.magicMenu=Menu(magicOptions,player,magicBackground,magicOptImg,"Magic Menu")
-    self.magicMenu.background.rect=(200,580,200,200)
+    self.magicMenu.background.rect=(0,300,200,200)
 
     divisionOptions=["1/2","1/3","1/4","1/6"]
     divisionBackground=IMG_PATH+"battleMenubackground.gif"
-    divisionOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
+    divisionOptImg=[IMG_PATH+"12Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"16Slash.gif"]
     self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
-    self.divisionMenu.background.rect=(200,580,200,200) 
+    self.divisionMenu.background.rect=(0,300,200,200) 
 
     itemOptions=["Item1","Item2","Item3","Item4"]
     itemBackground=IMG_PATH+"battleMenubackground.gif"
-    itemOptImg=[IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif"]
+    itemOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
     
     self.itemMenu=Menu(itemOptions,player,itemBackground,itemOptImg,"Item")
-    self.itemMenu.background.rect=(200,550,200,200)
+    self.itemMenu.background.rect=(0,300,200,200)
 
     self.player.currentMenu=self.battleMenu
     self.player.previousMenu=self.numPadMenu
@@ -140,7 +134,7 @@ class BattleEngine:
       enemy.sprite.rect=pygame.Rect((x+(enemy.place*200),y,200,200))
       if i==self.selEnemyIndex:
         sel=pygame.sprite.Sprite()
-        sel.image=pygame.image.load(IMG_PATH+"EnterAnswer.gif")
+        sel.image=pygame.image.load(IMG_PATH+"0.gif")
         sel.rect=pygame.Rect(x+(enemy.place*200)+30,y+100,40,20)
         enemyGroup.add(sel)
       i+=1
@@ -153,7 +147,7 @@ class BattleEngine:
 
     #draw player
     if player.currentMenu.numPad==False:
-      player.currentMenu.draw(player,screen,200,500,45)
+      player.currentMenu.draw(player,screen,235,450,45)
       if player.currentMenu.name=="Item":
         i=0
         for image in player.currentMenu.optionsImages:
@@ -163,13 +157,13 @@ class BattleEngine:
             screen.blit(t,image.rect) 
             i+=1     
     else:
-      player.currentMenu.draw(player,screen,200,500,40)
+      player.currentMenu.draw(player,screen,235,450,40)
       if not player.battlePlayer.currentProb1=="":
         font = pygame.font.Font(None, 36)
         probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
         inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
-        screen.blit(probText,pygame.Rect(700,450,200,30))
-        screen.blit(inputText,pygame.Rect(700,480,200,30))
+        screen.blit(probText,pygame.Rect(250,350,200,30))
+        screen.blit(inputText,pygame.Rect(250,400,200,30))
       
       screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
     pygame.display.flip()
@@ -358,13 +352,14 @@ class BattleEngine:
   ###
   def useItem(self,item):
     if item.name=="Remedy":
-      self.attack(self.player.battlePlayer,"Heal")
-      
+      self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*.05)
     elif item.name=="Grenade":
       self.attack(self.player.battlePlayer,"Fire")
     else:
       self.doNothing()
     self.player.battlePlayer.eqItem.remove(item)
+    self.playerTurn=False
+    self.player.currentMenu=self.battleMenu
 
   def decrementBonus(self):
     self.timeBonus-=.05

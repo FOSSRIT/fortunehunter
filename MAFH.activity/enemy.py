@@ -14,7 +14,7 @@ IMG_PATH = os.path.dirname(__file__) + "/images/"
 ################################################################################
 class Enemy:
   def __init__(self,player,name):
-#****property**value**********************description********************#
+#****property********value**********************description**********************#
   self.MHP   = 12        #maximum health points (base HP)
   self.HP    = 12        #cur print "Fire"rent health points
   self.BHP   = 0        #bonus health points (from equipment)
@@ -27,26 +27,26 @@ class Enemy:
   self.eqItem_Ar = []
   self.inv_Ar = []
   self.attacks_Ar = []
-  self.sprite=pygame.sprite.Sprite()
-  self.place=0
-  #load image based on type later
-  self.name=player.dgn.types[int(name)]
-  print(self.name)
-  if self.name=="Wizard":
-    self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
-    self.HP=20
-    self.ATT=3
-  elif self.name=="Goblin":
-    self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
-    self.HP=40
-    self.ATT=10
-  elif self.name=="Orc":
-    self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
-    self.HP=60
-    self.ATT=35
-  else:
-    self.sprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
-  self.sprite.rect=(200,200,50,300) 
+        self.sprite=pygame.sprite.Sprite()
+        self.place=0
+        #load image based on type later
+        self.name=player.dgn.types[int(name)]
+        print(self.name)
+        if self.name=="Wizard":
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
+          self.HP=20
+          self.ATT=3
+        elif self.name=="Goblin":
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
+          self.HP=40
+          self.ATT=10
+        elif self.name=="Orc":
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          self.HP=60
+          self.ATT=35
+        else:
+          self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+        self.sprite.rect=(200,200,50,300) 
 
 #****ENEMY ACCESSORS*********************************************#
   #returns enemy's maximum health
@@ -132,4 +132,3 @@ class Enemy:
   def remEquipment(self,_item):
     print("remove equip")
     #remove _item from equipment -- leave cell empty
-#end class Enemy

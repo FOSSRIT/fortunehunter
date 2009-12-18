@@ -33,6 +33,7 @@ class Player:
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
     self.hpTutorial=False
+    self.hiddenTutorial=False
     self.battleTutorial=False
     self.puzzleTutorial=False
     self.lockTutorial=False
@@ -45,6 +46,7 @@ class Player:
     self.waiting=False
     self.battle=False
     self.inGameTutorial=False
+    self.macroMap=False
     #self.statMenu=False
 
     self.msg1=""
@@ -63,15 +65,12 @@ class Player:
     self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
     
     statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
-    statMenuImages=[IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif",IMG_PATH+"BlankButton.gif"]
-    self.statsMenu=Menu(statMenuOptions,self,IMG_PATH+"battleMenubackground.gif",statMenuImages,"Stats")
+    statMenuImages=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+    self.statsMenu=Menu(statMenuOptions,self,IMG_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
+    self.statsMenu.background.rect.top=10
 
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
-
- # def createInventoryMenu(self):
-  #  inventoryMenuOptions=[]
-  #  for item in self.battlePlayer.int_Ar:
     
   def loadTutorial(self):
     tutorialImages=[IMG_PATH+"t1.gif",IMG_PATH+"t2.gif",IMG_PATH+"t3.gif"]
@@ -126,8 +125,8 @@ class Player:
     self.msg3=self.msg4
     self.msg4=self.msg5
     self.msg5=msg
-    
   def nextDungeon(self):
+
     self.dgnIndex+=1
     dgnWidth=self.dungeons[self.dgnIndex][1]
     dgnHeight=self.dungeons[self.dgnIndex][2]
@@ -138,30 +137,38 @@ class Player:
     self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
     self.dgnMap=Map(self.dgn)
     self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
-    
   def initInGameBattleTutorial(self,screen):
-    batImages=[IMG_PATH+"attackButton.gif",IMG_PATH+"DivPH.gif",IMG_PATH+"GeomPH.gif",IMG_PATH+"ItemPH.gif"]
+    batImages=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
     batBg=IMG_PATH+"battleMenubackground.gif"
+    batBgRect=(0,300,400,400)
     numPadImages=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"Clear.gif",IMG_PATH+"Enter.gif"]
-    geomImages=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif"]
+    geomImages=[IMG_PATH+"Fire.gif",IMG_PATH+"Lightning.gif",IMG_PATH+"Missile.gif",IMG_PATH+"Heal.gif"]
     itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
     itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
+    itemMenu.background.rect=batBgRect
     geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
     geomMenu3=Menu(geomMenu3Option,self,batBg,[IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif"],"GeomTut3")
+    geomMenu3.background.rect=batBgRect
     geomMenu3.numPad=True
     geomMenu2Option=[geomMenu3,"Wrong","Wrong","Wrong"]
     geomMenu2=Menu(geomMenu2Option,self,batBg,geomImages,"GeomTut2")
+    geomMenu2.background.rect=batBgRect
     geomMenuOption=["Wrong","Wrong",geomMenu2,"Wrong"]
     geomMenu=Menu(geomMenuOption,self,batBg,batImages,"GeomTut")
-    divMenu2Option=[geomMenu]
-    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"DivPH.gif"],"DivTut2")
+    geomMenu.background.rect=batBgRect
+    divMenu2Option=[geomMenu,geomMenu,geomMenu,geomMenu]
+    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"16Slash.gif"],"DivTut2")
+    divMenu2.background.rect=batBgRect
     divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
     divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
-    critMenuOption=[divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu]
+    divMenu.background.rect=batBgRect
+    critMenuOption=[divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,"Enter"]
     critMenu=Menu(critMenuOption,self,batBg,numPadImages,"CritTut")
     critMenu.numPad=True
+    critMenu.background.rect=batBgRect
     atkMenuOption=[critMenu,"Wrong","Wrong","Wrong"]
     atkMenu=Menu(atkMenuOption,self,batBg,batImages,"AtkTut")
+    atkMenu.background.rect=batBgRect
     self.currentMenu=atkMenu
     self.battleTutorial=True
 
@@ -194,4 +201,7 @@ class Player:
       found=True
     if found==False:
       message+="nothing"
+    if self.hiddenTutorial==False:
+      self.hiddenTutorial=True
+      player.migrateMessages("You have found items in your search, try searching every room for items!")
     return(message)

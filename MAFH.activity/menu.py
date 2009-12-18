@@ -36,11 +36,11 @@ class Menu:
 
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
-        bgGroup=pygame.sprite.Group(self.background)
+  bgGroup=pygame.sprite.Group(self.background)
         bgGroup.draw(screen)
         i=0
         sel=0
-        font=pygame.font.SysFont("cmr10",42,False,False)
+        font=pygame.font.SysFont("cmr10",24,False,False)
         if self.numPad==False and not self.name=="Stats" and not self.name=="Inventory":
           for image in self.optionsImages:
               if i==self.currentOption:
@@ -51,15 +51,15 @@ class Menu:
               menuGroup.add(image)
               i+=1
         elif self.numPad==True:
+          ea=0
           for image in self.optionsImages:
             if i==3:
               i=0
               yStart+=height
-            if self.options[sel]=="Enter Answer":
+            if self.options[sel]=="Enter Answer" or self.options[sel]=="Enter":
               yStart+=height
-              height*=3
               i=0
-            image.rect=pygame.Rect(xStart+(i*height),yStart,height,height)
+            image.rect=pygame.Rect(xStart+(i*height),yStart+ea,height,height)
             menuGroup.add(image)
             if sel==self.currentOption:
               fillRect=image.rect
@@ -72,49 +72,49 @@ class Menu:
             sel+=1
           
         if self.name=="Stats":
-          #add screen-sized image with transparency
           bgGroup.empty()
-          screen.fill((250,250,50),pygame.Rect(200,0,800,900))
-          screen.fill((0,0,0),pygame.Rect(200,0,250,250))
           hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
-          hpRect=pygame.Rect(210,320,200,42)
+          hpRect=pygame.Rect(635,425,200,42)
           screen.blit(hp,hpRect)
-          att=font.render("Attack: "+repr(player.battlePlayer.attackPower("basic")),True,(0,0,0))
-          attRect=pygame.Rect(210,370,200,42)
+          att=font.render("ATK: "+repr(player.battlePlayer.attackPower("basic")),True,(0,0,0))
+          attRect=pygame.Rect(635,445,200,42)
           screen.blit(att,attRect)
-          defense=font.render("Defense: "+repr(player.battlePlayer.defensePower()),True,(0,0,0))
-          defenseRect=pygame.Rect(210,420,200,42)
+          defense=font.render("DEF: "+repr(player.battlePlayer.defensePower()),True,(0,0,0))
+          defenseRect=pygame.Rect(635,465,200,42)
           screen.blit(defense,defenseRect)
           #define rectangles
-          weaponRect=pygame.Rect(470,20,200,42)
+          weaponRect=pygame.Rect(635,500,200,42)
           self.optionsImages[0].rect=weaponRect
-          armorRect=pygame.Rect(470,70,200,42)
+          armorRect=pygame.Rect(635,535,200,42)
           self.optionsImages[1].rect=armorRect
-          accessoryRect=pygame.Rect(470,120,200,42)
+          accessoryRect=pygame.Rect(635,570,200,42)
           self.optionsImages[2].rect=accessoryRect
-          itemRect=pygame.Rect(500,220,200,42)
+          itemRect=pygame.Rect(508,435,200,42)
           self.optionsImages[3].rect=itemRect
-          item2Rect=pygame.Rect(500,270,200,42)
+          item2Rect=pygame.Rect(508,475,200,42)
           self.optionsImages[4].rect=item2Rect
-          item3Rect=pygame.Rect(500,320,200,42)
+          item3Rect=pygame.Rect(508,525,200,42)
           self.optionsImages[5].rect=item3Rect
-          item4Rect=pygame.Rect(500,370,200,42)
+          item4Rect=pygame.Rect(508,565,200,42)
           self.optionsImages[6].rect=item4Rect
-          self.optionsImages[self.currentOption].rect.left+=10
+          self.optionsImages[self.currentOption].rect.top-=5
+          self.optionsImages[self.currentOption].rect.width=115
+          self.optionsImages[self.currentOption].rect.height=33
+          screen.fill((125,125,255),self.optionsImages[self.currentOption].rect)
           #draw buttons
-          bgButtonGroup=pygame.sprite.Group(self.optionsImages)
-          bgButtonGroup.draw(screen)
-          #draw dynamic text
+          #bgButtonGroup=pygame.sprite.Group(self.optionsImages)
+          #bgButtonGroup.draw(screen)
+    #draw dynamic text
           if player.battlePlayer.weapon.name=="":
-            wp="Weapon Slot"
+            wp="Weapon"
           else:
             wp=player.battlePlayer.weapon.name
           if player.battlePlayer.armor.name=="":
-            arm="Armor Slot"
+            arm="Armor"
           else:
             arm=player.battlePlayer.armor.name
           if player.battlePlayer.accessory.name=="":
-            acc="Accessory Slot"
+            acc="Accessory"
           else:
             acc=player.battlePlayer.accessory.name
           it1,it2,it3,it4="","","",""
@@ -126,19 +126,19 @@ class Menu:
             it3=player.battlePlayer.eqItem[2].name
           if len(player.battlePlayer.eqItem)==4:
             if player.battlePlayer.eqItem[0].name=="":
-              it1="Item Slot 1"
+              it1="Item 1"
             else:
               it1=player.battlePlayer.eqItem[0].name
             if player.battlePlayer.eqItem[1].name=="":
-              it2="Item Slot 2"
+              it2="Item 2"
             else:
               it2=player.battlePlayer.eqItem[1].name
             if player.battlePlayer.eqItem[2].name=="":
-              it3="Item Slot 3"
+              it3="Item 3"
             else:
               it3=player.battlePlayer.eqItem[2].name
             if player.battlePlayer.eqItem[3].name=="":
-              it4="Item Slot 4"
+              it4="Item 4"
             else:
               it4=player.battlePlayer.eqItem[3].name
 
@@ -159,36 +159,36 @@ class Menu:
           screen.blit(item4,item4Rect)
           if player.invTutorial==False:
             k=0
-            lines=["This is the statistics screen.","Here, you can view information about your character,","and any items, you have equipped.","As  you can see, there are slots for weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to, and press enter or check"]
+            lines=["This is the statistics screen.","Here, you can view information","about your character,","and any items, you have equipped.","As  you can see, there are slots for","weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to","and press enter or check"]
             for message in lines:
-              screen.blit(font.render(message,True,(0,200,0)),(200,500+k,200,300))
+              screen.blit(font.render(message,True,(0,200,0)),(20,20+k,200,300))
               k+=40
         if self.name=="Inventory":
             y=0
             sel=0
-            screen.fill((50,255,50),pygame.Rect(xStart,yStart,200,40*len(player.battlePlayer.inv_Ar)))
+            screen.fill((100,100,255,.5),pygame.Rect(xStart,yStart,200,40*len(player.battlePlayer.inv_Ar)))
             for item in player.battlePlayer.inv_Ar:
               if sel==self.currentOption:
-                screen.fill((250,50,50),pygame.Rect(self.sX,self.sY+y,200,40))
+                screen.fill((50,50,250),pygame.Rect(self.sX,self.sY+y,200,40))
               screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX,self.sY+y,200,40))
               y+=40
               sel+=1
               if player.invTutorial==False:
-                screen.fill((250,250,50),(200,500,800,400))
+                screen.fill((250,250,250),(900,300,800,400))
                 k=0
-                lines=["This list shows the items you are carrying","To equip one in the current slot,","select one with the arrow keys, and press enter or check.","If the item cannot be equipped in that slot,","You will be taken back to the stats screen"]
+                lines=["This list shows the items","you are carrying.  To equip","an item in the current slot,","select one with the arrow","keys, and press enter or","check.  If the item cannot","be equipped in that","slot, you will be taken back","to the stats screen"]
                 for message in lines:
-                  screen.blit(font.render(message,True,(0,200,0)),(200,500+k,200,300))
+                  screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
                   k+=40
         if self.name=="AtkTut":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["To perform a basic attack","select the attack button"]
           y=0
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
             y+=40
         elif self.name=="CritTut":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           screen.fill((50,255,50),(200,20,400,30))
           lines=["Sometimes, when performing a","basic attack, you will get","a critical hit!","When this happens, you must solve a multiplication","problem before the green timer runs out.","Press any key on the numpad to continue"]
           y=0
@@ -203,35 +203,35 @@ class Menu:
             screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
             y+=40
         elif self.name=="DivTut2":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["In special attack, you","can select the power of","multiple slashes.","If this power adds up to one","the attack is successful. Otherwise","it will miss"]
           y=0
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
             y+=40
         elif self.name=="GeomTut":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["To cast a magic spell,","select the magic button"]
           y=0
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
             y+=40
         elif self.name=="GeomTut2":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["Different spells have different","effects.  Try casting fire."]
           y=0
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
             y+=40
         elif self.name=="GeomTut3":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["When casting magic,","you must select pieces","which match parts of the","glyph on screen.","Select one to continue"]
           y=0
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
             y+=40
         elif self.name=="ItemTut":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["You can equip certain items","to use in battle from the","inventory screen.  Items can be","used in many different ways.","Select Use Item to test your","skills in a real battle"]
           y=0
           for message in lines:
@@ -316,17 +316,17 @@ class Menu:
         elif name=="Division":
           player.curBattle.divisionAttack()
         elif name=="1/2":
-          player.battlePlayer.fractionSum += .5
-          player.curBattle.checkFraction()
-        elif name=="1/3":
-          player.battlePlayer.fractionSum += .33
-          player.curBattle.checkFraction()
-        elif name=="1/4":
-          player.battlePlayer.fractionSum += .25
-          player.curBattle.checkFraction()
-        elif name=="1/6":
-          player.battlePlayer.fractionSum += .166
-          player.curBattle.checkFraction()
+    player.battlePlayer.fractionSum += .5
+    player.curBattle.checkFraction()
+  elif name=="1/3":
+    player.battlePlayer.fractionSum += .33
+    player.curBattle.checkFraction()
+  elif name=="1/4":
+    player.battlePlayer.fractionSum += .25
+    player.curBattle.checkFraction()
+  elif name=="1/6":
+    player.battlePlayer.fractionSum += .166
+    player.curBattle.checkFraction()
         elif name=="Geometry":
           player.curBattle.magic(player)
         elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
@@ -334,8 +334,8 @@ class Menu:
           player.battlePlayer.currentProb2=""
           player.battlePlayer.currentInput=""
           player.curBattle.startGlyph(name)
-        elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4":
-          player.curBattle.checkGlyph(name)
+  elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4":
+    player.curBattle.checkGlyph(name)
         elif name=="Use Item":
           for i in player.battlePlayer.eqItem:
             if i.name=="":
@@ -351,14 +351,16 @@ class Menu:
         elif name=="Weapon" or name=="Armor" or name=="Accessory" or name=="ItemSlot1" or name=="ItemSlot2" or name=="ItemSlot3" or name=="ItemSlot4":
           self.createInventory(player,name)
           player.currentMenu=player.currentMenu=self.inventoryMenu
+          player.currentRoomGroup.draw(screen)
         elif name[0:9]=="Equipment":
           player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:10])],self.target)
           player.invTutorial=True
           player.currentMenu=player.statsMenu
+          player.currentRoomGroup.draw(screen)
         elif name=="Wrong":
           print("Wrong choice")
-        else:
-          sys.exit()
+  else:
+      sys.exit()
     def createInventory(self,player,name):
       invOptions=[]
       invImages=[]
@@ -366,9 +368,10 @@ class Menu:
       for item in player.battlePlayer.inv_Ar:
         invOptions.append("Equipment"+repr(i))
         i+=1
-        invImages.append(IMG_PATH+"BlankButton.gif")
-      self.inventoryMenu=Menu(invOptions,player,IMG_PATH+"BlankButton.gif",invImages,"Inventory")
-      self.inventoryMenu.sX=self.optionsImages[self.currentOption].rect.left+250
+        invImages.append(IMG_PATH+"Blank.gif")
+      self.inventoryMenu=Menu(invOptions,player,IMG_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
+      self.inventoryMenu.sX=self.optionsImages[self.currentOption].rect.left+50
       self.inventoryMenu.sY=self.optionsImages[self.currentOption].rect.top
+      self.inventoryMenu.background.rect.top=10
       self.inventoryMenu.target=name
       player.currentMenu=self.inventoryMenu

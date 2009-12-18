@@ -16,7 +16,7 @@ class Tutorial:
           spt=pygame.sprite.Sprite()
           spt.image=pygame.image.load(image)
           spt.rect=pygame.Rect(sX,sY,1290,700)
-          self.images.append(spt)
+    self.images.append(spt)
 
          self.size=len(imageList)
 
@@ -26,8 +26,8 @@ class Tutorial:
 
       else:
           self.currentIndex=0
-      player.mainMenu = True
-      player.inTutorial = False
+    player.mainMenu = True
+    player.inTutorial = False
 
     def previous(self):
       if self.currentIndex > 0:

@@ -33,7 +33,6 @@ class Room:
     self.fillItems()
     self.image=0
     self.transport=False
-    
   #######To string method########
   def getData(self):
     string=""
@@ -53,4 +52,3 @@ class Room:
       self.it3=itemList[int(self.it3)]
     if not int(self.it4)==0:
       self.it4=itemList[int(self.it4)]
-

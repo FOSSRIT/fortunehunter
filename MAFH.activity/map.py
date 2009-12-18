@@ -38,10 +38,24 @@ class Map:
         elif dgn.rooms.get((x,y)).doorW:
           self.fullRooms[(x,y)]=True
           self.totalSurface.fill((255,255,255),curRect,0)
-
+  def drawMacro(self,player,screen):
+    player.currentRoomGroup.draw(screen)
+    #DRAW LEGEND
+    macroMap=pygame.transform.scale(self.totalSurface,(self.sizeX*100,self.sizeY*100))
+    screen.blit(macroMap,(200,0,800,700))
+    pygame.display.flip()
   def display(self,player,screen):
     mapView=pygame.transform.chop(self.totalSurface,(0,0,0,0))
     mapView.fill((255,0,0),(player.currentX*40,player.currentY*40,38,38))
+    self.totalSurface.fill((0,255,0),(player.currentX*40,player.currentY*40,38,38))
+    if player.currentRoom.doorN:
+      self.totalSurface.fill((255,255,0),(player.currentX*40+5,player.currentY*40,30,5))
+    if player.currentRoom.doorS:
+      self.totalSurface.fill((255,255,0),(player.currentX*40+5,player.currentY*40+35,30,5))
+    if player.currentRoom.doorE:
+      self.totalSurface.fill((255,255,0),(player.currentX*40+35,player.currentY*40+5,5,30))
+    if player.currentRoom.doorW:
+      self.totalSurface.fill((255,255,0),(player.currentX*40,player.currentY*40+5,5,30))
     NORTH=1
     SOUTH=3
     EAST=0

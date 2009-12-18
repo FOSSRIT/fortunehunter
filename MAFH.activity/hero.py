@@ -10,40 +10,40 @@ IMG_PATH = os.path.dirname(__file__) + "/images/"
 ################################################################################
 class Hero:
   def __init__(self,player):
-  #*property***value**********************description********************#
-    self.MHP   = 40    #maximum health points (base HP)
-    self.HP    = 40    #current health points
-    self.BHP   = 0    #bonus health points (from equipment)
-    self.ATT   = 10    #base attack power
-    self.BAB  = 0    #bonus attack power (from battle timer)
-    self.BAE  = 0    #bonus attack power (from equipment)
-    self.DEF  = 1    #base defense power
-    self.BDE  = 0    #bonus defense  power(from equipment)
-  
-    self.weapon=Item("","")
-    self.armor=Item("","")
-    self.accessory=Item("","")
-    self.eqItem=[]      #player can equip up to 4 usable items to use in battle
-    self.inv_Ar   = []    #inventory
-    self.attacks_Ar = []    #associated array for attack string names and attack power values
-    self.currentInput=""
-    self.currentProb1=0
-    self.currentProb2=0
-    self.currentAnswer=0
-  
-    basicSword=Item("Sword","Weapon")
-    amulet=Item("Amulet","Weapon")
-    basicArmor=Item("Vest","Armor")
-    potion=Item("Remedy","Usable")
-    grenade=Item("Grenade","Usable")
-    basicRing=Item("Ring","Accessory")
-    emptyItem=Item("","Usable")
-    #smallKey=Item(player,"Small Key","key")
-    self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
-    self.inv_Ar=[basicSword,amulet,basicArmor,potion,basicRing,grenade,potion]
-  
-  #****HERO ACCESSORS*********************************************#
-    #returns player's maximum health
+#****property********value**********************description**********************#
+  self.MHP   = 40    #maximum health points (base HP)
+  self.HP    = 40    #current health points
+  self.BHP   = 0    #bonus health points (from equipment)
+  self.ATT   = 10    #base attack power
+  self.BAB  = 0    #bonus attack power (from battle timer)
+  self.BAE  = 0    #bonus attack power (from equipment)
+  self.DEF  = 1    #base defense power
+  self.BDE  = 0    #bonus defense  power(from equipment)
+
+  self.weapon=Item("","")
+  self.armor=Item("","")
+  self.accessory=Item("","")
+        self.eqItem=[]      #player can equip up to 4 usable items to use in battle
+  self.inv_Ar   = []    #inventory
+  self.attacks_Ar = []    #associated array for attack string names and attack power values
+        self.currentInput=""
+        self.currentProb1=0
+        self.currentProb2=0
+        self.currentAnswer=0
+
+        basicSword=Item("Sword","Weapon")
+        amulet=Item("Amulet","Weapon")
+        basicArmor=Item("Vest","Armor")
+        potion=Item("Remedy","Usable")
+        grenade=Item("Grenade","Usable")
+        basicRing=Item("Ring","Accessory")
+        emptyItem=Item("","Usable")
+        #smallKey=Item(player,"Small Key","key")
+        self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
+        self.inv_Ar=[basicSword,amulet,basicArmor,basicRing,grenade]
+
+#****HERO ACCESSORS*********************************************#
+  #returns player's maximum health
   def maxHealthPoints(self):
     return (self.HP + self.BHP)
 
@@ -105,7 +105,7 @@ class Hero:
   def giveHealth(self,_inc):
     self.HP += _inc
     if healthPoints() > maxHealthPoints():
-      setHealth(maxHealthPoints())
+  setHealth(maxHealthPoints())
 
   #player is attacked by given damage
   def defendAttack(self,dmg):
@@ -176,5 +176,3 @@ class Hero:
   def remInventory(self,item):
     self.inv_Ar.remove(item)
     #remove _item from inventory
-    
-#end class Hero
