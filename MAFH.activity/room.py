@@ -1,5 +1,4 @@
-#Room class: stores data about a room in the dungeon.  IE doors, enemies, mood etc
-####################################################################################
+
 import pippy, pygame, sys, math
 from item import *
 from pygame.locals import *
@@ -7,6 +6,9 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
+################################################################################
+#Room class: stores data about a room in the dungeon.IE doors, enemies, mood etc
+################################################################################
 class Room:
   def __init__(self,doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,en1,en2,en3,en4,it1,it2,it3,it4):
     self.doorN=doorN

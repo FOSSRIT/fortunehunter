@@ -1,7 +1,8 @@
 import pippy, pygame, sys, math
-import Player,Hero,Enemy,BattleEngine,Menu,Dungeon,Map,Room,Tutorial,Item
+from player import Player
+from dungeon import Dungeon
+from room import Room
 from pygame.locals import *
-from random import *
 import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
