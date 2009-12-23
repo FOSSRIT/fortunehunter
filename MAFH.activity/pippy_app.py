@@ -7,7 +7,7 @@ import os.path
 ###############################################################################
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
-##IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
+#IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
@@ -548,49 +548,49 @@ class Menu:
                   screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
                   k+=40
         if self.name=="AtkTut":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(600,400,400,300))
           lines=["To perform a basic attack","select the attack button"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="CritTut":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(600,400,400,300))
           lines=["Sometimes, when performing a","basic attack, you will get","a critical hit!  When this happens,","you must solve a multiplication","problem before the green timer runs","out.  Press any key on the calculator","to continue"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="DivTut":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(600,400,400,300))
           lines=["To perform a special attack,","select the special button"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="DivTut2":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(800,400,400,300))
           lines=["In special attack, you","can select the power of","multiple slashes.","If this power adds up to one","the attack is successful. Otherwise","it will miss"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(800,400+y,400,300))
             y+=40
         elif self.name=="GeomTut":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(600,400,400,300))
           lines=["To cast a magic spell,","select the magic button"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="GeomTut2":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(600,400,400,300))
           lines=["Different spells have different","effects.  Try casting fire."]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="GeomTut3":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(800,400,400,300))
           glyphSprite=pygame.sprite.Sprite()
           glyphSprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
           glyphSprite.rect=pygame.Rect(500,350,300,300)
@@ -599,14 +599,14 @@ class Menu:
           lines=["When casting magic,","you must select pieces","which match parts of the","glyph on screen.","Select one to continue"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(800,400+y,400,300))
             y+=40
         elif self.name=="ItemTut":
-          screen.fill((255,255,255),(600,500,400,300))
+          screen.fill((255,255,255),(600,400,400,300))
           lines=["You can equip certain items","to use in battle from the","inventory screen.  Items can be","used in many different ways.","Select Use Item to test your","skills in a real battle"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         menuGroup.draw(screen)
 
@@ -1038,6 +1038,7 @@ class Hero:
         self.currentProb1=0
         self.currentProb2=0
         self.currentAnswer=0
+        self.fractionSum=0
 
         basicSword=Item("Sword","Weapon")
         amulet=Item("Amulet","Weapon")
@@ -1072,7 +1073,7 @@ class Hero:
     elif name=="Lightning":
       return self.ATT+self.BAB
     elif name=="Division":
-      return self.ATT*1.5
+      return (self.ATT+self.BAE)*1.5
     elif name=="Missile":
       return 0
 
@@ -1457,6 +1458,9 @@ class BattleEngine:
             t=font.render(player.battlePlayer.eqItem[i].name,True,(255,255,255))
             screen.blit(t,image.rect) 
             i+=1     
+      elif player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
+        screen.fill((0,0,0),(500,400,200,300))
+        screen.fill((255,150,0),(500,(700-300*player.battlePlayer.fractionSum),200,300*player.battlePlayer.fractionSum))
     else:
       if player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
         player.currentMenu.draw(player,screen,235,390,60)
@@ -2482,3 +2486,4 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
