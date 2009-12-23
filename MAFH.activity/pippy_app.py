@@ -7,7 +7,7 @@ import os.path
 ###############################################################################
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
-#IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
+##IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
@@ -244,21 +244,89 @@ class Map:
   def drawMacro(self,player,screen):
     player.currentRoomGroup.draw(screen)
     #DRAW LEGEND
+    font=pygame.font.SysFont("cmr10",24,False,False)
     macroMap=pygame.transform.scale(self.totalSurface,(self.sizeX*100,self.sizeY*100))
+    screen.fill((0,0,0),(200,0,800,700))
+    legend=pygame.Surface((300,300))
+    legend.fill((255,0,0),(0,0,40,15))
+    legend.blit(font.render("LOCKED",True,(255,0,0)),(45,0,30,5))
+    legend.fill((150,255,150),(0,25,40,15))
+    legend.blit(font.render("OPEN",True,(150,255,150)),(45,25,30,5))
+    legend.fill((255,0,255),(0,50,40,15))
+    legend.blit(font.render("PUZZLE",True,(255,0,255)),(45,50,30,5))
+    legend.fill((255,255,255),(0,75,40,15))
+    legend.blit(font.render("EXIT",True,(255,255,255)),(45,75,30,5))
+    legend.fill((50,50,50),(0,100,40,15))
+    legend.blit(font.render("ENTRANCE",True,(50,50,50)),(45,100,30,5))
+    screen.blit(legend,(500,0,300,300))
     screen.blit(macroMap,(200,0,800,700))
     pygame.display.flip()
+  def updateMacro(self,player):
+    NONE=-1
+    PUZZLE=0
+    LOCKED=1
+    BOTH=2
+    UNLOCKED=3
+    EXIT=4
+    ENTRANCE=5
+    self.totalSurface.fill((0,255,0),(player.currentX*40,player.currentY*40,38,38))
+    if player.currentRoom.doorN:
+      if player.currentRoom.doorNFlag==LOCKED:
+        self.totalSurface.fill((255,0,0),(player.currentX*40+5,player.currentY*40,30,5))
+      elif player.currentRoom.doorNFlag==UNLOCKED or player.currentRoom.doorNFlag==NONE:
+        self.totalSurface.fill((150,255,150),(player.currentX*40+5,player.currentY*40,30,5))
+      elif player.currentRoom.doorNFlag==PUZZLE:
+        self.totalSurface.fill((255,0,255),(player.currentX*40+5,player.currentY*40,30,5))
+      elif player.currentRoom.doorNFlag==BOTH:
+        self.totalSurface.fill((255,0,0),(player.currentX*40+5,player.currentY*40,30,5))
+      elif player.currentRoom.doorNFlag==EXIT:
+        self.totalSurface.fill((255,255,255),(player.currentX*40+5,player.currentY*40,30,5))
+      elif player.currentRoom.doorNFlag==ENTRANCE:
+        self.totalSurface.fill((0,0,0),(player.currentX*40+5,player.currentY*40,30,5))
+    if player.currentRoom.doorS:
+      if player.currentRoom.doorSFlag==LOCKED:
+        self.totalSurface.fill((255,0,0),(player.currentX*40+5,player.currentY*40+35,30,5))
+      elif player.currentRoom.doorSFlag==UNLOCKED or player.currentRoom.doorSFlag==NONE:
+        self.totalSurface.fill((150,255,150),(player.currentX*40+5,player.currentY*40+35,30,5))
+      elif player.currentRoom.doorSFlag==PUZZLE:
+        self.totalSurface.fill((255,0,255),(player.currentX*40+5,player.currentY*40+35,30,5))
+      elif player.currentRoom.doorSFlag==BOTH:
+        self.totalSurface.fill((255,0,0),(player.currentX*40+5,player.currentY*40+35,30,5))
+      elif player.currentRoom.doorSFlag==EXIT:
+        self.totalSurface.fill((255,255,255),(player.currentX*40+5,player.currentY*40+35,30,5))
+      elif player.currentRoom.doorSFlag==ENTRANCE:
+        self.totalSurface.fill((0,0,0),(player.currentX*40+5,player.currentY*40+35,30,5))
+    if player.currentRoom.doorE:
+      if player.currentRoom.doorEFlag==LOCKED:
+        self.totalSurface.fill((255,0,0),(player.currentX*40+35,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorEFlag==UNLOCKED or player.currentRoom.doorEFlag==NONE:
+        self.totalSurface.fill((150,255,150),(player.currentX*40+35,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorEFlag==PUZZLE:
+        self.totalSurface.fill((255,0,255),(player.currentX*40+35,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorEFlag==BOTH:
+        self.totalSurface.fill((255,0,0),(player.currentX*40+35,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorEFlag==EXIT:
+        self.totalSurface.fill((255,255,255),(player.currentX*40+35,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorEFlag==ENTRANCE:
+        self.totalSurface.fill((0,0,0),(player.currentX*40+35,player.currentY*40+5,5,30))
+    if player.currentRoom.doorW:
+      if player.currentRoom.doorWFlag==LOCKED:
+        self.totalSurface.fill((255,0,0),(player.currentX*40,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorWFlag==UNLOCKED or player.currentRoom.doorWFlag==NONE:
+        self.totalSurface.fill((150,255,150),(player.currentX*40,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorWFlag==PUZZLE:
+        self.totalSurface.fill((255,0,255),(player.currentX*40,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorWFlag==BOTH:
+        self.totalSurface.fill((255,0,0),(player.currentX*40,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorWFlag==EXIT:
+        self.totalSurface.fill((255,255,255),(player.currentX*40,player.currentY*40+5,5,30))
+      elif player.currentRoom.doorWFlag==ENTRANCE:
+        self.totalSurface.fill((0,0,0),(player.currentX*40,player.currentY*40+5,5,30))
+
   def display(self,player,screen):
     mapView=pygame.transform.chop(self.totalSurface,(0,0,0,0))
     mapView.fill((255,0,0),(player.currentX*40,player.currentY*40,38,38))
-    self.totalSurface.fill((0,255,0),(player.currentX*40,player.currentY*40,38,38))
-    if player.currentRoom.doorN:
-      self.totalSurface.fill((255,255,0),(player.currentX*40+5,player.currentY*40,30,5))
-    if player.currentRoom.doorS:
-      self.totalSurface.fill((255,255,0),(player.currentX*40+5,player.currentY*40+35,30,5))
-    if player.currentRoom.doorE:
-      self.totalSurface.fill((255,255,0),(player.currentX*40+35,player.currentY*40+5,5,30))
-    if player.currentRoom.doorW:
-      self.totalSurface.fill((255,255,0),(player.currentX*40,player.currentY*40+5,5,30))
+
     NORTH=1
     SOUTH=3
     EAST=0
@@ -282,11 +350,16 @@ class Map:
       mapView=pygame.transform.rotate(mapView,angle)
       angle=180
 
+
+    sideDifference=self.sizeX-self.sizeY
     angle=angle*(math.pi/180)
     curSect=pygame.Rect(0,700,200,200)
     curSect.top+=((player.currentX*40-81)*math.cos(angle))-((player.currentY*40-81)*math.sin(angle))
     curSect.left-=((player.currentX*40-81)*math.sin(angle))+((player.currentY*40-81)*math.cos(angle))
-
+    if player.playerFacing==EAST:
+      curSect.top+=sideDifference*(40-81)
+    elif player.playerFacing==SOUTH:
+      curSect.left+=sideDifference*(40-81)
     screen.fill(0,(0,700,200,300),0)
     screen.blit(mapView,curSect)
     screen.fill(0,(200,700,1200,300),0)
@@ -321,7 +394,8 @@ class Menu:
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
 	bgGroup=pygame.sprite.Group(self.background)
-        bgGroup.draw(screen)
+        if not self.name=="Inventory":
+          bgGroup.draw(screen)
         i=0
         sel=0
         font=pygame.font.SysFont("cmr10",24,False,False)
@@ -336,8 +410,12 @@ class Menu:
               i+=1
         elif self.numPad==True:
           ea=0
+          if self.name=="GeomTut3" or self.name=="Glyph Menu":
+            k=2
+          else:
+            k=3
           for image in self.optionsImages:
-            if i==3:
+            if i==k:
               i=0
               yStart+=height
             if self.options[sel]=="Enter Answer" or self.options[sel]=="Enter":
@@ -356,16 +434,19 @@ class Menu:
             sel+=1
           
         if self.name=="Stats":
-          bgGroup.empty()
+          self.bgSurface=pygame.Surface((1200,700))
+          player.currentRoomGroup.draw(self.bgSurface)
+          bgGroup.draw(self.bgSurface)
           hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
           hpRect=pygame.Rect(635,425,200,42)
-          screen.blit(hp,hpRect)
+          self.bgSurface.blit(hp,hpRect)
+          
           att=font.render("ATK: "+repr(player.battlePlayer.attackPower("basic")),True,(0,0,0))
           attRect=pygame.Rect(635,445,200,42)
-          screen.blit(att,attRect)
+          self.bgSurface.blit(att,attRect)
           defense=font.render("DEF: "+repr(player.battlePlayer.defensePower()),True,(0,0,0))
           defenseRect=pygame.Rect(635,465,200,42)
-          screen.blit(defense,defenseRect)
+          self.bgSurface.blit(defense,defenseRect)
           #define rectangles
           weaponRect=pygame.Rect(635,500,200,42)
           self.optionsImages[0].rect=weaponRect
@@ -384,10 +465,7 @@ class Menu:
           self.optionsImages[self.currentOption].rect.top-=5
           self.optionsImages[self.currentOption].rect.width=115
           self.optionsImages[self.currentOption].rect.height=33
-          screen.fill((125,125,255),self.optionsImages[self.currentOption].rect)
-          #draw buttons
-          #bgButtonGroup=pygame.sprite.Group(self.optionsImages)
-          #bgButtonGroup.draw(screen)
+          self.bgSurface.fill((125,125,255),self.optionsImages[self.currentOption].rect)
 	  #draw dynamic text
           if player.battlePlayer.weapon.name=="":
             wp="Weapon"
@@ -428,21 +506,25 @@ class Menu:
 
 
           weapon=font.render(wp,True,(0,0,0))
-          screen.blit(weapon,weaponRect)
+          self.bgSurface.blit(weapon,weaponRect)
           armor=font.render(arm,True,(0,0,0))
-          screen.blit(armor,armorRect)
+          self.bgSurface.blit(armor,armorRect)
           accessory=font.render(acc,True,(0,0,0))
-          screen.blit(accessory,accessoryRect)
+          self.bgSurface.blit(accessory,accessoryRect)
           item1=font.render(it1,True,(0,0,0))
-          screen.blit(item1,itemRect)
+          self.bgSurface.blit(item1,itemRect)
           item2=font.render(it2,True,(0,0,0))
-          screen.blit(item2,item2Rect)
+          self.bgSurface.blit(item2,item2Rect)
           item3=font.render(it3,True,(0,0,0))
-          screen.blit(item3,item3Rect)
+          self.bgSurface.blit(item3,item3Rect)
           item4=font.render(it4,True,(0,0,0))
-          screen.blit(item4,item4Rect)
+          self.bgSurface.blit(item4,item4Rect)
+          
+          screen.blit(self.bgSurface,(0,0,0,0))
+
           if player.invTutorial==False:
             k=0
+            screen.fill((255,255,255),(0,0,400,400))
             lines=["This is the statistics screen.","Here, you can view information","about your character,","and any items, you have equipped.","As  you can see, there are slots for","weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to","and press enter or check"]
             for message in lines:
               screen.blit(font.render(message,True,(0,200,0)),(20,20+k,200,300))
@@ -450,6 +532,7 @@ class Menu:
         if self.name=="Inventory":
             y=0
             sel=0
+            screen.blit(self.bgSurface,(0,0,0,0))
             screen.fill((100,100,255,.5),pygame.Rect(xStart,yStart,200,40*len(player.battlePlayer.inv_Ar)))
             for item in player.battlePlayer.inv_Ar:
               if sel==self.currentOption:
@@ -469,57 +552,61 @@ class Menu:
           lines=["To perform a basic attack","select the attack button"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="CritTut":
           screen.fill((255,255,255),(600,500,400,300))
-          screen.fill((50,255,50),(200,20,400,30))
-          lines=["Sometimes, when performing a","basic attack, you will get","a critical hit!","When this happens, you must solve a multiplication","problem before the green timer runs out.","Press any key on the numpad to continue"]
+          lines=["Sometimes, when performing a","basic attack, you will get","a critical hit!  When this happens,","you must solve a multiplication","problem before the green timer runs","out.  Press any key on the calculator","to continue"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="DivTut":
-          screen.fill((255,255,255),(600,500,200,300))
+          screen.fill((255,255,255),(600,500,400,300))
           lines=["To perform a special attack,","select the special button"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="DivTut2":
           screen.fill((255,255,255),(600,500,400,300))
           lines=["In special attack, you","can select the power of","multiple slashes.","If this power adds up to one","the attack is successful. Otherwise","it will miss"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="GeomTut":
           screen.fill((255,255,255),(600,500,400,300))
           lines=["To cast a magic spell,","select the magic button"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="GeomTut2":
           screen.fill((255,255,255),(600,500,400,300))
           lines=["Different spells have different","effects.  Try casting fire."]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="GeomTut3":
           screen.fill((255,255,255),(600,500,400,300))
+          glyphSprite=pygame.sprite.Sprite()
+          glyphSprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
+          glyphSprite.rect=pygame.Rect(500,350,300,300)
+          glyphGroup=pygame.sprite.Group(glyphSprite)
+          glyphGroup.draw(screen)
           lines=["When casting magic,","you must select pieces","which match parts of the","glyph on screen.","Select one to continue"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         elif self.name=="ItemTut":
           screen.fill((255,255,255),(600,500,400,300))
           lines=["You can equip certain items","to use in battle from the","inventory screen.  Items can be","used in many different ways.","Select Use Item to test your","skills in a real battle"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,200,300))
+            screen.blit(font.render(message,True,(0,200,0)),(600,500+y,400,300))
             y+=40
         menuGroup.draw(screen)
 
@@ -561,8 +648,9 @@ class Menu:
             player.dgnIndex=-1
             player.currentX=0
             player.currentY=0
+            player.playerFacing=1
             player.nextDungeon()
-
+            player.dgnMap.updateMacro(player)
             player.traversal=True
             player.mainMenu=False
             setImage(player)
@@ -643,6 +731,12 @@ class Menu:
           player.currentRoomGroup.draw(screen)
         elif name=="Wrong":
           print("Wrong choice")
+        elif name=="Enter":
+          player.currentMenu=player.divMenu
+        elif name=="Not":
+          player.migrateMessages("Incorrect glyph.  Spell fizzles")
+          player.curBattle.playerTurn=False
+          player.currentMenu=player.curBattle.battleMenu
 	else:
 	    sys.exit()
     def createInventory(self,player,name):
@@ -658,6 +752,7 @@ class Menu:
       self.inventoryMenu.sY=self.optionsImages[self.currentOption].rect.top
       self.inventoryMenu.background.rect.top=10
       self.inventoryMenu.target=name
+      self.inventoryMenu.bgSurface=self.bgSurface
       player.currentMenu=self.inventoryMenu
 
 ######################################################################
@@ -749,6 +844,9 @@ class Player:
 
     #sound
     self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
+    pygame.mixer.init()
+    pygame.mixer.music.load(IMG_PATH+"MAFHbg.OGG")
+    pygame.mixer.music.play(-1)
 
   def initializeMenu(self):
     mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
@@ -836,8 +934,8 @@ class Player:
     itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
     itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
     itemMenu.background.rect=batBgRect
-    geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
-    geomMenu3=Menu(geomMenu3Option,self,batBg,[IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif"],"GeomTut3")
+    geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
+    geomMenu3=Menu(geomMenu3Option,self,batBg,[IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph2btn.gif",IMG_PATH+"HealGlyph1btn.gif",IMG_PATH+"FireGlyph3btn.gif",IMG_PATH+"LightningGlyph1btn.gif",IMG_PATH+"FireGlyph4btn.gif",IMG_PATH+"HealGlyph3btn.gif",IMG_PATH+"MissileGlyph2btn.gif"],"GeomTut3")
     geomMenu3.background.rect=batBgRect
     geomMenu3.numPad=True
     geomMenu2Option=[geomMenu3,"Wrong","Wrong","Wrong"]
@@ -850,9 +948,9 @@ class Player:
     divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"16Slash.gif"],"DivTut2")
     divMenu2.background.rect=batBgRect
     divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
-    divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
-    divMenu.background.rect=batBgRect
-    critMenuOption=[divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,"Enter"]
+    self.divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
+    self.divMenu.background.rect=batBgRect
+    critMenuOption=[self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,"Enter"]
     critMenu=Menu(critMenuOption,self,batBg,numPadImages,"CritTut")
     critMenu.numPad=True
     critMenu.background.rect=batBgRect
@@ -865,9 +963,9 @@ class Player:
   def initMovTutorial(self,screen):
     font=pygame.font.SysFont("cmr10",42,False,False)
     y=0
-    lines=["Welcome to the first Dungeon!","To look around, press left or right.","To move forward, press up","To check inventory or equipment,","Press space or x"]
+    lines=["Welcome to the first Dungeon!","To look around, press left or right.","To move forward, press up","To check inventory or equipment,","Press space or Circle"]
     for message in lines:
-      screen.blit(font.render(message,True,(0,200,0)),(400,200+y,200,300))
+      screen.blit(font.render(message,True,(0,200,0)),(400,20+y,200,300))
       y+=40
 
   def checkRoom(self):
@@ -1060,8 +1158,6 @@ class Hero:
         self.eqItem[int(target[8])-1]=item
 
 
-
-
   #remove item from equipment
   def remEquipment(self,item):
     if item.type=="Weapon":
@@ -1252,18 +1348,18 @@ class BattleEngine:
 
         self.lightning=pygame.sprite.Sprite()
 	self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
-        self.lightning1btn=IMG_PATH+"LigGlyph1btn.gif"
+        self.lightning1btn=IMG_PATH+"LightningGlyph1btn.gif"
         self.lightning1=pygame.sprite.Sprite()
-	self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
-        self.lightning2btn=IMG_PATH+"LigGlyph2btn.gif"
+	self.lightning1.image=pygame.image.load(IMG_PATH+"LightningGlyph1.gif")
+        self.lightning2btn=IMG_PATH+"LightningGlyph2btn.gif"
         self.lightning2=pygame.sprite.Sprite()
-	self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
-        self.lightning3btn=IMG_PATH+"LigGlyph3btn.gif"
+	self.lightning2.image=pygame.image.load(IMG_PATH+"LightningGlyph2.gif")
+        self.lightning3btn=IMG_PATH+"LightningGlyph3btn.gif"
         self.lightning3=pygame.sprite.Sprite()
-	self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
-        self.lightning4btn=IMG_PATH+"LigGlyph4btn.gif"
+	self.lightning3.image=pygame.image.load(IMG_PATH+"LightningGlyph3.gif")
+        self.lightning4btn=IMG_PATH+"LightningGlyph4btn.gif"
         self.lightning4=pygame.sprite.Sprite()
-	self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
+	self.lightning4.image=pygame.image.load(IMG_PATH+"LightningGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
 	self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
@@ -1362,13 +1458,17 @@ class BattleEngine:
             screen.blit(t,image.rect) 
             i+=1     
     else:
-      player.currentMenu.draw(player,screen,235,450,40)
+      if player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
+        player.currentMenu.draw(player,screen,235,390,60)
+      else:
+        player.currentMenu.draw(player,screen,235,450,40)
       if not player.battlePlayer.currentProb1=="":
         font = pygame.font.Font(None, 36)
         probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
-        inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
-        screen.blit(probText,pygame.Rect(250,350,200,30))
-        screen.blit(inputText,pygame.Rect(250,400,200,30))
+        inputText=font.render(player.battlePlayer.currentInput,True,(50,0,150))
+        if player.currentMenu.name=="Number Pad" or player.currentMenu.name=="CritTut":
+          screen.blit(probText,pygame.Rect(250,350,200,30))
+          screen.blit(inputText,pygame.Rect(250,400,200,30))
       
       screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
     pygame.display.flip()
@@ -1424,7 +1524,7 @@ class BattleEngine:
     player.currentMenu=self.battleMenu
 
   def critical(self,player):
-    pygame.time.set_timer(USEREVENT+1,500)
+    pygame.time.set_timer(USEREVENT+1,1000)
     player.battlePlayer.currentInput=""
     player.currentMenu=self.numPadMenu
     prob1=randint(0,12)
@@ -1435,45 +1535,45 @@ class BattleEngine:
 
   def magic(self,player):
     player.currentMenu=self.magicMenu
-    pygame.time.set_timer(USEREVENT+1,500)
+    pygame.time.set_timer(USEREVENT+1,1000)
   def startGlyph(self,name):
     self.glyphGroup.empty()
     self.glyphOverlayGroup.empty()
     if name=="Fire":
-      shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn),("Not",self.heal1btn)]
+      shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn)]
       shuffle(shuffle2D)
-      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
-      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
-      glyphMenu.background.rect=(200,580,200,200)
+      glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
-      self.fire.rect=(self.enemies[self.selEnemyIndex].sprite.rect.left-40,self.enemies[self.selEnemyIndex].sprite.rect.top+40,300,300)
+      self.fire.rect=(500,350,300,300)
       self.glyphGroup.add(self.fire)
     elif name=="Lightning":
-      shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn),("Not",self.fire1btn)]
+      shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn)]
       shuffle(shuffle2D)
-      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
-      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
-      glyphMenu.background.rect=(200,580,200,200)
+      glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
-      self.lightning.rect=(self.enemies[self.selEnemyIndex].sprite.rect.left+40,self.enemies[self.selEnemyIndex].sprite.rect.top+40,300,300)
+      self.lightning.rect=(500,350,300,300)
       self.glyphGroup.add(self.lightning)
 
     elif name=="Missile":
 	self.attack(self.player.battlePlayer,"Missile")
     elif name=="Heal":
-      shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn),("Not",self.fire1btn)]
+      shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn)]
       shuffle(shuffle2D)
-      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
-      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
-      glyphMenu.background.rect=(200,580,200,200)
+      glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
-      self.heal.rect=(500,300,300,300)
+      self.heal.rect=(500,350,300,300)
       self.glyphGroup.add(self.heal)
     #set glyph menu
 
@@ -1732,8 +1832,11 @@ class BattleEngine:
 
         elif newKey=='[2]' or newKey=='down':
           #Down
-          if player.currentMenu.numPad==True:
+          if player.currentMenu.name=="Number Pad":
             for i in range(3):
+              player.currentMenu.select("down")
+          elif player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
+            for i in range(2):
               player.currentMenu.select("down")
           else:
             player.currentMenu.select("down")
@@ -1749,8 +1852,11 @@ class BattleEngine:
               self.selEnemyIndex=0
         elif newKey=='[8]' or newKey=='up':
           #Up
-          if player.currentMenu.numPad==True:
+          if player.currentMenu.name=="Number Pad":
             for i in range(3):
+              player.currentMenu.select("up")
+          elif player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
+            for i in range(2):
               player.currentMenu.select("up")
           else:
             player.currentMenu.select("up")
@@ -1867,9 +1973,7 @@ def enterRoom(direction,player,screen):
     player.currentRoomGroup.add(player.currentRoomSprite)
     player.currentRoomGroup.draw(screen)
     player.waiting=True
-
-    #player.traversal=False
-    #setImage(player)
+    player.dgnMap.updateMacro(player)
     return("You enter room at "+repr(player.currentX)+", "+repr(player.currentY))
 
 def setImage(player):
@@ -1978,6 +2082,8 @@ def checkDoor(direction,player,screen):
             if currentRoom.doorN:
                 if currentRoom.doorNFlag==EXIT:
                   player.nextDungeon()
+                elif currentRoom.doorNFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorNFlag==LOCKED or currentRoom.doorNFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
@@ -1993,6 +2099,8 @@ def checkDoor(direction,player,screen):
             if currentRoom.doorS:
                 if currentRoom.doorSFlag==EXIT:
                   player.nextDungeon()
+                elif currentRoom.doorSFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorSFlag==LOCKED or currentRoom.doorSFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
@@ -2008,6 +2116,8 @@ def checkDoor(direction,player,screen):
             if currentRoom.doorE:
                 if currentRoom.doorEFlag==EXIT:
                   player.nextDungeon()
+                elif currentRoom.doorEFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorEFlag==LOCKED or currentRoom.doorEFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
@@ -2023,6 +2133,8 @@ def checkDoor(direction,player,screen):
             if currentRoom.doorW:
                 if currentRoom.doorWFlag==EXIT:
                   player.nextDungeon()
+                elif currentRoom.doorWFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorWFlag==LOCKED or currentRoom.doorWFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
@@ -2127,13 +2239,12 @@ def updateTraversal(event,player,screen):
 
     elif event.type == KEYDOWN:
       newKey=pygame.key.name(event.key)
-     
       if newKey=='escape':
         sys.exit()
 
       elif newKey=='[1]':
-        ##check
-        player.migrateMessages(player.checkRoom())
+        ##square
+        player.migrateMessages('not implemented')
 
       elif newKey=='[2]':
         player.migrateMessages(checkDoor('down',player,screen))
