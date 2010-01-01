@@ -136,7 +136,7 @@ class Dungeon:
         event=int(line[8])
 
       rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
-      
+      #check hidden items
       if line[14]=='h':
         rm.it1.hidden=True
       if line[16]=='h':
@@ -145,6 +145,16 @@ class Dungeon:
         rm.it3.hidden=True
       if line[20]=='h':
         rm.it4.hidden=True
+      
+      #check battle items
+      if line[14]=='b':
+        rm.it1.battle=True
+      if line[16]=='b':
+        rm.it2.battle=True
+      if line[18]=='b':
+        rm.it3.battle=True
+      if line[20]=='b':
+        rm.it4.battle=True
 
       if doorSFlag==ENTRANCE or doorNFlag==ENTRANCE or doorWFlag==ENTRANCE or doorEFlag==ENTRANCE:
         self.start=(currentX,currentY)
@@ -379,6 +389,7 @@ class Menu:
         self.numPad=False
         self.name=name
         self.inventoryUp=False
+        self.player=player
         self.sX=0
         self.xY=0
         i=0
@@ -399,8 +410,17 @@ class Menu:
         i=0
         sel=0
         font=pygame.font.SysFont("cmr10",24,False,False)
-        if self.numPad==False and not self.name=="Stats" and not self.name=="Inventory":
+        if self.numPad==False and not self.name=="Stats" and not self.name=="Inventory" and not self.name=="Victory":
           for image in self.optionsImages:
+            if self.name=="Defeat":
+              if i==self.currentOption:
+                x=10
+              else:
+                x=0
+              image.rect=pygame.Rect(xStart+(i*250),yStart-x,1290,height)
+              i+=1
+              menuGroup.add(image)
+            else:
               if i==self.currentOption:
                 image.rect=pygame.Rect(xStart+30,yStart+(i*height),1290,height)
 
@@ -440,7 +460,13 @@ class Menu:
           hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
           hpRect=pygame.Rect(635,425,200,42)
           self.bgSurface.blit(hp,hpRect)
-          
+
+          player.akhalSprite.rect=(600,350,50,50)
+          akhalGroup=pygame.sprite.Group(player.akhalSprite)
+          akhalGroup.draw(self.bgSurface)
+          akhal=font.render(repr(player.battlePlayer.akhal),True,(0,0,0))
+          akhalRect=pygame.Rect(650,375,200,42)
+          self.bgSurface.blit(akhal,akhalRect)
           att=font.render("ATK: "+repr(player.battlePlayer.attackPower("basic")),True,(0,0,0))
           attRect=pygame.Rect(635,445,200,42)
           self.bgSurface.blit(att,attRect)
@@ -547,6 +573,24 @@ class Menu:
                 for message in lines:
                   screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
                   k+=40
+        if self.name=="Victory":
+          self.bgSurface=pygame.Surface((1200,700))
+          player.currentRoomGroup.draw(self.bgSurface)
+          bgGroup.draw(self.bgSurface)
+          screen.blit(self.bgSurface,(0,0,0,0))
+          screen.blit(font.render("You Win!",True,(0,15,0)),(530,230,0,0))
+          player.akhalSprite.rect=(530,300,50,50)
+          akhalGroup=pygame.sprite.Group(player.akhalSprite)
+          akhalGroup.draw(screen)
+          screen.blit(font.render(repr(self.player.curBattle.checkValue()),True,(0,15,0)),(580,325,0,0))
+          pygame.display.flip()
+        elif self.name=="Defeat":
+          screen.fill((0,0,0),(0,0,1200,900))
+          menuGroup.draw(screen)
+          screen.blit(font.render("You have been defeated",True,(150,0,0)),(400,400,0,0))
+          screen.blit(font.render("Continue",True,(150,0,0)),(470,515,0,0))
+          screen.blit(font.render("Exit",True,(150,0,0)),(710,515,0,0))
+          #draw continue/exit text
         if self.name=="AtkTut":
           screen.fill((255,255,255),(600,400,400,300))
           lines=["To perform a basic attack","select the attack button"]
@@ -608,7 +652,8 @@ class Menu:
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
-        menuGroup.draw(screen)
+        if not self.name=="Defeat":
+          menuGroup.draw(screen)
 
         if player.battle==False:
           pygame.display.flip()
@@ -737,8 +782,35 @@ class Menu:
           player.migrateMessages("Incorrect glyph.  Spell fizzles")
           player.curBattle.playerTurn=False
           player.currentMenu=player.curBattle.battleMenu
+        elif name=="Continue":
+          player.mainMenu=False
+          player.traversal=True
+          player.battlePlayer.akhal+=player.curBattle.enemyValue
+        elif name=="LoseContinue":
+            player.dgnIndex-=1
+            player.currentX=0
+            player.currentY=0
+            player.playerFacing=1
+            player.nextDungeon()
+            player.dgnMap.updateMacro(player)
+            player.traversal=True
+            player.mainMenu=False
+            setImage(player)
+            player.battlePlayer=Hero(player)
+            player.currentRoomGroup.draw(screen)
+            pygame.display.flip()
+        elif name=="LoseExit":
+	    for i in range(6):
+              player.migrateMessages("")
+            player.__init__(0,0)
+            player.traversal=False
+            player.mainMenu=True
+            player.currentMenu=player.MainMenu
+            player.currentMenu.draw(player,screen,0,0,45)
+            pygame.display.flip()
 	else:
 	    sys.exit()
+
     def createInventory(self,player,name):
       invOptions=[]
       invImages=[]
@@ -904,6 +976,10 @@ class Player:
     self.RSprite=pygame.sprite.Sprite()
     self.RSprite.image=pygame.image.load(IMG_PATH+"r.gif")
     self.RSprite.rect=self.currentRoomSprite.rect
+    
+    self.akhalSprite=pygame.sprite.Sprite()
+    self.akhalSprite.image=pygame.image.load(IMG_PATH+"akhal.gif")
+    self.akhalSprite.rect=pygame.Rect(0,0,50,50)
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
 
@@ -1003,6 +1079,7 @@ class Item:
     self.type=typ
     self.power=0
     self.hidden=False
+    self.battle=False
     if self.name=="Potion":
       self.power=20
     elif self.name=="Sword":
@@ -1039,6 +1116,7 @@ class Hero:
         self.currentProb2=0
         self.currentAnswer=0
         self.fractionSum=0
+        self.akhal=0
 
         basicSword=Item("Sword","Weapon")
         amulet=Item("Amulet","Weapon")
@@ -1121,6 +1199,8 @@ class Hero:
     self.HP -= (dmg - self.defensePower())
     if self.HP<0:
       self.HP=0
+    if self.HP>self.MHP:
+      self.HP=self.MHP
 #****BATTLE ACCESSORS***********************************************#
   #returns player's list of attacks that are currently available for use
   def availableAttacks(self):
@@ -1382,6 +1462,7 @@ class BattleEngine:
 
 	self.glyphGroup=pygame.sprite.Group()
 	self.glyphOverlayGroup=pygame.sprite.Group()
+        self.enemyValue=0
         i=0
 	for enemy in self.enemies:
           enemy.place=i
@@ -1517,7 +1598,10 @@ class BattleEngine:
     defender=self.enemies[self.selEnemyIndex]
     if attackName=="Heal":
       defender=attacker
-      player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
+      if -1*int(attacker.attackPower(attackName))>attacker.MHP:
+        player.migrateMessages("You heal to full health")
+      else:
+        player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
     else:
       player.migrateMessages("You attack for "+repr(int(attacker.attackPower(attackName)))+" damage")
       player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
@@ -1746,21 +1830,36 @@ class BattleEngine:
       defender.defendAttack(enemy.attackPower("basic"))
     self.playerTurn=True
 
-
+  ###
+  #the value generated by enemies in current battle
+  ###
+  def checkValue(self):
+    return self.enemyValue
   ###
   #Called when battle is over and player wins
   ##
   def Victory(self):
-    #self.player.winScreen(self)
+    
+    if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.battle:
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
+      player.currentRoom.it1=0
+    if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.battle:
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
+      player.currentRoom.it2=0
+    if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.i3.battle:
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
+      player.currentRoom.it3=0
+    if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.battle:
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
+      player.currentRoom.it4=0
     self.player.currentRoom.en1=0
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
+    victoryMenu=Menu(["Continue"],self.player,IMG_PATH+"VictoryScreen.gif",[IMG_PATH+"Blank.gif"],"Victory")
     self.player.battle=False
-    self.player.traversal=True
-    self.player.msg5="You Win!"
-    #self.player.winScreen=True
-    #Return to travesal system
+    self.player.mainMenu=True
+    self.player.currentMenu=victoryMenu
 
   ###
   #Called when battle is over and player loses
@@ -1768,10 +1867,10 @@ class BattleEngine:
   def Defeat(self):
     #self.player.defeatScreen=True
     self.player.battle=False
-    self.player.currentMenu=self.player.MainMenu
-    self.player.currentMenu.select("up")
+    defeatMenu=Menu(["LoseContinue","LoseExit"],self.player,IMG_PATH+"VictoryScreen.gif",[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"],"Defeat")
+    self.player.currentMenu=defeatMenu
     self.player.mainMenu=True	
-    #end the game
+
   def bringOutYerDead(self,enemies):
     for enemy in enemies:
       if enemy.HP<=0:
@@ -1784,6 +1883,13 @@ class BattleEngine:
         elif enemy.place==3:
           self.player.currentRoom.en4='0'
         self.selEnemyIndex=0
+        if enemy.name=="Gru":
+          self.enemyValue+=50
+        elif enemy.name=="Wizard":
+          self.enemyValue+=150
+        elif enemy.name=="Goblin":
+          self.enemyValue+=50
+
         enemies.remove(enemy)
     return enemies
   ###
@@ -2218,15 +2324,16 @@ def updateMenu(event,player):
         menu.regress(player)
 
       elif newKey=='[4]' or newKey=='left':
-        print("left")
-        if menu.name=="Stats":
-          menu.inventoryUp=not menu.inventoryUp
-
+        #if menu.name=="Stats":
+        #  menu.inventoryUp=not menu.inventoryUp
+        if menu.name=="Defeat":
+          menu.select("up")
       elif newKey=='[5]':
         print('check')
 
-      elif newKey=='[6]':
-        print('right')
+      elif newKey=='[6]' or newKey=='right':
+        if menu.name=="Defeat":
+          menu.select("down")
 
       elif newKey=='[7]':
         print('square')
@@ -2465,6 +2572,9 @@ while pippy.pygame.next_frame():
     elif player.currentMenu.name=="Stats":
       player.currentMenu.draw(player,screen,450,400,50)
       drawTextBox(player,screen)
+    elif player.currentMenu.name=="Defeat":
+      player.currentMenu.draw(player,screen,450,500,50)
+      
     else:
       player.currentMenu.draw(player,screen,450,400,50)
   else:
