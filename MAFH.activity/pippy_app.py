@@ -6,8 +6,8 @@ import os.path
 #Start of external classes and functions
 ###############################################################################
 
-IMG_PATH = os.path.dirname(__file__) + "/images/"
-#IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
+#IMG_PATH = os.path.dirname(__file__) + "/images/"
+IMG_PATH="/home/olpc/Activities/MAFH.activity/images/"
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
@@ -1970,11 +1970,7 @@ class BattleEngine:
               player.currentMenu.select("up")
           else:
             player.currentMenu.select("up")
-
-        elif newKey=='[3]' or newKey=='backspace':
-          #X
-          player.currentMenu.regress(player)
-
+          
         elif newKey=='[1]' or newKey=='return':
           #Check
           player.currentMenu.progress(player,screen)
@@ -2321,11 +2317,9 @@ def updateMenu(event,player):
         menu.select("down")
 
       elif newKey=='[3]' or newKey=='backspace':
-        menu.regress(player)
-
+        if menu.name=="Stats" or menu.name=="Inventory":
+          menu.regress(player)
       elif newKey=='[4]' or newKey=='left':
-        #if menu.name=="Stats":
-        #  menu.inventoryUp=not menu.inventoryUp
         if menu.name=="Defeat":
           menu.select("up")
       elif newKey=='[5]':
@@ -2353,20 +2347,16 @@ def updateTraversal(event,player,screen):
       if newKey=='escape':
         sys.exit()
 
-      elif newKey=='[1]':
-        ##square
-        player.migrateMessages('not implemented')
-
       elif newKey=='[2]':
         player.migrateMessages(checkDoor('down',player,screen))
 
       elif newKey=='[3]' or newKey=='i':
-        player.migrateMessages('information')
+        player.migrateMessages("")
 
       elif newKey=='[4]' or newKey=='left':
         player.migrateMessages(checkDoor('left',player,screen))
 
-      elif newKey=='[5]' or newKey=='e':
+      elif newKey=='[1]' or newKey=='e':
         player.migrateMessages(player.checkRoom())
 
       elif newKey=='[6]' or newKey=='right':
