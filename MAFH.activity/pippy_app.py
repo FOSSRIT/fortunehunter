@@ -6,8 +6,8 @@ import os.path
 #Start of external classes and functions
 ###############################################################################
 
-#IMG_PATH = os.path.dirname(__file__) + "/images/"
-IMG_PATH="/home/olpc/Activities/MAFH.activity/images/"
+IMG_PATH = os.path.dirname(__file__) + "/images/"
+#IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
@@ -210,7 +210,49 @@ class Room:
   def setImage(self,imagePath):
     self.image=pygame.image.load(imagePath)
   def fillItems(self):
-    itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Sword","Weapon"),Item("Calculator","Special")]
+    #Item("Rusted Blade","Weapon")
+    #Item("Great Sword","Weapon")
+    #Item("Crescent Sword","Weapon")
+    #Item("Cardinal","Weapon")
+    #Item("Sun Moon","Weapon")
+
+    #Item("Earth Vest","Armor")
+    #Item("Wind Breaker","Armor")
+    #Item("Flame Leggings","Armor")
+    #Item("Dark Cowl","Armor")
+    #Item("Celestial Armor","Armor")
+
+    #Item("Jewel Shard","Accessory")
+    #Item("Broken Hourglass","Accessory")
+    #Item("Radiant Vial","Accessory")
+    #Item("Honor Tome","Accessory")
+    #Item("Valor Tome","Accessory")
+
+    #Item("Remedy","Usable")
+    #Item("Elixir","Usable")
+    #Item("Panacea","Usable")
+    #Item("High Elixir","Usable")
+    #Item("Nostrum","Usable")
+
+    #Item("Ruby","Special")
+    #Item("Sapphire","Special")
+    #Item("Emerald","Special")
+    #Item("Diamond","Special")
+
+    #Item("Ancient Amulet","Weapon")
+    #Item("Small Key","key")
+    #Item("Big Key","key")
+    #depending on dungeon, item list varies: SUGGESTED FORMAT=usable items, key items, weapon, armor,special items
+    #Dungeon 5
+    #itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]  
+    #Dungeon 4
+    #itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable")Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]    
+    #Dungeon 3
+    #itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable")Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
+    #Dungeon 2
+    #itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
+    #Dungeon 1
+    itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
     if not int(self.it1)==0:
       self.it1=itemList[int(self.it1)]
     if not int(self.it2)==0:
@@ -613,8 +655,7 @@ class Menu:
             screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="DivTut2":
-          screen.fill((255,255,255),(800,400,400,300))
-          lines=["In special attack, you","can select the power of","multiple slashes.","If this power adds up to one","the attack is successful. Otherwise","it will miss"]
+          lines=["In special attack, you","must power up your sword.","Select how much power","to add to your sword.","If the power is exactly 1","you will attack for 1.5X damage","Otherwise, it will miss"]
           y=0
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(800,400+y,400,300))
@@ -761,7 +802,7 @@ class Menu:
         elif name=="Item1" or name=="Item2" or name=="Item3" or name=="Item4":
           index=int(repr(name)[5])-1
           if index<len(player.battlePlayer.eqItem):
-            player.curBattle.useItem(player.battlePlayer.eqItem[int(repr(name)[5])-1])
+            player.curBattle.useItem(player.battlePlayer.eqItem[index])
           else:
             player.currentMenu=player.curBattle.battleMenu
 	  #if we decide to add puzzle/minigame items, here's where they'd go
@@ -981,6 +1022,11 @@ class Player:
     self.akhalSprite.image=pygame.image.load(IMG_PATH+"akhal.gif")
     self.akhalSprite.rect=pygame.Rect(0,0,50,50)
 
+    divSwordImg=pygame.sprite.Sprite()
+    divSwordImg.image=pygame.image.load(IMG_PATH+"DivSword.gif")
+    divSwordImg.rect=(500,300,137,300)
+    self.divSword=pygame.sprite.Group(divSwordImg)
+
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
 
   def migrateMessages(self,msg):
@@ -1021,7 +1067,7 @@ class Player:
     geomMenu=Menu(geomMenuOption,self,batBg,batImages,"GeomTut")
     geomMenu.background.rect=batBgRect
     divMenu2Option=[geomMenu,geomMenu,geomMenu,geomMenu]
-    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"16Slash.gif"],"DivTut2")
+    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Power.gif",IMG_PATH+"14Power.gif",IMG_PATH+"13Power.gif",IMG_PATH+"16Power.gif"],"DivTut2")
     divMenu2.background.rect=batBgRect
     divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
     self.divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
@@ -1078,16 +1124,80 @@ class Item:
     self.name=name
     self.type=typ
     self.power=0
+    self.buyVal=0
+    self.sellVal=0
     self.hidden=False
     self.battle=False
-    if self.name=="Potion":
-      self.power=20
-    elif self.name=="Sword":
-      self.power=25
-    elif self.name=="Vest":
-      self.power=10
-    elif self.name=="Ring":
+
+    #WEAPONS
+    if self.name=="Ancient Amulet":
+      self.power=1
+    elif self.name=="Rusted Blade":
       self.power=5
+    elif self.name=="Great Sword":
+      self.power=15
+    elif self.name=="Crescent Sword":
+      self.power=25
+    elif self.name=="Cardinal":
+      self.power=35
+    elif self.name=="Sun Moon":
+      self.power=50
+
+    #ARMOR
+    elif self.name=="Earth Vest":
+      self.power=5
+    elif self.name=="Wind Breaker":
+      self.power=15
+    elif self.name=="Flame Leggings":
+      self.power=25
+    elif self.name=="Dark Cowl":
+      self.power=35
+    elif self.name=="Celestial Armor":
+      self.power=50
+
+    #ACCESSORY
+    elif self.name=="Jewel Shard":
+      self.power=10
+    elif self.name=="Broken Hourglass":
+      self.power=10
+    elif self.name=="Radiant Vial":
+      self.power=20
+    elif self.name=="Honor Tome":
+      self.power=.2
+    elif self.name=="Valor Tome":
+      self.power=.2
+
+    #TREASURES
+    elif self.name=="Ruby":
+      self.sellVal=500
+    elif self.name=="Sapphire":
+      self.sellVal=500
+    elif self.name=="Emerald":
+      self.sellVal=500
+    elif self.name=="Diamond":
+      self.sellVal=500
+
+    #HEALING
+    elif self.name=="Remedy":
+      self.sellVal=2
+      self.buyVal=20
+      self.power=.05
+    elif self.name=="Elixir":
+      self.sellVal=10
+      self.buyVal=60
+      self.power=.15
+    elif self.name=="Panacea":
+      self.sellVal=50
+      self.buyVal=150
+      self.power=.80
+    elif self.name=="High Elixir":
+      self.sellVal=20
+      self.buyVal=100
+      self.power=.40
+    elif self.name=="Nostrum":
+      self.sellVal=100
+      self.buyVal=250
+      self.power=.5
 #######################################################################
 
 #Hero class - represents the player in battle and holds all of their data
@@ -1118,16 +1228,10 @@ class Hero:
         self.fractionSum=0
         self.akhal=0
 
-        basicSword=Item("Sword","Weapon")
         amulet=Item("Amulet","Weapon")
-        basicArmor=Item("Vest","Armor")
-        potion=Item("Remedy","Usable")
-        grenade=Item("Grenade","Usable")
-        basicRing=Item("Ring","Accessory")
         emptyItem=Item("","Usable")
-        #smallKey=Item(player,"Small Key","key")
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
-        self.inv_Ar=[basicSword,amulet,basicArmor,basicRing,grenade]
+        self.inv_Ar=[amulet]
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -1230,9 +1334,8 @@ class Hero:
       self.inv_Ar.remove(item)
       self.BHP=item.power
     elif target[0:8]=="ItemSlot" and item.type=="Usable":
-      if len(self.eqItem)<4:
-        self.eqItem.append(item)
-      else:
+        for i in range(len(self.eqItem)-1,3):
+          self.eqItem.append(Item("",""))
         if not self.eqItem[int(target[8])-1].name=="":
           self.inv_Ar.append(self.eqItem[int(target[8])-1])
         self.inv_Ar.remove(item)
@@ -1493,7 +1596,7 @@ class BattleEngine:
 
     divisionOptions=["1/2","1/3","1/4","1/6"]
     divisionBackground=IMG_PATH+"battleMenubackground.gif"
-    divisionOptImg=[IMG_PATH+"12Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"16Slash.gif"]
+    divisionOptImg=[IMG_PATH+"12Power.gif",IMG_PATH+"13Power.gif",IMG_PATH+"14Power.gif",IMG_PATH+"16Power.gif"]
     self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
     self.divisionMenu.background.rect=(0,300,200,200) 
 
@@ -1540,8 +1643,9 @@ class BattleEngine:
             screen.blit(t,image.rect) 
             i+=1     
       elif player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
-        screen.fill((0,0,0),(500,400,200,300))
-        screen.fill((255,150,0),(500,(700-300*player.battlePlayer.fractionSum),200,300*player.battlePlayer.fractionSum))
+        screen.fill((0,0,0),(500,300,100,400))
+        screen.fill((255,150,0),(500,(620-310*player.battlePlayer.fractionSum),137,310*player.battlePlayer.fractionSum))
+        player.divSword.draw(screen)
     else:
       if player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
         player.currentMenu.draw(player,screen,235,390,60)
@@ -1744,13 +1848,10 @@ class BattleEngine:
   #uses an item in the player's equipped item list
   ###
   def useItem(self,item):
-    if item.name=="Remedy":
-      self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*.05)
-    elif item.name=="Grenade":
-      self.attack(self.player.battlePlayer,"Fire")
-    else:
-      self.doNothing()
-    self.player.battlePlayer.eqItem.remove(item)
+    if item.type=="Usable":
+      self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*item.power)
+      self.player.battlePlayer.eqItem.remove(item)
+      self.player.battlePlayer.eqItem.append(Item("",""))
     self.playerTurn=False
     self.player.currentMenu=self.battleMenu
 
@@ -2080,7 +2181,7 @@ def enterRoom(direction,player,screen):
     player.currentRoomGroup.draw(screen)
     player.waiting=True
     player.dgnMap.updateMacro(player)
-    return("You enter room at "+repr(player.currentX)+", "+repr(player.currentY))
+    return("You enter room at "+repr(player.currentX)+", "+repr(player.dgn.sizeY-player.currentY-1))
 
 def setImage(player):
     fileName=""
