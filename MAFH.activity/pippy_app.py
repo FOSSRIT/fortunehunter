@@ -128,7 +128,7 @@ class Dungeon:
         elif line[7]=='x':
           doorEFlag=EXIT
 
-      if line[8]=='M':
+      if line[8]=='S':
         roomFlag=SHOP
       elif line[8]=='P':
         roomFlag=PUZZLE
@@ -408,9 +408,9 @@ class Map:
     curSect=pygame.Rect(0,700,200,200)
     curSect.top+=((player.currentX*40-81)*math.cos(angle))-((player.currentY*40-81)*math.sin(angle))
     curSect.left-=((player.currentX*40-81)*math.sin(angle))+((player.currentY*40-81)*math.cos(angle))
-    if player.playerFacing==EAST:
+    if player.playerFacing==EAST and player.dgnIndex==0:
       curSect.top+=sideDifference*(40-81)
-    elif player.playerFacing==SOUTH:
+    elif player.playerFacing==SOUTH and player.dgnIndex==0:
       curSect.left+=sideDifference*(40-81)
     screen.fill(0,(0,700,200,300),0)
     screen.blit(mapView,curSect)
@@ -625,6 +625,10 @@ class Menu:
           akhalGroup=pygame.sprite.Group(player.akhalSprite)
           akhalGroup.draw(screen)
           screen.blit(font.render(repr(self.player.curBattle.checkValue()),True,(0,15,0)),(580,325,0,0))
+          k=0
+          for message in player.curBattle.battleItems:
+            screen.blit(font.render(message,True,(0,200,0)),(520,350+k,200,300))
+            k+=40
           pygame.display.flip()
         elif self.name=="Defeat":
           screen.fill((0,0,0),(0,0,1200,900))
@@ -655,10 +659,11 @@ class Menu:
             screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
         elif self.name=="DivTut2":
+          screen.fill((255,255,255),(700,400,400,300))
           lines=["In special attack, you","must power up your sword.","Select how much power","to add to your sword.","If the power is exactly 1","you will attack for 1.5X damage","Otherwise, it will miss"]
           y=0
           for message in lines:
-            screen.blit(font.render(message,True,(0,200,0)),(800,400+y,400,300))
+            screen.blit(font.render(message,True,(0,200,0)),(700,400+y,400,300))
             y+=40
         elif self.name=="GeomTut":
           screen.fill((255,255,255),(600,400,400,300))
@@ -925,9 +930,9 @@ class Player:
     self.currentX=x
     self.currentY=y
     self.dgnIndex=-1
-    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",5,5)]
-    self.nextDungeon()
+    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7)]
     self.battlePlayer=Hero(self)
+    self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
     self.hpTutorial=False
@@ -1038,15 +1043,24 @@ class Player:
   def nextDungeon(self):
 
     self.dgnIndex+=1
-    dgnWidth=self.dungeons[self.dgnIndex][1]
-    dgnHeight=self.dungeons[self.dgnIndex][2]
-    self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
-    self.dgn.fill()
-    self.currentX=self.dgn.start[0]
-    self.currentY=self.dgn.start[1]
-    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
-    self.dgnMap=Map(self.dgn)
-    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+    if self.dgnIndex>=len(self.dungeons):
+      self.currentMenu=self.MainMenu
+      self.mainMenu=True
+      self.traversal=False
+    else:
+      for item in self.battlePlayer.inv_Ar:
+        if item.type=="key":
+          self.battlePlayer.inv_Ar.remove(item)
+      dgnWidth=self.dungeons[self.dgnIndex][1]
+      dgnHeight=self.dungeons[self.dgnIndex][2]
+      self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
+      self.dgn.fill()
+      self.currentX=self.dgn.start[0]
+      self.currentY=self.dgn.start[1]
+      self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+      self.dgnMap=Map(self.dgn)
+      self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+
   def initInGameBattleTutorial(self,screen):
     batImages=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
     batBg=IMG_PATH+"battleMenubackground.gif"
@@ -1228,10 +1242,11 @@ class Hero:
         self.fractionSum=0
         self.akhal=0
 
-        amulet=Item("Amulet","Weapon")
+        amulet=Item("Ancient Amulet","Weapon")
+        calculator=Item("Caclulator","")
         emptyItem=Item("","Usable")
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
-        self.inv_Ar=[amulet]
+        self.inv_Ar=[amulet,calculator]
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -1940,17 +1955,21 @@ class BattleEngine:
   #Called when battle is over and player wins
   ##
   def Victory(self):
-    
+    self.battleItems=["Items Won: "]
     if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.battle:
       player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
+      self.battleItems.append(player.currentRoom.it1.name)
       player.currentRoom.it1=0
     if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.battle:
+      self.battleItems.append(player.currentRoom.it2.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
       player.currentRoom.it2=0
     if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.i3.battle:
+      self.battleItems.append(player.currentRoom.it3.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
       player.currentRoom.it3=0
     if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.battle:
+      self.battleItems.append(player.currentRoom.it4.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
       player.currentRoom.it4=0
     self.player.currentRoom.en1=0
@@ -2288,14 +2307,19 @@ def checkDoor(direction,player,screen):
          if playerFacing==NORTH:
             if currentRoom.doorN:
                 if currentRoom.doorNFlag==EXIT:
-                  player.nextDungeon()
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY")
                 elif currentRoom.doorNFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorNFlag==LOCKED or currentRoom.doorNFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      return("You use a small key, "+enterRoom('north',player,screen))
-                  return("This door is locked, you need a small key")
+                      return("You use a SMALL KEY, "+enterRoom('north',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
                 else:
                   return(enterRoom('north',player,screen))
 
@@ -2305,14 +2329,19 @@ def checkDoor(direction,player,screen):
          elif playerFacing==SOUTH:
             if currentRoom.doorS:
                 if currentRoom.doorSFlag==EXIT:
-                  player.nextDungeon()
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY to exit")
                 elif currentRoom.doorSFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorSFlag==LOCKED or currentRoom.doorSFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      return("You use a small key, "+enterRoom('south',player,screen))
-                  return("This door is locked, you need a small key")
+                      return("You use a SMALL KEY, "+enterRoom('south',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
                 else:
                   return(enterRoom('south',player,screen))
 
@@ -2322,14 +2351,19 @@ def checkDoor(direction,player,screen):
          elif playerFacing==EAST:
             if currentRoom.doorE:
                 if currentRoom.doorEFlag==EXIT:
-                  player.nextDungeon()
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY to exit")
                 elif currentRoom.doorEFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorEFlag==LOCKED or currentRoom.doorEFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      return("You use a small key, "+enterRoom('east',player,screen))
-                  return("This door is locked, you need a small key")
+                      return("You use a SMALL KEY, "+enterRoom('east',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
                 else:
                   return(enterRoom('east',player,screen))
 
@@ -2339,14 +2373,19 @@ def checkDoor(direction,player,screen):
          elif playerFacing==WEST:
             if currentRoom.doorW:
                 if currentRoom.doorWFlag==EXIT:
-                  player.nextDungeon()
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY to exit")
                 elif currentRoom.doorWFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
                 elif currentRoom.doorWFlag==LOCKED or currentRoom.doorWFlag==BOTH:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      return("You use a small key, "+enterRoom('west',player,screen))
-                  return("This door is locked, you need a small key")
+                      return("You use a SMALL KEY, "+enterRoom('west',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
                 else:
                   return(enterRoom('west',player,screen))
 
@@ -2545,19 +2584,19 @@ def updateWaiting(event,player):
   #################
   #check items in room
   #################
-  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False:
+  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
     player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
     player.currentRoom.it1=0
-  if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False:
+  if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
     player.migrateMessages(player.currentRoom.it2.name+" added to inventory")
     player.currentRoom.it2=0
-  if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False:
+  if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
     player.migrateMessages(player.currentRoom.it3.name+" added to inventory")
     player.currentRoom.it3=0
-  if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False:
+  if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
     player.migrateMessages(player.currentRoom.it4.name+" added to inventory")
     player.currentRoom.it4=0
