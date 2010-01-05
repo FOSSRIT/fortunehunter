@@ -627,7 +627,7 @@ class Menu:
           screen.blit(font.render(repr(self.player.curBattle.checkValue()),True,(0,15,0)),(580,325,0,0))
           k=0
           for message in player.curBattle.battleItems:
-            screen.blit(font.render(message,True,(0,200,0)),(520,350+k,200,300))
+            screen.blit(font.render(message,True,(0,15,0)),(520,350+k,200,300))
             k+=40
           pygame.display.flip()
         elif self.name=="Defeat":
@@ -1727,7 +1727,7 @@ class BattleEngine:
 
     defender.defendAttack(attacker.attackPower(attackName))
     self.playerTurn=False
-    self.CheckEndBattle()
+    #self.CheckEndBattle()
     player.currentMenu=self.battleMenu
 
   def critical(self,player):
@@ -1972,6 +1972,7 @@ class BattleEngine:
       self.battleItems.append(player.currentRoom.it4.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
       player.currentRoom.it4=0
+    print(self.battleItems)
     self.player.currentRoom.en1=0
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
@@ -2101,7 +2102,7 @@ class BattleEngine:
 
         elif newKey=='[9]':
           msg5='circle'
-
+      self.CheckEndBattle()
     else: 
       #print("Easy Mode")
       #self.playerTurn=True
@@ -2110,7 +2111,7 @@ class BattleEngine:
       #if enemy turn, randomly select enemy attack using GenerateEnemeyAttack() and attack
 
     #Run a check to see if battle is over
-    self.CheckEndBattle()
+      self.CheckEndBattle()
 
 #############################################################################
 #End External Classes
@@ -2726,4 +2727,5 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
 
