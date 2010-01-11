@@ -19,12 +19,19 @@ class Dungeon:
     self.sizeY=sizeY
     self.fileName=fileName
     self.start=[0,0]
+    self.index=0
     #TYPES BASED ON DUNGEON INDEX OR FILENAME#
-    #self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
-    #self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
-    #self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
-    #self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
-    self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
+    if self.index<5 and self.index>=0:
+      self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
+    elif self.index<10 and self.index>=5:
+      self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
+    elif self.index<15 and self.index>=10:
+      self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
+    elif self.index<20 and self.index>=15:
+      self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
+    elif self.index<25 and self.index>=20:
+      self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
+
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
 
@@ -141,6 +148,10 @@ class Dungeon:
         event=int(line[8])
 
       rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
+   
+      rm.setItemList(self.index)
+      rm.fillItems()
+
       #check hidden items
       if line[14]=='h':
         rm.it1.hidden=True
@@ -202,7 +213,7 @@ class Room:
     self.it2=it2
     self.it3=it3
     self.it4=it4
-    self.fillItems()
+
     self.image=0
     self.transport=False
   #######To string method########
@@ -214,58 +225,31 @@ class Room:
 
   def setImage(self,imagePath):
     self.image=pygame.image.load(imagePath)
-  def fillItems(self):
-    #Item("Rusted Blade","Weapon")
-    #Item("Great Sword","Weapon")
-    #Item("Crescent Sword","Weapon")
-    #Item("Cardinal","Weapon")
-    #Item("Sun Moon","Weapon")
-
-    #Item("Earth Vest","Armor")
-    #Item("Wind Breaker","Armor")
-    #Item("Flame Leggings","Armor")
-    #Item("Dark Cowl","Armor")
-    #Item("Celestial Armor","Armor")
-
-    #Item("Jewel Shard","Accessory")
-    #Item("Broken Hourglass","Accessory")
-    #Item("Radiant Vial","Accessory")
-    #Item("Honor Tome","Accessory")
-    #Item("Valor Tome","Accessory")
-
-    #Item("Remedy","Usable")
-    #Item("Elixir","Usable")
-    #Item("Panacea","Usable")
-    #Item("High Elixir","Usable")
-    #Item("Nostrum","Usable")
-
-    #Item("Ruby","Special")
-    #Item("Sapphire","Special")
-    #Item("Emerald","Special")
-    #Item("Diamond","Special")
-
-    #Item("Ancient Amulet","Weapon")
-    #Item("Small Key","key")
-    #Item("Big Key","key")
+  def setItemList(self,index):
     #depending on dungeon, item list varies: SUGGESTED FORMAT=usable items, key items, weapon, armor,special items
-    #Dungeon 5
-    #itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]  
-    #Dungeon 4
-    #itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable")Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]    
-    #Dungeon 3
-    #itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable")Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
-    #Dungeon 2
-    #itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
-    #Dungeon 1
-    itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
+    if index<5 and index>=0:
+      self.itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
+    elif index<10 and index>=5:
+      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
+    elif index<15 and index>=10:
+      self.itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
+    elif index<20 and index>=15:
+      self.itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]
+    elif index<25 and index>=20:
+      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]
+
+  def setShop(self,player):
+    self.shop=Shop(player)
+
+  def fillItems(self):
     if not int(self.it1)==0:
-      self.it1=itemList[int(self.it1)]
+      self.it1=self.itemList[int(self.it1)]
     if not int(self.it2)==0:
-      self.it2=itemList[int(self.it2)]
+      self.it2=self.itemList[int(self.it2)]
     if not int(self.it3)==0:
-      self.it3=itemList[int(self.it3)]
+      self.it3=self.itemList[int(self.it3)]
     if not int(self.it4)==0:
-      self.it4=itemList[int(self.it4)]
+      self.it4=self.itemList[int(self.it4)]
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
 ###############################################################################
@@ -955,6 +939,7 @@ class Player:
     self.battle=False
     self.inGameTutorial=False
     self.macroMap=False
+    self.shop=False
     #self.statMenu=False
 
     self.msg1=""
@@ -1059,6 +1044,7 @@ class Player:
       dgnWidth=self.dungeons[self.dgnIndex][1]
       dgnHeight=self.dungeons[self.dgnIndex][2]
       self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
+      self.dgn.index=self.dgnIndex
       self.dgn.fill()
       self.currentX=self.dgn.start[0]
       self.currentY=self.dgn.start[1]
@@ -1411,7 +1397,7 @@ class Enemy:
         #load image based on type later
         self.name=player.dgn.types[int(name)]
         print(self.name)
-        if self.name=="Wizard":
+        if self.name=="Wizard Adept":
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
           self.HP=20
           self.ATT=3
@@ -2011,9 +1997,9 @@ class BattleEngine:
         elif enemy.place==3:
           self.player.currentRoom.en4='0'
         self.selEnemyIndex=0
-        if enemy.name=="Gru":
+        if enemy.name=="Orc":
           self.enemyValue+=50
-        elif enemy.name=="Wizard":
+        elif enemy.name=="Wizard Adept":
           self.enemyValue+=150
         elif enemy.name=="Goblin":
           self.enemyValue+=50
@@ -2120,6 +2106,143 @@ class BattleEngine:
     #Run a check to see if battle is over
       self.CheckEndBattle()
 
+############################################################################
+#Shop class
+############################################################################
+class Shop:
+  def __init__(self,player):
+    self.player=player
+    self.itemList=[Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Ruby","Usable"),Item("Diamond","Usable")]
+    self.selItem=0
+    self.numItem=0
+    self.totalPrice=0
+    self.selDigit=3
+    self.enteredDigits=[0,0,0,0]
+    self.buyScreen=False
+  def finish(self):
+    enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
+    print(repr(enteredNumber)+"  "+repr(self.totalPrice)+" "+repr(self.player.battlePlayer.akhal))
+    if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
+      self.player.battlePlayer.akhal-=enteredNumber
+      for i in range(self.numItem):
+        self.player.battlePlayer.inv_Ar.append(self.itemList[self.selItem])
+      self.buyScreen=False
+  def update(self,event,player):
+    if event.type == QUIT:
+      sys.exit()
+
+    #handle key input
+    elif event.type == KEYDOWN:
+      newKey=pygame.key.name(event.key)
+
+      if newKey=='escape':
+        sys.exit()
+      elif newKey=='[6]' or newKey=='right':
+        #Right
+        #increment numItems/selectedDigit
+        if self.buyScreen:
+          if self.selDigit<3:
+            self.selDigit+=1
+          else:
+            self.selDigit=0
+        else:
+          if self.numItem<9:
+            self.numItem+=1
+          else:
+            self.numItem=0
+      elif newKey=='[2]' or newKey=='down':
+        #Down
+        #decrement selected item/enteredDigits[selItem]
+        if self.buyScreen:
+          if self.enteredDigits[self.selDigit]>0:
+            self.enteredDigits[self.selDigit]-=1
+          else:
+            self.enteredDigits[self.selDigit]=9
+        else:
+          self.numItem=0
+          if self.selItem<len(self.itemList)-1:
+            self.selItem+=1
+          else:
+            self.selItem=0
+      elif newKey=='[4]' or newKey=='left':
+        #Left
+        #decrement numItems/selectedDigit
+        if self.buyScreen:
+          if self.selDigit>0:
+            self.selDigit-=1
+          else:
+            self.selDigit=3
+        else:
+          if self.numItem>0:
+            self.numItem-=1
+          else:
+            self.numItem=9
+      elif newKey=='[8]' or newKey=='up':
+        #Up
+        #increment selected item/enteredDigits[selItem]
+        if self.buyScreen:
+          if self.enteredDigits[self.selDigit]<9:
+            self.enteredDigits[self.selDigit]+=1
+          else:
+            self.enteredDigits[self.selDigit]=0
+        else:
+          self.numItem=0
+          if self.selItem>0:
+            self.selItem-=1
+          else:
+            self.selItem=len(self.itemList)-1
+      elif newKey=='[1]' or newKey=='return':
+        #Check
+        #buy/finish
+        if self.buyScreen:
+          self.finish()
+        else:
+          self.buyScreen=True
+          self.totalPrice=self.numItem*self.itemList[self.selItem].buyVal
+      elif newKey=='[3]' or newKey=='backspace':
+        if self.buyScreen:
+          self.buyScreen=False
+        else:
+          self.player.shop=False
+          self.player.traversal=True
+  
+  def draw(self,screen,player):
+    screen.fill((255,255,255),(850,0,250,900))
+    screen.fill((100,100,100),(100,0,600,900))
+    i=0
+    y=80
+    for item in self.itemList:
+      #from left to right: arrow, box w/#, arrow, item name
+      font = pygame.font.Font(None, 36)
+      if i==self.selItem:
+        screen.fill((150,150,200),(140,y,600,40))
+      screen.fill((100,0,0),(140,y,40,40))
+      screen.fill((50,100,100),(190,y,50,40))
+      if i==self.selItem:
+        screen.blit(font.render(repr(self.numItem),True,(255,255,255)),(190,y,50,40))
+      else:
+        screen.blit(font.render("0",True,(255,255,255)),(190,y,50,40))
+      screen.fill((100,0,0),(240,y,40,40))
+      screen.blit(font.render(item.name,True,(255,255,255)),(300,y,500,40))
+      y+=40
+      i+=1
+
+    if self.buyScreen:
+      screen.fill((100,100,100),(500,500,600,400))
+      screen.blit(font.render(repr(self.numItem)+" x "+repr(self.itemList[self.selItem].buyVal),True,(255,255,255)),(600,550,500,40))
+      x=600
+      i=0
+      for digit in self.enteredDigits:
+        if i==self.selDigit:
+          screen.fill((150,150,200),(x,700,45,100))
+        screen.fill((100,0,0),(x,700,40,40))
+        screen.fill((50,100,100),(x,750,50,40))
+        screen.blit(font.render(repr(digit),True,(255,255,255)),(x,750,50,40))
+        screen.fill((100,0,0),(x,790,40,40))
+        x+=50
+        i+=1
+    pygame.display.flip()
+
 #############################################################################
 #End External Classes
 ######################################################################
@@ -2208,6 +2331,7 @@ def enterRoom(direction,player,screen):
     player.currentRoomGroup.draw(screen)
     player.waiting=True
     player.dgnMap.updateMacro(player)
+
     return("You enter room at "+repr(player.currentX)+", "+repr(player.dgn.sizeY-player.currentY-1))
 
 def setImage(player):
@@ -2566,6 +2690,7 @@ def updateWaiting(event,player):
   enemyList=[]
   player.traversal=False
   player.waiting=False
+
   ############################
   #Check enemies in room
   #####################
@@ -2608,8 +2733,11 @@ def updateWaiting(event,player):
     player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
     player.migrateMessages(player.currentRoom.it4.name+" added to inventory")
     player.currentRoom.it4=0
+
+
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
+
 def updateMacroMap(event,player):
   if event.type == QUIT:
       sys.exit()
@@ -2657,7 +2785,13 @@ while pippy.pygame.next_frame():
       player.waiting=False
       if player.msg5=='Enemies are present, prepare to fight.':
         player.battle=True
-      if player.battle==False:
+      if player.currentRoom.roomFlag==6:
+        player.currentRoom.setShop(player)
+        player.shop=True
+        player.traversal=False
+        player.currentRoom.shop.draw(screen,player)
+        player.migrateMessages(repr(player.currentRoom.roomFlag))
+      if player.battle==False and player.shop==False:
 ####################################
 ###TEST FOR IN GAME TUTORIALS
 ####################################
@@ -2701,6 +2835,8 @@ while pippy.pygame.next_frame():
       updateTutorial(event,player)
     elif player.macroMap:
       updateMacroMap(event,player)
+    elif player.shop:
+      player.currentRoom.shop.update(event,player)
 
   ###############DRAW#########################
   #draw based on state
@@ -2728,11 +2864,12 @@ while pippy.pygame.next_frame():
       player.curBattle.draw(player,screen)
     elif player.inTutorial:
       player.tutorial.draw(player.currentRoomGroup,screen)
+    elif player.shop:
+      player.currentRoom.shop.draw(screen,player)
   if player.traversal:
     player.currentRoomGroup.draw(screen)
     if player.movTutorial==False:
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
-
 
