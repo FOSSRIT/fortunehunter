@@ -5,42 +5,41 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
-################################################################################
+#######################################################################
+
 #Hero class - represents the player in battle and holds all of their data
-################################################################################
+
+##########################################################################
 class Hero:
   def __init__(self,player):
 #****property********value**********************description**********************#
-  self.MHP   = 40    #maximum health points (base HP)
-  self.HP    = 40    #current health points
-  self.BHP   = 0    #bonus health points (from equipment)
-  self.ATT   = 10    #base attack power
-  self.BAB  = 0    #bonus attack power (from battle timer)
-  self.BAE  = 0    #bonus attack power (from equipment)
-  self.DEF  = 1    #base defense power
-  self.BDE  = 0    #bonus defense  power(from equipment)
+	self.MHP 	= 40		#maximum health points (base HP)
+	self.HP		= 40		#current health points
+	self.BHP 	= 0		#bonus health points (from equipment)
+	self.ATT 	= 10		#base attack power
+	self.BAB	= 0		#bonus attack power (from battle timer)
+	self.BAE	= 0		#bonus attack power (from equipment)
+	self.DEF	= 1		#base defense power
+	self.BDE	= 0		#bonus defense  power(from equipment)
 
-  self.weapon=Item("","")
-  self.armor=Item("","")
-  self.accessory=Item("","")
-        self.eqItem=[]      #player can equip up to 4 usable items to use in battle
-  self.inv_Ar   = []    #inventory
-  self.attacks_Ar = []    #associated array for attack string names and attack power values
+	self.weapon=Item("","")
+	self.armor=Item("","")
+	self.accessory=Item("","")
+        self.eqItem=[]			#player can equip up to 4 usable items to use in battle
+	self.inv_Ar 	= []		#inventory
+	self.attacks_Ar = []		#associated array for attack string names and attack power values
         self.currentInput=""
         self.currentProb1=0
         self.currentProb2=0
         self.currentAnswer=0
+        self.fractionSum=0
+        self.akhal=0
 
-        basicSword=Item("Sword","Weapon")
-        amulet=Item("Amulet","Weapon")
-        basicArmor=Item("Vest","Armor")
-        potion=Item("Remedy","Usable")
-        grenade=Item("Grenade","Usable")
-        basicRing=Item("Ring","Accessory")
+        amulet=Item("Ancient Amulet","Weapon")
+        calculator=Item("Caclulator","")
         emptyItem=Item("","Usable")
-        #smallKey=Item(player,"Small Key","key")
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
-        self.inv_Ar=[basicSword,amulet,basicArmor,basicRing,grenade]
+        self.inv_Ar=[amulet,calculator]
 
 #****HERO ACCESSORS*********************************************#
   #returns player's maximum health
@@ -64,7 +63,7 @@ class Hero:
     elif name=="Lightning":
       return self.ATT+self.BAB
     elif name=="Division":
-      return self.ATT*1.5
+      return (self.ATT+self.BAE)*1.5
     elif name=="Missile":
       return 0
 
@@ -74,7 +73,7 @@ class Hero:
 
   #returns player's equipped items
   def equipment(self):
-    return self.eqItems_Ar  
+    return self.eqItems_Ar	
 
   #returns player's current inventory
   def inventory(self):
@@ -105,13 +104,15 @@ class Hero:
   def giveHealth(self,_inc):
     self.HP += _inc
     if healthPoints() > maxHealthPoints():
-  setHealth(maxHealthPoints())
+	setHealth(maxHealthPoints())
 
   #player is attacked by given damage
   def defendAttack(self,dmg):
     self.HP -= (dmg - self.defensePower())
     if self.HP<0:
       self.HP=0
+    if self.HP>self.MHP:
+      self.HP=self.MHP
 #****BATTLE ACCESSORS***********************************************#
   #returns player's list of attacks that are currently available for use
   def availableAttacks(self):
@@ -141,15 +142,12 @@ class Hero:
       self.inv_Ar.remove(item)
       self.BHP=item.power
     elif target[0:8]=="ItemSlot" and item.type=="Usable":
-      if len(self.eqItem)<4:
-        self.eqItem.append(item)
-      else:
+        for i in range(len(self.eqItem)-1,3):
+          self.eqItem.append(Item("",""))
         if not self.eqItem[int(target[8])-1].name=="":
           self.inv_Ar.append(self.eqItem[int(target[8])-1])
         self.inv_Ar.remove(item)
         self.eqItem[int(target[8])-1]=item
-
-
 
 
   #remove item from equipment
@@ -176,3 +174,4 @@ class Hero:
   def remInventory(self,item):
     self.inv_Ar.remove(item)
     #remove _item from inventory
+#end class Hero

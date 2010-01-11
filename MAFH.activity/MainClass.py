@@ -7,7 +7,7 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
-#Always need to init first thing
+# always need to init first thing
 pygame.init()
 
 # turn off cursor
@@ -16,17 +16,11 @@ pygame.mouse.set_visible(False)
 # XO screen is 1200x900
 size = width, height = 1200, 900
 
-# we'll use 36 pixel high text
-fsize = 36
-
+font=pygame.font.Font(None,36)
 # create the window and keep track of the surface
 # for drawing into
 screen = pygame.display.set_mode(size)
 
-# create a Font object from a file, or use the default
-# font if the file name is None. size param is height
-# in pixels
-font = pygame.font.Font(None, fsize)
 player=Player(0,0)
 
 #state variables
@@ -64,6 +58,7 @@ bigRect.height=300
 
 #####Functions for main class######
 def enterRoom(direction,player,screen):
+    player.movTutorial=True
     NORTH=1
     SOUTH=3
     EAST=0
@@ -95,9 +90,8 @@ def enterRoom(direction,player,screen):
     player.currentRoomGroup.add(player.currentRoomSprite)
     player.currentRoomGroup.draw(screen)
     player.waiting=True
-    #player.traversal=False
-    #setImage(player)
-    return("You enter room at "+repr(player.currentX)+", "+repr(player.currentY))
+    player.dgnMap.updateMacro(player)
+    return("You enter room at "+repr(player.currentX)+", "+repr(player.dgn.sizeY-player.currentY-1))
 
 def setImage(player):
     fileName=""
@@ -180,6 +174,18 @@ def checkDoor(direction,player,screen):
     SOUTH=3
     EAST=0
     WEST=2
+
+    NONE=-1
+    PUZZLE=0
+    LOCKED=1
+    BOTH=2
+    UNLOCKED=3
+    EXIT=4
+    ENTRANCE=5
+    SHOP=6
+    PUZZLEROOM=7
+    HIDDEN=8
+
     currentX=player.currentX
     currentY=player.currentY
     playerFacing=player.playerFacing
@@ -191,28 +197,88 @@ def checkDoor(direction,player,screen):
     elif direction=='up':
          if playerFacing==NORTH:
             if currentRoom.doorN:
-                return(enterRoom('north',player,screen))
+                if currentRoom.doorNFlag==EXIT:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY")
+                elif currentRoom.doorNFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
+                elif currentRoom.doorNFlag==LOCKED or currentRoom.doorNFlag==BOTH:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Small Key":
+                      return("You use a SMALL KEY, "+enterRoom('north',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
+                else:
+                  return(enterRoom('north',player,screen))
 
             else:
                 return("There is no door in front of you")
 
          elif playerFacing==SOUTH:
             if currentRoom.doorS:
-                return(enterRoom('south',player,screen))
+                if currentRoom.doorSFlag==EXIT:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY to exit")
+                elif currentRoom.doorSFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
+                elif currentRoom.doorSFlag==LOCKED or currentRoom.doorSFlag==BOTH:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Small Key":
+                      return("You use a SMALL KEY, "+enterRoom('south',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
+                else:
+                  return(enterRoom('south',player,screen))
 
             else:
                 return("There is no door in front of you")
 
          elif playerFacing==EAST:
             if currentRoom.doorE:
-                return(enterRoom('east',player,screen))
+                if currentRoom.doorEFlag==EXIT:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY to exit")
+                elif currentRoom.doorEFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
+                elif currentRoom.doorEFlag==LOCKED or currentRoom.doorEFlag==BOTH:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Small Key":
+                      return("You use a SMALL KEY, "+enterRoom('east',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
+                else:
+                  return(enterRoom('east',player,screen))
 
             else:
                 return("There is no door in front of you")
 
          elif playerFacing==WEST:
             if currentRoom.doorW:
-                return(enterRoom('west',player,screen))
+                if currentRoom.doorWFlag==EXIT:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Big Key":
+                      player.battlePlayer.inv_Ar.remove(item)
+                      player.nextDungeon()
+                      return("You use the BIG KEY, and the door slams behind you")
+                  return("This door is locked, you need a BIG KEY to exit")
+                elif currentRoom.doorWFlag==ENTRANCE:
+                  player.migrateMessages("There is no turning back now")
+                elif currentRoom.doorWFlag==LOCKED or currentRoom.doorWFlag==BOTH:
+                  for item in player.battlePlayer.inv_Ar:
+                    if item.name=="Small Key":
+                      return("You use a SMALL KEY, "+enterRoom('west',player,screen))
+                  return("This door is locked, you need a SMALL KEY")
+                else:
+                  return(enterRoom('west',player,screen))
 
             else:
                 return("There is no door in front of you")
@@ -282,16 +348,17 @@ def updateMenu(event,player):
         menu.select("down")
 
       elif newKey=='[3]' or newKey=='backspace':
-        menu.regress(player)
-
-      elif newKey=='[4]':
-        print("left")
-
+        if menu.name=="Stats" or menu.name=="Inventory":
+          menu.regress(player)
+      elif newKey=='[4]' or newKey=='left':
+        if menu.name=="Defeat":
+          menu.select("up")
       elif newKey=='[5]':
         print('check')
 
-      elif newKey=='[6]':
-        print('right')
+      elif newKey=='[6]' or newKey=='right':
+        if menu.name=="Defeat":
+          menu.select("down")
 
       elif newKey=='[7]':
         print('square')
@@ -311,37 +378,34 @@ def updateTraversal(event,player,screen):
       if newKey=='escape':
         sys.exit()
 
-      elif newKey=='[1]':
-        ##square
-        player.migrateMessages('not implemented')
-
       elif newKey=='[2]':
         player.migrateMessages(checkDoor('down',player,screen))
 
-      elif newKey=='[3]' or newKey=='space':
-        ##x
-        player.traversal=False
-        player.mainMenu=True
-        player.currentMenu=player.statsMenu
-        player.previousMenu=player.statsMenu
+      elif newKey=='[3]' or newKey=='i':
+        player.migrateMessages("")
 
       elif newKey=='[4]' or newKey=='left':
         player.migrateMessages(checkDoor('left',player,screen))
 
-      elif newKey=='[5]':
-        player.migrateMessages('check')
+      elif newKey=='[1]' or newKey=='e':
+        player.migrateMessages(player.checkRoom())
 
       elif newKey=='[6]' or newKey=='right':
         player.migrateMessages(checkDoor('right',player,screen))
 
-      elif newKey=='[7]':
-        player.migrateMessages('square')
+      elif newKey=='[7]' or newKey=='m':
+        player.macroMap=True
+        player.traversal=False
+        player.dgnMap.drawMacro(player,screen)
 
       elif newKey=='[8]' or newKey=='up':
         player.migrateMessages(checkDoor('up',player,screen))
 
-      elif newKey=='[9]':
-        player.migrateMessages('circle')
+      elif newKey=='[9]' or newKey=='space':
+        player.traversal=False
+        player.mainMenu=True
+        player.currentMenu=player.statsMenu
+        player.previousMenu=player.statsMenu
 
 def updateTutorial(event,player):
     if event.type == QUIT:
@@ -379,12 +443,15 @@ def updateTutorial(event,player):
 
       elif newKey=='[9]':
         player.migrateMessages('circle')
-
+#while waiting between rooms...
 def updateWaiting(event,player):
   pygame.time.set_timer(USEREVENT+2,500)
   enemyList=[]
   player.traversal=False
   player.waiting=False
+  ############################
+  #Check enemies in room
+  #####################
   if  not int(player.currentRoom.en1)==0:
     en=Enemy(player,player.currentRoom.en1)
     en.place=0
@@ -405,10 +472,36 @@ def updateWaiting(event,player):
     player.migrateMessages('initiating battle...')
     player.traversal=False
     player.curBattle=BattleEngine(player,enemyList)
-  if player.currentRoom.transport==True:
-    player.nextDungeon()
+  #################
+  #check items in room
+  #################
+  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
+    player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
+    player.currentRoom.it1=0
+  if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
+    player.migrateMessages(player.currentRoom.it2.name+" added to inventory")
+    player.currentRoom.it2=0
+  if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
+    player.migrateMessages(player.currentRoom.it3.name+" added to inventory")
+    player.currentRoom.it3=0
+  if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
+    player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
+    player.migrateMessages(player.currentRoom.it4.name+" added to inventory")
+    player.currentRoom.it4=0
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
+def updateMacroMap(event,player):
+  if event.type == QUIT:
+      sys.exit()
+
+  elif event.type == KEYDOWN:
+      newKey=pygame.key.name(event.key) 
+      if newKey=='m' or newKey=='[7]':
+        player.macroMap=False
+        player.traversal=True
 
 ###Draw methods###
 def drawTraversal(player,screen):
@@ -416,6 +509,25 @@ def drawTraversal(player,screen):
 
 def drawWaiting(player,screen):
   screen.fill(0,(0,0,1290,700),0)
+def drawMacroMap(player,screen):
+  player.dgnMap.drawMacro(player,screen)
+  
+def drawTextBox(player,screen):
+  screen.fill(0,bigRect,0)
+  # draw the text
+  tl1=font.render(player.msg1,True,(255,255,255))
+  tl2=font.render(player.msg2,True,(255,255,255))
+  tl3=font.render(player.msg3,True,(255,255,255))
+  tl4=font.render(player.msg4,True,(255,255,255))
+  tl5=font.render(player.msg5,True,(255,255,255))
+  player.dgnMap.display(player,screen)
+
+  #screen.blit(text, textRect)
+  screen.blit(tl1,line1)
+  screen.blit(tl2,line2)
+  screen.blit(tl3,line3)
+  screen.blit(tl4,line4)
+  screen.blit(tl5,line5)
 
 setImage(player)
 
@@ -424,11 +536,33 @@ while pippy.pygame.next_frame():
   for event in pygame.event.get():
     if event.type==USEREVENT+2:
       pygame.time.set_timer(USEREVENT+2,0)
+      drawWaiting(player,screen)
       player.waiting=False
       if player.msg5=='Enemies are present, prepare to fight.':
         player.battle=True
       if player.battle==False:
-        player.traversal=True
+####################################
+###TEST FOR IN GAME TUTORIALS
+####################################
+        if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
+          player.traversal=False
+          player.battle=True
+          player.curBattle=BattleEngine(player,[Enemy(player,3)])
+          player.initInGameBattleTutorial(screen)
+        elif player.currentX==1 and player.currentY==4 and player.movTutorial==False:
+          player.initMovTutorial(screen)
+        elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
+          player.battlePlayer.HP-=10
+          player.migrateMessages("You trip on a crack in the floor and lose 10 HP")
+          player.migrateMessages("But you can heal yourself with the remedy that you picked up")
+          player.hpTutorial=True
+          player.traversal=True
+        elif player.currentX==2 and player.currentY==1 and player.hiddenTutorial==False:
+          player.migrateMessages("You sense hidden items in this room, to search the room, press e or check")
+          player.migrateMessages("If you discover an item, it will be added to your inventory, try it now")
+          player.traversal=True
+        else:
+          player.traversal=True
       setImage(player)
     if event.type==QUIT:
       sys.exit()
@@ -439,11 +573,6 @@ while pippy.pygame.next_frame():
         #################UPDATE##############################
         updateTraversal(event,player,screen)
 
-    #elif player.statMenu:
-      ##stat menu processes
-      #updateStatMenu
-     # print(player.stat)
-
     elif player.battle:
       ##battle processes
       updateBattle(event,player)
@@ -453,40 +582,40 @@ while pippy.pygame.next_frame():
       updateMenu(event,player)
     elif player.inTutorial:
       updateTutorial(event,player)
+    elif player.macroMap:
+      updateMacroMap(event,player)
 
   ###############DRAW#########################
   #draw based on state
-  if player.mainMenu:
-    player.currentMenu.draw(player,screen,400,500,50)
+  if player.mainMenu==True:
+    if player.currentMenu.name=="Inventory":
+      player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
+    elif player.currentMenu.name=="Stats":
+      player.currentMenu.draw(player,screen,450,400,50)
+      drawTextBox(player,screen)
+    elif player.currentMenu.name=="Defeat":
+      player.currentMenu.draw(player,screen,450,500,50)
+      
+    else:
+      player.currentMenu.draw(player,screen,450,400,50)
   else:
-    screen.fill(0,bigRect,0)
-    # draw the text
-    tl1=font.render(player.msg1,True,(255,255,255))
-    tl2=font.render(player.msg2,True,(255,255,255))
-    tl3=font.render(player.msg3,True,(255,255,255))
-    tl4=font.render(player.msg4,True,(255,255,255))
-    tl5=font.render(player.msg5,True,(255,255,255))
-    player.dgnMap.display(player,screen)
-
-    #screen.blit(text, textRect)
-    screen.blit(tl1,line1)
-    screen.blit(tl2,line2)
-    screen.blit(tl3,line3)
-    screen.blit(tl4,line4)
-    screen.blit(tl5,line5)
+    drawTextBox(player,screen)
     if player.traversal:
       if player.waiting:
         drawWaiting(player,screen)
       else:
         drawTraversal(player,screen)
-    #elif player.statMenu:
-    #  drawStatMenu(player,screen)
+    elif player.macroMap:
+      player.dgnMap.drawMacro(player,screen)
     elif player.battle:
       player.curBattle.draw(player,screen)
     elif player.inTutorial:
       player.tutorial.draw(player.currentRoomGroup,screen)
   if player.traversal:
     player.currentRoomGroup.draw(screen)
+    if player.movTutorial==False:
+      player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
 

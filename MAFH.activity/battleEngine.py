@@ -9,23 +9,25 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
-################################################################################
+###################################################################
+
 # Begin Battle Engine Class
-################################################################################
+
+################################################################
 class BattleEngine:
   def __init__(self,player,enemyArr):
-  #Bool if it is the players turn or not
-  self.playerTurn = True
-  #Index that tracks which enemy is up to attack
-  self.enemyTurnIndex = 0
-  ###
-  # Basic constructor, takes in the player and a group of enemies
-  ###
-  self.player = player
-  self.enemies = enemyArr
-  self.t = 0
-  self.tTracker = 0
-  self.maxBonusTime = 0
+	#Bool if it is the players turn or not
+	self.playerTurn = True
+	#Index that tracks which enemy is up to attack
+	self.enemyTurnIndex = 0
+	###
+	# Basic constructor, takes in the player and a group of enemies
+	###
+	self.player = player
+	self.enemies = enemyArr
+	self.t = 0
+	self.tTracker = 0
+	self.maxBonusTime = 0
         self.initializeMenus(player)
         self.selEnemyIndex=0
         self.timeBonus=1
@@ -46,45 +48,46 @@ class BattleEngine:
         self.fire4btn=IMG_PATH+"FireGlyph4btn.gif"
 
         self.lightning=pygame.sprite.Sprite()
-  self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
-        self.lightning1btn=IMG_PATH+"LigGlyph1btn.gif"
+	self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
+        self.lightning1btn=IMG_PATH+"LightningGlyph1btn.gif"
         self.lightning1=pygame.sprite.Sprite()
-  self.lightning1.image=pygame.image.load(IMG_PATH+"LigGlyph1.gif")
-        self.lightning2btn=IMG_PATH+"LigGlyph2btn.gif"
+	self.lightning1.image=pygame.image.load(IMG_PATH+"LightningGlyph1.gif")
+        self.lightning2btn=IMG_PATH+"LightningGlyph2btn.gif"
         self.lightning2=pygame.sprite.Sprite()
-  self.lightning2.image=pygame.image.load(IMG_PATH+"LigGlyph2.gif")
-        self.lightning3btn=IMG_PATH+"LigGlyph3btn.gif"
+	self.lightning2.image=pygame.image.load(IMG_PATH+"LightningGlyph2.gif")
+        self.lightning3btn=IMG_PATH+"LightningGlyph3btn.gif"
         self.lightning3=pygame.sprite.Sprite()
-  self.lightning3.image=pygame.image.load(IMG_PATH+"LigGlyph3.gif")
-        self.lightning4btn=IMG_PATH+"LigGlyph4btn.gif"
+	self.lightning3.image=pygame.image.load(IMG_PATH+"LightningGlyph3.gif")
+        self.lightning4btn=IMG_PATH+"LightningGlyph4btn.gif"
         self.lightning4=pygame.sprite.Sprite()
-  self.lightning4.image=pygame.image.load(IMG_PATH+"LigGlyph4.gif")
+	self.lightning4.image=pygame.image.load(IMG_PATH+"LightningGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
-  self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
+	self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
 
         self.heal=pygame.sprite.Sprite()
-  self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
+	self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
         self.heal1btn=IMG_PATH+"HealGlyph1btn.gif"
         self.heal1=pygame.sprite.Sprite()
-  self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
+	self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
         self.heal2btn=IMG_PATH+"HealGlyph2btn.gif"
         self.heal2=pygame.sprite.Sprite()
-  self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
+	self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
         self.heal3btn=IMG_PATH+"HealGlyph3btn.gif"
         self.heal3=pygame.sprite.Sprite()
-  self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
+	self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
         self.heal4btn=IMG_PATH+"HealGlyph4btn.gif"
         self.heal4=pygame.sprite.Sprite()
-  self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
+	self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
 
-  self.glyphGroup=pygame.sprite.Group()
-  self.glyphOverlayGroup=pygame.sprite.Group()
+	self.glyphGroup=pygame.sprite.Group()
+	self.glyphOverlayGroup=pygame.sprite.Group()
+        self.enemyValue=0
         i=0
-  for enemy in self.enemies:
+	for enemy in self.enemies:
           enemy.place=i
           i+=1
-  self.player.msg5= "Enemies are present, prepare to fight."
+	self.player.msg5= "Enemies are present, prepare to fight."
 
   def initializeMenus(self,player):
 
@@ -110,7 +113,7 @@ class BattleEngine:
 
     divisionOptions=["1/2","1/3","1/4","1/6"]
     divisionBackground=IMG_PATH+"battleMenubackground.gif"
-    divisionOptImg=[IMG_PATH+"12Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"16Slash.gif"]
+    divisionOptImg=[IMG_PATH+"12Power.gif",IMG_PATH+"13Power.gif",IMG_PATH+"14Power.gif",IMG_PATH+"16Power.gif"]
     self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
     self.divisionMenu.background.rect=(0,300,200,200) 
 
@@ -156,14 +159,22 @@ class BattleEngine:
             t=font.render(player.battlePlayer.eqItem[i].name,True,(255,255,255))
             screen.blit(t,image.rect) 
             i+=1     
+      elif player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
+        screen.fill((0,0,0),(500,300,100,400))
+        screen.fill((255,150,0),(500,(620-310*player.battlePlayer.fractionSum),137,310*player.battlePlayer.fractionSum))
+        player.divSword.draw(screen)
     else:
-      player.currentMenu.draw(player,screen,235,450,40)
+      if player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
+        player.currentMenu.draw(player,screen,235,390,60)
+      else:
+        player.currentMenu.draw(player,screen,235,450,40)
       if not player.battlePlayer.currentProb1=="":
         font = pygame.font.Font(None, 36)
         probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
-        inputText=font.render(player.battlePlayer.currentInput,True,(255,255,255))
-        screen.blit(probText,pygame.Rect(250,350,200,30))
-        screen.blit(inputText,pygame.Rect(250,400,200,30))
+        inputText=font.render(player.battlePlayer.currentInput,True,(50,0,150))
+        if player.currentMenu.name=="Number Pad" or player.currentMenu.name=="CritTut":
+          screen.blit(probText,pygame.Rect(250,350,200,30))
+          screen.blit(inputText,pygame.Rect(250,400,200,30))
       
       screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
     pygame.display.flip()
@@ -208,18 +219,21 @@ class BattleEngine:
     defender=self.enemies[self.selEnemyIndex]
     if attackName=="Heal":
       defender=attacker
-      player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
+      if -1*int(attacker.attackPower(attackName))>attacker.MHP:
+        player.migrateMessages("You heal to full health")
+      else:
+        player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
     else:
       player.migrateMessages("You attack for "+repr(int(attacker.attackPower(attackName)))+" damage")
       player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
 
     defender.defendAttack(attacker.attackPower(attackName))
     self.playerTurn=False
-    self.CheckEndBattle()
+    #self.CheckEndBattle()
     player.currentMenu=self.battleMenu
 
   def critical(self,player):
-    pygame.time.set_timer(USEREVENT+1,500)
+    pygame.time.set_timer(USEREVENT+1,1000)
     player.battlePlayer.currentInput=""
     player.currentMenu=self.numPadMenu
     prob1=randint(0,12)
@@ -230,45 +244,45 @@ class BattleEngine:
 
   def magic(self,player):
     player.currentMenu=self.magicMenu
-    pygame.time.set_timer(USEREVENT+1,500)
+    pygame.time.set_timer(USEREVENT+1,1000)
   def startGlyph(self,name):
     self.glyphGroup.empty()
     self.glyphOverlayGroup.empty()
     if name=="Fire":
-      shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn),("Not",self.heal1btn)]
+      shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn)]
       shuffle(shuffle2D)
-      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
-      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
-      glyphMenu.background.rect=(200,580,200,200)
+      glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
-      self.fire.rect=(self.enemies[self.selEnemyIndex].sprite.rect.left-40,self.enemies[self.selEnemyIndex].sprite.rect.top+40,300,300)
+      self.fire.rect=(500,350,300,300)
       self.glyphGroup.add(self.fire)
     elif name=="Lightning":
-      shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn),("Not",self.fire1btn)]
+      shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn)]
       shuffle(shuffle2D)
-      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
-      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
-      glyphMenu.background.rect=(200,580,200,200)
+      glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
-      self.lightning.rect=(self.enemies[self.selEnemyIndex].sprite.rect.left+40,self.enemies[self.selEnemyIndex].sprite.rect.top+40,300,300)
+      self.lightning.rect=(500,350,300,300)
       self.glyphGroup.add(self.lightning)
 
     elif name=="Missile":
-  self.attack(self.player.battlePlayer,"Missile")
+	self.attack(self.player.battlePlayer,"Missile")
     elif name=="Heal":
-      shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn),("Not",self.fire1btn)]
+      shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn)]
       shuffle(shuffle2D)
-      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0],shuffle2D[8][0]]
-      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1],shuffle2D[8][1]]
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
-      glyphMenu.background.rect=(200,580,200,200)
+      glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
-      self.heal.rect=(500,300,300,300)
+      self.heal.rect=(500,350,300,300)
       self.glyphGroup.add(self.heal)
     #set glyph menu
 
@@ -279,85 +293,82 @@ class BattleEngine:
         self.glyphOverlayGroup.add(self.fire1)
         #check if glyph is complete
         if self.glyphOverlayGroup.has([self.fire1,self.fire2,self.fire3,self.fire4])==True:
-    self.attack(self.player.battlePlayer,"Fire")
+	  self.attack(self.player.battlePlayer,"Fire")
     elif name=="Fire2":
       if self.glyphOverlayGroup.has(self.fire2)==False:
-  self.fire2.rect=self.fire.rect
+	self.fire2.rect=self.fire.rect
         self.glyphOverlayGroup.add(self.fire2)
         if self.glyphOverlayGroup.has([self.fire1,self.fire2,self.fire3,self.fire4])==True:
-    self.attack(self.player.battlePlayer,"Fire")
+	  self.attack(self.player.battlePlayer,"Fire")
     elif name=="Fire3":
       if self.glyphOverlayGroup.has(self.fire3)==False:
-  self.fire3.rect=self.fire.rect
+	self.fire3.rect=self.fire.rect
         self.glyphOverlayGroup.add(self.fire3)
         if self.glyphOverlayGroup.has([self.fire2,self.fire1,self.fire3,self.fire4])==True:
-    self.attack(self.player.battlePlayer,"Fire")
+	  self.attack(self.player.battlePlayer,"Fire")
     elif name=="Fire4":
       if self.glyphOverlayGroup.has(self.fire4)==False:
-  self.fire4.rect=self.fire.rect
+	self.fire4.rect=self.fire.rect
         self.glyphOverlayGroup.add(self.fire4)
         if self.glyphOverlayGroup.has([self.fire4,self.fire2,self.fire3,self.fire1])==True:
-    self.attack(self.player.battlePlayer,"Fire")
+	  self.attack(self.player.battlePlayer,"Fire")
     elif name=="Heal1":
       if self.glyphOverlayGroup.has(self.heal1)==False:
-  self.heal1.rect=self.heal.rect
+	self.heal1.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal1)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-    self.attack(self.player.battlePlayer,"Heal")
+	  self.attack(self.player.battlePlayer,"Heal")
     elif name=="Heal2":
       if self.glyphOverlayGroup.has(self.heal2)==False:
-  self.heal2.rect=self.heal.rect
+	self.heal2.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal2)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-    self.attack(self.player.battlePlayer,"Heal")
+	  self.attack(self.player.battlePlayer,"Heal")
     elif name=="Heal3":
       if self.glyphOverlayGroup.has(self.heal3)==False:
-  self.heal3.rect=self.heal.rect
+	self.heal3.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal3)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-    self.attack(self.player.battlePlayer,"Heal")
+	  self.attack(self.player.battlePlayer,"Heal")
     elif name=="Heal4":
       if self.glyphOverlayGroup.has(self.heal4)==False:
-  self.heal4.rect=self.heal.rect
+	self.heal4.rect=self.heal.rect
         self.glyphOverlayGroup.add(self.heal4)
         if self.glyphOverlayGroup.has([self.heal1,self.heal2,self.heal3,self.heal4])==True:
-    self.attack(self.player.battlePlayer,"Heal")
+	  self.attack(self.player.battlePlayer,"Heal")
     elif name=="Lightning1":
       if self.glyphOverlayGroup.has(self.lightning1)==False:
-  self.lightning1.rect=self.lightning.rect
+	self.lightning1.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning1)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-    self.attack(self.player.battlePlayer,"Lightning")
+	  self.attack(self.player.battlePlayer,"Lightning")
     elif name=="Lightning2":
       if self.glyphOverlayGroup.has(self.lightning2)==False:
-  self.lightning2.rect=self.lightning.rect
+	self.lightning2.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning2)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-    self.attack(self.player.battlePlayer,"Lightning")
+	  self.attack(self.player.battlePlayer,"Lightning")
     elif name=="Lightning3":
       if self.glyphOverlayGroup.has(self.lightning3)==False:
-  self.lightning3.rect=self.lightning.rect
+	self.lightning3.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning3)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-    self.attack(self.player.battlePlayer,"Lightning")
+	  self.attack(self.player.battlePlayer,"Lightning")
     elif name=="Lightning4":
       if self.glyphOverlayGroup.has(self.lightning4)==False:
-  self.lightning4.rect=self.lightning.rect
+	self.lightning4.rect=self.lightning.rect
         self.glyphOverlayGroup.add(self.lightning4)
         if self.glyphOverlayGroup.has([self.lightning1,self.lightning2,self.lightning3,self.lightning4])==True:
-    self.attack(self.player.battlePlayer,"Lightning")
+	  self.attack(self.player.battlePlayer,"Lightning")
 
   ###
   #uses an item in the player's equipped item list
   ###
   def useItem(self,item):
-    if item.name=="Remedy":
-      self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*.05)
-    elif item.name=="Grenade":
-      self.attack(self.player.battlePlayer,"Fire")
-    else:
-      self.doNothing()
-    self.player.battlePlayer.eqItem.remove(item)
+    if item.type=="Usable":
+      self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*item.power)
+      self.player.battlePlayer.eqItem.remove(item)
+      self.player.battlePlayer.eqItem.append(Item("",""))
     self.playerTurn=False
     self.player.currentMenu=self.battleMenu
 
@@ -380,7 +391,7 @@ class BattleEngine:
     elif player.battlePlayer.fractionSum > 1.01:
       self.player.migrateMessages("Fraction sum incorrect")
       self.playerTurn=False
-      self.player.currentMenu=self.battleMenu  
+      self.player.currentMenu=self.battleMenu	
       self.player.battlePlayer.fractionSum=0
       
 
@@ -399,7 +410,7 @@ class BattleEngine:
     self.maxBonusTime = timeLength
     self.tTracker = Timer(1,trackerExpires)
     #Update GUI Timer Bar
-  
+	
   ###
   # Tracks how long the bonus timer has been running
   ###
@@ -432,26 +443,47 @@ class BattleEngine:
       player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
     elif enemy.name == "Goblin" or enemy.name == "Orc":
       player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+    #TODO: add enemy types here as levels are added
     else:
       player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower("basic"))+" damage")
       defender.defendAttack(enemy.attackPower("basic"))
     self.playerTurn=True
 
-
+  ###
+  #the value generated by enemies in current battle
+  ###
+  def checkValue(self):
+    return self.enemyValue
   ###
   #Called when battle is over and player wins
   ##
   def Victory(self):
-    #self.player.winScreen(self)
+    self.battleItems=["Items Won: "]
+    if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.battle:
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
+      self.battleItems.append(player.currentRoom.it1.name)
+      player.currentRoom.it1=0
+    if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.battle:
+      self.battleItems.append(player.currentRoom.it2.name)
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
+      player.currentRoom.it2=0
+    if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.i3.battle:
+      self.battleItems.append(player.currentRoom.it3.name)
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
+      player.currentRoom.it3=0
+    if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.battle:
+      self.battleItems.append(player.currentRoom.it4.name)
+      player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
+      player.currentRoom.it4=0
+    print(self.battleItems)
     self.player.currentRoom.en1=0
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
+    victoryMenu=Menu(["Continue"],self.player,IMG_PATH+"VictoryScreen.gif",[IMG_PATH+"Blank.gif"],"Victory")
     self.player.battle=False
-    self.player.traversal=True
-    self.player.msg5="You Win!"
-    #self.player.winScreen=True
-    #Return to travesal system
+    self.player.mainMenu=True
+    self.player.currentMenu=victoryMenu
 
   ###
   #Called when battle is over and player loses
@@ -459,10 +491,10 @@ class BattleEngine:
   def Defeat(self):
     #self.player.defeatScreen=True
     self.player.battle=False
-    self.player.currentMenu=self.player.MainMenu
-    self.player.currentMenu.select("up")
-    self.player.mainMenu=True  
-    #end the game
+    defeatMenu=Menu(["LoseContinue","LoseExit"],self.player,IMG_PATH+"VictoryScreen.gif",[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"],"Defeat")
+    self.player.currentMenu=defeatMenu
+    self.player.mainMenu=True	
+
   def bringOutYerDead(self,enemies):
     for enemy in enemies:
       if enemy.HP<=0:
@@ -475,6 +507,13 @@ class BattleEngine:
         elif enemy.place==3:
           self.player.currentRoom.en4='0'
         self.selEnemyIndex=0
+        if enemy.name=="Gru":
+          self.enemyValue+=50
+        elif enemy.name=="Wizard":
+          self.enemyValue+=150
+        elif enemy.name=="Goblin":
+          self.enemyValue+=50
+
         enemies.remove(enemy)
     return enemies
   ###
@@ -485,14 +524,14 @@ class BattleEngine:
       self.Defeat()
 
     else:
-  allDead = True
-  for enem in self.enemies:
-      if enem.HP > 0:
-        allDead = False
-  for i in range(3):
+	allDead = True
+	for enem in self.enemies:
+	    if enem.HP > 0:
+	      allDead = False
+	for i in range(3):
           self.enemies=self.bringOutYerDead(self.enemies)
 
-  if allDead == True:
+	if allDead == True:
           self.Victory()
 
 ###
@@ -527,8 +566,11 @@ class BattleEngine:
 
         elif newKey=='[2]' or newKey=='down':
           #Down
-          if player.currentMenu.numPad==True:
+          if player.currentMenu.name=="Number Pad":
             for i in range(3):
+              player.currentMenu.select("down")
+          elif player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
+            for i in range(2):
               player.currentMenu.select("down")
           else:
             player.currentMenu.select("down")
@@ -544,16 +586,15 @@ class BattleEngine:
               self.selEnemyIndex=0
         elif newKey=='[8]' or newKey=='up':
           #Up
-          if player.currentMenu.numPad==True:
+          if player.currentMenu.name=="Number Pad":
             for i in range(3):
+              player.currentMenu.select("up")
+          elif player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
+            for i in range(2):
               player.currentMenu.select("up")
           else:
             player.currentMenu.select("up")
-
-        elif newKey=='[3]' or newKey=='backspace':
-          #X
-          player.currentMenu.regress(player)
-
+          
         elif newKey=='[1]' or newKey=='return':
           #Check
           player.currentMenu.progress(player,screen)
@@ -564,7 +605,7 @@ class BattleEngine:
 
         elif newKey=='[9]':
           msg5='circle'
-
+      self.CheckEndBattle()
     else: 
       #print("Easy Mode")
       #self.playerTurn=True
@@ -573,4 +614,5 @@ class BattleEngine:
       #if enemy turn, randomly select enemy attack using GenerateEnemeyAttack() and attack
 
     #Run a check to see if battle is over
-    self.CheckEndBattle()
+      self.CheckEndBattle()
+

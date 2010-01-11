@@ -9,24 +9,24 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
-################################################################################
+##############################################################################		
 #Enemy class - represents an enemy and holds all of its data
-################################################################################
+#############################################################
 class Enemy:
   def __init__(self,player,name):
 #****property********value**********************description**********************#
-  self.MHP   = 12        #maximum health points (base HP)
-  self.HP    = 12        #cur print "Fire"rent health points
-  self.BHP   = 0        #bonus health points (from equipment)
-  self.ATT   = 13         #base attack power
-  self.BAE  = 0        #bonus attack power (from equipment)
-  self.DEF  = 1        #base defense power
-  self.BDE  = 0        #bonus defense  power(from equipment)
-  self.eqItems_Ar  = []  #equipped items
-  self.attacks_Ar = []  #associated array for attack string names and attack power values
-  self.eqItem_Ar = []
-  self.inv_Ar = []
-  self.attacks_Ar = []
+	self.MHP 	= 12				#maximum health points (base HP)
+	self.HP		= 12				#cur print "Fire"rent health points
+	self.BHP 	= 0				#bonus health points (from equipment)
+	self.ATT 	= 13 				#base attack power
+	self.BAE	= 0				#bonus attack power (from equipment)
+	self.DEF	= 1				#base defense power
+	self.BDE	= 0				#bonus defense  power(from equipment)
+	self.eqItems_Ar	= []	#equipped items
+	self.attacks_Ar = []	#associated array for attack string names and attack power values
+	self.eqItem_Ar = []
+	self.inv_Ar = []
+	self.attacks_Ar = []
         self.sprite=pygame.sprite.Sprite()
         self.place=0
         #load image based on type later
@@ -46,12 +46,13 @@ class Enemy:
           self.ATT=35
         else:
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          #TODO:  add all enemy types here as artwork is completed
         self.sprite.rect=(200,200,50,300) 
 
 #****ENEMY ACCESSORS*********************************************#
   #returns enemy's maximum health
   def maxHealthPoints(self):
-    return (self.HP + self.BHP)  
+    return (self.HP + self.BHP)	
 
   #returns enemy's current health
   def healthPoints(self):
@@ -106,7 +107,7 @@ class Enemy:
   def giveHealth(self,_inc):
     self.HP += _inc
     if healthPoints(self) > maxHealthPoints(self):
-  setHealth(self,maxHealthPoints(self))
+	setHealth(self,maxHealthPoints(self))
 
   #enemy is attacked by given damage
   def defendAttack(self,dmg):
@@ -132,3 +133,4 @@ class Enemy:
   def remEquipment(self,_item):
     print("remove equip")
     #remove _item from equipment -- leave cell empty
+#end class Enemy

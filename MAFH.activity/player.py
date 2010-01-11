@@ -11,8 +11,10 @@ import os.path
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
 ################################################################################
+
 # Player Class: stores info about the player ie. current position in dungeon etc
-################################################################################
+
+#########################################################################
 class Player:
   ####LOADS EVERYTHING FOR THE GAME####
   def __init__(self,x=0,y=0):
@@ -27,9 +29,9 @@ class Player:
     self.currentX=x
     self.currentY=y
     self.dgnIndex=-1
-    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",5,5)]
-    self.nextDungeon()
+    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7)]
     self.battlePlayer=Hero(self)
+    self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
     self.hpTutorial=False
@@ -59,6 +61,9 @@ class Player:
 
     #sound
     self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
+    pygame.mixer.init()
+    pygame.mixer.music.load(IMG_PATH+"MAFHbg.OGG")
+    pygame.mixer.music.play(-1)
 
   def initializeMenu(self):
     mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
@@ -116,6 +121,15 @@ class Player:
     self.RSprite=pygame.sprite.Sprite()
     self.RSprite.image=pygame.image.load(IMG_PATH+"r.gif")
     self.RSprite.rect=self.currentRoomSprite.rect
+    
+    self.akhalSprite=pygame.sprite.Sprite()
+    self.akhalSprite.image=pygame.image.load(IMG_PATH+"akhal.gif")
+    self.akhalSprite.rect=pygame.Rect(0,0,50,50)
+
+    divSwordImg=pygame.sprite.Sprite()
+    divSwordImg.image=pygame.image.load(IMG_PATH+"DivSword.gif")
+    divSwordImg.rect=(500,300,137,300)
+    self.divSword=pygame.sprite.Group(divSwordImg)
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
 
@@ -128,15 +142,24 @@ class Player:
   def nextDungeon(self):
 
     self.dgnIndex+=1
-    dgnWidth=self.dungeons[self.dgnIndex][1]
-    dgnHeight=self.dungeons[self.dgnIndex][2]
-    self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
-    self.dgn.fill()
-    self.currentX=self.dgn.start[0]
-    self.currentY=self.dgn.start[1]
-    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
-    self.dgnMap=Map(self.dgn)
-    self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+    if self.dgnIndex>=len(self.dungeons):
+      self.currentMenu=self.MainMenu
+      self.mainMenu=True
+      self.traversal=False
+    else:
+      for item in self.battlePlayer.inv_Ar:
+        if item.type=="key":
+          self.battlePlayer.inv_Ar.remove(item)
+      dgnWidth=self.dungeons[self.dgnIndex][1]
+      dgnHeight=self.dungeons[self.dgnIndex][2]
+      self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
+      self.dgn.fill()
+      self.currentX=self.dgn.start[0]
+      self.currentY=self.dgn.start[1]
+      self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+      self.dgnMap=Map(self.dgn)
+      self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
+
   def initInGameBattleTutorial(self,screen):
     batImages=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
     batBg=IMG_PATH+"battleMenubackground.gif"
@@ -146,8 +169,8 @@ class Player:
     itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
     itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
     itemMenu.background.rect=batBgRect
-    geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
-    geomMenu3=Menu(geomMenu3Option,self,batBg,[IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph1btn.gif"],"GeomTut3")
+    geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
+    geomMenu3=Menu(geomMenu3Option,self,batBg,[IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph2btn.gif",IMG_PATH+"HealGlyph1btn.gif",IMG_PATH+"FireGlyph3btn.gif",IMG_PATH+"LightningGlyph1btn.gif",IMG_PATH+"FireGlyph4btn.gif",IMG_PATH+"HealGlyph3btn.gif",IMG_PATH+"MissileGlyph2btn.gif"],"GeomTut3")
     geomMenu3.background.rect=batBgRect
     geomMenu3.numPad=True
     geomMenu2Option=[geomMenu3,"Wrong","Wrong","Wrong"]
@@ -157,12 +180,12 @@ class Player:
     geomMenu=Menu(geomMenuOption,self,batBg,batImages,"GeomTut")
     geomMenu.background.rect=batBgRect
     divMenu2Option=[geomMenu,geomMenu,geomMenu,geomMenu]
-    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Slash.gif",IMG_PATH+"14Slash.gif",IMG_PATH+"13Slash.gif",IMG_PATH+"16Slash.gif"],"DivTut2")
+    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Power.gif",IMG_PATH+"14Power.gif",IMG_PATH+"13Power.gif",IMG_PATH+"16Power.gif"],"DivTut2")
     divMenu2.background.rect=batBgRect
     divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
-    divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
-    divMenu.background.rect=batBgRect
-    critMenuOption=[divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,divMenu,"Enter"]
+    self.divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
+    self.divMenu.background.rect=batBgRect
+    critMenuOption=[self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,"Enter"]
     critMenu=Menu(critMenuOption,self,batBg,numPadImages,"CritTut")
     critMenu.numPad=True
     critMenu.background.rect=batBgRect
@@ -175,9 +198,9 @@ class Player:
   def initMovTutorial(self,screen):
     font=pygame.font.SysFont("cmr10",42,False,False)
     y=0
-    lines=["Welcome to the first Dungeon!","To look around, press left or right.","To move forward, press up","To check inventory or equipment,","Press space or x"]
+    lines=["Welcome to the first Dungeon!","To look around, press left or right.","To move forward, press up","To check inventory or equipment,","Press space or Circle"]
     for message in lines:
-      screen.blit(font.render(message,True,(0,200,0)),(400,200+y,200,300))
+      screen.blit(font.render(message,True,(0,200,0)),(400,20+y,200,300))
       y+=40
 
   def checkRoom(self):
@@ -205,3 +228,4 @@ class Player:
       self.hiddenTutorial=True
       player.migrateMessages("You have found items in your search, try searching every room for items!")
     return(message)
+

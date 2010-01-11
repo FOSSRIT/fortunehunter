@@ -6,9 +6,10 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
-################################################################################
-#Room class: stores data about a room in the dungeon.IE doors, enemies, mood etc
-################################################################################
+##################################################################################
+
+#Room class: stores data about a room in the dungeon.  IE doors, enemies, mood etc
+####################################################################################
 class Room:
   def __init__(self,doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,en1,en2,en3,en4,it1,it2,it3,it4):
     self.doorN=doorN
@@ -43,7 +44,49 @@ class Room:
   def setImage(self,imagePath):
     self.image=pygame.image.load(imagePath)
   def fillItems(self):
-    itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Sword","Weapon"),Item("Calculator","Special")]
+    #Item("Rusted Blade","Weapon")
+    #Item("Great Sword","Weapon")
+    #Item("Crescent Sword","Weapon")
+    #Item("Cardinal","Weapon")
+    #Item("Sun Moon","Weapon")
+
+    #Item("Earth Vest","Armor")
+    #Item("Wind Breaker","Armor")
+    #Item("Flame Leggings","Armor")
+    #Item("Dark Cowl","Armor")
+    #Item("Celestial Armor","Armor")
+
+    #Item("Jewel Shard","Accessory")
+    #Item("Broken Hourglass","Accessory")
+    #Item("Radiant Vial","Accessory")
+    #Item("Honor Tome","Accessory")
+    #Item("Valor Tome","Accessory")
+
+    #Item("Remedy","Usable")
+    #Item("Elixir","Usable")
+    #Item("Panacea","Usable")
+    #Item("High Elixir","Usable")
+    #Item("Nostrum","Usable")
+
+    #Item("Ruby","Special")
+    #Item("Sapphire","Special")
+    #Item("Emerald","Special")
+    #Item("Diamond","Special")
+
+    #Item("Ancient Amulet","Weapon")
+    #Item("Small Key","key")
+    #Item("Big Key","key")
+    #depending on dungeon, item list varies: SUGGESTED FORMAT=usable items, key items, weapon, armor,special items
+    #Dungeon 5
+    #itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]  
+    #Dungeon 4
+    #itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable")Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]    
+    #Dungeon 3
+    #itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable")Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
+    #Dungeon 2
+    #itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
+    #Dungeon 1
+    itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
     if not int(self.it1)==0:
       self.it1=itemList[int(self.it1)]
     if not int(self.it2)==0:

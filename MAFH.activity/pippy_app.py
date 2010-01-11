@@ -19,7 +19,12 @@ class Dungeon:
     self.sizeY=sizeY
     self.fileName=fileName
     self.start=[0,0]
-    self.types=["none","Wizard","Goblin","Gru","Eye","Octopus"]
+    #TYPES BASED ON DUNGEON INDEX OR FILENAME#
+    #self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
+    #self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
+    #self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
+    #self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
+    self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
 
@@ -1420,6 +1425,7 @@ class Enemy:
           self.ATT=35
         else:
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          #TODO:  add all enemy types here as artwork is completed
         self.sprite.rect=(200,200,50,300) 
 
 #****ENEMY ACCESSORS*********************************************#
@@ -1941,6 +1947,7 @@ class BattleEngine:
       player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
     elif enemy.name == "Goblin" or enemy.name == "Orc":
       player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+    #TODO: add enemy types here as levels are added
     else:
       player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower("basic"))+" damage")
       defender.defendAttack(enemy.attackPower("basic"))

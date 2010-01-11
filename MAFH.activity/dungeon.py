@@ -5,13 +5,23 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
+  ########################################################################
+  #Dungeon class:  stores a 2d array of rooms representing the dungeon
+  #                reads/parses a text file containing the data for a dungeon
+  #######################################################################
+
 class Dungeon:
   def __init__(self,sizeX=5,sizeY=5,fileName="dungeon2.txt"):
     self.sizeX=sizeX
     self.sizeY=sizeY
     self.fileName=fileName
     self.start=[0,0]
-    self.types=["none","Wizard","Goblin","Gru","Eye","Octopus"]
+    #TYPES BASED ON DUNGEON INDEX OR FILENAME#
+    #self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
+    #self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
+    #self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
+    #self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
+    self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
 
@@ -120,7 +130,7 @@ class Dungeon:
         elif line[7]=='x':
           doorEFlag=EXIT
 
-      if line[8]=='M':
+      if line[8]=='S':
         roomFlag=SHOP
       elif line[8]=='P':
         roomFlag=PUZZLE
@@ -128,7 +138,7 @@ class Dungeon:
         event=int(line[8])
 
       rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
-      
+      #check hidden items
       if line[14]=='h':
         rm.it1.hidden=True
       if line[16]=='h':
@@ -137,6 +147,16 @@ class Dungeon:
         rm.it3.hidden=True
       if line[20]=='h':
         rm.it4.hidden=True
+      
+      #check battle items
+      if line[14]=='b':
+        rm.it1.battle=True
+      if line[16]=='b':
+        rm.it2.battle=True
+      if line[18]=='b':
+        rm.it3.battle=True
+      if line[20]=='b':
+        rm.it4.battle=True
 
       if doorSFlag==ENTRANCE or doorNFlag==ENTRANCE or doorWFlag==ENTRANCE or doorEFlag==ENTRANCE:
         self.start=(currentX,currentY)
