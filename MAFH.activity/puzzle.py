@@ -6,6 +6,8 @@ import md5
 import logging
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
+
+from utils import *
 from types import TupleType, ListType
 from random import random
 from time import time
@@ -530,3 +532,183 @@ class SliderPuzzleWidget (gtk.Table):
             return rv.getvalue()
         else:
             return True
+            
+class ImageSelectorWidget (gtk.Table):
+    __gsignals__ = {'category_press' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+                    'image_press' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),}
+
+    def __init__ (self,
+                  width=IMAGE_SIZE,
+                  height=IMAGE_SIZE,
+                  frame_color=None,
+                  prepare_btn_cb=prepare_btn,
+                  method=RESIZE_CUT,
+                  image_dir=None):
+        gtk.Table.__init__(self, 2,5,False)
+        self._signals = []
+        self.width = width
+        self.height = height
+        self.image = gtk.Image()
+        self.method = method
+        #self.set_myownpath(MYOWNPIC_FOLDER)
+        img_box = BorderFrame(border_color=frame_color)
+        img_box.add(self.image)
+        img_box.set_border_width(5)
+        self._signals.append((img_box, img_box.connect('button_press_event', self.emit_image_pressed)))
+        self.attach(img_box, 0,5,0,1,0,0)
+        self.attach(gtk.Label(), 0,1,1,2)
+        self.bl = gtk.Button()
+
+        il = gtk.Image()
+        il.set_from_pixbuf(load_image(os.path.join(iconpath, 'arrow_left.png')))
+        self.bl.set_image(il)
+
+        self.bl.connect('clicked', self.previous)
+        self.attach(prepare_btn_cb(self.bl), 1,2,1,2,0,0)
+
+        cteb = gtk.EventBox()
+        self.cat_thumb = gtk.Image()
+        self.cat_thumb.set_size_request(THUMB_SIZE, THUMB_SIZE)
+        cteb.add(self.cat_thumb)
+        self._signals.append((cteb, cteb.connect('button_press_event', self.emit_cat_pressed)))
+        self.attach(cteb, 2,3,1,2,0,0,xpadding=10)
+        
+        self.br = gtk.Button()
+        ir = gtk.Image()
+        ir.set_from_pixbuf(load_image(os.path.join(iconpath,'arrow_right.png')))
+        self.br.set_image(ir)
+        self.br.connect('clicked', self.next)
+        self.attach(prepare_btn_cb(self.br), 3,4,1,2,0,0)
+        self.attach(gtk.Label(),4,5,1,2)
+        self.filename = None
+        self.show_all()
+        self.image.set_size_request(width, height)
+        if image_dir is None:
+            image_dir = os.path.join(mmmpath, "mmm_images")
+        self.set_image_dir(image_dir)
+
+    def add_image (self, *args):#widget=None, response=None, *args):
+        """ Use to trigger and process the My Own Image selector. """
+
+        if hasattr(mime, 'GENERIC_TYPE_IMAGE'):
+            filter = { 'what_filter': mime.GENERIC_TYPE_IMAGE }
+        else:
+            filter = { }
+
+        chooser = ObjectChooser(_('Choose image'), None, #self._parent,
+                                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                                **filter)
+        try:
+            result = chooser.run()
+            if result == gtk.RESPONSE_ACCEPT:
+                jobject = chooser.get_selected_object()
+                if jobject and jobject.file_path:
+                    if self.load_image(str(jobject.file_path), True):
+                        pass
+                    else:
+                        err = gtk.MessageDialog(self._parent, gtk.DIALOG_MODAL, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
+                                                _("Not a valid image file"))
+                        err.run()
+                        err.destroy()
+                        return
+        finally:
+            chooser.destroy()
+            del chooser
+
+    def set_readonly (self, ro=True):
+        if ro:
+            self.bl.hide()
+            self.br.hide()
+            for w, s in self._signals:
+                w.handler_block(s)
+
+    def emit_cat_pressed (self, *args):
+        self.emit('category_press')
+        return True
+
+    def emit_image_pressed (self, *args):
+        self.emit('image_press')
+        return True
+
+    def has_image (self):
+        return self.category.has_image()
+
+    def get_category_name (self):
+        return self.category.name
+
+    def get_filename (self):
+        return self.category.filename
+
+    def get_image (self):
+        return self.category.pb
+
+    def next (self, *args, **kwargs):
+        pb = self.category.get_next_image()
+        if pb is not None:
+            self.image.set_from_pixbuf(pb)
+
+    def previous (self, *args, **kwargs):
+        pb = self.category.get_previous_image()
+        if pb is not None:
+            self.image.set_from_pixbuf(pb)
+
+    def get_image_dir (self):
+        return self.category.path
+
+    def set_image_dir (self, directory):
+        if os.path.exists(directory) and not os.path.isdir(directory):
+            filename = directory
+            directory = os.path.dirname(directory)
+            logging.debug("dir=%s, filename=%s" % (directory, filename))
+        else:
+            logging.debug("dir=%s" % (directory))
+            filename = None
+        self.category = CategoryDirectory(directory, self.width, self.height, self.method)
+        self.cat_thumb.set_from_pixbuf(self.category.thumb)
+        if filename:
+            self.image.set_from_pixbuf(self.category.get_image(filename))
+        else:
+            if self.category.has_images():
+                self.next()
+
+    def load_image(self, filename, fromJournal=False):
+        """ Loads an image from the file """
+        self.category = CategoryDirectory(filename, self.width, self.height, method=self.method)
+        self.next()
+        self.cat_thumb.set_from_pixbuf(self.category.thumb)
+        return self.image.get_pixbuf() is not None
+
+    def load_pb (self, pb):
+        self.category.pb = pb
+        self.image.set_from_pixbuf(resize_image(pb, self.width, self.height, method=self.method))
+            
+GAME_SIZE = 450
+class Puzzle:
+    def __init__ (self, parent, image):
+        self._parent = parent
+        
+        self.game = SliderPuzzleWidget(pieces, GAME_SIZE, GAME_SIZE)
+        self.game.connect("solved", self.do_solve)
+        self.game.connect("moved", self.slider_move_cb)
+        self._parent.connect("key_press_event",self.game.process_key)
+        self._parent.connect("key_press_event",self.process_key)
+        self.game.show()
+        self.game_wrapper = gtk.VBox()
+        self.game_wrapper.show()
+        
+        #buttons (pieces of the larger image)
+        btn_box = gtk.Table(1,5,False)
+        btn_box.set_col_spacings(5)
+        btn_box.set_row_spacings(5)
+        btn_box.attach(gtk.Label(), 0,1,0,2)
+
+        self.btn_9 = prepare_btn(gtk.ToggleButton("9"),50)
+        self.btn_9.set_active(True)
+        self.btn_9.connect("clicked", self.set_nr_pieces, 9)
+        btn_box.attach(self.btn_9, 1,2,0,1,0,0)
+        btn_box.attach(gtk.Label(), 4,5,0,1)
+
+        self.thumb = ImageSelectorWidget(frame_color=COLOR_FRAME_THUMB, prepare_btn_cb=prepare_btn, image_dir='images')
+        self.thumb.connect("category_press", self.do_select_category)
+        self.thumb.connect("image_press", self.set_nr_pieces)
+        control_panel_box.pack_start(self.thumb, False)
