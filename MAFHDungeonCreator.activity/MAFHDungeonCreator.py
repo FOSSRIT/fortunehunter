@@ -16,8 +16,6 @@ class MAFHDungeonCreator(Activity):
     def __init__(self, handle):
         Activity.__init__(self, handle)
 
-        self.notebook = gtk.Notebook()
-
         self.dungeon = None
         self.active_room = None
 
@@ -30,25 +28,46 @@ class MAFHDungeonCreator(Activity):
         self.set_toolbox(toolbox)
         toolbox.show()
 
-        self.notebook.append_page(self.get_create_dungeon_settings(), gtk.Label(_("Create Dungeon")) )
+        self.set_create_dungeon_settings()
 
-        self.notebook.connect("switch_page", self.notebook_page_change)
+    def view_change_cb(self, widget, view=None):
+        if view == 'stats':
+            self.view_dungeon_stats()
+        elif view == 'layout':
+            self.view_dungeon_grid()
+        elif view == 'room':
+            self.view_room()
 
-
-        self.set_gui_view( self.notebook )
-
-    def set_gui_view(self,  view):
-        self.set_canvas( view )
+    def set_gui_view(self,  view, buttons=False):
+        if buttons:
+            box = gtk.VBox()
+            box.pack_start( self.get_button_bar(), False )
+            box.pack_start(view)
+            self.set_canvas( box )
+        else:
+            self.set_canvas( view )
         self.show_all()
 
-    def notebook_page_change(self, widget, dummy, pagenum):
-    ##WORKING HERE
-        page_widget = widget.get_nth_page(pagenum)
-        print "Page number switched to: %s" % pagenum
-        print "Widget attached to page %s: %s" % ( pagenum, page_widget )
+    def get_button_bar(self):
+        button_tabs = gtk.HBox()
+        stats = gtk.Button( _("Dungeon Summery") )
+        stats.set_alignment(0,.5)
+        stats.connect( 'clicked', self.view_change_cb, 'stats')
+        button_tabs.pack_start( stats, False )
 
+        layout = gtk.Button( _("Dungeon Layout") )
+        layout.set_alignment(0,.5)
+        layout.connect( 'clicked', self.view_change_cb, 'layout')
+        button_tabs.pack_start( layout, False )
 
-    def get_create_dungeon_settings(self):
+        room = gtk.Button( _("Room Layout") )
+        room.set_alignment(0,.5)
+        room.connect( 'clicked', self.view_change_cb, 'room')
+        button_tabs.pack_start( room, False )
+
+        return button_tabs
+
+    def set_create_dungeon_settings(self):
         window_container = gtk.VBox()
 
         ## Dungeon Properties
@@ -64,7 +83,7 @@ class MAFHDungeonCreator(Activity):
         row.pack_start( label )
         name = gtk.Entry()
         row.pack_end( name )
-        container.pack_start( row )
+        container.pack_start( row, False )
 
         # Theme
         row = gtk.HBox()
@@ -76,10 +95,10 @@ class MAFHDungeonCreator(Activity):
             theme.append_text( option )
         theme.set_active( 0 )
         row.pack_end( theme )
-        container.pack_start( row )
+        container.pack_start( row, False )
 
         frame.add( container )
-        window_container.pack_start( frame )
+        window_container.pack_start( frame, False )
 
         ## Dungeon Size
         ###############
@@ -92,9 +111,9 @@ class MAFHDungeonCreator(Activity):
         row = gtk.HBox()
         label = gtk.Label(_("Width:") )
         label.set_alignment( 0, 0.5)
-        row.pack_start( label )
+        row.pack_start( label)
         row.pack_end( widthspin )
-        container.pack_start( row )
+        container.pack_start( row, False )
 
         # Height
         heightADJ = gtk.Adjustment(MIN_GRID_HEIGHT, MIN_GRID_HEIGHT, MAX_GRID_HEIGHT, 1.0, 5.0, 0.0)
@@ -104,18 +123,18 @@ class MAFHDungeonCreator(Activity):
         label.set_alignment( 0, 0.5)
         row.pack_start( label )
         row.pack_end( heightspin )
-        container.pack_start( row )
+        container.pack_start( row, False )
 
         frame.add( container )
-        window_container.pack_start( frame )
+        window_container.pack_start( frame, False )
 
         ## Make Dungeon Button
         make_dungeon = gtk.Button(_("Create Dungeon"))
         make_dungeon.connect("clicked", self.create_dungeon_cb, {'name':name,'theme':theme,'width':widthspin,'height':heightspin})
 
-        window_container.pack_start( make_dungeon )
+        window_container.pack_start( make_dungeon, False )
 
-        return window_container
+        self.set_gui_view( window_container )
 
     def create_dungeon_cb(self, widget, data):
         name = data['name'].get_text()
@@ -124,50 +143,37 @@ class MAFHDungeonCreator(Activity):
         height = data['height'].get_value_as_int()
 
         self.dungeon = Dungeon( name, theme, width, height )
+        self.view_dungeon_stats()
 
-        page = self.notebook.get_current_page()
-        self.notebook.remove_page(page)
-
-        self.setup_dungeon_grid()
-
-    def setup_dungeon_grid(self):
-        self.notebook.append_page(self.get_dungeon_stats(), gtk.Label(_("Dungeon Summery")) )
-        self.notebook.append_page(self.get_dungeon_grid(), gtk.Label(_("Dungeon Layout")) )
-        self.notebook.append_page(self.get_room_setup(), gtk.Label(_("Room Layout")))
-        self.show_all()
-        self.notebook.queue_draw_area(0,0,-1,-1)
-
-
-    def get_dungeon_stats(self):
+    def view_dungeon_stats(self):
         dungeon_stats = gtk.HBox()
         dungeon_stats.pack_start(gtk.Label("Dungeon Statistics to be implemented"))
-        return dungeon_stats
+        self.set_gui_view( dungeon_stats, True )
 
-    def get_dungeon_grid(self):
-        box = gtk.VBox()
-
+    def view_dungeon_grid(self):
         room_array = self.dungeon.get_room_array()
+        box = gtk.VBox()
         for row_array in room_array:
             row = gtk.HBox()
-            box.pack_start( row )
+            box.pack_start( row, False )
             for room in row_array:
                 room_gui = room.render_room()
                 room_gui.connect('clicked', self.set_active_room, room)
-                row.pack_start( room_gui )
+                row.pack_start( room_gui, False )
 
         scroll = gtk.ScrolledWindow()
         scroll.add_with_viewport( box )
 
-        return scroll
+        self.set_gui_view( scroll, True )
+
+    def view_room(self):
+        dungeon_stats = gtk.HBox()
+        dungeon_stats.pack_start(gtk.Label("room to be implemented"))
+        self.set_gui_view( dungeon_stats, True )
 
     def set_active_room(self, widgit, room):
         self.active_room  = room
-        self.notebook.set_page(2)
-
-    def get_room_setup(self):
-        dungeon_stats = gtk.HBox()
-        dungeon_stats.pack_start(gtk.Label("room to be implemented"))
-        return dungeon_stats
+        self.view_room()
 
 if __name__ == "__main__":
 
