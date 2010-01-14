@@ -3,8 +3,12 @@ from constants import (
     ENEM_INDEX, ITEM_INDEX, ITEM_FLAGS
     )
 
+import gtk
+
 class Room:
-    def __init__(self):
+    def __init__(self, x = -1, y = -1):
+        self._x = x
+        self._y = y
         self.doors = {}
         self.enemy = []
         self.item = []
@@ -64,3 +68,8 @@ class Room:
             str += item[0] + item[1]
 
         return str
+
+    def render_room(self):
+        but = gtk.Button("(%d, %d)" %(self._x, self._y))
+        but.set_size_request(100, 100)
+        return but

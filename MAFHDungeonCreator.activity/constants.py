@@ -41,3 +41,9 @@ ITEM_FLAGS = {
     'h':_('Hidden'),
     'b':_('Battle')
 }
+
+# Integer Driven
+THEME_NAME = [
+    _('Default Theme'),
+    _('Theme 2')
+    ]
