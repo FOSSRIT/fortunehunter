@@ -1038,10 +1038,11 @@ class Player:
     self.playerFacing=NORTH
 
     #sound
-    self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
+
     pygame.mixer.init()
     pygame.mixer.music.load(IMG_PATH+"MAFHbg.OGG")
     pygame.mixer.music.play(-1)
+    self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
 
   def initializeMenu(self):
     mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
@@ -2282,7 +2283,7 @@ class Shop:
     player.currentRoomGroup.draw(screen)
     merchantSprite=pygame.sprite.Sprite()
     merchantSprite.image=pygame.image.load(IMG_PATH+"MerchantPH.gif")
-    merchantSprite.rect=pygame.Rect(800,100,200,200)
+    merchantSprite.rect=pygame.Rect(600,-50,200,200)
     merchantGroup=pygame.sprite.Group(merchantSprite)
     merchantGroup.draw(screen)
     if self.buyMode:
@@ -3002,5 +3003,4 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
-
 
