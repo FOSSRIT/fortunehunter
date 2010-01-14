@@ -8,6 +8,89 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 #IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
+#################################################################################
+#Item class: stores info about items
+#################################################################################
+class Item:
+  def __init__(self,name,typ):
+    self.name=name
+    self.type=typ
+    self.power=0
+    self.buyVal=0
+    self.sellVal=0
+    self.hidden=False
+    self.battle=False
+
+    #WEAPONS
+    if self.name=="Ancient Amulet":
+      self.power=1
+    elif self.name=="Rusted Blade":
+      self.power=5
+    elif self.name=="Great Sword":
+      self.power=15
+    elif self.name=="Crescent Sword":
+      self.power=25
+    elif self.name=="Cardinal":
+      self.power=35
+    elif self.name=="Sun Moon":
+      self.power=50
+
+    #ARMOR
+    elif self.name=="Earth Vest":
+      self.power=5
+    elif self.name=="Wind Breaker":
+      self.power=15
+    elif self.name=="Flame Leggings":
+      self.power=25
+    elif self.name=="Dark Cowl":
+      self.power=35
+    elif self.name=="Celestial Armor":
+      self.power=50
+
+    #ACCESSORY
+    elif self.name=="Jewel Shard":
+      self.power=10
+    elif self.name=="Broken Hourglass":
+      self.power=10
+    elif self.name=="Radiant Vial":
+      self.power=20
+    elif self.name=="Honor Tome":
+      self.power=.2
+    elif self.name=="Valor Tome":
+      self.power=.2
+
+    #TREASURES
+    elif self.name=="Ruby":
+      self.sellVal=500
+    elif self.name=="Sapphire":
+      self.sellVal=500
+    elif self.name=="Emerald":
+      self.sellVal=500
+    elif self.name=="Diamond":
+      self.sellVal=500
+
+    #HEALING
+    elif self.name=="Remedy":
+      self.sellVal=2
+      self.buyVal=20
+      self.power=.10
+    elif self.name=="Elixir":
+      self.sellVal=10
+      self.buyVal=60
+      self.power=.20
+    elif self.name=="Panacea":
+      self.sellVal=50
+      self.buyVal=150
+      self.power=.80
+    elif self.name=="High Elixir":
+      self.sellVal=20
+      self.buyVal=100
+      self.power=.40
+    elif self.name=="Nostrum":
+      self.sellVal=100
+      self.buyVal=250
+      self.power=.5
+
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
   #                reads/parses a text file containing the data for a dungeon
@@ -23,14 +106,19 @@ class Dungeon:
     #TYPES BASED ON DUNGEON INDEX OR FILENAME#
     if self.index<5 and self.index>=0:
       self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
+      self.itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
     elif self.index<10 and self.index>=5:
       self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
+      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
     elif self.index<15 and self.index>=10:
       self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
+      self.itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
     elif self.index<20 and self.index>=15:
       self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
+      self.itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]
     elif self.index<25 and self.index>=20:
       self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
+      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]
 
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
@@ -149,18 +237,26 @@ class Dungeon:
 
       rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
    
-      rm.setItemList(self.index)
+      rm.setItemList(self.itemList)
       rm.fillItems()
 
       #check hidden items
       if line[14]=='h':
         rm.it1.hidden=True
+      elif line[14]=='v':
+        rm.it1.hidden=False
       if line[16]=='h':
         rm.it2.hidden=True
+      elif line[16]=='v':
+        rm.it1.hidden=False
       if line[18]=='h':
         rm.it3.hidden=True
+      elif line[18]=='v':
+        rm.it1.hidden=False
       if line[20]=='h':
         rm.it4.hidden=True
+      elif line[20]=='v':
+        rm.it1.hidden=False
       
       #check battle items
       if line[14]=='b':
@@ -174,7 +270,7 @@ class Dungeon:
 
       if doorSFlag==ENTRANCE or doorNFlag==ENTRANCE or doorWFlag==ENTRANCE or doorEFlag==ENTRANCE:
         self.start=(currentX,currentY)
-      #rm.transport=transport
+ 
       #start=[1,4]
       
       self.rooms[(currentX,currentY)]=rm
@@ -225,18 +321,8 @@ class Room:
 
   def setImage(self,imagePath):
     self.image=pygame.image.load(imagePath)
-  def setItemList(self,index):
-    #depending on dungeon, item list varies: SUGGESTED FORMAT=usable items, key items, weapon, armor,special items
-    if index<5 and index>=0:
-      self.itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
-    elif index<10 and index>=5:
-      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
-    elif index<15 and index>=10:
-      self.itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
-    elif index<20 and index>=15:
-      self.itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]
-    elif index<25 and index>=20:
-      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]
+  def setItemList(self,_itemList):
+    self.itemList=_itemList
 
   def setShop(self,player):
     self.shop=Shop(player)
@@ -250,6 +336,7 @@ class Room:
       self.it3=self.itemList[int(self.it3)]
     if not int(self.it4)==0:
       self.it4=self.itemList[int(self.it4)]
+    
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
 ###############################################################################
@@ -288,7 +375,7 @@ class Map:
     font=pygame.font.SysFont("cmr10",24,False,False)
     macroMap=pygame.transform.scale(self.totalSurface,(self.sizeX*100,self.sizeY*100))
     screen.fill((0,0,0),(200,0,800,700))
-    legend=pygame.Surface((300,300))
+    legend=pygame.Surface((200,300))
     legend.fill((255,0,0),(0,0,40,15))
     legend.blit(font.render("LOCKED",True,(255,0,0)),(45,0,30,5))
     legend.fill((150,255,150),(0,25,40,15))
@@ -299,7 +386,7 @@ class Map:
     legend.blit(font.render("EXIT",True,(255,255,255)),(45,75,30,5))
     legend.fill((50,50,50),(0,100,40,15))
     legend.blit(font.render("ENTRANCE",True,(50,50,50)),(45,100,30,5))
-    screen.blit(legend,(500,0,300,300))
+    screen.blit(legend,(800,0,300,300))
     screen.blit(macroMap,(200,0,800,700))
     pygame.display.flip()
   def updateMacro(self,player):
@@ -802,7 +889,7 @@ class Menu:
 	  #if we decide to add puzzle/minigame items, here's where they'd go
         elif name=="Weapon" or name=="Armor" or name=="Accessory" or name=="ItemSlot1" or name=="ItemSlot2" or name=="ItemSlot3" or name=="ItemSlot4":
           self.createInventory(player,name)
-          player.currentMenu=player.currentMenu=self.inventoryMenu
+          player.currentMenu=self.inventoryMenu
           player.currentRoomGroup.draw(screen)
         elif name[0:9]=="Equipment":
           player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:10])],self.target)
@@ -1033,6 +1120,7 @@ class Player:
   def nextDungeon(self):
 
     self.dgnIndex+=1
+    self.battlePlayer.MHP+=2
     if self.dgnIndex>=len(self.dungeons):
       self.currentMenu=self.MainMenu
       self.mainMenu=True
@@ -1101,18 +1189,22 @@ class Player:
     if type(self.currentRoom.it1)==type(Item("","")) and self.currentRoom.it1.hidden:
       self.battlePlayer.inv_Ar.append(self.currentRoom.it1)
       message+=" "+self.currentRoom.it1.name
+      self.currentRoom.it1=0
       found=True
     if type(self.currentRoom.it2)==type(Item("","")) and self.currentRoom.it2.hidden:
       self.battlePlayer.inv_Ar.append(self.currentRoom.it2)
       message+=" "+self.currentRoom.it2.name
+      self.currentRoom.it2=0
       found=True
     if type(self.currentRoom.it3)==type(Item("","")) and self.currentRoom.it3.hidden:
       self.battlePlayer.inv_Ar.append(self.currentRoom.it3)
       message+=" "+self.currentRoom.it3.name
+      self.currentRoom.it3=0
       found=True
     if type(self.currentRoom.it4)==type(Item("","")) and self.currentRoom.it4.hidden:
       self.battlePlayer.inv_Ar.append(self.currentRoom.it4)
       message+=" "+self.currentRoom.it4.name
+      self.currentRoom.it4=0
       found=True
     if found==False:
       message+="nothing"
@@ -1121,88 +1213,6 @@ class Player:
       player.migrateMessages("You have found items in your search, try searching every room for items!")
     return(message)
 
-#################################################################################
-#Item class: stores info about items
-#################################################################################
-class Item:
-  def __init__(self,name,typ):
-    self.name=name
-    self.type=typ
-    self.power=0
-    self.buyVal=0
-    self.sellVal=0
-    self.hidden=False
-    self.battle=False
-
-    #WEAPONS
-    if self.name=="Ancient Amulet":
-      self.power=1
-    elif self.name=="Rusted Blade":
-      self.power=5
-    elif self.name=="Great Sword":
-      self.power=15
-    elif self.name=="Crescent Sword":
-      self.power=25
-    elif self.name=="Cardinal":
-      self.power=35
-    elif self.name=="Sun Moon":
-      self.power=50
-
-    #ARMOR
-    elif self.name=="Earth Vest":
-      self.power=5
-    elif self.name=="Wind Breaker":
-      self.power=15
-    elif self.name=="Flame Leggings":
-      self.power=25
-    elif self.name=="Dark Cowl":
-      self.power=35
-    elif self.name=="Celestial Armor":
-      self.power=50
-
-    #ACCESSORY
-    elif self.name=="Jewel Shard":
-      self.power=10
-    elif self.name=="Broken Hourglass":
-      self.power=10
-    elif self.name=="Radiant Vial":
-      self.power=20
-    elif self.name=="Honor Tome":
-      self.power=.2
-    elif self.name=="Valor Tome":
-      self.power=.2
-
-    #TREASURES
-    elif self.name=="Ruby":
-      self.sellVal=500
-    elif self.name=="Sapphire":
-      self.sellVal=500
-    elif self.name=="Emerald":
-      self.sellVal=500
-    elif self.name=="Diamond":
-      self.sellVal=500
-
-    #HEALING
-    elif self.name=="Remedy":
-      self.sellVal=2
-      self.buyVal=20
-      self.power=.05
-    elif self.name=="Elixir":
-      self.sellVal=10
-      self.buyVal=60
-      self.power=.15
-    elif self.name=="Panacea":
-      self.sellVal=50
-      self.buyVal=150
-      self.power=.80
-    elif self.name=="High Elixir":
-      self.sellVal=20
-      self.buyVal=100
-      self.power=.40
-    elif self.name=="Nostrum":
-      self.sellVal=100
-      self.buyVal=250
-      self.power=.5
 #######################################################################
 
 #Hero class - represents the player in battle and holds all of their data
@@ -1234,7 +1244,7 @@ class Hero:
         self.akhal=0
 
         amulet=Item("Ancient Amulet","Weapon")
-        calculator=Item("Caclulator","")
+        calculator=Item("Calculator","")
         emptyItem=Item("","Usable")
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
         self.inv_Ar=[amulet,calculator]
@@ -1351,17 +1361,23 @@ class Hero:
   #remove item from equipment
   def remEquipment(self,item):
     if item.type=="Weapon":
-      self.weapon=0
+      self.weapon=Item("","")
       self.BAE=0
+      self.inv_Ar.append(item)
     elif item.type=="Armor":
-      self.armor=0
+      self.armor=Item("","")
       self.BDE=0
+      self.inv_Ar.appen(item)
     elif item.type=="Accessory":
-      self.accessory=0
+      self.accessory=Item("","")
       self.BHP=0
+      self.inv_Ar.append(item)
+    elif item.name=="":
+      i=0
     else:
-      if self.eqItem.has(item):
+      if item in self.eqItem:
         self.eqItem.remove(item)
+        self.inv_Ar.append(item)
     #remove _item from equipment -- leave cell empty
 
   #add item to inventory
@@ -1859,6 +1875,8 @@ class BattleEngine:
       self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*item.power)
       self.player.battlePlayer.eqItem.remove(item)
       self.player.battlePlayer.eqItem.append(Item("",""))
+      if self.player.battlePlayer.HP>self.player.battlePlayer.MHP:
+        self.player.battlePlayer.HP=self.player.battlePlayer.MHP
     self.playerTurn=False
     self.player.currentMenu=self.battleMenu
 
@@ -2089,12 +2107,7 @@ class BattleEngine:
           #Check
           player.currentMenu.progress(player,screen)
 
-        elif newKey=='[7]':
-          #Square
-          msg5='square'
 
-        elif newKey=='[9]':
-          msg5='circle'
       self.CheckEndBattle()
     else: 
       #print("Easy Mode")
@@ -2119,14 +2132,22 @@ class Shop:
     self.selDigit=3
     self.enteredDigits=[0,0,0,0]
     self.buyScreen=False
+    self.buyMode=True
+    self.sellMode=False
+    self.yes=True
+    self.shopKeeperVariable=0
   def finish(self):
-    enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
-    print(repr(enteredNumber)+"  "+repr(self.totalPrice)+" "+repr(self.player.battlePlayer.akhal))
-    if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
-      self.player.battlePlayer.akhal-=enteredNumber
-      for i in range(self.numItem):
-        self.player.battlePlayer.inv_Ar.append(self.itemList[self.selItem])
-      self.buyScreen=False
+    if self.buyMode:
+      enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
+      if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
+        self.player.battlePlayer.akhal-=enteredNumber
+        for i in range(self.numItem):
+          self.player.battlePlayer.inv_Ar.append(self.itemList[self.selItem])
+    elif self.sellMode:
+      self.player.battlePlayer.akhal+=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
+      self.player.battlePlayer.inv_Ar.remove(self.player.battlePlayer.inv_Ar[self.selItem])
+      self.selItem=0
+    self.buyScreen=False
   def update(self,event,player):
     if event.type == QUIT:
       sys.exit()
@@ -2141,6 +2162,8 @@ class Shop:
         #Right
         #increment numItems/selectedDigit
         if self.buyScreen:
+          if self.sellMode:
+            self.yes=False
           if self.selDigit<3:
             self.selDigit+=1
           else:
@@ -2153,22 +2176,31 @@ class Shop:
       elif newKey=='[2]' or newKey=='down':
         #Down
         #decrement selected item/enteredDigits[selItem]
-        if self.buyScreen:
-          if self.enteredDigits[self.selDigit]>0:
-            self.enteredDigits[self.selDigit]-=1
-          else:
-            self.enteredDigits[self.selDigit]=9
+        if self.sellMode:
+          if not self.buyScreen:
+            if self.selItem<len(self.player.battlePlayer.inv_Ar)-1:
+              self.selItem+=1
+            else:
+              self.selItem=0
         else:
-          self.numItem=0
-          if self.selItem<len(self.itemList)-1:
-            self.selItem+=1
+          if self.buyScreen:
+            if self.enteredDigits[self.selDigit]>0:
+              self.enteredDigits[self.selDigit]-=1
+            else:
+              self.enteredDigits[self.selDigit]=9
           else:
-            self.selItem=0
+            self.numItem=0
+            if self.selItem<len(self.itemList)-1:
+              self.selItem+=1
+            else:
+              self.selItem=0
       elif newKey=='[4]' or newKey=='left':
         #Left
         #decrement numItems/selectedDigit
         if self.buyScreen:
-          if self.selDigit>0:
+          if self.sellMode:
+            self.yes=True
+          elif self.selDigit>0:
             self.selDigit-=1
           else:
             self.selDigit=3
@@ -2180,67 +2212,135 @@ class Shop:
       elif newKey=='[8]' or newKey=='up':
         #Up
         #increment selected item/enteredDigits[selItem]
-        if self.buyScreen:
-          if self.enteredDigits[self.selDigit]<9:
-            self.enteredDigits[self.selDigit]+=1
-          else:
-            self.enteredDigits[self.selDigit]=0
+        if self.sellMode:
+          if not self.buyScreen:
+            if self.selItem>0:
+              self.selItem-=1
+            else:
+              self.selItem=len(self.player.battlePlayer.inv_Ar)-1
         else:
-          self.numItem=0
-          if self.selItem>0:
-            self.selItem-=1
+          if self.buyScreen:
+            if self.enteredDigits[self.selDigit]<9:
+              self.enteredDigits[self.selDigit]+=1
+            else:
+              self.enteredDigits[self.selDigit]=0
           else:
-            self.selItem=len(self.itemList)-1
+            self.numItem=0
+            if self.selItem>0:
+              self.selItem-=1
+            else:
+              self.selItem=len(self.itemList)-1
       elif newKey=='[1]' or newKey=='return':
         #Check
         #buy/finish
-        if self.buyScreen:
-          self.finish()
-        else:
-          self.buyScreen=True
-          self.totalPrice=self.numItem*self.itemList[self.selItem].buyVal
+        if self.sellMode:
+          if self.buyScreen:
+            if self.yes:
+              self.finish()
+            else:
+              self.buyScreen=False
+          else:
+            itName=self.player.battlePlayer.inv_Ar[self.selItem].name
+            self.yes=False
+            if itName=="Small Key" or itName=="Big Key" or itName=="Calculator" or itName=="Ancient Amulet":
+              #have shop merchant say
+              self.player.migrateMessages("That looks important, I wouldn't sell that if I were you")
+            else:
+              self.buyScreen=True
+              seed()
+              self.shopKeeperVariable=randint(1,self.player.battlePlayer.inv_Ar[self.selItem].sellVal*2)
+
+        elif self.buyMode:
+          if self.buyScreen:
+            self.finish()
+          else:
+            self.buyScreen=True
+            self.totalPrice=self.numItem*self.itemList[self.selItem].buyVal
       elif newKey=='[3]' or newKey=='backspace':
         if self.buyScreen:
           self.buyScreen=False
         else:
           self.player.shop=False
           self.player.traversal=True
+      elif newKey=='[7]' or newKey=='s':
+        #circle, switch to sell mode
+        if self.buyScreen==False:
+          self.buyMode=False
+          self.sellMode=True
+          self.selItem=0
+          self.numItem=0
+
+      elif newKey=='[9]' or newKey=='b':
+        #square, switch to buy mode
+        if self.buyScreen==False:
+          self.sellMode=False
+          self.buyMode=True
+          self.selItem=0
+          self.numItem=0
   
   def draw(self,screen,player):
-    screen.fill((255,255,255),(850,0,250,900))
-    screen.fill((100,100,100),(100,0,600,900))
-    i=0
-    y=80
-    for item in self.itemList:
-      #from left to right: arrow, box w/#, arrow, item name
-      font = pygame.font.Font(None, 36)
-      if i==self.selItem:
-        screen.fill((150,150,200),(140,y,600,40))
-      screen.fill((100,0,0),(140,y,40,40))
-      screen.fill((50,100,100),(190,y,50,40))
-      if i==self.selItem:
-        screen.blit(font.render(repr(self.numItem),True,(255,255,255)),(190,y,50,40))
-      else:
-        screen.blit(font.render("0",True,(255,255,255)),(190,y,50,40))
-      screen.fill((100,0,0),(240,y,40,40))
-      screen.blit(font.render(item.name,True,(255,255,255)),(300,y,500,40))
-      y+=40
-      i+=1
-
-    if self.buyScreen:
-      screen.fill((100,100,100),(500,500,600,400))
-      screen.blit(font.render(repr(self.numItem)+" x "+repr(self.itemList[self.selItem].buyVal),True,(255,255,255)),(600,550,500,40))
-      x=600
+    player.currentRoomGroup.draw(screen)
+    merchantSprite=pygame.sprite.Sprite()
+    merchantSprite.image=pygame.image.load(IMG_PATH+"MerchantPH.gif")
+    merchantSprite.rect=pygame.Rect(800,100,200,200)
+    merchantGroup=pygame.sprite.Group(merchantSprite)
+    merchantGroup.draw(screen)
+    if self.buyMode:
+      screen.fill((100,100,100),(100,0,600,900))
       i=0
-      for digit in self.enteredDigits:
-        if i==self.selDigit:
-          screen.fill((150,150,200),(x,700,45,100))
-        screen.fill((100,0,0),(x,700,40,40))
-        screen.fill((50,100,100),(x,750,50,40))
-        screen.blit(font.render(repr(digit),True,(255,255,255)),(x,750,50,40))
-        screen.fill((100,0,0),(x,790,40,40))
-        x+=50
+      y=80
+      for item in self.itemList:
+        #from left to right: arrow, box w/#, arrow, item name
+        font = pygame.font.Font(None, 36)
+        if i==self.selItem:
+          screen.fill((150,150,200),(140,y,600,40))
+        screen.fill((100,0,0),(140,y,40,40))
+        screen.fill((50,100,100),(190,y,50,40))
+        if i==self.selItem:
+          screen.blit(font.render(repr(self.numItem),True,(255,255,255)),(190,y,50,40))
+        else:
+          screen.blit(font.render("0",True,(255,255,255)),(190,y,50,40))
+        screen.fill((100,0,0),(240,y,40,40))
+        screen.blit(font.render(item.name,True,(255,255,255)),(300,y,500,40))
+        y+=40
         i+=1
+
+      if self.buyScreen:
+        screen.fill((100,100,100),(500,500,600,400))
+        screen.blit(font.render(repr(self.numItem)+" x "+repr(self.itemList[self.selItem].buyVal),True,(255,255,255)),(600,550,500,40))
+        x=600
+        i=0
+        for digit in self.enteredDigits:
+          if i==self.selDigit:
+            screen.fill((150,150,200),(x,700,45,100))
+          screen.fill((100,0,0),(x,700,40,40))
+          screen.fill((50,100,100),(x,750,50,40))
+          screen.blit(font.render(repr(digit),True,(255,255,255)),(x,750,50,40))
+          screen.fill((100,0,0),(x,790,40,40))
+          x+=50
+          i+=1
+    elif self.sellMode:
+      screen.fill((0,0,0),(100,0,600,900))
+      i=0
+      y=80
+      for item in self.player.battlePlayer.inv_Ar:
+          font = pygame.font.Font(None, 36)
+          if i==self.selItem:
+            screen.fill((150,150,200),(140,y,600,40))
+          screen.blit(font.render(item.name,True,(255,255,255)),(200,y,500,40))
+          y+=40
+          i+=1
+
+      if self.buyScreen:
+        screen.fill((100,100,100),(500,500,600,400))
+        screen.blit(font.render("For a "+self.player.battlePlayer.inv_Ar[self.selItem].name+" I will give you "+repr(self.shopKeeperVariable),True,(255,255,255)),(600,550,500,40))
+        screen.blit(font.render("OK?",True,(255,255,255)),(700,600,500,40))
+        if self.yes:
+          screen.fill((150,150,250),(650,650,60,40))
+        else:
+          screen.fill((150,150,250),(750,650,60,40))
+        screen.blit(font.render("Yes",True,(255,255,255)),(660,650,100,40))
+        screen.blit(font.render("No",True,(255,255,255)),(760,650,100,40))
     pygame.display.flip()
 
 #############################################################################
@@ -2591,24 +2691,52 @@ def updateMenu(event,player):
       elif newKey=='[3]' or newKey=='backspace':
         if menu.name=="Stats" or menu.name=="Inventory":
           menu.regress(player)
+        
+
       elif newKey=='[4]' or newKey=='left':
         if menu.name=="Defeat":
           menu.select("up")
+        elif menu.name=="Stats":
+          for i in range(4):
+            menu.select("down")
       elif newKey=='[5]':
         print('check')
 
       elif newKey=='[6]' or newKey=='right':
         if menu.name=="Defeat":
           menu.select("down")
-
-      elif newKey=='[7]':
-        print('square')
-
+        elif menu.name=="Stats":
+          for i in range(4):
+            menu.select("up")
+      elif newKey=='[7]' or newKey=='e':
+        #USE ITEM
+        itemIndex=menu.currentOption
+        if itemIndex>2 and itemIndex-3<len(player.battlePlayer.eqItem)-1:
+          item=player.battlePlayer.eqItem[itemIndex-3]
+          if item.type=="Usable" and not item.name=="":
+            player.battlePlayer.HP+=int(player.battlePlayer.MHP*item.power)
+            player.battlePlayer.eqItem.remove(item)
+            player.battlePlayer.eqItem.append(Item("",""))
+            if player.battlePlayer.HP>player.battlePlayer.MHP:
+              player.battlePlayer.HP=player.battlePlayer.MHP
       elif newKey=='[8]' or newKey=='up':
         menu.select("up")
 
-      elif newKey=='[9]':
-        print('circle')
+      elif newKey=='[9]' or newKey=='u':
+        if menu.name=="Stats":
+         #UNEQUIP ITEM
+          itemIndex=menu.currentOption
+          if itemIndex==0:
+            player.battlePlayer.remEquipment(player.battlePlayer.weapon)
+          elif itemIndex==1:
+            player.battlePlayer.remEquipment(player.battlePlayer.armor)
+          elif itemIndex==2:
+            player.battlePlayer.remEquipment(player.battlePlayer.accessory)
+          elif itemIndex-3<len(player.battlePlayer.eqItem)-1:
+            player.migrateMessages(player.battlePlayer.eqItem[itemIndex-3].name)
+            player.battlePlayer.remEquipment(player.battlePlayer.eqItem[itemIndex-3])
+          player.currentMenu=player.statsMenu
+          player.currentRoomGroup.draw(screen)
 
 def updateTraversal(event,player,screen):
     if event.type == QUIT:
@@ -2717,7 +2845,9 @@ def updateWaiting(event,player):
   #################
   #check items in room
   #################
+  print(player.currentRoom.it1.hidden,player.currentRoom.it1.battle)
   if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
+
     player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
     player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
     player.currentRoom.it1=0
@@ -2872,4 +3002,5 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
 
