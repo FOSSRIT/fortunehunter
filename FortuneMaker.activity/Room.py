@@ -36,17 +36,28 @@ class Room:
         else:
             print "INVALID DOOR"
 
+    def get_door( self, door):
+        if door in DOOR_INDEX:
+            return self.doors[door][1]
+
     def set_room_flag(self, flag):
         if flag in SPEC_FLAGS:
             self.special = flag
         else:
             print "INVALID FLAG"
 
+    def get_room_flag( self ):
+        return self.special
+
     def set_enemy( self, pos, enemy ):
         if pos >= 0 and pos <=3 and enemy in ENEM_INDEX:
             self.enemy[pos] = enemy
         else:
             print "INVALID ENEMY POS OR ID"
+
+    def get_enemy(self, pos):
+        if pos >=0 and pos <=3:
+            return self.enemy[pos]
 
     def set_item(self, pos, id, flag):
         if pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:

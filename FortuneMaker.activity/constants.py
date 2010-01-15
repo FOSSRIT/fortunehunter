@@ -17,13 +17,13 @@ DOOR_FLAGS = {
     }
 
 SPEC_FLAGS = {
-    '0':_(''),
+    '0':_('None'),
     'M':_('Merchant'),
     'P':_('Puzzle')
     }
 
 ENEM_INDEX = {
-    '0':_('none'),
+    '0':_('None'),
     '1':_('Wizard Adept'),
     '2':_('Goblin'),
     '3':_('Orc'),
@@ -33,6 +33,7 @@ ENEM_INDEX = {
     }
 
 ITEM_INDEX = {
+    '0':_('None')
 
 }
 
