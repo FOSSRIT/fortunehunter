@@ -1043,6 +1043,8 @@ class Player:
     pygame.mixer.music.load(IMG_PATH+"MAFHbg.OGG")
     pygame.mixer.music.play(-1)
     self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
+    self.buyin=pygame.mixer.Sound(IMG_PATH+"buyin.ogg")
+    self.sellin=pygame.mixer.Sound(IMG_PATH+"sellin.ogg")
 
   def initializeMenu(self):
     mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
@@ -2270,6 +2272,7 @@ class Shop:
           self.sellMode=True
           self.selItem=0
           self.numItem=0
+          self.player.sellin.play()
 
       elif newKey=='[9]' or newKey=='b':
         #square, switch to buy mode
@@ -2278,6 +2281,7 @@ class Shop:
           self.buyMode=True
           self.selItem=0
           self.numItem=0
+          self.player.buyin.play()
   
   def draw(self,screen,player):
     player.currentRoomGroup.draw(screen)
@@ -3003,4 +3007,6 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
+
 
