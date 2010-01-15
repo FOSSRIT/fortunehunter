@@ -152,7 +152,12 @@ class FortuneMaker(Activity):
 
         window_container.pack_start( make_dungeon, False )
 
-        self.set_gui_view( window_container )
+        room_center = gtk.HBox()
+        room_center.pack_start( gtk.Label() )
+        room_center.pack_start( window_container )
+        room_center.pack_start( gtk.Label() )
+
+        self.set_gui_view( room_center )
 
     def create_dungeon_cb(self, widget, data):
         name = data['name'].get_text()
@@ -185,6 +190,10 @@ class FortuneMaker(Activity):
         self.set_gui_view( scroll, True )
 
     def view_room(self):
+
+        lbl_size = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        input_size =  gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+
         #TODO CHECK IF ACTIVE ROOM SET
 
         room_holder = gtk.VBox()
@@ -192,6 +201,7 @@ class FortuneMaker(Activity):
         ## Room Doors
         #############
         frame = gtk.Frame(_("Room Doors"))
+        frame.set_label_align(0.5, 0.5)
         holder = gtk.VBox()
 
         doors = {}
@@ -202,9 +212,11 @@ class FortuneMaker(Activity):
             row = gtk.HBox()
             label = gtk.Label(DOOR_INDEX[door_key])
             label.set_alignment( 0, 0.5 )
-            row.pack_start( label )
+            lbl_size.add_widget(label)
+            row.pack_start( label, False )
 
             doors[door_key] = gtk.combo_box_new_text()
+            input_size.add_widget( doors[door_key] )
 
             for value in door_flags:
                 doors[door_key].append_text( value )
@@ -215,39 +227,43 @@ class FortuneMaker(Activity):
             else:
                 doors[door_key].set_active( 0 )
 
-            row.pack_start( doors[door_key] )
-            holder.pack_start( row, True )
+            row.pack_end( doors[door_key], False )
+            holder.pack_start( row, False )
 
         frame.add( holder )
-        room_holder.pack_start( frame, False )
+        room_holder.pack_start( frame, True )
 
         ##Room Flags
         ############
         frame = gtk.Frame(_("Room Properties"))
+        frame.set_label_align(0.5, 0.5)
         holder = gtk.VBox()
 
         row = gtk.HBox()
         label = gtk.Label(_("Room Flag"))
         label.set_alignment( 0, 0.5 )
-        row.pack_start( label )
+        lbl_size.add_widget(label)
+        row.pack_start( label, False )
 
         flag_sel = gtk.combo_box_new_text()
         spec_flags = SPEC_FLAGS.values()
+        input_size.add_widget( flag_sel )
         for flag in spec_flags:
             flag_sel.append_text( flag )
 
         flag = self.active_room.get_room_flag()
         flag_sel.set_active( spec_flags.index( SPEC_FLAGS[flag] ) )
 
-        row.pack_start( flag_sel )
+        row.pack_end( flag_sel, False )
         holder.pack_start( row, True)
 
         frame.add( holder )
-        room_holder.pack_start( frame, False )
+        room_holder.pack_start( frame, True )
 
         ## Room Enemies
         ###############
         frame = gtk.Frame(_("Room Enemies"))
+        frame.set_label_align(0.5, 0.5)
         holder = gtk.VBox()
 
         enem = []
@@ -258,23 +274,26 @@ class FortuneMaker(Activity):
             row = gtk.HBox()
             label = gtk.Label("%s (%d)" % (_("Enemy"), i))
             label.set_alignment( 0, 0.5 )
+            lbl_size.add_widget( label )
 
-            row.pack_start(label)
+            row.pack_start(label, False)
             em_list = ENEM_INDEX.values()
             for em in em_list:
                 enem[i].append_text( em )
 
             enem[i].set_active( em_list.index(ENEM_INDEX[self.active_room.get_enemy( i )] ) )
-            row.pack_start( enem[i] )
+            input_size.add_widget( enem[i] )
+            row.pack_end( enem[i], False )
 
             holder.pack_start( row, False )
 
         frame.add( holder )
-        room_holder.pack_start( frame, False )
+        room_holder.pack_start( frame, True )
 
         ## Room Items
         #############
         frame = gtk.Frame(_("Room Item"))
+        frame.set_label_align(0.5, 0.5)
         holder = gtk.VBox()
 
         item_arr = []
@@ -299,22 +318,27 @@ class FortuneMaker(Activity):
             item_arr.append( [itemType, itemFlag] )
 
             row = gtk.HBox()
-            row.pack_start( itemType )
-            row.pack_start( itemFlag )
+            row.pack_start( itemType, False )
+            row.pack_start( itemFlag, False )
 
             holder.pack_start( row, False )
 
         frame.add( holder )
-        room_holder.pack_start( frame, False )
+        room_holder.pack_start( frame, True )
 
         ## Save Button
         ##############
         save = gtk.Button(_('Save'))
         save.connect('clicked', self.save_room, {'doors':doors,'flag':flag_sel,'enemy':enem,'items':item_arr})
 
-        room_holder.pack_start( save, False )
+        room_holder.pack_start( save, True )
 
-        self.set_gui_view( room_holder, True )
+        room_center = gtk.HBox()
+        room_center.pack_start( gtk.Label() )
+        room_center.pack_start( room_holder )
+        room_center.pack_start( gtk.Label() )
+
+        self.set_gui_view( room_center, True )
 
     def save_room(self, widgit, data):
 
