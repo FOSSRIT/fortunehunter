@@ -1,7 +1,7 @@
 [Activity]
-name = MAFH Dungeon Creator
+name = Fortune Maker
 service_name = org.laptop.MAFH.Creator
-class = MAFHDungeonCreator.MAFHDungeonCreator
+class = FortuneMaker.FortuneMaker
 icon = activity-icon
 activity_version = 1
 show_launcher = yes

@@ -12,7 +12,7 @@ MAX_GRID_HEIGHT = 15
 MIN_GRID_WIDTH = 2
 MIN_GRID_HEIGHT = 2
 
-class MAFHDungeonCreator(Activity):
+class FortuneMaker(Activity):
     def __init__(self, handle):
         Activity.__init__(self, handle)
 

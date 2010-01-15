@@ -14,3 +14,6 @@ class Dungeon:
 
     def get_room_array(self):
         return self.roomlist
+
+    def update_room(self, room):
+        self.roomlist[room._y][room._x] = room
