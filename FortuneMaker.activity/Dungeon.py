@@ -4,6 +4,8 @@ class Dungeon:
     def __init__( self, name, theme, width, height ):
         self.name = name
         self.theme = theme
+        self.width = width
+        self.height = height
 
         self.roomlist = []
         for y in range(0, width):
@@ -17,3 +19,10 @@ class Dungeon:
 
     def update_room(self, room):
         self.roomlist[room._y][room._x] = room
+
+    def export(self):
+        text = str(self.width) + "x" + str(self.height) + "\n"
+        for row in self.roomlist:
+            for room in row:
+                text += room.room_to_string() + "\n"
+        return text

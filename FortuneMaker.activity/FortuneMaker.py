@@ -41,6 +41,15 @@ class FortuneMaker(Activity):
             self.view_dungeon_grid()
         elif view == 'room':
             self.view_room()
+        elif view == 'export':
+            self.export_view()
+
+    def export_view(self):
+        textbuffer = gtk.Label()
+        textbuffer.set_text(self.dungeon.export())
+
+        self.set_gui_view( textbuffer, True )
+
 
     def set_gui_view(self,  view, buttons=False):
         if buttons:
@@ -68,6 +77,11 @@ class FortuneMaker(Activity):
         room.set_alignment(0,.5)
         room.connect( 'clicked', self.view_change_cb, 'room')
         button_tabs.pack_start( room, False )
+
+        dump = gtk.Button( _("Export") )
+        dump.set_alignment(0,.5)
+        dump.connect( 'clicked', self.view_change_cb, 'export' )
+        button_tabs.pack_start( dump, False )
 
         return button_tabs
 
@@ -293,7 +307,43 @@ class FortuneMaker(Activity):
         frame.add( holder )
         room_holder.pack_start( frame, False )
 
+        ## Save Button
+        ##############
+        save = gtk.Button(_('Save'))
+        save.connect('clicked', self.save_room, {'doors':doors,'flag':flag_sel,'enemy':enem,'items':item_arr})
+
+        room_holder.pack_start( save, False )
+
         self.set_gui_view( room_holder, True )
+
+    def save_room(self, widgit, data):
+
+        def find_key(dic, val):
+            """return the key of dictionary dic given the value"""
+            try:
+                return [k for k, v in dic.iteritems() if v == val][0]
+            except:
+                return False
+
+        for key in data['doors']:
+            value = find_key( DOOR_FLAGS, data['doors'][key].get_active_text())
+            if value:
+                self.active_room.add_door( key, value )
+            else:
+                self.active_room.remove_door( key )
+
+        self.active_room.set_room_flag( find_key(SPEC_FLAGS, data['flag'].get_active_text() ) )
+
+        i = 0
+        for enemy_select in data['enemy']:
+            en_id= find_key( ENEM_INDEX, enemy_select.get_active_text() )
+            self.active_room.set_enemy( i, en_id )
+            i = i + 1
+
+        #TODO ITEMS
+
+        self.dungeon.update_room( self.active_room )
+        self.view_dungeon_grid()
 
     def set_active_room(self, widgit, room):
         self.active_room  = room
