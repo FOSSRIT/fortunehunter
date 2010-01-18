@@ -4,16 +4,17 @@ import gtk, gobject
 import pango
 import md5
 import logging
+import os
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 
-from utils import *
+import utils
 from types import TupleType, ListType
 from random import random
 from time import time
 from math import sqrt
 from cStringIO import StringIO
-import os
+
 
 up_key =    ['Up', 'KP_Up', 'KP_8']
 down_key =  ['Down', 'KP_Down', 'KP_2']
@@ -25,11 +26,50 @@ SLIDE_DOWN = 2
 SLIDE_LEFT = 3
 SLIDE_RIGHT = 4
 
+THUMB_SIZE = 48
+IMAGE_SIZE = 200
+GAME_SIZE = 574
+
+COLOR_FRAME_OUTER = "#B7B7B7"
+COLOR_FRAME_GAME = "#FF0099"
+COLOR_FRAME_THUMB = COLOR_FRAME_GAME
+COLOR_FRAME_CONTROLS = "#FFFF00"
+COLOR_BG_CONTROLS = "#66CC00"
+COLOR_FG_BUTTONS = (
+    (gtk.STATE_NORMAL,"#CCFF99"),
+    (gtk.STATE_ACTIVE,"#CCFF99"),
+    (gtk.STATE_PRELIGHT,"#CCFF99"),
+    (gtk.STATE_SELECTED,"#CCFF99"),
+    (gtk.STATE_INSENSITIVE,"#CCFF99"),
+    )
+COLOR_BG_BUTTONS = (
+    (gtk.STATE_NORMAL,"#027F01"),
+    (gtk.STATE_ACTIVE,"#014D01"),
+    (gtk.STATE_PRELIGHT,"#016D01"),
+    (gtk.STATE_SELECTED,"#027F01"),
+    (gtk.STATE_INSENSITIVE,"#CCCCCC"),
+    )
+
+
 def calculate_matrix (pieces):
     """ Given a number of pieces, calculate the best fit 2 dimensional matrix """
     rows = int(sqrt(pieces))
     cols = int(float(pieces) / rows)
     return rows*cols, rows, cols
+    
+def prepare_btn(btn, w=-1, h=-1):
+    for state, color in COLOR_BG_BUTTONS:
+        btn.modify_bg(state, gtk.gdk.color_parse(color))
+    c = btn.get_child()
+    if c is not None:
+        for state, color in COLOR_FG_BUTTONS:
+            c.modify_fg(state, gtk.gdk.color_parse(color))
+    else:
+        for state, color in COLOR_FG_BUTTONS:
+            btn.modify_fg(state, gtk.gdk.color_parse(color))
+    if w>0 or h>0:
+        btn.set_size_request(w, h)
+    return btn
 
 
 class SliderCreator (gtk.gdk.Pixbuf):
@@ -533,6 +573,10 @@ class SliderPuzzleWidget (gtk.Table):
         else:
             return True
             
+RESIZE_STRETCH = 1
+RESIZE_CUT = 2
+RESIZE_PAD = 3
+
 class ImageSelectorWidget (gtk.Table):
     __gsignals__ = {'category_press' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
                     'image_press' : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),}
