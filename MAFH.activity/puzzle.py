@@ -756,3 +756,75 @@ class Puzzle:
         self.thumb.connect("category_press", self.do_select_category)
         self.thumb.connect("image_press", self.set_nr_pieces)
         control_panel_box.pack_start(self.thumb, False)
+        
+    def process_key (self, w, e):
+        """ The button shortcuts are all defined here. """
+        k = gtk.gdk.keyval_name(e.keyval)
+        if not isinstance(self._parent.get_focus(), gtk.Editable):
+            if k == 'period':
+                self.thumb.next()
+                return True
+            if k == 'comma':
+                self.thumb.previous()
+                return True
+            if k == 'Return':
+                self.set_nr_pieces(None)
+                return True
+            if k == 'question':
+                self.btn_add.clicked()
+                return True
+            if k == 'equal':
+                self.btn_solve.clicked()
+                return True
+            if k in ('Escape', 'q'):
+                gtk.main_quit()
+                return True
+        return False
+        
+    @utils.trace
+    def set_nr_pieces (self, btn, nr_pieces=None):
+        #if isinstance(btn, gtk.ToggleButton) and not btn.get_active():
+        #    return
+        if self.is_contest_mode() and isinstance(btn, gtk.ToggleButton) and nr_pieces == self.game.get_nr_pieces():
+            return
+        if isinstance(btn, gtk.ToggleButton):
+            if not btn.get_active():
+                if nr_pieces == self.game.get_nr_pieces():
+                    logging.debug("A")
+                    btn.set_active(True)
+                return
+        if nr_pieces is None:
+            nr_pieces = self.game.get_nr_pieces()
+        if btn is None: #not isinstance(btn, gtk.ToggleButton):
+            for n, b in ((9, self.btn_9)):
+                if n == nr_pieces and not b.get_active():
+                    logging.debug("B")
+                    b.set_sensitive(True)
+                    b.set_active(True)
+                    return
+        if self.thumb.has_image():
+            if not self.game_wrapper.get_parent():
+                self.game_box.pop()
+            self.game.load_image(self.thumb.get_image())
+            #self.thumb.set_game_widget(self.game)
+        self.game.set_nr_pieces(nr_pieces)
+        if isinstance(btn, gtk.ToggleButton):
+            for n, b in ((9, self.btn_9)):
+                if b is not btn:
+                    logging.debug("C")
+                    b.set_active(False)
+                    b.set_sensitive(not self._contest_mode)
+
+    def do_shuffle (self, *args, **kwargs):
+        if self._contest_mode:
+            if self.get_game_state() > GAME_IDLE:
+                # Restart
+                self.set_game_state(GAME_STARTED, True)
+                self._parent.frozen.thaw()
+
+        elif self.thumb.has_image():
+            if not self.game_wrapper.get_parent():
+                self.game_box.pop()
+            self.game.load_image(self.thumb.get_image())
+            #self.thumb.set_game_widget(self.game)
+            self.game.randomize()
