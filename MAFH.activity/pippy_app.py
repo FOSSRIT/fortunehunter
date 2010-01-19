@@ -1,13 +1,15 @@
 import pippy, pygame, sys, math
+from PIL import Image
 from pygame.locals import *
+from pygame import movie
 from random import *
 import os.path
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
 
-IMG_PATH = os.path.dirname(__file__) + "/images/"
-#IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
+#IMG_PATH = os.path.dirname(__file__) + "/images/"
+IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
 #################################################################################
 #Item class: stores info about items
 #################################################################################
@@ -986,7 +988,27 @@ class Tutorial:
         group.add(self.images[self.currentIndex])
         group.draw(screen)
         pygame.display.flip()
-
+##############################################################################################
+#Animation Class: stores a .gif images and adapts it for use in pygame 
+############################################################################################
+class Animation:
+  def __init__(self,imageFileName,soundFileName):
+    self.soundTrack=pygame.mixer.Sound(IMG_PATH+soundFileName)
+    self.gif=Image.open(IMG_PATH+imageFileName)
+    self.gif.seek(0)
+    self.sprite=pygame.sprite.Sprite()
+    self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
+    self.sprite.rect=(0,0,1200,900)
+    self.group=pygame.sprite.Group(self.sprite)
+    #TODO: create play timer here, start soundtrack on first frame
+  def next(self,screen):
+    try:
+      self.gif.seek(self.gif.tell()+1)
+    except EOFError:
+      self.gif.seek(0)
+    self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
+    self.group.draw(screen)
+    pygame.display.flip()
 ################################################################################
 
 # Player Class: stores info about the player ie. current position in dungeon etc
@@ -1027,7 +1049,7 @@ class Player:
     self.inGameTutorial=False
     self.macroMap=False
     self.shop=False
-    #self.statMenu=False
+    self.inAnimation=False
 
     self.msg1=""
     self.msg2=""
@@ -1038,7 +1060,7 @@ class Player:
     self.playerFacing=NORTH
 
     #sound
-
+    self.animation=0
     pygame.mixer.init()
     pygame.mixer.music.load(IMG_PATH+"MAFHbg.OGG")
     pygame.mixer.music.play(-1)
@@ -1113,7 +1135,23 @@ class Player:
     self.divSword=pygame.sprite.Group(divSwordImg)
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
-
+  def startMovie(self,screen,name):
+    #pygame.mixer.quit()
+    #self.mov=pygame.movie.Movie(IMG_PATH+name)
+    #self.mov.set_display(screen)
+    #self.mov.play(0)
+    #animation=PixbufAnimation(IMG_PATH+name)
+    #anIter=animation.get_iter(0.0)
+    #anIter.advance(0.0)
+    #spt=pygame.sprite.Sprite()
+    #spt.image=pygame.image.load
+    #pygame.time.set_timer(USEREVENT+3,500)
+    print("stuff")
+  def stopMovie(self):
+    #pygame.mixer.init()
+    #self.mov.stop()
+    #pygame.time.set_timer(USEREVENT+3,0)
+    print("stuff")
   def migrateMessages(self,msg):
     self.msg1=self.msg2
     self.msg2=self.msg3
@@ -2373,9 +2411,10 @@ player.inTutorial=False
 player.traversal=False
 player.waiting=False
 player.battle=False
-player.mainMenu=True
-#player.statMenu=False
-
+player.mainMenu=False
+player.inAnimation=True
+player.animation=Animation("fire2.gif","MAFHbg.OGG")
+pygame.time.set_timer(USEREVENT+3,83.33)
 # Font.render draws text onto a new surface.
 #
 # usage: Font.render(text, antialias, color, bg=None)
@@ -2850,7 +2889,7 @@ def updateWaiting(event,player):
   #################
   #check items in room
   #################
-  print(player.currentRoom.it1.hidden,player.currentRoom.it1.battle)
+  
   if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
 
     player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
@@ -2950,6 +2989,8 @@ while pippy.pygame.next_frame():
         else:
           player.traversal=True
       setImage(player)
+    if event.type==USEREVENT+3:
+      player.animation.next(screen)
     if event.type==QUIT:
       sys.exit()
     if player.traversal:
