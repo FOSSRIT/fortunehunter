@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+<!ENTITY stroke_color "#010101">
+<!ENTITY fill_color "#FFFFFF">
+]><svg version="1.1" id="mafh-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 x="0px" y="0px" width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+<g display="block" id="mafh-icon">
+<path fill="&fill_color;" stroke="&stroke_color;" stroke-width="3" d="M47.047,35.582c0,6.331-5.134,11.465-11.465,11.465h-22.93
+	c-6.332,0-11.465-5.134-11.465-11.465v-22.93c0-6.332,5.133-11.465,11.465-11.465h22.93c6.331,0,11.465,5.133,11.465,11.465V35.582z"/>
+<g display="inline">
+<path fill="&fill_color;" stroke="#333366" stroke-width="2" d="M1.663,17.162l6.254-6.254 M40.687,10.908l5.914,6.399 M1.663,17.162
+	l10.908,3.054 M35.645,20.216H12.571 M46.601,17.307l-10.956,2.909 M7.917,10.908l7.465,3.2 M32.64,14.108H15.382 M32.64,14.108
+	l8.047-3.2 M15.382,8l-7.465,2.908 M32.64,8H15.382 M40.687,10.908L32.64,8 M12.571,20.216l2.812-6.108 M35.645,20.216l-3.005-6.108
+	 M1.663,17.162l22.348,23.802 M24.011,40.964l22.59-23.657 M12.571,20.216l11.44,20.748 M35.645,20.216L24.011,40.964"/>
+</g>
+</g></svg>

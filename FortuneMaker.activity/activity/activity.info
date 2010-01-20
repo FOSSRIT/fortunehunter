@@ -2,6 +2,6 @@
 name = Fortune Maker
 service_name = org.laptop.MAFH.Creator
 class = FortuneMaker.FortuneMaker
-icon = activity-icon
+icon = fm-icon
 activity_version = 1
 show_launcher = yes

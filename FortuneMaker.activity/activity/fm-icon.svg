@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+<!ENTITY stroke_color "#010101">
+<!ENTITY fill_color "#FFFFFF">
+]><svg version="1.1" id="fm-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	 x="0px" y="0px" width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+<g display="block" id="fm-icon">
+<path fill="&fill_color;" stroke="&stroke_color;" stroke-width="3" d="M47.047,35.582c0,6.331-5.134,11.465-11.465,11.465h-22.93
+	c-6.332,0-11.465-5.134-11.465-11.465v-22.93c0-6.332,5.133-11.465,11.465-11.465h22.93c6.331,0,11.465,5.133,11.465,11.465V35.582z"/>
+<g display="inline">
+<ellipse fill="none" stroke="#333366" stroke-width="1" cx="7.82" cy="25.375" rx="1.344" ry="1.641"/>
+<ellipse fill="none" stroke="#333366" stroke-width="1" cx="19.563" cy="37.078" rx="1.734" ry="1.328"/>
+<path fill="&fill_color;" stroke="#333366" stroke-width="2" d="M8.375,15.313l5.5,5.125 M13.875,20.438l-2.75,3.125 M27.563,11.875
+	L12.5,26.625 M29.813,9.688l4-3.875 M33.813,5.813l11,10.563 M44.813,16.375l-1.875,1.875 M42.938,18.203l-2.25-1.031
+	 M40.688,17.125l-6.063-4.5 M34.625,12.625l2.25,4.063 M36.875,16.688v2.125 M36.875,18.813h-2.75 M34.125,18.813l-3.75-2.75
+	 M30.375,16.063l4.25,6.5 M34.625,22.563V25 M34.625,25.313l-2.094,0.063 M32.531,25.375l-5.344-5.313 M27.188,20.063L16.125,30.375
+	 M16.125,30.375l9.813,5.375 M19.563,42.063l6.375-6.313 M19.563,42.063L2.75,25.813 M2.75,25.813l5.625-6.188 M8.375,19.625v-4.313
+	 M17.553,21.677l3.969,3.667 M27,12.563c1.9,0,3.438-1.51,3.438-3.375 M11.125,23.146c0,1.852,0.979,3.352,2.188,3.352"/>
+</g>
+</g></svg>

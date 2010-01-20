@@ -1,10 +1,9 @@
-
 [Activity]
 name = MAFH
 bundle_id = org.laptop.pippy.MAFH
 service_name = org.laptop.pippy.MAFH
 class = activity.VteActivity
-icon = activity-icon
+icon = mafh-icon
 activity_version = 1
 mime_types = 
 show_launcher = yes
