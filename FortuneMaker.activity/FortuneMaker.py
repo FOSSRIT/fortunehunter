@@ -7,9 +7,11 @@ from constants import (
                       )
 
 from sugar.activity.activity import Activity, ActivityToolbox
+from sugar.datastore import datastore
 from gettext import gettext as _
 
 import gtk
+import os
 
 MAX_GRID_WIDTH = 15
 MAX_GRID_HEIGHT = 15
@@ -45,10 +47,51 @@ class FortuneMaker(Activity):
             self.export_view()
 
     def export_view(self):
+        data = self.dungeon.export()
+
         textbuffer = gtk.Label()
-        textbuffer.set_text(self.dungeon.export())
+        filename = "MAFH_%s.txt" % self.dungeon.name
+
+        self._write_textfile( filename, data)
+
+        textbuffer.set_text( "File Saved to %s\n\n%s"%(filename,data))
 
         self.set_gui_view( textbuffer, True )
+
+
+
+    #### Method: _write_textfile, which creates a simple text file
+    # with filetext as the data put in the file.
+    # @Returns: a DSObject representing the file in the datastore.
+    def _write_textfile(self, filename, filetext=''):
+
+
+        ds_objects, num_objects = datastore.find({'title':filename})
+
+        if num_objects == 0:
+            # Create a datastore object
+            file_dsobject = datastore.create()
+        else:
+            file_dsobject = ds_objects[0]
+
+        # Write any metadata (here we specifically set the title of the file and
+        # specify that this is a plain text file).
+        file_dsobject.metadata['title'] = filename
+        file_dsobject.metadata['mime_type'] = 'text/plain'
+
+        #Write the actual file to the data directory of this activity's root.
+        file_path = os.path.join(self.get_activity_root(), 'instance', filename)
+        f = open(file_path, 'w')
+        try:
+            f.write(filetext)
+        finally:
+            f.close()
+
+        #Set the file_path in the datastore.
+        file_dsobject.set_file_path(file_path)
+
+        datastore.write(file_dsobject)
+        return file_dsobject
 
 
     def set_gui_view(self,  view, buttons=False):
