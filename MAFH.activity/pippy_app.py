@@ -3,13 +3,15 @@ from PIL import Image
 from pygame.locals import *
 from pygame import movie
 from random import *
+from time import time
 import os.path
+
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
 
-#IMG_PATH = os.path.dirname(__file__) + "/images/"
-IMG_PATH="/home/liveuser/MAFH/mainline/MAFH.activity/images/"
+IMG_PATH = os.path.dirname(__file__) + "/images/"
+#IMG_PATH="/home/liveuser/GIT_REPOS/MAFH/mainline/MAFH.activity/images/"
 #################################################################################
 #Item class: stores info about items
 #################################################################################
@@ -92,6 +94,172 @@ class Item:
       self.sellVal=100
       self.buyVal=250
       self.power=.5
+
+
+##################################################################
+#Puzzle stuff
+#################################################################
+
+SLIDE_UP = 1
+
+SLIDE_DOWN = 2
+
+SLIDE_LEFT = 3
+
+SLIDE_RIGHT = 4
+
+class PuzzlePiece:
+    """ Class that holds current and absolute coordinates & image file
+        The x and y coords are 0 based. """
+        
+    def __init__ (self, absx, absy, curx, cury, filename):
+        self.cury = cury
+        self.curx = curx
+        self.absy = min(absy, 1)
+        self.absx = min(absx, 2)
+        self.filename = filename
+
+    def __eq__ (self, other):
+        if isinstance(other, PuzzlePiece):
+            return self.curx == other.curx and self.cury == other.cury and self.absx == other.absx and self.absy == other.absy and self.filename == other.filename
+        return False
+
+    def __ne__ (self, other):
+        return not self.__eq__ (other)
+
+
+    def move (self, direction):
+        """ Moving direction is actually the opposite of what is passed.
+        We are moving the hole position, so if you slice a piece down into the hole,
+        that hole is actually moving up."""
+        if direction == SLIDE_UP and self.cury < 1:
+            self.cury += 1
+            return True
+        elif direction == SLIDE_DOWN and self.cury > 0:
+            self.cury -= 1
+            return True
+        elif direction == SLIDE_LEFT and self.curx < 2:
+            self.curx += 1
+            return True
+        elif direction == SLIDE_RIGHT and self.curx > 0:
+            self.curx -= 1
+            return True
+        return False
+        
+    def clone(self):
+        return PuzzlePiece(self.absx, self.absy, self.curx, self.cury, self.filename)
+            
+
+class PuzzleMap (object):
+
+    """ This class holds the game logic.
+
+    The current pieces position is held in self.pieces_map[YROW][XROW]."""
+    
+
+    def __init__ (self, pieceMap):
+
+        self.pieceMap = pieceMap
+
+        self.solved = False
+        self.holePos = PuzzlePiece(2,1,2,1,"Black.gif")
+
+
+
+    def reset (self):
+
+        for x in range(2):
+            for y in range(1):
+
+                self.pieceMap[x][y].cury = self.pieceMap[x][y].absy
+                self.pieceMap[x][y].curx = self.pieceMap[x][y].absx
+
+        self.solved = True
+
+
+
+    def randomize (self):
+
+        """ To make sure the randomization is solvable, we don't simply shuffle the numbers.
+
+        We move the hole in random directions through a finite number of iterations. """
+
+
+
+        iterations = 2 * 3 * (int(100*random())+1)
+
+
+
+        t = time()
+
+        for i in range(iterations):
+
+            self.do_move(int(4*random())+1)
+
+        t = time() - t
+
+
+
+        # Now move the hole to the bottom right
+
+        for x in range(3-self.holePos.curx-1):
+
+            self.do_move(SLIDE_LEFT)
+
+        for y in range(2-self.holePos.cury-1):
+
+            self.do_move(SLIDE_UP)
+
+
+
+
+
+    def do_move (self, slide_direction):
+
+        # What piece are we going to move?
+        
+
+        oldHolePos = self.holePos.clone()
+        
+
+        if self.holePos.move(slide_direction):
+
+            # Move was a success, now swap pieces in map
+
+            print("Before Move: "+repr(oldHolePos.curx)+", "+repr(oldHolePos.cury))
+
+
+            #self.pieceMap[oldHolePos.curx][oldHolePos.cury].curx = self.pieceMap[self.holePos.curx][self.holePos.cury].curx
+            #self.pieceMap[oldHolePos.curx][oldHolePos.cury].cury = self.pieceMap[self.holePos.curx][self.holePos.cury].cury 
+            
+            #self.pieceMap[self.holePos.curx][self.holePos.cury].curx = self.pieceMap[oldHolePos.curx][oldHolePos.cury].curx
+            #self.pieceMap[self.holePos.curx][self.holePos.cury].cury = self.pieceMap[oldHolePos.curx][oldHolePos.cury].cury
+            print("After Move: "+repr(self.pieceMap[self.holePos.curx][self.holePos.cury].curx)+ ", "+repr(self.pieceMap[self.holePos.curx][self.holePos.cury].cury))
+
+            return True
+
+
+        return False
+
+
+
+    #def is_hole_at (self, x, y):
+
+    #    return self.hole_pos == (x,y)
+
+
+
+    def is_solved (self):
+
+        self.solved = True
+        for x in range(2):
+            for y in range(1):
+                if (pieceMap[x][y].cury != pieceMap[x][y].absy) or (pieceMap[x][y].curx != pieceMap[x][y].absx):
+                    self.solved = False
+                
+
+        return self.solved
+
 
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
@@ -826,6 +994,9 @@ class Menu:
             player.battlePlayer=Hero(player)
             player.currentRoomGroup.draw(screen)
             player.initMovTutorial(screen)
+            player.startMovie("CrapScene.gif","MAFHbg.OGG")
+            player.traversal=False
+            player.inAnimation=True
             pygame.display.flip()
 
         elif name=="Close":
@@ -1000,12 +1171,12 @@ class Animation:
     self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
     self.sprite.rect=(0,0,1200,900)
     self.group=pygame.sprite.Group(self.sprite)
-    #TODO: create play timer here, start soundtrack on first frame
+    
   def next(self,screen):
-    try:
-      self.gif.seek(self.gif.tell()+1)
-    except EOFError:
-      self.gif.seek(0)
+    #try:
+    self.gif.seek(self.gif.tell()+1)
+    #except EOFError:
+    #  self.gif.seek(0)
     self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
     self.group.draw(screen)
     pygame.display.flip()
@@ -1039,6 +1210,8 @@ class Player:
     self.puzzleTutorial=False
     self.lockTutorial=False
     self.invTutorial=False
+    self.puzzleTutorial=False
+    self.shopTutorial=False
 
     #state variables
     self.inTutorial=False
@@ -1050,6 +1223,7 @@ class Player:
     self.macroMap=False
     self.shop=False
     self.inAnimation=False
+    self.inPuzzle=False
 
     self.msg1=""
     self.msg2=""
@@ -1135,23 +1309,16 @@ class Player:
     self.divSword=pygame.sprite.Group(divSwordImg)
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
-  def startMovie(self,screen,name):
-    #pygame.mixer.quit()
-    #self.mov=pygame.movie.Movie(IMG_PATH+name)
-    #self.mov.set_display(screen)
-    #self.mov.play(0)
-    #animation=PixbufAnimation(IMG_PATH+name)
-    #anIter=animation.get_iter(0.0)
-    #anIter.advance(0.0)
-    #spt=pygame.sprite.Sprite()
-    #spt.image=pygame.image.load
-    #pygame.time.set_timer(USEREVENT+3,500)
-    print("stuff")
+  def startMovie(self,movieName,soundTrackName):
+    self.animation=Animation(movieName,soundTrackName)
+    pygame.time.set_timer(USEREVENT+3,83)
   def stopMovie(self):
-    #pygame.mixer.init()
-    #self.mov.stop()
-    #pygame.time.set_timer(USEREVENT+3,0)
-    print("stuff")
+    self.animation=0
+    self.inAnimation=False 
+    self.traversal=True
+    setImage(player)
+    pygame.display.flip()
+    pygame.time.set_timer(USEREVENT+3,0)
   def migrateMessages(self,msg):
     self.msg1=self.msg2
     self.msg2=self.msg3
@@ -2386,6 +2553,7 @@ class Shop:
         screen.blit(font.render("No",True,(255,255,255)),(760,650,100,40))
     pygame.display.flip()
 
+
 #############################################################################
 #End External Classes
 ######################################################################
@@ -2412,9 +2580,26 @@ player.traversal=False
 player.waiting=False
 player.battle=False
 player.mainMenu=False
-player.inAnimation=True
-player.animation=Animation("fire2.gif","MAFHbg.OGG")
-pygame.time.set_timer(USEREVENT+3,83.33)
+
+myMap=[]
+myMap.append(["00","01"])
+myMap.append(["10","11"])
+myMap.append(["20","21"])
+x=-1
+y=-1
+for row in myMap:
+  x+=1
+  y=-1
+  for item in row:
+    y+=1
+    if x==2 and y==1:
+      myMap[x][y]=PuzzlePiece(x,y,x,y,IMG_PATH+"Blank.gif")
+    else:
+      myMap[x][y]=PuzzlePiece(x,y,x,y,IMG_PATH+"Puz0-"+repr(x)+repr(y)+".gif")
+
+player.puzzle=PuzzleMap(myMap)
+player.puzzle.randomize()
+player.inPuzzle=True
 # Font.render draws text onto a new surface.
 #
 # usage: Font.render(text, antialias, color, bg=None)
@@ -2921,11 +3106,67 @@ def updateMacroMap(event,player):
       if newKey=='m' or newKey=='[7]':
         player.macroMap=False
         player.traversal=True
+def updatePuzzle(event,player):
+    if event.type == QUIT:
+      sys.exit()
+
+    elif event.type == KEYDOWN:
+      newKey=pygame.key.name(event.key)
+      if newKey=='escape':
+        sys.exit()
+
+      elif newKey=='[2]' or newKey=='down':
+        player.puzzle.do_move(2)
+
+      elif newKey=='[3]' or newKey=='i':
+        #x
+        print("x")
+
+      elif newKey=='[4]' or newKey=='left':
+        print("left"+repr(player.puzzle.do_move(3)))
+
+      elif newKey=='[1]' or newKey=='e':
+        player.puzzle.do_move()
+
+      elif newKey=='[6]' or newKey=='right':
+        print("right" +repr(player.puzzle.do_move(4)))
+
+      elif newKey=='[7]' or newKey=='m':
+        print("square")
+        #display solved? might add later
+
+      elif newKey=='[8]' or newKey=='up':
+        player.puzzle.do_move(1)
+
+      elif newKey=='[9]' or newKey=='space':
+        print("circle")
 
 ###Draw methods###
 def drawTraversal(player,screen):
   setImage(player)
-
+def drawPuzzle(player,screen):
+  #draw background and completed image
+  screen.fill((0,0,0),(0,0,1200,900))
+  #screen.blit(player.puzzle.puzzleBackground,(0,0,1200,900))
+  #screen.blit(player.puzzle.completedPuzzle,(300,100,600,400))
+  #draw pieces in their position
+  totalGroup=pygame.sprite.Group()
+  x=-1
+  y=-1
+  for row in player.puzzle.pieceMap:
+    x+=1
+    y=-1
+  #for i in range(2):
+    for piece in row:
+      y+=1
+  #  for y in range(1):
+      piece=player.puzzle.pieceMap[x][y].clone()
+      if piece.filename != "Black.gif":
+        spt=pygame.sprite.Sprite(totalGroup)
+        spt.image=pygame.image.load(piece.filename)
+        spt.rect=(300+(piece.curx*200),200+(piece.cury*200),200,200)
+  totalGroup.draw(screen)
+  pygame.display.flip()
 def drawWaiting(player,screen):
   screen.fill(0,(0,0,1290,700),0)
 def drawMacroMap(player,screen):
@@ -2965,6 +3206,9 @@ while pippy.pygame.next_frame():
         player.traversal=False
         player.currentRoom.shop.draw(screen,player)
         player.migrateMessages(repr(player.currentRoom.roomFlag))
+      #if player.currentRoom.doorNFlag==0 or player.currentRoom.doorNFlag==2:
+      #  player.migrateMessages("Puzzle!")
+      #  puzzle=Puzzle(player,IMG_PATH+"mafh_splash.gif")
       if player.battle==False and player.shop==False:
 ####################################
 ###TEST FOR IN GAME TUTORIALS
@@ -2990,7 +3234,10 @@ while pippy.pygame.next_frame():
           player.traversal=True
       setImage(player)
     if event.type==USEREVENT+3:
-      player.animation.next(screen)
+      try:
+        player.animation.next(screen)
+      except EOFError:
+        player.stopMovie()
     if event.type==QUIT:
       sys.exit()
     if player.traversal:
@@ -3003,7 +3250,8 @@ while pippy.pygame.next_frame():
     elif player.battle:
       ##battle processes
       updateBattle(event,player)
-
+    elif player.inPuzzle:
+      updatePuzzle(event,player)
     elif player.mainMenu:
       ## main menu processes
       updateMenu(event,player)
@@ -3038,6 +3286,8 @@ while pippy.pygame.next_frame():
       player.dgnMap.drawMacro(player,screen)
     elif player.battle:
       player.curBattle.draw(player,screen)
+    elif player.inPuzzle:
+      drawPuzzle(player,screen)
     elif player.inTutorial:
       player.tutorial.draw(player.currentRoomGroup,screen)
     elif player.shop:
@@ -3048,6 +3298,7 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
 
 
 
