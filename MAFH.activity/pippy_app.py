@@ -118,6 +118,7 @@ class PuzzlePiece:
         self.absy = min(absy, 1)
         self.absx = min(absx, 2)
         self.filename = filename
+        self.isHole=False
 
     def __eq__ (self, other):
         if isinstance(other, PuzzlePiece):
@@ -162,9 +163,9 @@ class PuzzleMap (object):
         self.pieceMap = pieceMap
 
         self.solved = False
-        self.holePos = PuzzlePiece(2,1,2,1,"Black.gif")
+        self.holePos = pieceMap[2][1]
 
-
+        self.holePos.isHole=True
 
     def reset (self):
 
@@ -226,15 +227,9 @@ class PuzzleMap (object):
 
             # Move was a success, now swap pieces in map
 
-            print("Before Move: "+repr(oldHolePos.curx)+", "+repr(oldHolePos.cury))
-
-
-            #self.pieceMap[oldHolePos.curx][oldHolePos.cury].curx = self.pieceMap[self.holePos.curx][self.holePos.cury].curx
-            #self.pieceMap[oldHolePos.curx][oldHolePos.cury].cury = self.pieceMap[self.holePos.curx][self.holePos.cury].cury 
-            
-            #self.pieceMap[self.holePos.curx][self.holePos.cury].curx = self.pieceMap[oldHolePos.curx][oldHolePos.cury].curx
-            #self.pieceMap[self.holePos.curx][self.holePos.cury].cury = self.pieceMap[oldHolePos.curx][oldHolePos.cury].cury
-            print("After Move: "+repr(self.pieceMap[self.holePos.curx][self.holePos.cury].curx)+ ", "+repr(self.pieceMap[self.holePos.curx][self.holePos.cury].cury))
+            temp=self.pieceMap[self.holePos.curx][self.holePos.cury]
+            self.pieceMap[self.holePos.curx][self.holePos.cury]=self.holePos
+            self.pieceMap[oldHolePos.curx][oldHolePos.cury]=temp
 
             return True
 
@@ -252,10 +247,16 @@ class PuzzleMap (object):
     def is_solved (self):
 
         self.solved = True
-        for x in range(2):
-            for y in range(1):
-                if (pieceMap[x][y].cury != pieceMap[x][y].absy) or (pieceMap[x][y].curx != pieceMap[x][y].absx):
+        x=-1
+        y=-1
+        for row in self.pieceMap:
+            x+=1
+            y=-1
+            for piece in row:
+                y+=1
+                if not y == piece.absy or not x == piece.absx:
                     self.solved = False
+
                 
 
         return self.solved
@@ -2579,27 +2580,9 @@ player.inTutorial=False
 player.traversal=False
 player.waiting=False
 player.battle=False
-player.mainMenu=False
+player.mainMenu=True
 
-myMap=[]
-myMap.append(["00","01"])
-myMap.append(["10","11"])
-myMap.append(["20","21"])
-x=-1
-y=-1
-for row in myMap:
-  x+=1
-  y=-1
-  for item in row:
-    y+=1
-    if x==2 and y==1:
-      myMap[x][y]=PuzzlePiece(x,y,x,y,IMG_PATH+"Blank.gif")
-    else:
-      myMap[x][y]=PuzzlePiece(x,y,x,y,IMG_PATH+"Puz0-"+repr(x)+repr(y)+".gif")
 
-player.puzzle=PuzzleMap(myMap)
-player.puzzle.randomize()
-player.inPuzzle=True
 # Font.render draws text onto a new surface.
 #
 # usage: Font.render(text, antialias, color, bg=None)
@@ -2776,11 +2759,13 @@ def checkDoor(direction,player,screen):
                   return("This door is locked, you need a BIG KEY")
                 elif currentRoom.doorNFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
-                elif currentRoom.doorNFlag==LOCKED or currentRoom.doorNFlag==BOTH:
+                elif currentRoom.doorNFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
                       return("You use a SMALL KEY, "+enterRoom('north',player,screen))
                   return("This door is locked, you need a SMALL KEY")
+                elif currentRoom.doorNFlag==PUZZLE or currentRoom.doorNFlag==BOTH:
+                  startPuzzle(player)
                 else:
                   return(enterRoom('north',player,screen))
 
@@ -2798,11 +2783,13 @@ def checkDoor(direction,player,screen):
                   return("This door is locked, you need a BIG KEY to exit")
                 elif currentRoom.doorSFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
-                elif currentRoom.doorSFlag==LOCKED or currentRoom.doorSFlag==BOTH:
+                elif currentRoom.doorSFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
                       return("You use a SMALL KEY, "+enterRoom('south',player,screen))
                   return("This door is locked, you need a SMALL KEY")
+                elif currentRoom.doorSFlag==PUZZLE or currentRoom.doorSFlag==BOTH:
+                  startPuzzle(player)
                 else:
                   return(enterRoom('south',player,screen))
 
@@ -2820,11 +2807,13 @@ def checkDoor(direction,player,screen):
                   return("This door is locked, you need a BIG KEY to exit")
                 elif currentRoom.doorEFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
-                elif currentRoom.doorEFlag==LOCKED or currentRoom.doorEFlag==BOTH:
+                elif currentRoom.doorEFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
                       return("You use a SMALL KEY, "+enterRoom('east',player,screen))
                   return("This door is locked, you need a SMALL KEY")
+                elif currentRoom.doorEFlag==PUZZLE or currentRoom.doorEFlag==BOTH:
+                  startPuzzle(player)
                 else:
                   return(enterRoom('east',player,screen))
 
@@ -2842,11 +2831,13 @@ def checkDoor(direction,player,screen):
                   return("This door is locked, you need a BIG KEY to exit")
                 elif currentRoom.doorWFlag==ENTRANCE:
                   player.migrateMessages("There is no turning back now")
-                elif currentRoom.doorWFlag==LOCKED or currentRoom.doorWFlag==BOTH:
+                elif currentRoom.doorWFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
                       return("You use a SMALL KEY, "+enterRoom('west',player,screen))
                   return("This door is locked, you need a SMALL KEY")
+                elif currentRoom.doorWFlag==PUZZLE or currentRoom.doorWFlag==BOTH:
+                  startPuzzle(player)
                 else:
                   return(enterRoom('west',player,screen))
 
@@ -2897,6 +2888,62 @@ def checkDoor(direction,player,screen):
 
     else:
         print(direction)
+def startPuzzle(player):
+  myMap=(["00","01"],["10","11"],["20","21"])
+
+  x=-1
+  y=-1
+  for row in myMap:
+    x+=1
+    y=-1
+    for item in row:
+      y+=1
+      myMap[x][y]=PuzzlePiece(x,y,x,y,IMG_PATH+"Puz0-"+repr(x)+repr(y)+".gif")
+   
+  player.puzzle=PuzzleMap(myMap)
+  player.puzzle.randomize()
+  player.inPuzzle=True
+  player.traversal=False
+def stopPuzzle(player,solved):
+  NORTH=1
+  SOUTH=3
+  EAST=0
+  WEST=2
+
+  NONE=-1
+  PUZZLE=0
+  LOCKED=1
+  BOTH=2
+  UNLOCKED=3
+  EXIT=4
+  ENTRANCE=5
+  SHOP=6
+  PUZZLEROOM=7
+  HIDDEN=8
+
+  if solved:
+    if player.playerFacing==NORTH:
+      if player.currentRoom.doorNFlag==PUZZLE:
+        player.currentRoom.doorNFlag=UNLOCKED
+      else:
+        player.currentRoom.doorNFlag=LOCKED
+    elif player.playerFacing==SOUTH:
+      if player.currentRoom.doorSFlag==PUZZLE:
+        player.currentRoom.doorSFlag=UNLOCKED
+      else:
+        player.currentRoom.doorSFlag=LOCKED
+    elif player.playerFacing==EAST:
+      if player.currentRoom.doorEFlag==PUZZLE:
+        player.currentRoom.doorEFlag=UNLOCKED
+      else:
+        player.currentRoom.doorEFlag=LOCKED
+    elif player.playerFacing==WEST:
+      if player.currentRoom.doorWFlag==PUZZLE:
+        player.currentRoom.doorWFlag=UNLOCKED
+      else:
+        player.currentRoom.doorWFlag=LOCKED
+  player.inPuzzle=False
+  player.traversal=True
 
 ###Update methods###
 
@@ -3117,19 +3164,24 @@ def updatePuzzle(event,player):
 
       elif newKey=='[2]' or newKey=='down':
         player.puzzle.do_move(2)
+        if player.puzzle.is_solved():
+          stopPuzzle(player,True)
 
-      elif newKey=='[3]' or newKey=='i':
-        #x
-        print("x")
+      elif newKey=='[3]' or newKey=='backspace':
+        stopPuzzle(player,False)
 
       elif newKey=='[4]' or newKey=='left':
-        print("left"+repr(player.puzzle.do_move(3)))
+        player.puzzle.do_move(3)
+        if player.puzzle.is_solved():
+          stopPuzzle(player,True)
 
       elif newKey=='[1]' or newKey=='e':
-        player.puzzle.do_move()
+        print("display solved")
 
       elif newKey=='[6]' or newKey=='right':
-        print("right" +repr(player.puzzle.do_move(4)))
+        player.puzzle.do_move(4)
+        if player.puzzle.is_solved():
+          stopPuzzle(player,True)
 
       elif newKey=='[7]' or newKey=='m':
         print("square")
@@ -3137,10 +3189,12 @@ def updatePuzzle(event,player):
 
       elif newKey=='[8]' or newKey=='up':
         player.puzzle.do_move(1)
+        if player.puzzle.is_solved():
+          stopPuzzle(player,True)
 
       elif newKey=='[9]' or newKey=='space':
         print("circle")
-
+      drawPuzzle(player,screen)
 ###Draw methods###
 def drawTraversal(player,screen):
   setImage(player)
@@ -3156,15 +3210,14 @@ def drawPuzzle(player,screen):
   for row in player.puzzle.pieceMap:
     x+=1
     y=-1
-  #for i in range(2):
     for piece in row:
       y+=1
-  #  for y in range(1):
-      piece=player.puzzle.pieceMap[x][y].clone()
-      if piece.filename != "Black.gif":
-        spt=pygame.sprite.Sprite(totalGroup)
-        spt.image=pygame.image.load(piece.filename)
-        spt.rect=(300+(piece.curx*200),200+(piece.cury*200),200,200)
+      piece=player.puzzle.pieceMap[x][y]
+      spt=pygame.sprite.Sprite()
+      spt.image=pygame.image.load(piece.filename)
+      spt.rect=(300+(x*200),200+(y*200),200,200)
+      if not piece.isHole:
+        totalGroup.add(spt)
   totalGroup.draw(screen)
   pygame.display.flip()
 def drawWaiting(player,screen):
@@ -3298,7 +3351,6 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
-
 
 
 
