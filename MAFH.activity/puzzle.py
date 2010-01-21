@@ -1,6 +1,11 @@
 from random import *
 from time import time
 
+SLIDE_UP = 1
+SLIDE_DOWN = 2
+SLIDE_LEFT = 3
+SLIDE_RIGHT = 4
+
 class PuzzlePiece:
     """ Class that holds current and absolute coordinates & image file
         The x and y coords are 0 based. """
@@ -58,12 +63,16 @@ class PuzzleMap (object):
         self.holePos.isHole=True
 
     def reset (self):
+        tempMap = self.pieceMap
+        
         for x in range(2):
             for y in range(1):
-                self.pieceMap[x][y].cury = self.pieceMap[x][y].absy
-                self.pieceMap[x][y].curx = self.pieceMap[x][y].absx
+                tempAbsX = self.pieceMap[x][y].absx
+                tempAbsY = self.pieceMap[x][y].absy
+                tempMap[tempAbsX][tempAbsY] = self.pieceMap[x][y]
+                
+        self.pieceMap = tempMap
 
-        self.solved = True
         
     def randomize (self):
         """ To make sure the randomization is solvable, we don't simply shuffle the numbers.
