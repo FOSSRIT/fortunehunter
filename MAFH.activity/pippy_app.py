@@ -30,7 +30,7 @@ class Item:
     self.type=typ
     self.power=0
     self.buyVal=0
-    self.sellVal=0
+    self.sellVal=1
     self.hidden=False
     self.battle=False
 
@@ -177,7 +177,7 @@ class PuzzleMap (object):
 
         self.holePos.isHole=True
         self.completedPuzzle=pygame.image.load(IMG_PATH+"Puz0.gif")
-        self.puzBG=pygame.transform.scale(pygame.image.load(IMG_PATH+"PuzBG.jpg"),(1000,1800))
+        self.puzBG=pygame.transform.scale(pygame.image.load(IMG_PATH+"PuzBG.gif"),(1000,1800))
 
     def reset (self):
         tempMap = self.pieceMap
@@ -1206,7 +1206,7 @@ class Player:
     self.currentX=x
     self.currentY=y
     self.dgnIndex=-1
-    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7)]
+    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7),("dungeon3.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
     self.battlePlayer=Hero(self)
     self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
@@ -1333,7 +1333,7 @@ class Player:
     self.msg5=msg
   def nextDungeon(self):
 
-    self.dgnIndex+=1
+    self.dgnIndex+=3
     self.battlePlayer.MHP+=2
     if self.dgnIndex>=len(self.dungeons):
       self.currentMenu=self.MainMenu
@@ -2339,7 +2339,7 @@ class BattleEngine:
 class Shop:
   def __init__(self,player):
     self.player=player
-    self.itemList=[Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Ruby","Usable"),Item("Diamond","Usable")]
+    self.itemList=[Item("Remedy","Usable"),Item("Elixir","Usable")]
     self.selItem=0
     self.numItem=0
     self.totalPrice=0
@@ -2350,23 +2350,32 @@ class Shop:
     self.sellMode=False
     self.yes=True
     self.shopKeeperVariable=0
+    self.message=[]
+    self.message.append("Got some rare things")
+    self.message.append("on sale stranger")
   def finish(self):
     if self.buyMode:
       enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
       if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
         self.player.battlePlayer.akhal-=enteredNumber
         if enteredNumber>self.totalPrice:
-          player.migrateMessages("Hehe, with that generosity you can come back ANY time sir")
+          self.message=[]
+          self.message.append("Hehe, with that generosity")
+          self.message.append("you can come back")
+          self.message.append("ANY time sir")
         else:
-          player.migrateMessages("Here you are")
+          self.message=[]
+          self.message.append("Here you are")
         for i in range(self.numItem):
           self.player.battlePlayer.inv_Ar.append(self.itemList[self.selItem])
       else:
-        self.player.migrateMessages("I don't think that's quite enough")
+        self.message=[]
+        self.message.append("Not enough cash")
     elif self.sellMode:
       self.player.battlePlayer.akhal+=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
       self.player.battlePlayer.inv_Ar.remove(self.player.battlePlayer.inv_Ar[self.selItem])
       self.selItem=0
+      self.message=[]
     self.buyScreen=False
   def update(self,event,player):
     if event.type == QUIT:
@@ -2464,7 +2473,9 @@ class Shop:
             self.yes=False
             if itName=="Small Key" or itName=="Big Key" or itName=="Calculator" or itName=="Ancient Amulet":
               #have shop merchant say
-              self.player.migrateMessages("That looks important, I wouldn't sell that if I were you")
+              self.message=[]
+              self.message.append("That looks important,")
+              self.message.append("I wouldn't sell that if I were you")
             else:
               self.buyScreen=True
               seed()
@@ -2503,66 +2514,80 @@ class Shop:
   def draw(self,screen,player):
     player.currentRoomGroup.draw(screen)
     merchantSprite=pygame.sprite.Sprite()
-    merchantSprite.image=pygame.image.load(IMG_PATH+"MerchantPH.gif")
-    merchantSprite.rect=pygame.Rect(600,-150,200,200)
+    bgSprite=pygame.sprite.Sprite()
+    bgSprite.image=pygame.image.load(IMG_PATH+"ShopBG.gif")
+    bgSprite.rect=(0,0,600,900)
+    merchantSprite.image=pygame.transform.scale(pygame.image.load(IMG_PATH+"Merchant.gif"),(550,550))
+    merchantSprite.rect=pygame.Rect(640,160,200,200)
     merchantGroup=pygame.sprite.Group(merchantSprite)
+    bgGroup=pygame.sprite.Group(bgSprite)
+    bgGroup.draw(screen)
     merchantGroup.draw(screen)
+    screen.blit(pygame.image.load(IMG_PATH+"Speech.gif"),(550,0,400,400))
     if self.buyMode:
-      screen.fill((100,100,100),(100,0,600,700))
+
       i=0
       y=80
       for item in self.itemList:
         #from left to right: arrow, box w/#, arrow, item name
         font = pygame.font.Font(None, 36)
         if i==self.selItem:
-          screen.fill((150,150,200),(140,y,600,40))
-        screen.fill((100,0,0),(140,y,40,40))
-        screen.fill((50,100,100),(190,y,50,40))
+          screen.fill((200,200,150),(150,y,400,40))
+        screen.blit(pygame.image.load(IMG_PATH+"LArrow.gif"),(150,y,40,40))
+        screen.fill((150,150,10),(190,y,40,40))
         if i==self.selItem:
           screen.blit(font.render(repr(self.numItem),True,(255,255,255)),(190,y,50,40))
         else:
           screen.blit(font.render("0",True,(255,255,255)),(190,y,50,40))
-        screen.fill((100,0,0),(240,y,40,40))
-        screen.blit(font.render(item.name,True,(255,255,255)),(300,y,500,40))
+        screen.blit(pygame.image.load(IMG_PATH+"RArrow.gif"),(230,y,40,40))
+        screen.blit(font.render(item.name,True,(255,255,255)),(270,y,500,40))
         y+=40
         i+=1
 
       if self.buyScreen:
-        screen.fill((100,100,100),(500,500,600,400))
-        screen.blit(font.render(repr(self.numItem)+" x "+repr(self.itemList[self.selItem].buyVal),True,(255,255,255)),(600,550,500,40))
-        x=600
+        screen.blit(font.render(repr(self.numItem)+" "+self.itemList[self.selItem].name+" at "+repr(self.itemList[self.selItem].buyVal),True,(0,0,0)),(650,50,500,40))
+        x=650
         i=0
         for digit in self.enteredDigits:
           if i==self.selDigit:
-            screen.fill((150,150,200),(x,700,45,100))
-          screen.fill((100,0,0),(x,700,40,40))
-          screen.fill((50,100,100),(x,750,50,40))
-          screen.blit(font.render(repr(digit),True,(255,255,255)),(x,750,50,40))
-          screen.fill((100,0,0),(x,790,40,40))
+            screen.fill((150,150,200),(x,100,45,100))
+          screen.blit(pygame.transform.rotate(pygame.image.load(IMG_PATH+"LArrow.gif"),-90),(x,125,40,40))
+          screen.fill((50,100,100),(x,175,50,40))
+          screen.blit(font.render(repr(digit),True,(255,255,255)),(x,175,40,40))
+          screen.blit(pygame.transform.rotate(pygame.image.load(IMG_PATH+"RArrow.gif"),-90),(x,215,40,40))
           x+=50
           i+=1
+      else:
+        y=60
+        for line in self.message:
+          screen.blit(font.render(line,True,(0,0,0)),(575,y,500,40))
+          y+=40
     elif self.sellMode:
-      screen.fill((0,0,0),(100,0,600,900))
       i=0
       y=80
       for item in self.player.battlePlayer.inv_Ar:
           font = pygame.font.Font(None, 36)
           if i==self.selItem:
-            screen.fill((150,150,200),(140,y,600,40))
+            screen.fill((150,150,200),(150,y,375,40))
           screen.blit(font.render(item.name,True,(255,255,255)),(200,y,500,40))
           y+=40
           i+=1
 
       if self.buyScreen:
-        screen.fill((100,100,100),(500,500,600,400))
-        screen.blit(font.render("For a "+self.player.battlePlayer.inv_Ar[self.selItem].name+" I will give you "+repr(self.shopKeeperVariable),True,(255,255,255)),(600,550,500,40))
-        screen.blit(font.render("OK?",True,(255,255,255)),(700,600,500,40))
+        screen.blit(font.render("For a "+self.player.battlePlayer.inv_Ar[self.selItem].name,True,(0,0,0)),(575,60,500,40))
+        screen.blit(font.render(" I will give you "+repr(self.shopKeeperVariable),True,(0,0,0)),(575,100,500,40))
+        screen.blit(font.render("OK?",True,(0,0,0)),(600,140,500,40))
         if self.yes:
-          screen.fill((150,150,250),(650,650,60,40))
+          screen.fill((150,150,250),(660,180,60,40))
         else:
-          screen.fill((150,150,250),(750,650,60,40))
-        screen.blit(font.render("Yes",True,(255,255,255)),(660,650,100,40))
-        screen.blit(font.render("No",True,(255,255,255)),(760,650,100,40))
+          screen.fill((150,150,250),(760,180,60,40))
+        screen.blit(font.render("Yes",True,(0,0,0)),(660,180,100,40))
+        screen.blit(font.render("No",True,(0,0,0)),(760,180,100,40))
+      else:
+        y=60
+        for line in self.message:
+          screen.blit(font.render(line,True,(0,0,0)),(575,y,500,40))
+          y+=40
     pygame.display.flip()
 
 
