@@ -12,6 +12,15 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 #IMG_PATH="/home/liveuser/GIT_REPOS/MAFH/mainline/MAFH.activity/images/"
+#TODO:  DIFFICULTY SETTINGS
+#       Geometry: easy-just translations medium-translations and rotations hard-translation, rotation, and relections
+#       Division: easy-same fractions, add to 1 medium-randomized denominator (1/x) hard-randomized numerator and denominator
+#       Critical: easy-random #s up to 6X6 medium random #s up to 12X12 hard-random #s up to 24X24
+#       Shop: easy-no shopkeeper jips, every sale is exact medium-shopkeeper jips, sales can be less than value hard-shopkeeper only appears once per shop
+#
+#       STAT COLLECTION
+#       for each difficulty, track each correct and incorrect for each attack
+#       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
 #################################################################################
 #Item class: stores info about items
 #################################################################################
@@ -101,8 +110,11 @@ class Item:
 #################################################################
 
 SLIDE_UP = 1
+
 SLIDE_DOWN = 2
+
 SLIDE_LEFT = 3
+
 SLIDE_RIGHT = 4
 
 class PuzzlePiece:
@@ -151,57 +163,95 @@ class PuzzlePiece:
 class PuzzleMap (object):
 
     """ This class holds the game logic.
+
     The current pieces position is held in self.pieces_map[YROW][XROW]."""
     
 
     def __init__ (self, pieceMap):
+
         self.pieceMap = pieceMap
+
         self.solved = False
+        self.showFull=False
         self.holePos = pieceMap[2][1]
 
         self.holePos.isHole=True
+        self.completedPuzzle=pygame.image.load(IMG_PATH+"Puz0.gif")
+        self.puzBG=pygame.transform.scale(pygame.image.load(IMG_PATH+"PuzBG.jpg"),(1000,1800))
 
     def reset (self):
         tempMap = self.pieceMap
-        
+
         for x in range(2):
             for y in range(1):
                 tempAbsX = self.pieceMap[x][y].absx
                 tempAbsY = self.pieceMap[x][y].absy
                 tempMap[tempAbsX][tempAbsY] = self.pieceMap[x][y]
-                
+
         self.pieceMap = tempMap
 
-        
+
     def randomize (self):
+
         """ To make sure the randomization is solvable, we don't simply shuffle the numbers.
+
         We move the hole in random directions through a finite number of iterations. """
+
+
+
         iterations = 2 * 3 * (int(100*random())+1)
+
+
+
         t = time()
+
         for i in range(iterations):
+
             self.do_move(int(4*random())+1)
+
         t = time() - t
 
 
+
         # Now move the hole to the bottom right
+
         for x in range(3-self.holePos.curx-1):
+
             self.do_move(SLIDE_LEFT)
+
         for y in range(2-self.holePos.cury-1):
+
             self.do_move(SLIDE_UP)
 
+
+
+
+
     def do_move (self, slide_direction):
+
         # What piece are we going to move?
+        
+
         oldHolePos = self.holePos.clone()
         
+
         if self.holePos.move(slide_direction):
+
             # Move was a success, now swap pieces in map
+
             temp=self.pieceMap[self.holePos.curx][self.holePos.cury]
             self.pieceMap[self.holePos.curx][self.holePos.cury]=self.holePos
             self.pieceMap[oldHolePos.curx][oldHolePos.cury]=temp
+
             return True
+
+
         return False
 
-def is_solved (self):
+
+
+    def is_solved (self):
+
         self.solved = True
         x=-1
         y=-1
@@ -212,6 +262,9 @@ def is_solved (self):
                 y+=1
                 if not y == piece.absy or not x == piece.absx:
                     self.solved = False
+
+                
+
         return self.solved
 
 
@@ -1267,7 +1320,6 @@ class Player:
     self.animation=Animation(movieName,soundTrackName)
     pygame.time.set_timer(USEREVENT+3,83)
   def stopMovie(self):
-    self.animation=0
     self.inAnimation=False 
     self.traversal=True
     setImage(player)
@@ -2303,8 +2355,14 @@ class Shop:
       enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
       if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
         self.player.battlePlayer.akhal-=enteredNumber
+        if enteredNumber>self.totalPrice:
+          player.migrateMessages("Hehe, with that generosity you can come back ANY time sir")
+        else:
+          player.migrateMessages("Here you are")
         for i in range(self.numItem):
           self.player.battlePlayer.inv_Ar.append(self.itemList[self.selItem])
+      else:
+        self.player.migrateMessages("I don't think that's quite enough")
     elif self.sellMode:
       self.player.battlePlayer.akhal+=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
       self.player.battlePlayer.inv_Ar.remove(self.player.battlePlayer.inv_Ar[self.selItem])
@@ -2446,11 +2504,11 @@ class Shop:
     player.currentRoomGroup.draw(screen)
     merchantSprite=pygame.sprite.Sprite()
     merchantSprite.image=pygame.image.load(IMG_PATH+"MerchantPH.gif")
-    merchantSprite.rect=pygame.Rect(600,-50,200,200)
+    merchantSprite.rect=pygame.Rect(600,-150,200,200)
     merchantGroup=pygame.sprite.Group(merchantSprite)
     merchantGroup.draw(screen)
     if self.buyMode:
-      screen.fill((100,100,100),(100,0,600,900))
+      screen.fill((100,100,100),(100,0,600,700))
       i=0
       y=80
       for item in self.itemList:
@@ -3129,7 +3187,7 @@ def updatePuzzle(event,player):
           stopPuzzle(player,True)
 
       elif newKey=='[1]' or newKey=='e':
-        print("display solved")
+        player.puzzle.showFull=not player.puzzle.showFull
 
       elif newKey=='[6]' or newKey=='right':
         player.puzzle.do_move(4)
@@ -3137,7 +3195,7 @@ def updatePuzzle(event,player):
           stopPuzzle(player,True)
 
       elif newKey=='[7]' or newKey=='m':
-        print("square")
+        player.puzzle.showFull=not player.puzzle.showFull
         #display solved? might add later
 
       elif newKey=='[8]' or newKey=='up':
@@ -3146,7 +3204,7 @@ def updatePuzzle(event,player):
           stopPuzzle(player,True)
 
       elif newKey=='[9]' or newKey=='space':
-        print("circle")
+        player.puzzle.showFull=not player.puzzle.showFull
       drawPuzzle(player,screen)
 ###Draw methods###
 def drawTraversal(player,screen):
@@ -3154,24 +3212,26 @@ def drawTraversal(player,screen):
 def drawPuzzle(player,screen):
   #draw background and completed image
   screen.fill((0,0,0),(0,0,1200,900))
-  #screen.blit(player.puzzle.puzzleBackground,(0,0,1200,900))
-  #screen.blit(player.puzzle.completedPuzzle,(300,100,600,400))
+  screen.blit(player.puzzle.puzBG,(75,-750,1200,900))
+  if player.puzzle.showFull:
+    screen.blit(player.puzzle.completedPuzzle,(300,100,600,400))
+  else:
   #draw pieces in their position
-  totalGroup=pygame.sprite.Group()
-  x=-1
-  y=-1
-  for row in player.puzzle.pieceMap:
-    x+=1
+    totalGroup=pygame.sprite.Group()
+    x=-1
     y=-1
-    for piece in row:
-      y+=1
-      piece=player.puzzle.pieceMap[x][y]
-      spt=pygame.sprite.Sprite()
-      spt.image=pygame.image.load(piece.filename)
-      spt.rect=(300+(x*200),200+(y*200),200,200)
-      if not piece.isHole:
-        totalGroup.add(spt)
-  totalGroup.draw(screen)
+    for row in player.puzzle.pieceMap:
+      x+=1
+      y=-1
+      for piece in row:
+        y+=1
+        piece=player.puzzle.pieceMap[x][y]
+        spt=pygame.sprite.Sprite()
+        spt.image=pygame.image.load(piece.filename)
+        spt.rect=(300+(x*200),200+(y*200),200,200)
+        if not piece.isHole:
+          totalGroup.add(spt)
+    totalGroup.draw(screen)
   pygame.display.flip()
 def drawWaiting(player,screen):
   screen.fill(0,(0,0,1290,700),0)
@@ -3304,6 +3364,7 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
 
 
 
