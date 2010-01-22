@@ -12,11 +12,14 @@ from gettext import gettext as _
 
 import gtk
 import os
+import re
 
 MAX_GRID_WIDTH = 15
 MAX_GRID_HEIGHT = 15
 MIN_GRID_WIDTH = 2
 MIN_GRID_HEIGHT = 2
+
+class BadInputException(Exception):pass
 
 class FortuneMaker(Activity):
     def __init__(self, handle):
@@ -34,7 +37,8 @@ class FortuneMaker(Activity):
         self.set_toolbox(toolbox)
         toolbox.show()
 
-        self.set_create_dungeon_settings()
+        self.show_dungeon_selection()
+        #self.set_create_dungeon_settings()
 
     def view_change_cb(self, widget, view=None):
         if view == 'stats':
@@ -46,15 +50,22 @@ class FortuneMaker(Activity):
         elif view == 'export':
             self.export_view()
 
+    def list_fh_files(self):
+        ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
+        file_list = []
+        for i in xrange(0, num_objects, 1):
+            file_list.append( ds_objects[i] )
+        return file_list
+
     def export_view(self):
         data = self.dungeon.export()
 
         textbuffer = gtk.Label()
-        filename = "MAFH_%s.txt" % self.dungeon.name
+        filename = self.dungeon.name
 
         self._write_textfile( filename, data)
 
-        textbuffer.set_text( "File Saved to %s\n\n%s"%(filename,data))
+        textbuffer.set_text( "File Saved to %s"%(filename) )
 
         self.set_gui_view( textbuffer, True )
 
@@ -64,9 +75,7 @@ class FortuneMaker(Activity):
     # with filetext as the data put in the file.
     # @Returns: a DSObject representing the file in the datastore.
     def _write_textfile(self, filename, filetext=''):
-
-
-        ds_objects, num_objects = datastore.find({'title':filename})
+        ds_objects, num_objects = datastore.find({'title':filename,'FortuneMaker_VERSION':'1'})
 
         if num_objects == 0:
             # Create a datastore object
@@ -78,6 +87,7 @@ class FortuneMaker(Activity):
         # specify that this is a plain text file).
         file_dsobject.metadata['title'] = filename
         file_dsobject.metadata['mime_type'] = 'text/plain'
+        file_dsobject.metadata['FortuneMaker_VERSION'] = '1'
 
         #Write the actual file to the data directory of this activity's root.
         file_path = os.path.join(self.get_activity_root(), 'instance', filename)
@@ -128,7 +138,46 @@ class FortuneMaker(Activity):
 
         return button_tabs
 
-    def set_create_dungeon_settings(self):
+    def show_dungeon_selection(self):
+        window_container = gtk.VBox()
+
+        button = gtk.Button( _("Create New Dungeon") )
+        button.connect("clicked", self.set_create_dungeon_settings, None)
+        window_container.pack_start( button, False )
+
+        frame = gtk.Frame( _("Load Dungeon") )
+        file_container = gtk.VBox()
+
+        ##LOAD FILE LIST HERE
+        file_list = self.list_fh_files()
+
+        for dfile in file_list:
+            row = gtk.HBox()
+            label = gtk.Label(dfile.metadata['title'])
+            row.pack_start( label, False )
+
+            button = gtk.Button(_("Load"))
+            button.connect( 'clicked', self.load_dungeon, dfile )
+            row.pack_end(button, False)
+
+            file_container.pack_start( row, False )
+
+        scroll = gtk.ScrolledWindow()
+        scroll.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_AUTOMATIC)
+        scroll.add_with_viewport( file_container )
+
+        frame.add( scroll )
+        window_container.pack_start( frame )
+
+        room_center = gtk.HBox()
+        room_center.pack_start( gtk.Label() )
+        room_center.pack_start( window_container )
+        room_center.pack_start( gtk.Label() )
+
+        self.set_gui_view( room_center )
+
+
+    def set_create_dungeon_settings(self, trash=None, trash2=None):
         window_container = gtk.VBox()
 
         ## Dungeon Properties
@@ -201,6 +250,33 @@ class FortuneMaker(Activity):
         room_center.pack_start( gtk.Label() )
 
         self.set_gui_view( room_center )
+
+    def load_dungeon(self, widget, file_data):
+        name = file_data.metadata['title']
+        dgnFile=open(file_data.get_file_path(),'r')
+
+        grab = 0
+        room_str = []
+        for line in dgnFile:
+            if grab == 0:
+                match = re.match('(\d+)x(\d+)',line)
+                if match:
+                    x = int(match.group(1))
+                    y = int(match.group(2))
+                    grab = 1
+                else:
+                    raise BadInputException()
+
+            elif grab == 1:
+                theme = int(line)
+                grab = 2
+
+            elif grab == 2:
+                room_str.append(line)
+
+        self.dungeon = Dungeon( name, theme, x, y, room_str)
+        self.view_dungeon_stats()
+
 
     def create_dungeon_cb(self, widget, data):
         name = data['name'].get_text()

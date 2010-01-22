@@ -6,7 +6,7 @@ from constants import (
 import gtk
 
 class Room:
-    def __init__(self, x = -1, y = -1):
+    def __init__(self, x = -1, y = -1, str=None):
         self._x = x
         self._y = y
         self.doors = {}
@@ -24,8 +24,27 @@ class Room:
         for index in range(0,4):
             self.item.append( ['0', '0'] )
 
+        # Load room from str
+        # TODO VALIDATE FLAGS
+        if str:
+            self.add_door( str[0], str[1] )
+            self.add_door( str[2], str[3] )
+            self.add_door( str[4], str[5] )
+            self.add_door( str[6], str[7] )
+            self.set_room_flag( str[8] )
+            self.set_enemy( 0, str[9] )
+            self.set_enemy( 1, str[10] )
+            self.set_enemy( 2, str[11] )
+            self.set_enemy( 3, str[12] )
+            self.set_item( 0, str[13], str[14] )
+            self.set_item( 1, str[15], str[16] )
+            self.set_item( 2, str[17], str[18] )
+            self.set_item( 3, str[19], str[20] )
+
     def add_door(self, door, flag):
-        if door in DOOR_INDEX and flag in DOOR_FLAGS:
+        if door == "0":
+            return
+        elif door in DOOR_INDEX and flag in DOOR_FLAGS:
             self.doors[door] = [door, flag]
         else:
             print "INVALID DOOR AND/OR FLAG"
@@ -50,7 +69,9 @@ class Room:
         return self.special
 
     def set_enemy( self, pos, enemy ):
-        if pos >= 0 and pos <=3 and enemy in ENEM_INDEX:
+        if enemy == "0":
+            return
+        elif pos >= 0 and pos <=3 and enemy in ENEM_INDEX:
             self.enemy[pos] = enemy
         else:
             print "INVALID ENEMY POS OR ID"
@@ -60,7 +81,9 @@ class Room:
             return self.enemy[pos]
 
     def set_item(self, pos, id, flag):
-        if pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:
+        if id == "0":
+            return
+        elif pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:
             self.item[ pos ] = [id, flag]
         else:
             print "INVALID POS OR ID OR FLAG"
