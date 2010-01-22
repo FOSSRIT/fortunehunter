@@ -13,6 +13,10 @@ class Room:
         self.enemy = []
         self.item = []
 
+        self.has_doors = False
+        self.has_enemy = False
+        self.has_item = False
+
         for index in DOOR_INDEX:
             self.doors[index] = ['0', '0']
 
@@ -45,12 +49,14 @@ class Room:
         if door == "0":
             return
         elif door in DOOR_INDEX and flag in DOOR_FLAGS:
+            self.has_doors = True
             self.doors[door] = [door, flag]
         else:
             print "INVALID DOOR AND/OR FLAG"
 
     def remove_door(self, door):
         if door in DOOR_INDEX:
+            #TODO Check if should change has_door
             self.doors[door] = ['0', '0']
         else:
             print "INVALID DOOR"
@@ -72,6 +78,8 @@ class Room:
         if enemy == "0":
             return
         elif pos >= 0 and pos <=3 and enemy in ENEM_INDEX:
+            if enemy != '0':
+                self.has_enemy = True
             self.enemy[pos] = enemy
         else:
             print "INVALID ENEMY POS OR ID"
@@ -84,6 +92,8 @@ class Room:
         if id == "0":
             return
         elif pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:
+            if item != '0':
+                self.has_item = True
             self.item[ pos ] = [id, flag]
         else:
             print "INVALID POS OR ID OR FLAG"
@@ -103,7 +113,14 @@ class Room:
 
         return str
 
+    def not_empty_room(self):
+        return self.has_doors or self.has_enemy or self.has_item
+
     def render_room(self):
-        but = gtk.Button("(%d, %d)" %(self._x, self._y))
+        if self.not_empty_room():
+            but = gtk.Button("(%d, %d)" %(self._x, self._y))
+        else:
+            but = gtk.Button("")
+
         but.set_size_request(100, 100)
         return but

@@ -10,6 +10,10 @@ from sugar.activity.activity import Activity, ActivityToolbox
 from sugar.datastore import datastore
 from gettext import gettext as _
 
+from sugar.activity.activity import ActivityToolbox
+from sugar.graphics.toolbutton import ToolButton
+from sugar.util import unique_id
+
 import gtk
 import os
 import re
@@ -30,15 +34,60 @@ class FortuneMaker(Activity):
 
         # INITIALIZE GUI
         ################
-        self.set_title('File Share')
+        self.set_title('FortuneMaker')
 
         # Create Toolbox
-        toolbox = ActivityToolbox(self)
-        self.set_toolbox(toolbox)
-        toolbox.show()
+        self.build_toolbars()
+        self.enable_room_icons(False, False)
 
         self.show_dungeon_selection()
-        #self.set_create_dungeon_settings()
+
+    def build_toolbars(self):
+        self.dungeon_buttons = {}
+        self.dungeon_bar = gtk.Toolbar()
+        self.view_bar = gtk.Toolbar()
+
+        # BUILD CUSTOM TOOLBAR
+        self.dungeon_buttons['new'] = ToolButton('add')
+        self.dungeon_buttons['new'].set_tooltip(_("New Dungeon"))
+        self.dungeon_buttons['new'].connect("clicked", self.view_change_cb, 'new')
+        self.dungeon_bar.insert(self.dungeon_buttons['new'], -1)
+
+        self.dungeon_buttons['load'] = ToolButton('fileopen')
+        self.dungeon_buttons['load'].set_tooltip(_("Open Dungeon"))
+        self.dungeon_buttons['load'].connect("clicked", self.view_change_cb, 'load')
+        self.dungeon_bar.insert(self.dungeon_buttons['load'], -1)
+
+        self.dungeon_buttons['save'] = ToolButton('filesave')
+        self.dungeon_buttons['save'].set_tooltip( _("Save dungeon file to journal") )
+        self.dungeon_buttons['save'].connect("clicked", self.view_change_cb, 'export')
+        self.dungeon_bar.insert(self.dungeon_buttons['save'], -1)
+        self.dungeon_buttons['save'].set_sensitive( False )
+
+        self.dungeon_buttons['layout'] = ToolButton('view-freeform')
+        self.dungeon_buttons['layout'].set_tooltip(_("View Dungeon Layout"))
+        self.dungeon_buttons['layout'].connect("clicked", self.view_change_cb, 'layout')
+        self.view_bar.insert(self.dungeon_buttons['layout'], -1)
+        self.dungeon_buttons['layout'].set_sensitive( False )
+
+        self.dungeon_buttons['room'] = ToolButton('view-box')
+        self.dungeon_buttons['room'].set_tooltip(_("View Room Layout"))
+        self.dungeon_buttons['room'].connect("clicked", self.view_change_cb, 'room')
+        self.view_bar.insert(self.dungeon_buttons['room'], -1)
+        self.dungeon_buttons['room'].set_sensitive( False )
+
+        self.toolbox = ActivityToolbox(self)
+        self.toolbox.add_toolbar(_("Dungeon"), self.dungeon_bar)
+        self.toolbox.add_toolbar(_("View"), self.view_bar)
+
+        self.set_toolbox(self.toolbox)
+        self.toolbox.show()
+
+    def enable_room_icons(self, dn=True, rm = True):
+        self.dungeon_buttons['save'].set_sensitive( dn )
+        self.dungeon_buttons['layout'].set_sensitive( dn )
+        self.dungeon_buttons['room'].set_sensitive( rm )
+
 
     def view_change_cb(self, widget, view=None):
         if view == 'stats':
@@ -49,6 +98,11 @@ class FortuneMaker(Activity):
             self.view_room()
         elif view == 'export':
             self.export_view()
+        elif view == 'new':
+            ##TODO CONFIRM
+            self.set_create_dungeon_settings()
+        elif view == 'load':
+            self.show_dungeon_selection()
 
     def list_fh_files(self):
         ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
@@ -80,13 +134,14 @@ class FortuneMaker(Activity):
         if num_objects == 0:
             # Create a datastore object
             file_dsobject = datastore.create()
+            file_dsobject.metadata['FM_UID'] = unique_id()
         else:
             file_dsobject = ds_objects[0]
 
         # Write any metadata (here we specifically set the title of the file and
         # specify that this is a plain text file).
         file_dsobject.metadata['title'] = filename
-        file_dsobject.metadata['mime_type'] = 'text/plain'
+        file_dsobject.metadata['mime_type'] = 'text/fm_map'
         file_dsobject.metadata['FortuneMaker_VERSION'] = '1'
 
         #Write the actual file to the data directory of this activity's root.
@@ -116,25 +171,11 @@ class FortuneMaker(Activity):
 
     def get_button_bar(self):
         button_tabs = gtk.HBox()
+
         stats = gtk.Button( _("Dungeon Summary") )
         stats.set_alignment(0,.5)
         stats.connect( 'clicked', self.view_change_cb, 'stats')
         button_tabs.pack_start( stats, False )
-
-        layout = gtk.Button( _("Dungeon Layout") )
-        layout.set_alignment(0,.5)
-        layout.connect( 'clicked', self.view_change_cb, 'layout')
-        button_tabs.pack_start( layout, False )
-
-        room = gtk.Button( _("Room Layout") )
-        room.set_alignment(0,.5)
-        room.connect( 'clicked', self.view_change_cb, 'room')
-        button_tabs.pack_start( room, False )
-
-        dump = gtk.Button( _("Export") )
-        dump.set_alignment(0,.5)
-        dump.connect( 'clicked', self.view_change_cb, 'export' )
-        button_tabs.pack_start( dump, False )
 
         return button_tabs
 
@@ -207,6 +248,27 @@ class FortuneMaker(Activity):
         row.pack_end( theme )
         container.pack_start( row, False )
 
+        # Next Dungeon
+        row = gtk.HBox()
+        label = gtk.Label(_("Next Dungeon:"))
+        label.set_alignment( 0, .5)
+        row.pack_start( label )
+
+        next_dungeon = gtk.combo_box_new_text()
+
+        file_list = self.list_fh_files()
+        file_list_map = {}
+        file_list_map["0"] = _("None")
+        next_dungeon.append_text( file_list_map["0"] )
+        next_dungeon.set_active(0)
+
+        for dfile in file_list:
+            file_list_map[dfile.metadata['FM_UID']] = dfile.metadata['title']
+            next_dungeon.append_text( dfile.metadata['title'] )
+
+        row.pack_start(next_dungeon)
+        container.pack_start( row, False )
+
         frame.add( container )
         window_container.pack_start( frame, False )
 
@@ -240,7 +302,9 @@ class FortuneMaker(Activity):
 
         ## Make Dungeon Button
         make_dungeon = gtk.Button(_("Create Dungeon"))
-        make_dungeon.connect("clicked", self.create_dungeon_cb, {'name':name,'theme':theme,'width':widthspin,'height':heightspin})
+        make_dungeon.connect("clicked", self.create_dungeon_cb, {'name':name,
+                                'theme':theme,'width':widthspin, 'height':heightspin,
+                                'next_dungeon':next_dungeon, 'd_list':file_list_map})
 
         window_container.pack_start( make_dungeon, False )
 
@@ -270,21 +334,26 @@ class FortuneMaker(Activity):
             elif grab == 1:
                 theme = int(line)
                 grab = 2
-
             elif grab == 2:
+                next = line
+                grab = 3
+            elif grab == 3:
                 room_str.append(line)
 
-        self.dungeon = Dungeon( name, theme, x, y, room_str)
+        self.dungeon = Dungeon( name, theme, next, x, y, room_str)
+        self.enable_room_icons(True, False)
         self.view_dungeon_stats()
 
 
     def create_dungeon_cb(self, widget, data):
         name = data['name'].get_text()
         theme = data['theme'].get_active()  #.get_active_text()
+        next = find_key( data['d_list'], data['next_dungeon'].get_active_text())
         width = data['width'].get_value_as_int()
         height = data['height'].get_value_as_int()
 
-        self.dungeon = Dungeon( name, theme, width, height )
+        self.dungeon = Dungeon( name, theme, next, width, height )
+        self.enable_room_icons(True, False)
         self.view_dungeon_stats()
 
     def view_dungeon_stats(self):
@@ -309,7 +378,7 @@ class FortuneMaker(Activity):
         self.set_gui_view( scroll, True )
 
     def view_room(self):
-
+        self.enable_room_icons(True, True)
         lbl_size = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         input_size =  gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
 
@@ -327,6 +396,7 @@ class FortuneMaker(Activity):
 
         door_flags = [ _("None") ]
         door_flags.extend( DOOR_FLAGS.values() )
+
         for door_key in DOOR_INDEX:
             row = gtk.HBox()
             label = gtk.Label(DOOR_INDEX[door_key])
@@ -460,14 +530,6 @@ class FortuneMaker(Activity):
         self.set_gui_view( room_center, True )
 
     def save_room(self, widgit, data):
-
-        def find_key(dic, val):
-            """return the key of dictionary dic given the value"""
-            try:
-                return [k for k, v in dic.iteritems() if v == val][0]
-            except:
-                return False
-
         for key in data['doors']:
             value = find_key( DOOR_FLAGS, data['doors'][key].get_active_text())
             if value:
@@ -506,3 +568,10 @@ if __name__ == "__main__":
     #ADD SET ITEM WHEN CODED
 
     print aroom.room_to_string()
+
+def find_key(dic, val):
+    """return the key of dictionary dic given the value"""
+    try:
+        return [k for k, v in dic.iteritems() if v == val][0]
+    except:
+        return False

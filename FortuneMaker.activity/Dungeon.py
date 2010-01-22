@@ -1,9 +1,10 @@
 from Room import Room
 
 class Dungeon:
-    def __init__( self, name, theme, width, height, room_str = None ):
+    def __init__( self, name, theme, next, width, height, room_str = None ):
         self.name = name
         self.theme = theme
+        self.next = next
         self.width = width
         self.height = height
 
@@ -27,6 +28,7 @@ class Dungeon:
     def export(self):
         text = str(self.width) + "x" + str(self.height) + "\n"
         text += str(self.theme) + "\n"
+        text += str(self.next) + "\n"
         for row in self.roomlist:
             for room in row:
                 text += room.room_to_string() + "\n"
