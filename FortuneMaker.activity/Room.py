@@ -51,15 +51,19 @@ class Room:
         elif door in DOOR_INDEX and flag in DOOR_FLAGS:
             self.has_doors = True
             self.doors[door] = [door, flag]
+            return True
         else:
             print "INVALID DOOR AND/OR FLAG"
+            return False
 
     def remove_door(self, door):
         if door in DOOR_INDEX:
             #TODO Check if should change has_door
             self.doors[door] = ['0', '0']
+            return True
         else:
             print "INVALID DOOR"
+            return False
 
     def get_door( self, door):
         if door in DOOR_INDEX:
@@ -68,35 +72,58 @@ class Room:
     def set_room_flag(self, flag):
         if flag in SPEC_FLAGS:
             self.special = flag
+            return True
         else:
             print "INVALID FLAG"
+            return False
 
     def get_room_flag( self ):
         return self.special
 
+    def add_enemy( self, enemy ):
+        for index in range( 0,4 ):
+            if self.enemy[index] == "0":
+                return self.set_enemy(index, enemy)
+        return False
+
     def set_enemy( self, pos, enemy ):
-        if enemy == "0":
-            return
-        elif pos >= 0 and pos <=3 and enemy in ENEM_INDEX:
-            if enemy != '0':
-                self.has_enemy = True
+        if pos >= 0 and pos <=3 and enemy in ENEM_INDEX:
             self.enemy[pos] = enemy
+
+            self.has_enemy = False
+
+            for enemy in self.enemy:
+                if enemy != "0":
+                    self.has_enemy = True
+                    break
+
+            return True
         else:
             print "INVALID ENEMY POS OR ID"
+            return False
 
     def get_enemy(self, pos):
         if pos >=0 and pos <=3:
             return self.enemy[pos]
 
+    def add_item( self, enemy ):
+        for index in range( 0,4 ):
+            if self.item[index] == "0":
+                return self.set_item(index, enemy)
+        return False
+
     def set_item(self, pos, id, flag):
-        if id == "0":
-            return
-        elif pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:
-            if item != '0':
-                self.has_item = True
+        if pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:
             self.item[ pos ] = [id, flag]
+
+            self.has_item = False
+            for item in self.item:
+                self.has_item = True
+
+            return True
         else:
             print "INVALID POS OR ID OR FLAG"
+            return False
 
     def room_to_string(self):
         str = ""
