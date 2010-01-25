@@ -325,7 +325,9 @@ class FortuneMaker(Activity):
     def load_dungeon(self, widget, file_data):
         name = file_data.metadata['title']
         dgnFile=open(file_data.get_file_path(),'r')
+        self.do_load( name, dgnFile)
 
+    def do_load( self, name, dgnFile ):
         grab = 0
         room_str = []
         for line in dgnFile:
@@ -365,7 +367,7 @@ class FortuneMaker(Activity):
 
     def view_dungeon_stats(self):
         dungeon_stats = gtk.HBox()
-        dungeon_stats.pack_start(gtk.Label("Dungeon Statistics to be implemented"))
+        dungeon_stats.pack_start(gtk.Label("Dungeon (%s) Statistics to be implemented"%self.dungeon.name))
         self.set_gui_view( dungeon_stats, True )
 
     def view_dungeon_grid(self):
@@ -560,6 +562,23 @@ class FortuneMaker(Activity):
     def set_active_room(self, widgit, room):
         self.active_room  = room
         self.view_room()
+
+    def read_file(self, file_path):
+        # If no title, not valid save, don't continue loading file
+        if self.metadata.has_key( 'dungeon_title' ):
+            name = self.metadata['dungeon_title']
+            dgnFile=open(file_path,'r')
+            self.do_load( name, dgnFile )
+
+    def write_file(self, file_path):
+        if self.dungeon:
+            f = open( file_path, 'w' )
+            f.write( self.dungeon.export() )
+            f.close()
+            self.metadata['dungeon_title'] = self.dungeon.name
+        else:
+            # Basically touch file to prevent it from keep error
+            open( file_path, 'w' ).close()
 
 if __name__ == "__main__":
 
