@@ -690,7 +690,18 @@ class Menu:
         i=0
         for name in optionImageFiles:
             sprite=pygame.sprite.Sprite()
-            sprite.image=pygame.image.load(name)
+            if self.name=="Glyph Menu":
+              if player.geomDifficulty==2:
+                rotate=90*randint(0,3)
+                sprite.image=pygame.transform.rotate(pygame.image.load(name),rotate)
+              elif player.geomDifficulty==3:
+                rotate=90*randint(0,3)
+                flip=randint(0,2)
+                sprite.image=pygame.transform.flip(pygame.transform.rotate(pygame.image.load(name),rotate),flip==1,flip==2)
+              else:
+                sprite.image=pygame.image.load(name)
+            else:
+              sprite.image=pygame.image.load(name)
             sprite.rectangle=pygame.Rect(0,0,1290,60)
             self.optionsImages.append(sprite)
             i+=1
@@ -1021,7 +1032,8 @@ class Menu:
             else:
               player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="0" or name=="1"or name=="2" or name=="3" or name=="4" or name=="5" or name=="6" or name=="7"or name=="8"or name=="9":
-          player.battlePlayer.currentInput+=name
+          if len(player.battlePlayer.currentInput)<7:
+            player.battlePlayer.currentInput+=name
         elif name=="Clear":
           player.battlePlayer.currentInput=""
         elif name=="Enter Answer":
@@ -1034,17 +1046,8 @@ class Menu:
             player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="Division":
           player.curBattle.divisionAttack()
-        elif name=="1/2":
-	  player.battlePlayer.fractionSum += .5
-	  player.curBattle.checkFraction()
-	elif name=="1/3":
-	  player.battlePlayer.fractionSum += .33
-	  player.curBattle.checkFraction()
-	elif name=="1/4":
-	  player.battlePlayer.fractionSum += .25
-	  player.curBattle.checkFraction()
-	elif name=="1/6":
-	  player.battlePlayer.fractionSum += .166
+        elif name[1:2]=="/":
+	  player.battlePlayer.fractionSum += float(name[0])/float(name[2])
 	  player.curBattle.checkFraction()
         elif name=="Geometry":
           player.curBattle.magic(player)
@@ -1082,6 +1085,8 @@ class Menu:
           player.currentMenu=player.divMenu
         elif name=="Not":
           player.migrateMessages("Incorrect glyph.  Spell fizzles")
+          player.curBattle.glyphGroup.empty()
+          player.curBattle.glyphOverlayGroup.empty()
           player.curBattle.playerTurn=False
           player.currentMenu=player.curBattle.battleMenu
         elif name=="Continue":
@@ -1208,6 +1213,12 @@ class Player:
     self.dgnIndex=-1
     self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7),("dungeon3.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
     self.battlePlayer=Hero(self)
+    #Difficulty: 1=Easy 2=Meduim 3=Hard
+    self.critDifficulty=2
+    self.divDifficulty=2
+    self.geomDifficulty=2
+    self.shopDifficulty=2
+
     self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
@@ -1333,7 +1344,7 @@ class Player:
     self.msg5=msg
   def nextDungeon(self):
 
-    self.dgnIndex+=3
+    self.dgnIndex+=1
     self.battlePlayer.MHP+=2
     if self.dgnIndex>=len(self.dungeons):
       self.currentMenu=self.MainMenu
@@ -1443,7 +1454,8 @@ class Hero:
 	self.BAE	= 0		#bonus attack power (from equipment)
 	self.DEF	= 1		#base defense power
 	self.BDE	= 0		#bonus defense  power(from equipment)
-
+        
+        self.player=player
 	self.weapon=Item("","")
 	self.armor=Item("","")
 	self.accessory=Item("","")
@@ -1638,7 +1650,7 @@ class Enemy:
         elif self.name=="Orc":
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
           self.HP=60
-          self.ATT=35
+          self.ATT=15
         else:
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
           #TODO:  add all enemy types here as artwork is completed
@@ -1830,12 +1842,37 @@ class BattleEngine:
     magicOptImg=[IMG_PATH+"Fire.gif",IMG_PATH+"Lightning.gif",IMG_PATH+"Missile.gif",IMG_PATH+"Heal.gif"]
     self.magicMenu=Menu(magicOptions,player,magicBackground,magicOptImg,"Magic Menu")
     self.magicMenu.background.rect=(0,300,200,200)
-
-    divisionOptions=["1/2","1/3","1/4","1/6"]
-    divisionBackground=IMG_PATH+"battleMenubackground.gif"
-    divisionOptImg=[IMG_PATH+"12Power.gif",IMG_PATH+"13Power.gif",IMG_PATH+"14Power.gif",IMG_PATH+"16Power.gif"]
-    self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
-    self.divisionMenu.background.rect=(0,300,200,200) 
+    if isinstance(player,Player):
+      if player.divDifficulty==1:
+        divisionOptions=["1/2","1/3","1/4","1/6"]
+        divisionBackground=IMG_PATH+"battleMenubackground.gif"
+        divisionOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+        self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
+        self.divisionMenu.background.rect=(0,300,200,200) 
+      elif player.divDifficulty==2:
+        denom1=randint(2,9)
+        denom2=randint(2,9)
+        denom3=randint(2,9)
+        denom4=randint(2,9)
+        divisionOptions=["1/"+repr(denom1),"1/"+repr(denom2),"1/"+repr(denom3),"1/"+repr(denom4)]
+        divisionBackground=IMG_PATH+"battleMenubackground.gif"
+        divisionOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+        self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
+        self.divisionMenu.background.rect=(0,300,200,200) 
+      elif player.divDifficulty==3:
+        denom1=randint(2,9)
+        denom2=randint(2,9)
+        denom3=randint(2,9)
+        denom4=randint(2,9)
+        num1=randint(1,4)
+        num2=randint(1,4)
+        num3=randint(1,4)
+        num4=randint(1,4)
+        divisionOptions=[repr(num1)+"/"+repr(denom1),repr(num2)+"/"+repr(denom2),repr(num3)+"/"+repr(denom3),repr(num4)+"/"+repr(denom4)]
+        divisionBackground=IMG_PATH+"battleMenubackground.gif"
+        divisionOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+        self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
+        self.divisionMenu.background.rect=(0,300,200,200) 
 
     itemOptions=["Item1","Item2","Item3","Item4"]
     itemBackground=IMG_PATH+"battleMenubackground.gif"
@@ -1882,6 +1919,12 @@ class BattleEngine:
       elif player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
         screen.fill((0,0,0),(500,300,100,400))
         screen.fill((255,150,0),(500,(620-310*player.battlePlayer.fractionSum),137,310*player.battlePlayer.fractionSum))
+        y=460
+        font=pygame.font.SysFont("cmr10",24,False,False)
+        if not player.currentMenu.name=="DivTut2":
+          for item in player.currentMenu.options:
+            screen.blit(font.render(item,True,(50,0,150)),(275,y,400,40))
+            y+=45
         player.divSword.draw(screen)
     else:
       if player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
@@ -1956,8 +1999,17 @@ class BattleEngine:
     pygame.time.set_timer(USEREVENT+1,1000)
     player.battlePlayer.currentInput=""
     player.currentMenu=self.numPadMenu
-    prob1=randint(0,12)
-    prob2=randint(0,12)
+    prob1=0
+    prob2=0
+    if player.critDifficulty==1:
+      prob1=randint(0,6)
+      prob2=randint(0,6)
+    elif player.critDifficulty==2:
+      prob1=randint(0,12)
+      prob2=randint(0,12)
+    elif player.critDifficulty==3:
+      prob1=randint(0,24)
+      prob2=randint(0,24)
     player.battlePlayer.currentProb1=prob1
     player.battlePlayer.currentProb2=prob2
     player.battlePlayer.currentAnswer=prob1*prob2
@@ -1973,6 +2025,7 @@ class BattleEngine:
       shuffle(shuffle2D)
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
+
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(0,300,200,200)
@@ -1984,6 +2037,7 @@ class BattleEngine:
       shuffle(shuffle2D)
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
+
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(0,300,200,200)
@@ -1998,6 +2052,7 @@ class BattleEngine:
       shuffle(shuffle2D)
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
+
       glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(0,300,200,200)
@@ -2162,8 +2217,10 @@ class BattleEngine:
       defender.defendAttack(enemy.attackPower("special"))
     #print special message differently depending on name
     if enemy.name == "Wizard":
+      defender.defendAttack(enemy.attackPower("critical"))
       player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
     elif enemy.name == "Goblin" or enemy.name == "Orc":
+      defender.defendAttack(enemy.attackPower("critical"))
       player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
     #TODO: add enemy types here as levels are added
     else:
@@ -2357,12 +2414,20 @@ class Shop:
     if self.buyMode:
       enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
       if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
-        self.player.battlePlayer.akhal-=enteredNumber
+        if self.player.shopDifficulty==1:
+          self.player.battlePlayer.akhal-=self.totalPrice
+        else:
+          self.player.battlePlayer.akhal-=enteredNumber
         if enteredNumber>self.totalPrice:
-          self.message=[]
-          self.message.append("Hehe, with that generosity")
-          self.message.append("you can come back")
-          self.message.append("ANY time sir")
+          if self.player.shopDifficulty==1:
+            self.message=[]
+            self.message.append("Here you are,")
+            self.message.append("and your change")
+          else:
+            self.message=[]
+            self.message.append("Hehe, with that generosity")
+            self.message.append("you can come back")
+            self.message.append("ANY time sir")
         else:
           self.message=[]
           self.message.append("Here you are")
@@ -2478,8 +2543,11 @@ class Shop:
               self.message.append("I wouldn't sell that if I were you")
             else:
               self.buyScreen=True
-              seed()
-              self.shopKeeperVariable=randint(1,self.player.battlePlayer.inv_Ar[self.selItem].sellVal*2)
+              if self.player.shopDifficulty==1:
+                self.shopKeeperVariable=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
+              else:
+                seed()
+                self.shopKeeperVariable=randint(1,self.player.battlePlayer.inv_Ar[self.selItem].sellVal*2)
 
         elif self.buyMode:
           if self.buyScreen:
@@ -2500,7 +2568,7 @@ class Shop:
           self.sellMode=True
           self.selItem=0
           self.numItem=0
-          self.player.sellin.play()
+          #self.player.sellin.play()
 
       elif newKey=='[9]' or newKey=='b':
         #square, switch to buy mode
@@ -2509,7 +2577,7 @@ class Shop:
           self.buyMode=True
           self.selItem=0
           self.numItem=0
-          self.player.buyin.play()
+          #self.player.buyin.play()
   
   def draw(self,screen,player):
     player.currentRoomGroup.draw(screen)
