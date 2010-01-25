@@ -8,6 +8,7 @@ DOOR_INDEX = {
     }
 
 DOOR_FLAGS = {
+    '0':_('None'),
     'u':_('Unlocked'),
     'l':_('Locked'),
     'p':_('Puzzle'),
