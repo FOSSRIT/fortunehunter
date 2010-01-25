@@ -77,6 +77,13 @@ class FortuneMaker(Activity):
         self.dungeon_buttons['room'].set_sensitive( False )
 
         self.toolbox = ActivityToolbox(self)
+
+        # Remove Share Bar
+        activity_toolbar = self.toolbox.get_activity_toolbar()
+        activity_toolbar.remove(activity_toolbar.share)
+        activity_toolbar.share = None
+
+        #Add our custom items to the toolbar
         self.toolbox.add_toolbar(_("Dungeon"), self.dungeon_bar)
         self.toolbox.add_toolbar(_("View"), self.view_bar)
 
