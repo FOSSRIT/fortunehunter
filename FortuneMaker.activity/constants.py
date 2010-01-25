@@ -39,6 +39,7 @@ ITEM_INDEX = {
 }
 
 ITEM_FLAGS = {
+    '0':_('None'),
     'v':_('Visible'),
     'h':_('Hidden'),
     'b':_('Battle')
