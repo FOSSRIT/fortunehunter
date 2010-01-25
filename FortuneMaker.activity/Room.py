@@ -118,7 +118,9 @@ class Room:
 
             self.has_item = False
             for item in self.item:
-                self.has_item = True
+                if item[0] != "0":
+                    self.has_item = True
+                    break
 
             return True
         else:
