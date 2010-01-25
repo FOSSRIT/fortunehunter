@@ -580,21 +580,6 @@ class FortuneMaker(Activity):
             # Basically touch file to prevent it from keep error
             open( file_path, 'w' ).close()
 
-if __name__ == "__main__":
-
-    aroom = Room()
-
-    aroom.add_door('N', 'u')
-    aroom.add_door('E', 'p')
-
-    aroom.set_enemy(1,'2')
-    aroom.set_enemy(3,'4')
-
-    aroom.set_room_flag('P')
-    #ADD SET ITEM WHEN CODED
-
-    print aroom.room_to_string()
-
 def find_key(dic, val):
     """return the key of dictionary dic given the value"""
     try:
