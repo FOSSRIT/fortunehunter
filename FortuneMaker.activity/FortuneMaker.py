@@ -12,6 +12,7 @@ from gettext import gettext as _
 
 from sugar.activity.activity import ActivityToolbox
 from sugar.graphics.toolbutton import ToolButton
+from sugar.graphics.alert import NotifyAlert
 from sugar.util import unique_id
 
 import gtk
@@ -31,6 +32,7 @@ class FortuneMaker(Activity):
 
         self.dungeon = None
         self.active_room = None
+        self.action_but_group = None
 
         # INITIALIZE GUI
         ################
@@ -97,9 +99,7 @@ class FortuneMaker(Activity):
 
 
     def view_change_cb(self, widget, view=None):
-        if view == 'stats':
-            self.view_dungeon_stats()
-        elif view == 'layout':
+        if view == 'layout':
             self.view_dungeon_grid()
         elif view == 'room':
             self.view_room()
@@ -128,7 +128,7 @@ class FortuneMaker(Activity):
 
         textbuffer.set_text( "File Saved to %s"%(filename) )
 
-        self.set_gui_view( textbuffer, True )
+        self.set_gui_view( textbuffer )
 
 
 
@@ -166,25 +166,10 @@ class FortuneMaker(Activity):
         return file_dsobject
 
 
-    def set_gui_view(self,  view, buttons=False):
-        if buttons:
-            box = gtk.VBox()
-            box.pack_start( self.get_button_bar(), False )
-            box.pack_start(view)
-            self.set_canvas( box )
-        else:
-            self.set_canvas( view )
+    def set_gui_view(self,  view):
+        self.set_canvas( view )
         self.show_all()
 
-    def get_button_bar(self):
-        button_tabs = gtk.HBox()
-
-        stats = gtk.Button( _("Dungeon Summary") )
-        stats.set_alignment(0,.5)
-        stats.connect( 'clicked', self.view_change_cb, 'stats')
-        button_tabs.pack_start( stats, False )
-
-        return button_tabs
 
     def show_dungeon_selection(self):
         window_container = gtk.VBox()
@@ -210,11 +195,7 @@ class FortuneMaker(Activity):
 
             file_container.pack_start( row, False )
 
-        scroll = gtk.ScrolledWindow()
-        scroll.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_AUTOMATIC)
-        scroll.add_with_viewport( file_container )
-
-        frame.add( scroll )
+        frame.add( make_it_scroll( file_container ) )
         window_container.pack_start( frame )
 
         room_center = gtk.HBox()
@@ -326,6 +307,7 @@ class FortuneMaker(Activity):
         name = file_data.metadata['title']
         dgnFile=open(file_data.get_file_path(),'r')
         self.do_load( name, dgnFile)
+        dngFile.close()
 
     def do_load( self, name, dgnFile ):
         grab = 0
@@ -344,14 +326,14 @@ class FortuneMaker(Activity):
                 theme = int(line)
                 grab = 2
             elif grab == 2:
-                next = line
+                next = line.strip()
                 grab = 3
             elif grab == 3:
-                room_str.append(line)
+                room_str.append(line.strip())
 
         self.dungeon = Dungeon( name, theme, next, x, y, room_str)
         self.enable_room_icons(True, False)
-        self.view_dungeon_stats()
+        self.view_dungeon_grid()
 
 
     def create_dungeon_cb(self, widget, data):
@@ -363,14 +345,10 @@ class FortuneMaker(Activity):
 
         self.dungeon = Dungeon( name, theme, next, width, height )
         self.enable_room_icons(True, False)
-        self.view_dungeon_stats()
+        self.view_dungeon_grid()
 
-    def view_dungeon_stats(self):
-        dungeon_stats = gtk.HBox()
-        dungeon_stats.pack_start(gtk.Label("Dungeon (%s) Statistics to be implemented"%self.dungeon.name))
-        self.set_gui_view( dungeon_stats, True )
-
-    def view_dungeon_grid(self):
+    def _draw_room_button_grid(self):
+        # Setup Room Pannel
         room_array = self.dungeon.get_room_array()
         box = gtk.VBox()
         for row_array in room_array:
@@ -378,13 +356,93 @@ class FortuneMaker(Activity):
             box.pack_start( row, False )
             for room in row_array:
                 room_gui = room.render_room()
-                room_gui.connect('clicked', self.set_active_room, room)
+                room_gui.connect('clicked', self.add_prop_to_room, room)
                 row.pack_start( room_gui, False )
+        if self._pane2:
+            self.edit_pane.remove( self._pane2 )
+        self._pane2 = make_it_scroll( box )
+        self._pane2.show_all()
+        self.edit_pane.add2( self._pane2 )
 
-        scroll = gtk.ScrolledWindow()
-        scroll.add_with_viewport( box )
+    def view_dungeon_grid(self):
+        self.edit_pane = gtk.HPaned()
+        self._pane2 = None
 
-        self.set_gui_view( scroll, True )
+        # Setup Button Pannel
+        listbox = gtk.VBox()
+        lbl = gtk.RadioButton(None,_('View Room Configuration'))
+        lbl.track_mode = 'VIEW'
+        listbox.pack_start( lbl, False )
+
+        # Doors
+        exp = gtk.Expander(_("Doors"))
+        box = gtk.VBox()
+        for door_key in DOOR_INDEX:
+            exp2 = gtk.Expander( DOOR_INDEX[door_key] )
+            box2 = gtk.VBox()
+            for door_mode_key in DOOR_FLAGS:
+                lbl = gtk.RadioButton(lbl,DOOR_FLAGS[door_mode_key])
+                lbl.track_mode = 'DOOR'
+                lbl.track_door = door_key
+                lbl.track_flag = door_mode_key
+                box2.pack_start(lbl, False)
+            exp2.add(box2)
+
+            # Hack box to add spacing to expand boxes to make it clear
+            spacing_hack = gtk.HBox()
+            spacing_hack.pack_start( gtk.Label("   "), False)
+            spacing_hack.pack_start( exp2 )
+            box.pack_start(spacing_hack, False)
+
+        exp.add( box )
+        listbox.pack_start( exp, False )
+
+        # Room Properties
+        exp = gtk.Expander(_("Room Flags"))
+        box = gtk.VBox()
+        SPEC_FLAGS
+        for flag_key in SPEC_FLAGS:
+            lbl = gtk.RadioButton(lbl, SPEC_FLAGS[flag_key])
+            lbl.track_mode = 'SPEC_FLAG'
+            lbl.track_flag = flag_key
+            box.pack_start(lbl, False)
+        exp.add( box )
+        listbox.pack_start( exp, False )
+
+        # Enemies
+        exp = gtk.Expander(_("Enemies"))
+        box = gtk.VBox()
+        for enemy_key in ENEM_INDEX:
+            # Ignore None Key
+            if enemy_key != '0':
+                lbl = gtk.RadioButton(lbl, ENEM_INDEX[enemy_key])
+                lbl.track_mode = 'ENEMY'
+                lbl.track_flag = enemy_key
+                box.pack_start(lbl, False)
+
+        exp.add( box )
+        listbox.pack_start( exp, False )
+
+        # Items
+        exp = gtk.Expander(_("Items"))
+        box = gtk.VBox()
+        for item_key in ITEM_INDEX:
+            # Ignore None Key
+            if item_key != '0':
+                lbl = gtk.RadioButton(lbl,ITEM_INDEX[item_key])
+                lbl.track_mode = 'ITEM'
+                lbl.track_flag = item_key
+                box.pack_start(lbl, False)
+
+        exp.add(box)
+        listbox.pack_start( exp, False )
+
+        # Save the button group
+        self.action_but_group = lbl.get_group()
+
+        self.edit_pane.add1( make_it_scroll( listbox, False ) )
+        self._draw_room_button_grid()
+        self.set_gui_view( self.edit_pane )
 
     def view_room(self):
         self.enable_room_icons(True, True)
@@ -536,7 +594,7 @@ class FortuneMaker(Activity):
         room_center.pack_start( room_holder )
         room_center.pack_start( gtk.Label() )
 
-        self.set_gui_view( room_center, True )
+        self.set_gui_view( room_center )
 
     def save_room(self, widgit, data):
         for key in data['doors']:
@@ -560,15 +618,64 @@ class FortuneMaker(Activity):
         self.view_dungeon_grid()
 
     def set_active_room(self, widgit, room):
-        self.active_room  = room
+        self.active_room = room
         self.view_room()
 
+    def add_prop_to_room(self, widget, room):
+        self.active_room = room
+        self.enable_room_icons(True, True)
+        for but in self.action_but_group:
+            if but.get_active():
+                if but.track_mode == 'VIEW':
+                    self.view_room()
+                    return
+
+                elif but.track_mode == 'DOOR':
+                    if but.track_flag == '0':
+                        self.active_room.remove_door( but.track_door )
+
+                    else:
+                        self.active_room.add_door( but.track_door, but.track_flag )
+
+                elif but.track_mode == 'SPEC_FLAG':
+                    self.active_room.set_room_flag( but.track_flag )
+
+                elif but.track_mode == 'ENEMY':
+                    if not self.active_room.add_enemy( but.track_flag ):
+                        self._alert( _("Enemy not added to room"), _("Room can not hold any more enemies"))
+
+                elif but.track_mode == 'ITEM':
+                    if not self.active_room.add_item( but.track_flag ):
+                        self._alert( _("Item not added to room"), _("Room can not hold any more items"))
+
+                self.dungeon.update_room( self.active_room )
+                self._draw_room_button_grid()
+                break
+
+    def _alert(self, title, text=None, timeout=5):
+        alert = NotifyAlert(timeout=timeout)
+        alert.props.title = title
+        alert.props.msg = text
+        self.add_alert(alert)
+        alert.connect('response', self._alert_cancel_cb)
+        alert.show()
+
+    def _alert_cancel_cb(self, alert, response_id):
+        self.remove_alert(alert)
+
     def read_file(self, file_path):
+        if hasattr(self, "SHUT_UP_XO_CALLING_ME"):
+            print "CALLED YET AGAIN! (%s)"%file_path
+            return
+
+        self.SHUT_UP_XO_CALLING_ME = True
         # If no title, not valid save, don't continue loading file
         if self.metadata.has_key( 'dungeon_title' ):
             name = self.metadata['dungeon_title']
             dgnFile=open(file_path,'r')
             self.do_load( name, dgnFile )
+            dgnFile.close()
+        return
 
     def write_file(self, file_path):
         if self.dungeon:
@@ -580,9 +687,20 @@ class FortuneMaker(Activity):
             # Basically touch file to prevent it from keep error
             open( file_path, 'w' ).close()
 
+
+#### HELPER FUNCTIONS ####
 def find_key(dic, val):
     """return the key of dictionary dic given the value"""
     try:
         return [k for k, v in dic.iteritems() if v == val][0]
     except:
         return False
+
+def make_it_scroll(widget, allow_horz=True):
+    scroll = gtk.ScrolledWindow()
+    if allow_horz:
+        scroll.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_AUTOMATIC)
+    else:
+        scroll.set_policy(gtk.POLICY_NEVER,gtk.POLICY_AUTOMATIC)
+    scroll.add_with_viewport( widget )
+    return scroll
