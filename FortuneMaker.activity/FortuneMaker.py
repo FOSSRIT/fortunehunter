@@ -378,22 +378,13 @@ class FortuneMaker(Activity):
         # Doors
         exp = gtk.Expander(_("Doors"))
         box = gtk.VBox()
-        for door_key in DOOR_INDEX:
-            exp2 = gtk.Expander( DOOR_INDEX[door_key] )
-            box2 = gtk.VBox()
-            for door_mode_key in DOOR_FLAGS:
-                lbl = gtk.RadioButton(lbl,DOOR_FLAGS[door_mode_key])
-                lbl.track_mode = 'DOOR'
-                lbl.track_door = door_key
-                lbl.track_flag = door_mode_key
-                box2.pack_start(lbl, False)
-            exp2.add(box2)
 
-            # Hack box to add spacing to expand boxes to make it clear
-            spacing_hack = gtk.HBox()
-            spacing_hack.pack_start( gtk.Label("   "), False)
-            spacing_hack.pack_start( exp2 )
-            box.pack_start(spacing_hack, False)
+        for door_mode_key in DOOR_FLAGS:
+            lbl = gtk.RadioButton(lbl,DOOR_FLAGS[door_mode_key])
+            lbl.track_mode = 'DOOR'
+
+            lbl.track_flag = door_mode_key
+            box.pack_start(lbl, False)
 
         exp.add( box )
         listbox.pack_start( exp, False )
@@ -633,28 +624,40 @@ class FortuneMaker(Activity):
                     return
 
                 elif but.track_mode == 'DOOR':
+                    if event.x < 30 and event.y > 30 and event.y < 70:
+                        door_pos = "W"
+                    elif event.x > 70 and event.y > 30 and event.y < 70:
+                        door_pos = "E"
+                    elif event.y < 30 and event.x > 30 and event.x < 70:
+                        door_pos = "N"
+                    elif event.y > 70 and event.x > 30 and event.x < 70:
+                        door_pos = "S"
+                    else:
+                        #self._alert("NONE", "%d, %d"%(event.x, event.y))
+                        return
+
                     if but.track_flag == '0':
-                        self.active_room.remove_door( but.track_door )
+                        self.active_room.remove_door( door_pos )
 
                     else:
                         # If not e or x, add door to adjoining room
                         if not (but.track_flag == 'e' or but.track_flag == 'x'):
-                            adj_room = self.dungeon.get_adj_room( room, but.track_door )
+                            adj_room = self.dungeon.get_adj_room( room, door_pos )
 
                             if adj_room:
-                                self.active_room.add_door( but.track_door, but.track_flag )
-                                if but.track_door == "N":
+                                self.active_room.add_door( door_pos, but.track_flag )
+                                if door_pos == "N":
                                     adj_room.add_door( "S", but.track_flag)
-                                elif but.track_door == "E":
+                                elif door_pos == "E":
                                     adj_room.add_door( "W", but.track_flag)
-                                elif but.track_door == "S":
+                                elif door_pos == "S":
                                     adj_room.add_door( "N", but.track_flag)
-                                elif but.track_door == "W":
+                                elif door_pos == "W":
                                     adj_room.add_door( "E", but.track_flag)
                             else:
                                 self._alert( _("Door Not Added"), _("This door can not be placed at edge of dungeon"))
                         else:
-                            self.active_room.add_door( but.track_door, but.track_flag )
+                            self.active_room.add_door( door_pos, but.track_flag )
 
 
 
