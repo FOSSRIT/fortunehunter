@@ -12,12 +12,7 @@ import os.path
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
 #IMG_PATH="/home/liveuser/GIT_REPOS/MAFH/mainline/MAFH.activity/images/"
-#TODO:  DIFFICULTY SETTINGS
-#       Geometry: easy-just translations medium-translations and rotations hard-translation, rotation, and relections
-#       Division: easy-same fractions, add to 1 medium-randomized denominator (1/x) hard-randomized numerator and denominator
-#       Critical: easy-random #s up to 6X6 medium random #s up to 12X12 hard-random #s up to 24X24
-#       Shop: easy-no shopkeeper jips, every sale is exact medium-shopkeeper jips, sales can be less than value hard-shopkeeper only appears once per shop
-#
+
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
@@ -1012,7 +1007,7 @@ class Menu:
             player.battlePlayer=Hero(player)
             player.currentRoomGroup.draw(screen)
             player.initMovTutorial(screen)
-            player.startMovie("CrapScene.gif","MAFHbg.OGG")
+            player.startMovie("FMC1.gif","MAFHbg.OGG")
             player.traversal=False
             player.inAnimation=True
             pygame.display.flip()
@@ -1214,10 +1209,17 @@ class Player:
     self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7),("dungeon3.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
     self.battlePlayer=Hero(self)
     #Difficulty: 1=Easy 2=Meduim 3=Hard
-    self.critDifficulty=2
+    self.critDifficulty=2 
     self.divDifficulty=2
     self.geomDifficulty=2
     self.shopDifficulty=2
+
+    #Player stats
+    self.name=""  #player name: to be set in options menu or upon new game (character select screen?)
+    self.multiplicationStats=[(0,0),(0,0),(0,0)]   #[easy problems,medium problems,hard problems]
+    self.divisionSolved=[(0,0),(0,0),(0,0)]        #[easy problems,medium problems,hard problems]
+    self.geomSolved=[(0,0),(0,0),(0,0)]            #[easy,medium, hard]
+    self.shopSolved=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
 
     self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
@@ -1649,10 +1651,12 @@ class Enemy:
           self.ATT=10
         elif self.name=="Orc":
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
-          self.HP=60
-          self.ATT=15
+          self.HP=50
+          self.ATT=6
         else:
           self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          self.HP=10
+          self.ATT=10
           #TODO:  add all enemy types here as artwork is completed
         self.sprite.rect=(200,200,50,300) 
 
@@ -1886,6 +1890,7 @@ class BattleEngine:
 
   def draw(self,player,screen):
     #draw enemies
+    font = pygame.font.Font(None, 36)
     x=250
     y=150
     enemyGroup=pygame.sprite.Group()
@@ -1901,6 +1906,8 @@ class BattleEngine:
       enemyGroup.add(enemy.sprite)
 
     player.currentRoomGroup.draw(screen)
+    screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
+    screen.blit(pygame.transform.scale(pygame.image.load(IMG_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))
     enemyGroup.draw(screen)
     self.glyphGroup.draw(screen)
     self.glyphOverlayGroup.draw(screen)
@@ -1939,7 +1946,8 @@ class BattleEngine:
           screen.blit(probText,pygame.Rect(250,350,200,30))
           screen.blit(inputText,pygame.Rect(250,400,200,30))
       
-      screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
+      #screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
+      screen.blit(pygame.transform.scale(pygame.image.load(IMG_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
     pygame.display.flip()
 
   ###
@@ -3435,7 +3443,8 @@ while pippy.pygame.next_frame():
     else:
       player.currentMenu.draw(player,screen,450,400,50)
   else:
-    drawTextBox(player,screen)
+    if not player.inAnimation:
+      drawTextBox(player,screen)
     if player.traversal:
       if player.waiting:
         drawWaiting(player,screen)
@@ -3457,7 +3466,5 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
-
-
 
 
