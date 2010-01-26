@@ -8,6 +8,7 @@ DOOR_INDEX = {
     }
 
 DOOR_FLAGS = {
+    '0':_('None'),
     'u':_('Unlocked'),
     'l':_('Locked'),
     'p':_('Puzzle'),
@@ -15,6 +16,15 @@ DOOR_FLAGS = {
     'e':_('Entrance'),
     'x':_('Exit')
     }
+
+DOOR_COLOR = {
+    'u':"#000000",
+    'l':"#666666",
+    'p':"#006600",
+    'b':"#008800",
+    'e':"#ff0000",
+    'x':"#ffff00"
+}
 
 SPEC_FLAGS = {
     '0':_('None'),
@@ -38,6 +48,7 @@ ITEM_INDEX = {
 }
 
 ITEM_FLAGS = {
+    '0':_('None'),
     'v':_('Visible'),
     'h':_('Hidden'),
     'b':_('Battle')
