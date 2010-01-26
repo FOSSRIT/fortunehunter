@@ -356,7 +356,8 @@ class FortuneMaker(Activity):
             box.pack_start( row, False )
             for room in row_array:
                 room_gui = room.render_room()
-                room_gui.connect('clicked', self.add_prop_to_room, room)
+                room_gui.connect('button-press-event', self.add_prop_to_room, room)
+                #room_gui.connect('clicked', self.add_prop_to_room, room)
                 row.pack_start( room_gui, False )
         if self._pane2:
             self.edit_pane.remove( self._pane2 )
@@ -621,7 +622,8 @@ class FortuneMaker(Activity):
         self.active_room = room
         self.view_room()
 
-    def add_prop_to_room(self, widget, room):
+    #def add_prop_to_room(self, widget, room):
+    def add_prop_to_room(self, widget, event, room):
         self.active_room = room
         self.enable_room_icons(True, True)
         for but in self.action_but_group:
