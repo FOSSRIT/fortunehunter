@@ -637,7 +637,26 @@ class FortuneMaker(Activity):
                         self.active_room.remove_door( but.track_door )
 
                     else:
-                        self.active_room.add_door( but.track_door, but.track_flag )
+                        # If not e or x, add door to adjoining room
+                        if not (but.track_flag == 'e' or but.track_flag == 'x'):
+                            adj_room = self.dungeon.get_adj_room( room, but.track_door )
+
+                            if adj_room:
+                                self.active_room.add_door( but.track_door, but.track_flag )
+                                if but.track_door == "N":
+                                    adj_room.add_door( "S", but.track_flag)
+                                elif but.track_door == "E":
+                                    adj_room.add_door( "W", but.track_flag)
+                                elif but.track_door == "S":
+                                    adj_room.add_door( "N", but.track_flag)
+                                elif but.track_door == "W":
+                                    adj_room.add_door( "E", but.track_flag)
+                            else:
+                                self._alert( _("Door Not Added"), _("This door can not be placed at edge of dungeon"))
+                        else:
+                            self.active_room.add_door( but.track_door, but.track_flag )
+
+
 
                 elif but.track_mode == 'SPEC_FLAG':
                     self.active_room.set_room_flag( but.track_flag )

@@ -22,6 +22,19 @@ class Dungeon:
     def get_room_array(self):
         return self.roomlist
 
+    def get_adj_room( self, room, dir ):
+        try:
+            if dir == "N":
+                return self.roomlist[room._y-1][room._x]
+            elif dir == "E":
+                return self.roomlist[room._y][room._x+1]
+            elif dir == "S":
+                return self.roomlist[room._y+1][room._x]
+            elif dir == "W":
+                return self.roomlist[room._y][room._x-1]
+        except:
+            return False
+
     def update_room(self, room):
         self.roomlist[room._y][room._x] = room
 
