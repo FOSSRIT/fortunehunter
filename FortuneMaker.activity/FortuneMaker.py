@@ -633,7 +633,7 @@ class FortuneMaker(Activity):
                     elif event.y > 70 and event.x > 30 and event.x < 70:
                         door_pos = "S"
                     else:
-                        self._alert("NONE", "%d, %d"%(event.x, event.y))
+                        #self._alert("NONE", "%d, %d"%(event.x, event.y))
                         return
 
                     if but.track_flag == '0':
