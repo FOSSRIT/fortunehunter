@@ -11,8 +11,13 @@ import os.path
 ###############################################################################
 
 IMG_PATH = os.path.dirname(__file__) + "/images/"
-#IMG_PATH="/home/liveuser/GIT_REPOS/MAFH/mainline/MAFH.activity/images/"
-
+SOUND_PATH = os.path.dirname(__file__) + "/assets/sound/"
+MAP_PATH = os.path.dirname(__file__) + "/assets/map/"
+MENU_PATH = os.path.dirname(__file__) + "/assets/image/menu/"
+HUD_PATH = os.path.dirname(__file__) + "/assets/image/hud/"
+ENV_PATH = os.path.dirname(__file__) + "/assets/image/environment/"
+PUZZLE_PATH = os.path.dirname(__file__) + "/assets/image/puzzle/"
+FMC_PATH = os.path.dirname(__file__) + "/assets/fmc/"
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
@@ -171,8 +176,8 @@ class PuzzleMap (object):
         self.holePos = pieceMap[2][1]
 
         self.holePos.isHole=True
-        self.completedPuzzle=pygame.image.load(IMG_PATH+"Puz0.gif")
-        self.puzBG=pygame.transform.scale(pygame.image.load(IMG_PATH+"PuzBG.gif"),(1000,1800))
+        self.completedPuzzle=pygame.image.load(PUZZLE_PATH+"Puz0.gif")
+        self.puzBG=pygame.transform.scale(pygame.image.load(ENV_PATH+"PuzBG.gif"),(1000,1800))
 
     def reset (self):
         tempMap = self.pieceMap
@@ -269,7 +274,7 @@ class PuzzleMap (object):
   #######################################################################
 
 class Dungeon:
-  def __init__(self,sizeX=5,sizeY=5,fileName="dungeon2.txt"):
+  def __init__(self,sizeX=5,sizeY=5,fileName="al2.txt"):
     self.sizeX=sizeX
     self.sizeY=sizeY
     self.fileName=fileName
@@ -941,7 +946,7 @@ class Menu:
         elif self.name=="GeomTut3":
           screen.fill((255,255,255),(800,400,400,300))
           glyphSprite=pygame.sprite.Sprite()
-          glyphSprite.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
+          glyphSprite.image=pygame.image.load(PUZZLE_PATH+"FireGlyph.gif")
           glyphSprite.rect=pygame.Rect(500,350,300,300)
           glyphGroup=pygame.sprite.Group(glyphSprite)
           glyphGroup.draw(screen)
@@ -1007,7 +1012,7 @@ class Menu:
             player.battlePlayer=Hero(player)
             player.currentRoomGroup.draw(screen)
             player.initMovTutorial(screen)
-            player.startMovie("FMC1.gif","MAFHbg.OGG")
+            player.startMovie("FMC1.gif","MAFHbg.ogg")
             player.traversal=False
             player.inAnimation=True
             pygame.display.flip()
@@ -1120,8 +1125,8 @@ class Menu:
       for item in player.battlePlayer.inv_Ar:
         invOptions.append("Equipment"+repr(i))
         i+=1
-        invImages.append(IMG_PATH+"Blank.gif")
-      self.inventoryMenu=Menu(invOptions,player,IMG_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
+        invImages.append(MENU_PATH+"Blank.gif")
+      self.inventoryMenu=Menu(invOptions,player,MENU_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
       self.inventoryMenu.sX=self.optionsImages[self.currentOption].rect.left+50
       self.inventoryMenu.sY=self.optionsImages[self.currentOption].rect.top
       self.inventoryMenu.background.rect.top=10
@@ -1171,8 +1176,8 @@ class Tutorial:
 ############################################################################################
 class Animation:
   def __init__(self,imageFileName,soundFileName):
-    self.soundTrack=pygame.mixer.Sound(IMG_PATH+soundFileName)
-    self.gif=Image.open(IMG_PATH+imageFileName)
+    self.soundTrack=pygame.mixer.Sound(SOUND_PATH+soundFileName)
+    self.gif=Image.open(FMC_PATH+imageFileName)
     self.gif.seek(0)
     self.sprite=pygame.sprite.Sprite()
     self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
@@ -1206,7 +1211,7 @@ class Player:
     self.currentX=x
     self.currentY=y
     self.dgnIndex=-1
-    self.dungeons=[("dungeon.txt",3,5),("dungeon2.txt",4,7),("dungeon3.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
+    self.dungeons=[("al1.txt",3,5),("al2.txt",4,7),("al5.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
     self.battlePlayer=Hero(self)
     #Difficulty: 1=Easy 2=Meduim 3=Hard
     self.critDifficulty=2 
@@ -1256,19 +1261,19 @@ class Player:
     #sound
     self.animation=0
     pygame.mixer.init()
-    pygame.mixer.music.load(IMG_PATH+"MAFHbg.OGG")
+    pygame.mixer.music.load(SOUND_PATH+"MAFHbg.ogg")
     pygame.mixer.music.play(-1)
-    self.doorEffect=pygame.mixer.Sound(IMG_PATH+"door.wav")
-    self.buyin=pygame.mixer.Sound(IMG_PATH+"buyin.ogg")
-    self.sellin=pygame.mixer.Sound(IMG_PATH+"sellin.ogg")
+    self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"door.wav")
+    self.buyin=pygame.mixer.Sound(SOUND_PATH+"buyin.ogg")
+    self.sellin=pygame.mixer.Sound(SOUND_PATH+"sellin.ogg")
 
   def initializeMenu(self):
-    mainMenuImages=[IMG_PATH+"TutorialButton.gif",IMG_PATH+"NewGameButton.gif",IMG_PATH+"CloseButton.gif"]
-    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,IMG_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
+    mainMenuImages=[MENU_PATH+"TutorialButton.gif",MENU_PATH+"NewGameButton.gif",MENU_PATH+"CloseButton.gif"]
+    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,MENU_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
     
     statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
-    statMenuImages=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
-    self.statsMenu=Menu(statMenuOptions,self,IMG_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
+    statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif", MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+    self.statsMenu=Menu(statMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
     self.statsMenu.background.rect.top=10
 
     self.currentMenu=self.MainMenu
@@ -1288,39 +1293,39 @@ class Player:
     self.Black.rect=pygame.Rect(0,0,1200,700)
 
     self.FLRSprite=pygame.sprite.Sprite()
-    self.FLRSprite.image=pygame.image.load(IMG_PATH+"flr.gif")
+    self.FLRSprite.image=pygame.image.load(ENV_PATH+"flr.gif")
     self.FLRSprite.rect=self.currentRoomSprite.rect
 
     self.FRSprite=pygame.sprite.Sprite()
-    self.FRSprite.image=pygame.image.load(IMG_PATH+"fr.gif")
+    self.FRSprite.image=pygame.image.load(ENV_PATH+"fr.gif")
     self.FRSprite.rect=self.currentRoomSprite.rect
 
     self.FSprite=pygame.sprite.Sprite()
-    self.FSprite.image=pygame.image.load(IMG_PATH+"f.gif")
+    self.FSprite.image=pygame.image.load(ENV_PATH+"f.gif")
     self.FSprite.rect=self.currentRoomSprite.rect
 
     self.FLSprite=pygame.sprite.Sprite()
-    self.FLSprite.image=pygame.image.load(IMG_PATH+"fl.gif")
+    self.FLSprite.image=pygame.image.load(ENV_PATH+"fl.gif")
     self.FLSprite.rect=self.currentRoomSprite.rect
 
     self.LRSprite=pygame.sprite.Sprite()
-    self.LRSprite.image=pygame.image.load(IMG_PATH+"lr.gif")
+    self.LRSprite.image=pygame.image.load(ENV_PATH+"lr.gif")
     self.LRSprite.rect=self.currentRoomSprite.rect
 
     self.LSprite=pygame.sprite.Sprite()
-    self.LSprite.image=pygame.image.load(IMG_PATH+"l.gif")
+    self.LSprite.image=pygame.image.load(ENV_PATH+"l.gif")
     self.LSprite.rect=self.currentRoomSprite.rect
 
     self.NoSprite=pygame.sprite.Sprite()
-    self.NoSprite.image=pygame.image.load(IMG_PATH+"_.gif")
+    self.NoSprite.image=pygame.image.load(ENV_PATH+"_.gif")
     self.NoSprite.rect=self.currentRoomSprite.rect
 
     self.RSprite=pygame.sprite.Sprite()
-    self.RSprite.image=pygame.image.load(IMG_PATH+"r.gif")
+    self.RSprite.image=pygame.image.load(ENV_PATH+"r.gif")
     self.RSprite.rect=self.currentRoomSprite.rect
     
     self.akhalSprite=pygame.sprite.Sprite()
-    self.akhalSprite.image=pygame.image.load(IMG_PATH+"akhal.gif")
+    self.akhalSprite.image=pygame.image.load(MENU_PATH+"akhal.gif")
     self.akhalSprite.rect=pygame.Rect(0,0,50,50)
 
     divSwordImg=pygame.sprite.Sprite()
@@ -1358,7 +1363,7 @@ class Player:
           self.battlePlayer.inv_Ar.remove(item)
       dgnWidth=self.dungeons[self.dgnIndex][1]
       dgnHeight=self.dungeons[self.dgnIndex][2]
-      self.dgn=Dungeon(dgnWidth,dgnHeight,IMG_PATH+self.dungeons[self.dgnIndex][0])
+      self.dgn=Dungeon(dgnWidth,dgnHeight,MAP_PATH+self.dungeons[self.dgnIndex][0])
       self.dgn.index=self.dgnIndex
       self.dgn.fill()
       self.currentX=self.dgn.start[0]
@@ -1371,7 +1376,7 @@ class Player:
     batImages=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
     batBg=IMG_PATH+"battleMenubackground.gif"
     batBgRect=(0,300,400,400)
-    numPadImages=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"Clear.gif",IMG_PATH+"Enter.gif"]
+    numPadImages=[MENU_PATH+"1.gif",MENU_PATH+"2.gif",MENU_PATH+"3.gif",MENU_PATH+"4.gif",MENU_PATH+"5.gif",MENU_PATH+"6.gif",MENU_PATH+"7.gif",MENU_PATH+"8.gif",MENU_PATH+"9.gif",MENU_PATH+"0.gif",MENU_PATH+"Clear.gif",MENU_PATH+"Enter.gif"]
     geomImages=[IMG_PATH+"Fire.gif",IMG_PATH+"Lightning.gif",IMG_PATH+"Missile.gif",IMG_PATH+"Heal.gif"]
     itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
     itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
@@ -1769,52 +1774,52 @@ class BattleEngine:
         self.timeBonus=1
         #load glyphs and buttons
         self.fire=pygame.sprite.Sprite()
-        self.fire.image=pygame.image.load(IMG_PATH+"FireGlyph.gif")
+        self.fire.image=pygame.image.load(PUZZLE_PATH+"FireGlyph.gif")
         self.fire1=pygame.sprite.Sprite()
-        self.fire1.image=pygame.image.load(IMG_PATH+"FireGlyph1.gif")
-        self.fire1btn=IMG_PATH+"FireGlyph1btn.gif"
+        self.fire1.image=pygame.image.load(PUZZLE_PATH+"FireGlyph1.gif")
+        self.fire1btn=PUZZLE_PATH+"FireGlyph1btn.gif"
         self.fire2=pygame.sprite.Sprite()
-        self.fire2.image=pygame.image.load(IMG_PATH+"FireGlyph2.gif")
-        self.fire2btn=IMG_PATH+"FireGlyph2btn.gif"
+        self.fire2.image=pygame.image.load(PUZZLE_PATH+"FireGlyph2.gif")
+        self.fire2btn=PUZZLE_PATH+"FireGlyph2btn.gif"
         self.fire3=pygame.sprite.Sprite()
-        self.fire3.image=pygame.image.load(IMG_PATH+"FireGlyph3.gif")
-        self.fire3btn=IMG_PATH+"FireGlyph3btn.gif"
+        self.fire3.image=pygame.image.load(PUZZLE_PATH+"FireGlyph3.gif")
+        self.fire3btn=PUZZLE_PATH+"FireGlyph3btn.gif"
         self.fire4=pygame.sprite.Sprite()
-        self.fire4.image=pygame.image.load(IMG_PATH+"FireGlyph4.gif")
-        self.fire4btn=IMG_PATH+"FireGlyph4btn.gif"
+        self.fire4.image=pygame.image.load(PUZZLE_PATH+"FireGlyph4.gif")
+        self.fire4btn=PUZZLE_PATH+"FireGlyph4btn.gif"
 
         self.lightning=pygame.sprite.Sprite()
-	self.lightning.image=pygame.image.load(IMG_PATH+"LightningGlyph.gif")
-        self.lightning1btn=IMG_PATH+"LightningGlyph1btn.gif"
+	self.lightning.image=pygame.image.load(PUZZLE_PATH+"LightningGlyph.gif")
+        self.lightning1btn=PUZZLE_PATH+"LightningGlyph1btn.gif"
         self.lightning1=pygame.sprite.Sprite()
-	self.lightning1.image=pygame.image.load(IMG_PATH+"LightningGlyph1.gif")
-        self.lightning2btn=IMG_PATH+"LightningGlyph2btn.gif"
+	self.lightning1.image=pygame.image.load(PUZZLE_PATH+"LightningGlyph1.gif")
+        self.lightning2btn=PUZZLE_PATH+"LightningGlyph2btn.gif"
         self.lightning2=pygame.sprite.Sprite()
-	self.lightning2.image=pygame.image.load(IMG_PATH+"LightningGlyph2.gif")
-        self.lightning3btn=IMG_PATH+"LightningGlyph3btn.gif"
+	self.lightning2.image=pygame.image.load(PUZZLE_PATH+"LightningGlyph2.gif")
+        self.lightning3btn=PUZZLE_PATH+"LightningGlyph3btn.gif"
         self.lightning3=pygame.sprite.Sprite()
-	self.lightning3.image=pygame.image.load(IMG_PATH+"LightningGlyph3.gif")
-        self.lightning4btn=IMG_PATH+"LightningGlyph4btn.gif"
+	self.lightning3.image=pygame.image.load(PUZZLE_PATH+"LightningGlyph3.gif")
+        self.lightning4btn=PUZZLE_PATH+"LightningGlyph4btn.gif"
         self.lightning4=pygame.sprite.Sprite()
-	self.lightning4.image=pygame.image.load(IMG_PATH+"LightningGlyph4.gif")
+	self.lightning4.image=pygame.image.load(PUZZLE_PATH+"LightningGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
-	self.missile.image=pygame.image.load(IMG_PATH+"MagicGlyph.gif")
+	self.missile.image=pygame.image.load(PUZZLE_PATH+"MagicGlyph.gif")
 
         self.heal=pygame.sprite.Sprite()
-	self.heal.image=pygame.image.load(IMG_PATH+"HealGlyph.gif")
-        self.heal1btn=IMG_PATH+"HealGlyph1btn.gif"
+	self.heal.image=pygame.image.load(PUZZLE_PATH+"HealGlyph.gif")
+        self.heal1btn=PUZZLE_PATH+"HealGlyph1btn.gif"
         self.heal1=pygame.sprite.Sprite()
-	self.heal1.image=pygame.image.load(IMG_PATH+"HealGlyph1.gif")
-        self.heal2btn=IMG_PATH+"HealGlyph2btn.gif"
+	self.heal1.image=pygame.image.load(PUZZLE_PATH+"HealGlyph1.gif")
+        self.heal2btn=PUZZLE_PATH+"HealGlyph2btn.gif"
         self.heal2=pygame.sprite.Sprite()
-	self.heal2.image=pygame.image.load(IMG_PATH+"HealGlyph2.gif")
-        self.heal3btn=IMG_PATH+"HealGlyph3btn.gif"
+	self.heal2.image=pygame.image.load(PUZZLE_PATH+"HealGlyph2.gif")
+        self.heal3btn=PUZZLE_PATH+"HealGlyph3btn.gif"
         self.heal3=pygame.sprite.Sprite()
-	self.heal3.image=pygame.image.load(IMG_PATH+"HealGlyph3.gif")
-        self.heal4btn=IMG_PATH+"HealGlyph4btn.gif"
+	self.heal3.image=pygame.image.load(PUZZLE_PATH+"HealGlyph3.gif")
+        self.heal4btn=PUZZLE_PATH+"HealGlyph4btn.gif"
         self.heal4=pygame.sprite.Sprite()
-	self.heal4.image=pygame.image.load(IMG_PATH+"HealGlyph4.gif")
+	self.heal4.image=pygame.image.load(PUZZLE_PATH+"HealGlyph4.gif")
 
 	self.glyphGroup=pygame.sprite.Group()
 	self.glyphOverlayGroup=pygame.sprite.Group()
@@ -1836,7 +1841,7 @@ class BattleEngine:
 
     numOptArr = ["1","2","3","4","5","6","7","8","9","0","Clear","Enter Answer"]
     numBG=IMG_PATH+"battleMenubackground.gif"
-    numOptImg=[IMG_PATH+"1.gif",IMG_PATH+"2.gif",IMG_PATH+"3.gif",IMG_PATH+"4.gif",IMG_PATH+"5.gif",IMG_PATH+"6.gif",IMG_PATH+"7.gif",IMG_PATH+"8.gif",IMG_PATH+"9.gif",IMG_PATH+"0.gif",IMG_PATH+"Clear.gif",IMG_PATH+"Enter.gif"]
+    numOptImg=[MENU_PATH+"1.gif",MENU_PATH+"2.gif",MENU_PATH+"3.gif",MENU_PATH+"4.gif",MENU_PATH+"5.gif",MENU_PATH+"6.gif",MENU_PATH+"7.gif",MENU_PATH+"8.gif",MENU_PATH+"9.gif",MENU_PATH+"0.gif",MENU_PATH+"Clear.gif",MENU_PATH+"Enter.gif"]
     self.numPadMenu=Menu(numOptArr,player,numBG,numOptImg,"Number Pad")
     self.numPadMenu.background.rect=(0,300,200,200)
     self.numPadMenu.numPad=True
@@ -1899,7 +1904,7 @@ class BattleEngine:
       enemy.sprite.rect=pygame.Rect((x+(enemy.place*200),y,200,200))
       if i==self.selEnemyIndex:
         sel=pygame.sprite.Sprite()
-        sel.image=pygame.image.load(IMG_PATH+"0.gif")
+        sel.image=pygame.image.load(MENU_PATH+"0.gif")
         sel.rect=pygame.Rect(x+(enemy.place*200)+30,y+100,40,20)
         enemyGroup.add(sel)
       i+=1
@@ -1907,7 +1912,7 @@ class BattleEngine:
 
     player.currentRoomGroup.draw(screen)
     screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
-    screen.blit(pygame.transform.scale(pygame.image.load(IMG_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))
+    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))
     enemyGroup.draw(screen)
     self.glyphGroup.draw(screen)
     self.glyphOverlayGroup.draw(screen)
@@ -1947,7 +1952,7 @@ class BattleEngine:
           screen.blit(inputText,pygame.Rect(250,400,200,30))
       
       #screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
-      screen.blit(pygame.transform.scale(pygame.image.load(IMG_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
+      screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
     pygame.display.flip()
 
   ###
@@ -3010,7 +3015,7 @@ def startPuzzle(player):
     y=-1
     for item in row:
       y+=1
-      myMap[x][y]=PuzzlePiece(x,y,x,y,IMG_PATH+"Puz0-"+repr(x)+repr(y)+".gif")
+      myMap[x][y]=PuzzlePiece(x,y,x,y,PUZZLE_PATH+"Puz0-"+repr(x)+repr(y)+".gif")
    
   player.puzzle=PuzzleMap(myMap)
   player.puzzle.randomize()
