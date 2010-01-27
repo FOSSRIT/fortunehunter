@@ -9,15 +9,16 @@ import os.path
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
-
-IMG_PATH = os.path.dirname(__file__) + "/images/"
-SOUND_PATH = os.path.dirname(__file__) + "/assets/sound/"
-MAP_PATH = os.path.dirname(__file__) + "/assets/map/"
-MENU_PATH = os.path.dirname(__file__) + "/assets/image/menu/"
-HUD_PATH = os.path.dirname(__file__) + "/assets/image/hud/"
-ENV_PATH = os.path.dirname(__file__) + "/assets/image/environment/"
-PUZZLE_PATH = os.path.dirname(__file__) + "/assets/image/puzzle/"
-FMC_PATH = os.path.dirname(__file__) + "/assets/fmc/"
+BASE_PATH = os.path.dirname(__file__) + "/assets/"
+SOUND_PATH = BASE_PATH + "sound/"
+MAP_PATH = BASE_PATH + "map/"
+MENU_PATH = BASE_PATH + "image/menu/"
+HUD_PATH = BASE_PATH + "image/hud/"
+ENV_PATH = BASE_PATH + "image/environment/"
+PUZZLE_PATH = BASE_PATH + "image/puzzle/"
+FMC_PATH = BASE_PATH + "fmc/"
+TOUR_PATH = BASE_PATH + "/image/tutorial/"
+CHAR_PATH = BASE_PATH + "/image/character/"
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
@@ -1280,16 +1281,16 @@ class Player:
     self.previousMenu=self.MainMenu
     
   def loadTutorial(self):
-    tutorialImages=[IMG_PATH+"t1.gif",IMG_PATH+"t2.gif",IMG_PATH+"t3.gif"]
+    tutorialImages=[TOUR_PATH+"t1.gif",TOUR_PATH+"t2.gif",TOUR_PATH+"t3.gif"]
     self.tutorial=Tutorial(tutorialImages,0,0)
 
   def loadImages(self):
     self.currentRoomSprite=pygame.sprite.Sprite()
-    self.currentRoomSprite.image=pygame.image.load(IMG_PATH+"Black.gif")
+    self.currentRoomSprite.image=pygame.image.load(ENV_PATH+"Black.gif")
     self.currentRoomSprite.rect=pygame.Rect(0,0,1200,700)
 
     self.Black=pygame.sprite.Sprite()
-    self.Black.image=pygame.image.load(IMG_PATH+"Black.gif")
+    self.Black.image=pygame.image.load(ENV_PATH+"Black.gif")
     self.Black.rect=pygame.Rect(0,0,1200,700)
 
     self.FLRSprite=pygame.sprite.Sprite()
@@ -1329,7 +1330,7 @@ class Player:
     self.akhalSprite.rect=pygame.Rect(0,0,50,50)
 
     divSwordImg=pygame.sprite.Sprite()
-    divSwordImg.image=pygame.image.load(IMG_PATH+"DivSword.gif")
+    divSwordImg.image=pygame.image.load(MENU_PATH+"DivSword.gif")
     divSwordImg.rect=(500,300,137,300)
     self.divSword=pygame.sprite.Group(divSwordImg)
 
@@ -1373,16 +1374,16 @@ class Player:
       self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
 
   def initInGameBattleTutorial(self,screen):
-    batImages=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
-    batBg=IMG_PATH+"battleMenubackground.gif"
+    batImages=[MENU_PATH+"Attack.gif",MENU_PATH+"Special.gif",MENU_PATH+"Magic.gif",MENU_PATH+"Item.gif"]
+    batBg=MENU_PATH+"battleMenubackground.gif"
     batBgRect=(0,300,400,400)
     numPadImages=[MENU_PATH+"1.gif",MENU_PATH+"2.gif",MENU_PATH+"3.gif",MENU_PATH+"4.gif",MENU_PATH+"5.gif",MENU_PATH+"6.gif",MENU_PATH+"7.gif",MENU_PATH+"8.gif",MENU_PATH+"9.gif",MENU_PATH+"0.gif",MENU_PATH+"Clear.gif",MENU_PATH+"Enter.gif"]
-    geomImages=[IMG_PATH+"Fire.gif",IMG_PATH+"Lightning.gif",IMG_PATH+"Missile.gif",IMG_PATH+"Heal.gif"]
+    geomImages=[MENU_PATH+"Fire.gif",MENU_PATH+"Lightning.gif",MENU_PATH+"Missile.gif",MENU_PATH+"Heal.gif"]
     itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
     itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
     itemMenu.background.rect=batBgRect
     geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
-    geomMenu3=Menu(geomMenu3Option,self,batBg,[IMG_PATH+"FireGlyph1btn.gif",IMG_PATH+"FireGlyph2btn.gif",IMG_PATH+"HealGlyph1btn.gif",IMG_PATH+"FireGlyph3btn.gif",IMG_PATH+"LightningGlyph1btn.gif",IMG_PATH+"FireGlyph4btn.gif",IMG_PATH+"HealGlyph3btn.gif",IMG_PATH+"MissileGlyph2btn.gif"],"GeomTut3")
+    geomMenu3=Menu(geomMenu3Option,self,batBg,[PUZZLE_PATH+"FireGlyph1btn.gif",PUZZLE_PATH+"FireGlyph2btn.gif",PUZZLE_PATH+"HealGlyph1btn.gif",PUZZLE_PATH+"FireGlyph3btn.gif",PUZZLE_PATH+"LightningGlyph1btn.gif",PUZZLE_PATH+"FireGlyph4btn.gif",PUZZLE_PATH+"HealGlyph3btn.gif",PUZZLE_PATH+"MissileGlyph2btn.gif"],"GeomTut3")
     geomMenu3.background.rect=batBgRect
     geomMenu3.numPad=True
     geomMenu2Option=[geomMenu3,"Wrong","Wrong","Wrong"]
@@ -1392,7 +1393,7 @@ class Player:
     geomMenu=Menu(geomMenuOption,self,batBg,batImages,"GeomTut")
     geomMenu.background.rect=batBgRect
     divMenu2Option=[geomMenu,geomMenu,geomMenu,geomMenu]
-    divMenu2=Menu(divMenu2Option,self,batBg,[IMG_PATH+"12Power.gif",IMG_PATH+"14Power.gif",IMG_PATH+"13Power.gif",IMG_PATH+"16Power.gif"],"DivTut2")
+    divMenu2=Menu(divMenu2Option,self,batBg,[MENU_PATH+"12Power.gif",MENU_PATH+"14Power.gif",MENU_PATH+"13Power.gif",MENU_PATH+"16Power.gif"],"DivTut2")
     divMenu2.background.rect=batBgRect
     divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
     self.divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
@@ -1647,19 +1648,19 @@ class Enemy:
         self.name=player.dgn.types[int(name)]
         print(self.name)
         if self.name=="Wizard Adept":
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_wizard.gif")
+          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_wizard.gif")
           self.HP=20
           self.ATT=3
         elif self.name=="Goblin":
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_goblin.gif")
+          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_goblin.gif")
           self.HP=40
           self.ATT=10
         elif self.name=="Orc":
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_orc.gif")
           self.HP=50
           self.ATT=6
         else:
-          self.sprite.image=pygame.image.load(IMG_PATH+"concept_orc.gif")
+          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_orc.gif")
           self.HP=10
           self.ATT=10
           #TODO:  add all enemy types here as artwork is completed
@@ -1833,29 +1834,29 @@ class BattleEngine:
   def initializeMenus(self,player):
 
     battleOptions=["Attack","Division","Geometry","Use Item"]
-    battleBackground=IMG_PATH+"battleMenubackground.gif"
-    battleOptImg=[IMG_PATH+"Attack.gif",IMG_PATH+"Special.gif",IMG_PATH+"Magic.gif",IMG_PATH+"Item.gif"]
+    battleBackground=MENU_PATH+"battleMenubackground.gif"
+    battleOptImg=[MENU_PATH+"Attack.gif",MENU_PATH+"Special.gif",MENU_PATH+"Magic.gif",MENU_PATH+"Item.gif"]
     
     self.battleMenu=Menu(battleOptions,player,battleBackground,battleOptImg,"Battle")
     self.battleMenu.background.rect=(0,300,0,200)
 
     numOptArr = ["1","2","3","4","5","6","7","8","9","0","Clear","Enter Answer"]
-    numBG=IMG_PATH+"battleMenubackground.gif"
+    numBG=MENU_PATH+"battleMenubackground.gif"
     numOptImg=[MENU_PATH+"1.gif",MENU_PATH+"2.gif",MENU_PATH+"3.gif",MENU_PATH+"4.gif",MENU_PATH+"5.gif",MENU_PATH+"6.gif",MENU_PATH+"7.gif",MENU_PATH+"8.gif",MENU_PATH+"9.gif",MENU_PATH+"0.gif",MENU_PATH+"Clear.gif",MENU_PATH+"Enter.gif"]
     self.numPadMenu=Menu(numOptArr,player,numBG,numOptImg,"Number Pad")
     self.numPadMenu.background.rect=(0,300,200,200)
     self.numPadMenu.numPad=True
 
     magicOptions=["Fire","Lightning","Missile","Heal"]
-    magicBackground=IMG_PATH+"battleMenubackground.gif"
-    magicOptImg=[IMG_PATH+"Fire.gif",IMG_PATH+"Lightning.gif",IMG_PATH+"Missile.gif",IMG_PATH+"Heal.gif"]
+    magicBackground=MENU_PATH+"battleMenubackground.gif"
+    magicOptImg=[MENU_PATH+"Fire.gif",MENU_PATH+"Lightning.gif",MENU_PATH+"Missile.gif",MENU_PATH+"Heal.gif"]
     self.magicMenu=Menu(magicOptions,player,magicBackground,magicOptImg,"Magic Menu")
     self.magicMenu.background.rect=(0,300,200,200)
     if isinstance(player,Player):
       if player.divDifficulty==1:
         divisionOptions=["1/2","1/3","1/4","1/6"]
-        divisionBackground=IMG_PATH+"battleMenubackground.gif"
-        divisionOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+        divisionBackground=MENU_PATH+"battleMenubackground.gif"
+        divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
       elif player.divDifficulty==2:
@@ -1864,8 +1865,8 @@ class BattleEngine:
         denom3=randint(2,9)
         denom4=randint(2,9)
         divisionOptions=["1/"+repr(denom1),"1/"+repr(denom2),"1/"+repr(denom3),"1/"+repr(denom4)]
-        divisionBackground=IMG_PATH+"battleMenubackground.gif"
-        divisionOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+        divisionBackground=MENU_PATH+"battleMenubackground.gif"
+        divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
       elif player.divDifficulty==3:
@@ -1878,14 +1879,14 @@ class BattleEngine:
         num3=randint(1,4)
         num4=randint(1,4)
         divisionOptions=[repr(num1)+"/"+repr(denom1),repr(num2)+"/"+repr(denom2),repr(num3)+"/"+repr(denom3),repr(num4)+"/"+repr(denom4)]
-        divisionBackground=IMG_PATH+"battleMenubackground.gif"
-        divisionOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+        divisionBackground=MENU_PATH+"battleMenubackground.gif"
+        divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
 
     itemOptions=["Item1","Item2","Item3","Item4"]
-    itemBackground=IMG_PATH+"battleMenubackground.gif"
-    itemOptImg=[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"]
+    itemBackground=MENU_PATH+"battleMenubackground.gif"
+    itemOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
     
     self.itemMenu=Menu(itemOptions,player,itemBackground,itemOptImg,"Item")
     self.itemMenu.background.rect=(0,300,200,200)
@@ -2039,7 +2040,7 @@ class BattleEngine:
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
 
-      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu=Menu(glyphMenuOptions,self.player,MENU_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
@@ -2051,7 +2052,7 @@ class BattleEngine:
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
 
-      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu=Menu(glyphMenuOptions,self.player,MENU_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
@@ -2066,7 +2067,7 @@ class BattleEngine:
       glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
       glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
 
-      glyphMenu=Menu(glyphMenuOptions,self.player,IMG_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu=Menu(glyphMenuOptions,self.player,MENU_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
       glyphMenu.numPad=True
       glyphMenu.background.rect=(0,300,200,200)
       player.currentMenu=glyphMenu
@@ -2272,7 +2273,7 @@ class BattleEngine:
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
-    victoryMenu=Menu(["Continue"],self.player,IMG_PATH+"VictoryScreen.gif",[IMG_PATH+"Blank.gif"],"Victory")
+    victoryMenu=Menu(["Continue"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif"],"Victory")
     self.player.battle=False
     self.player.mainMenu=True
     self.player.currentMenu=victoryMenu
@@ -2283,7 +2284,7 @@ class BattleEngine:
   def Defeat(self):
     #self.player.defeatScreen=True
     self.player.battle=False
-    defeatMenu=Menu(["LoseContinue","LoseExit"],self.player,IMG_PATH+"VictoryScreen.gif",[IMG_PATH+"Blank.gif",IMG_PATH+"Blank.gif"],"Defeat")
+    defeatMenu=Menu(["LoseContinue","LoseExit"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"],"Defeat")
     self.player.currentMenu=defeatMenu
     self.player.mainMenu=True	
 
@@ -2596,15 +2597,15 @@ class Shop:
     player.currentRoomGroup.draw(screen)
     merchantSprite=pygame.sprite.Sprite()
     bgSprite=pygame.sprite.Sprite()
-    bgSprite.image=pygame.image.load(IMG_PATH+"ShopBG.gif")
+    bgSprite.image=pygame.image.load(MENU_PATH+"ShopBG.gif")
     bgSprite.rect=(0,0,600,900)
-    merchantSprite.image=pygame.transform.scale(pygame.image.load(IMG_PATH+"Merchant.gif"),(550,550))
+    merchantSprite.image=pygame.transform.scale(pygame.image.load(CHAR_PATH+"Merchant.gif"),(550,550))
     merchantSprite.rect=pygame.Rect(640,160,200,200)
     merchantGroup=pygame.sprite.Group(merchantSprite)
     bgGroup=pygame.sprite.Group(bgSprite)
     bgGroup.draw(screen)
     merchantGroup.draw(screen)
-    screen.blit(pygame.image.load(IMG_PATH+"Speech.gif"),(550,0,400,400))
+    screen.blit(pygame.image.load(MENU_PATH+"Speech.gif"),(550,0,400,400))
     if self.buyMode:
 
       i=0
@@ -2614,13 +2615,13 @@ class Shop:
         font = pygame.font.Font(None, 36)
         if i==self.selItem:
           screen.fill((200,200,150),(150,y,400,40))
-        screen.blit(pygame.image.load(IMG_PATH+"LArrow.gif"),(150,y,40,40))
+        screen.blit(pygame.image.load(MENU_PATH+"LArrow.gif"),(150,y,40,40))
         screen.fill((150,150,10),(190,y,40,40))
         if i==self.selItem:
           screen.blit(font.render(repr(self.numItem),True,(255,255,255)),(190,y,50,40))
         else:
           screen.blit(font.render("0",True,(255,255,255)),(190,y,50,40))
-        screen.blit(pygame.image.load(IMG_PATH+"RArrow.gif"),(230,y,40,40))
+        screen.blit(pygame.image.load(MENU_PATH+"RArrow.gif"),(230,y,40,40))
         screen.blit(font.render(item.name,True,(255,255,255)),(270,y,500,40))
         y+=40
         i+=1
@@ -2632,10 +2633,10 @@ class Shop:
         for digit in self.enteredDigits:
           if i==self.selDigit:
             screen.fill((150,150,200),(x,100,45,100))
-          screen.blit(pygame.transform.rotate(pygame.image.load(IMG_PATH+"LArrow.gif"),-90),(x,125,40,40))
+          screen.blit(pygame.transform.rotate(pygame.image.load(MENU_PATH+"LArrow.gif"),-90),(x,125,40,40))
           screen.fill((50,100,100),(x,175,50,40))
           screen.blit(font.render(repr(digit),True,(255,255,255)),(x,175,40,40))
-          screen.blit(pygame.transform.rotate(pygame.image.load(IMG_PATH+"RArrow.gif"),-90),(x,215,40,40))
+          screen.blit(pygame.transform.rotate(pygame.image.load(MENU_PATH+"RArrow.gif"),-90),(x,215,40,40))
           x+=50
           i+=1
       else:
@@ -3380,7 +3381,7 @@ while pippy.pygame.next_frame():
         player.migrateMessages(repr(player.currentRoom.roomFlag))
       #if player.currentRoom.doorNFlag==0 or player.currentRoom.doorNFlag==2:
       #  player.migrateMessages("Puzzle!")
-      #  puzzle=Puzzle(player,IMG_PATH+"mafh_splash.gif")
+      #  puzzle=Puzzle(player,MENU_PATH+"mafh_splash.gif")
       if player.battle==False and player.shop==False:
 ####################################
 ###TEST FOR IN GAME TUTORIALS
