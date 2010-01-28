@@ -1,9 +1,11 @@
 from constants import (
     DOOR_ORDER, DOOR_INDEX, DOOR_FLAGS, SPEC_FLAGS,
-    ENEM_INDEX, ITEM_INDEX, ITEM_FLAGS, DOOR_COLOR
+    ENEM_INDEX, ITEM_INDEX, ITEM_FLAGS, DOOR_COLOR,
+    SPEC_COLOR
     )
 
 import gtk
+import pango
 
 class Room:
     def __init__(self, x = -1, y = -1, str=None):
@@ -158,14 +160,11 @@ class Room:
             door_thick = 5
             third_w = w / 3
             third_h = h / 3
-            #xgc.set_rgb_fg_color(gtk.gdk.color_parse("yellow"))
-            #widget.window.draw_arc(xgc, True, 200, 100, 200, 200, 0, 360*64)
 
             # Fill in if room
             if self.not_empty_room():
-                xgc.set_rgb_fg_color(gtk.gdk.color_parse("#6666CC"))
+                xgc.set_rgb_fg_color(gtk.gdk.color_parse(SPEC_COLOR[self.special]))
                 widget.window.draw_rectangle(xgc, True, 1, 1, w-2, h-2)
-
 
             # Draw Border
             xgc.set_rgb_fg_color(gtk.gdk.color_parse("#000000"))
@@ -187,11 +186,17 @@ class Room:
                 xgc.set_rgb_fg_color(gtk.gdk.color_parse(DOOR_COLOR[self.doors['W'][1]]))
                 widget.window.draw_rectangle(xgc, True, 1, third_h, door_thick, third_h)
 
+            room_text = ""
 
-            #widget.window.draw_arc(xgc, True, 240, 145, 30, 40, 0, 360*64)
-            #widget.window.draw_arc(xgc, True, 330, 145, 30, 40, 0, 360*64)
-            #xgc.line_width = 6
-            #widget.window.draw_arc(xgc, False, 240, 150, 120, 110, 200*64, 140*64)
+            for enemy in self.enemy:
+                if enemy != '0':
+                    room_text += ENEM_INDEX[enemy] + "\n"
+
+            xgc.set_rgb_fg_color(gtk.gdk.color_parse("#000000"))
+            font_desc = pango.FontDescription('Serif 4')
+            layout = widget.create_pango_layout( room_text )
+            layout.set_font_description(font_desc)
+            widget.window.draw_layout(xgc, 7, 7, layout)
 
         drawing_area = gtk.DrawingArea()
         drawing_area.set_size_request(100, 100)

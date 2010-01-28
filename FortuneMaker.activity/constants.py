@@ -32,6 +32,12 @@ SPEC_FLAGS = {
     'P':_('Puzzle')
     }
 
+SPEC_COLOR = {
+    '0':"#6666CC",
+    'M':'#666633',
+    'P':'#CC6666'
+}
+
 ENEM_INDEX = {
     '0':_('None'),
     '1':_('Wizard Adept'),
