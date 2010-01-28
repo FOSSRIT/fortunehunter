@@ -10,6 +10,7 @@ import os.path
 #Start of external classes and functions
 ###############################################################################
 BASE_PATH = os.path.dirname(__file__) + "/assets/"
+#BASE_PATH = "/home/liveuser/GIT_REPOS/MAFH/mainline/MAFH.activity/assets/"
 SOUND_PATH = BASE_PATH + "sound/"
 MAP_PATH = BASE_PATH + "map/"
 MENU_PATH = BASE_PATH + "image/menu/"
@@ -190,69 +191,33 @@ class PuzzleMap (object):
                 tempMap[tempAbsX][tempAbsY] = self.pieceMap[x][y]
 
         self.pieceMap = tempMap
-
-
     def randomize (self):
-
         """ To make sure the randomization is solvable, we don't simply shuffle the numbers.
-
         We move the hole in random directions through a finite number of iterations. """
-
-
-
         iterations = 2 * 3 * (int(100*random())+1)
-
-
-
         t = time()
-
         for i in range(iterations):
-
             self.do_move(int(4*random())+1)
-
         t = time() - t
-
-
-
         # Now move the hole to the bottom right
-
         for x in range(3-self.holePos.curx-1):
-
             self.do_move(SLIDE_LEFT)
-
         for y in range(2-self.holePos.cury-1):
-
             self.do_move(SLIDE_UP)
 
-
-
-
-
     def do_move (self, slide_direction):
-
         # What piece are we going to move?
-        
-
         oldHolePos = self.holePos.clone()
         
-
         if self.holePos.move(slide_direction):
-
             # Move was a success, now swap pieces in map
-
             temp=self.pieceMap[self.holePos.curx][self.holePos.cury]
             self.pieceMap[self.holePos.curx][self.holePos.cury]=self.holePos
             self.pieceMap[oldHolePos.curx][oldHolePos.cury]=temp
-
             return True
-
-
         return False
 
-
-
     def is_solved (self):
-
         self.solved = True
         x=-1
         y=-1
@@ -264,10 +229,7 @@ class PuzzleMap (object):
                 if not y == piece.absy or not x == piece.absx:
                     self.solved = False
 
-                
-
         return self.solved
-
 
   ########################################################################
   #Dungeon class:  stores a 2d array of rooms representing the dungeon
@@ -426,16 +388,16 @@ class Dungeon:
       if line[16]=='h':
         rm.it2.hidden=True
       elif line[16]=='v':
-        rm.it1.hidden=False
+        rm.it2.hidden=False
       if line[18]=='h':
         rm.it3.hidden=True
       elif line[18]=='v':
-        rm.it1.hidden=False
+        rm.it3.hidden=False
       if line[20]=='h':
         rm.it4.hidden=True
       elif line[20]=='v':
-        rm.it1.hidden=False
-      
+        rm.it4.hidden=False
+
       #check battle items
       if line[14]=='b':
         rm.it1.battle=True
@@ -507,13 +469,13 @@ class Room:
 
   def fillItems(self):
     if not int(self.it1)==0:
-      self.it1=self.itemList[int(self.it1)]
+      self.it1=Item(self.itemList[int(self.it1)].name,self.itemList[int(self.it1)].type)
     if not int(self.it2)==0:
-      self.it2=self.itemList[int(self.it2)]
+      self.it2=Item(self.itemList[int(self.it2)].name,self.itemList[int(self.it2)].type)
     if not int(self.it3)==0:
-      self.it3=self.itemList[int(self.it3)]
+      self.it3=Item(self.itemList[int(self.it3)].name,self.itemList[int(self.it3)].type)
     if not int(self.it4)==0:
-      self.it4=self.itemList[int(self.it4)]
+      self.it4=Item(self.itemList[int(self.it4)].name,self.itemList[int(self.it4)].type)
     
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
@@ -1104,7 +1066,8 @@ class Menu:
             player.traversal=True
             player.mainMenu=False
             setImage(player)
-            player.battlePlayer=Hero(player)
+            player.battlePlayer.MHP-=2
+            player.battlePlayer.HP=player.battlePlayer.MHP
             player.currentRoomGroup.draw(screen)
             pygame.display.flip()
         elif name=="LoseExit":
@@ -1184,14 +1147,30 @@ class Animation:
     self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
     self.sprite.rect=(0,0,1200,900)
     self.group=pygame.sprite.Group(self.sprite)
-    
+    self.bufferArray=[]
+    self.currentIndex=0
+    #self.bufferAnim()
   def next(self,screen):
     #try:
+    self.group.draw(screen)
     self.gif.seek(self.gif.tell()+1)
     #except EOFError:
     #  self.gif.seek(0)
     self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
     self.group.draw(screen)
+    pygame.display.flip()
+  def bufferAnim(self):
+    while 1==1:
+      try:
+        self.gif.seek(self.gif.tell()+1)
+        temp=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
+        self.bufferArray.append(temp)
+      except EOFError:
+        self.gif.seek(0)
+  def nextBuffer(self,screen):
+    screen.blit(self.bufferArray[self.currentIndex],(0,0,1200,900))
+    self.currentIndex+=1
+    screen.blit(self.bufferArray[self.currentIndex],(0,0,1200,900))
     pygame.display.flip()
 ################################################################################
 
@@ -1212,7 +1191,7 @@ class Player:
     self.currentX=x
     self.currentY=y
     self.dgnIndex=-1
-    self.dungeons=[("al1.txt",3,5),("al2.txt",4,7),("al5.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
+    self.dungeons=[("al1.txt",3,5),("al2.txt",4,7),("al3.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
     self.battlePlayer=Hero(self)
     #Difficulty: 1=Easy 2=Meduim 3=Hard
     self.critDifficulty=2 
@@ -1336,8 +1315,9 @@ class Player:
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
   def startMovie(self,movieName,soundTrackName):
+    screen.fill((0,0,0),(0,0,1200,900))
     self.animation=Animation(movieName,soundTrackName)
-    pygame.time.set_timer(USEREVENT+3,83)
+    pygame.time.set_timer(USEREVENT+3,500)
   def stopMovie(self):
     self.inAnimation=False 
     self.traversal=True
@@ -1359,6 +1339,9 @@ class Player:
       self.mainMenu=True
       self.traversal=False
     else:
+      if self.dgnIndex==3:
+        player.migrateMessages("Thank you for playing the demo!  The remaining levels are unfinished")
+        player.migrateMessages("but you are welcome to explore")
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
@@ -1905,8 +1888,8 @@ class BattleEngine:
       enemy.sprite.rect=pygame.Rect((x+(enemy.place*200),y,200,200))
       if i==self.selEnemyIndex:
         sel=pygame.sprite.Sprite()
-        sel.image=pygame.image.load(MENU_PATH+"0.gif")
-        sel.rect=pygame.Rect(x+(enemy.place*200)+30,y+100,40,20)
+        sel.image=pygame.transform.scale(pygame.image.load(HUD_PATH+"arrow_select_b.gif"),(40,60))
+        sel.rect=pygame.Rect(x+(enemy.place*200)+20,y+45,40,20)
         enemyGroup.add(sel)
       i+=1
       enemyGroup.add(enemy.sprite)
@@ -2359,7 +2342,7 @@ class BattleEngine:
 
         elif newKey=='[2]' or newKey=='down':
           #Down
-          if player.currentMenu.name=="Number Pad":
+          if player.currentMenu.name=="Number Pad" or player.currentMenu.name=="CritTut":
             for i in range(3):
               player.currentMenu.select("down")
           elif player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
@@ -2379,7 +2362,7 @@ class BattleEngine:
               self.selEnemyIndex=0
         elif newKey=='[8]' or newKey=='up':
           #Up
-          if player.currentMenu.name=="Number Pad":
+          if player.currentMenu.name=="Number Pad" or player.currentMenu.name=="CritTut":
             for i in range(3):
               player.currentMenu.select("up")
           elif player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
@@ -3239,9 +3222,8 @@ def updateWaiting(event,player):
   #################
   #check items in room
   #################
-  
-  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
 
+  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
     player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
     player.currentRoom.it1=0
@@ -3378,10 +3360,7 @@ while pippy.pygame.next_frame():
         player.shop=True
         player.traversal=False
         player.currentRoom.shop.draw(screen,player)
-        player.migrateMessages(repr(player.currentRoom.roomFlag))
-      #if player.currentRoom.doorNFlag==0 or player.currentRoom.doorNFlag==2:
-      #  player.migrateMessages("Puzzle!")
-      #  puzzle=Puzzle(player,MENU_PATH+"mafh_splash.gif")
+
       if player.battle==False and player.shop==False:
 ####################################
 ###TEST FOR IN GAME TUTORIALS
@@ -3472,5 +3451,6 @@ while pippy.pygame.next_frame():
       player.initMovTutorial(screen)
     pygame.display.flip()
   # update the display
+
 
 
