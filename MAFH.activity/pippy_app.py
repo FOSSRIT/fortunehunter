@@ -3398,7 +3398,9 @@ while pippy.pygame.next_frame():
       else:
         #################UPDATE##############################
         updateTraversal(event,player,screen)
-
+    elif player.inAnimation:
+      if event.type==KEYDOWN:
+        player.stopMovie()
     elif player.battle:
       ##battle processes
       updateBattle(event,player)
