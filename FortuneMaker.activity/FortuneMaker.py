@@ -3,7 +3,7 @@ from Dungeon import Dungeon
 from constants import (
                         THEME_NAME, DOOR_INDEX, DOOR_FLAGS,
                         SPEC_FLAGS, ENEM_INDEX, ITEM_FLAGS,
-                        ITEM_INDEX
+                        ITEM_INDEX, DOOR_COLOR, SPEC_COLOR
                       )
 
 from sugar.activity.activity import Activity, ActivityToolbox
@@ -136,7 +136,6 @@ class FortuneMaker(Activity):
         for i in xrange(0, num_objects, 1):
             file_list.append( ds_objects[i] )
         return file_list
-
 
     def show_home(self):
         window_container = gtk.VBox()
@@ -586,7 +585,47 @@ class FortuneMaker(Activity):
         # Save the button group
         self.action_but_group = lbl.get_group()
 
-        self.edit_pane.add1( make_it_scroll( listbox, False ) )
+        # Make Legend
+        legendBox = gtk.VBox()
+        legendBox.pack_start(gtk.Label(_("Door Legend")),False)
+
+        for door_key in DOOR_FLAGS:
+            if door_key != '0':
+                row = gtk.HBox()
+                colorbox = gtk.EventBox()
+                colorbox.add( gtk.Label("    ") )
+                colorbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(DOOR_COLOR[door_key]))
+                row.pack_start(colorbox, False)
+                row.pack_start( gtk.Label("  "), False )
+                label = gtk.Label(DOOR_FLAGS[door_key])
+                label.set_alignment( 0, 0.5 )
+                row.pack_start( label )
+                legendBox.pack_start(row, False)
+
+        legendBox.pack_start(gtk.Label(_("Room Legend")),False)
+
+        for spec_key in SPEC_FLAGS:
+            if spec_key != '0':
+                row = gtk.HBox()
+                colorbox = gtk.EventBox()
+                colorbox.add( gtk.Label("    ") )
+                colorbox.modify_bg(gtk.STATE_NORMAL, gtk.gdk.color_parse(SPEC_COLOR[spec_key]))
+                row.pack_start(colorbox, False)
+                row.pack_start( gtk.Label("  "), False )
+                label = gtk.Label(SPEC_FLAGS[spec_key])
+                label.set_alignment( 0, 0.5 )
+                row.pack_start( label )
+                legendBox.pack_start(row, False)
+
+
+        split = gtk.VBox()
+        split.pack_start( make_it_scroll( listbox, False ) )
+
+        exp = gtk.Expander(_("Legend"))
+        exp.add(legendBox)
+        split.pack_end( exp, False )
+
+        self.edit_pane.add1( split )
         self._draw_room_button_grid()
         self.set_gui_view( self.edit_pane )
 
@@ -794,6 +833,7 @@ class FortuneMaker(Activity):
                         return
 
                     if but.track_flag == '0':
+                         #TODO FIX BUG WHEN REMOVING DOOR only removes one segment
                         self.active_room.remove_door( door_pos )
 
                     else:
