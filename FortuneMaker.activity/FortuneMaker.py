@@ -833,8 +833,19 @@ class FortuneMaker(Activity):
                         return
 
                     if but.track_flag == '0':
-                         #TODO FIX BUG WHEN REMOVING DOOR only removes one segment
                         self.active_room.remove_door( door_pos )
+                        try:
+                            adj_room = self.dungeon.get_adj_room( room, door_pos )
+                            if door_pos == "N":
+                                adj_room.remove_door( "S" )
+                            elif door_pos == "E":
+                                adj_room.remove_door( "W" )
+                            elif door_pos == "S":
+                                adj_room.remove_door( "N" )
+                            elif door_pos == "W":
+                                adj_room.remove_door( "E" )
+                        except:
+                            pass
 
                     else:
                         # If not e or x, add door to adjoining room
@@ -855,7 +866,6 @@ class FortuneMaker(Activity):
                                 self._alert( _("Door Not Added"), _("This door can not be placed at edge of dungeon"))
                         else:
                             self.active_room.add_door( door_pos, but.track_flag )
-
 
 
                 elif but.track_mode == 'SPEC_FLAG':
