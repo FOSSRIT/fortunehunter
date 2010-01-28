@@ -66,6 +66,12 @@ class FortuneMaker(Activity):
         self.dungeon_bar.insert(self.dungeon_buttons['save'], -1)
         self.dungeon_buttons['save'].set_sensitive( False )
 
+        self.dungeon_buttons['settings'] = ToolButton('view-spiral')
+        self.dungeon_buttons['settings'].set_tooltip(_("View Dungeon Settings"))
+        self.dungeon_buttons['settings'].connect("clicked", self.view_change_cb, 'settings')
+        self.view_bar.insert(self.dungeon_buttons['settings'], -1)
+        self.dungeon_buttons['settings'].set_sensitive( False )
+
         self.dungeon_buttons['layout'] = ToolButton('view-freeform')
         self.dungeon_buttons['layout'].set_tooltip(_("View Dungeon Layout"))
         self.dungeon_buttons['layout'].connect("clicked", self.view_change_cb, 'layout')
@@ -93,6 +99,7 @@ class FortuneMaker(Activity):
         self.toolbox.show()
 
     def enable_room_icons(self, dn=True, rm = True):
+        self.dungeon_buttons['settings'].set_sensitive( dn )
         self.dungeon_buttons['save'].set_sensitive( dn )
         self.dungeon_buttons['layout'].set_sensitive( dn )
         self.dungeon_buttons['room'].set_sensitive( rm )
@@ -110,6 +117,8 @@ class FortuneMaker(Activity):
             self.set_create_dungeon_settings()
         elif view == 'load':
             self.show_dungeon_selection()
+        elif view == 'settings':
+            self.show_dungeon_settings()
 
     def list_fh_files(self):
         ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
@@ -206,7 +215,25 @@ class FortuneMaker(Activity):
         self.set_gui_view( room_center )
 
 
-    def set_create_dungeon_settings(self, trash=None, trash2=None):
+
+    def show_dungeon_settings(self):
+        window_container, name, theme, next_dungeon, file_list_map = self._get_dungeon_prop_box(False)
+
+        save_dungeon = gtk.Button(_("Save Dungeon Settings"))
+        save_dungeon.connect("clicked", self.edit_dungeon_cb, {'name':name,
+                                'theme':theme, 'next_dungeon':next_dungeon,
+                                'd_list':file_list_map})
+
+        window_container.pack_start( save_dungeon, False )
+
+        room_center = gtk.HBox()
+        room_center.pack_start( gtk.Label() )
+        room_center.pack_start( window_container )
+        room_center.pack_start( gtk.Label() )
+
+        self.set_gui_view( room_center )
+
+    def _get_dungeon_prop_box(self, new_prop=True):
         window_container = gtk.VBox()
 
         ## Dungeon Properties
@@ -249,16 +276,28 @@ class FortuneMaker(Activity):
         file_list_map["0"] = _("None")
         next_dungeon.append_text( file_list_map["0"] )
         next_dungeon.set_active(0)
+        order_map = ["0"]
 
         for dfile in file_list:
             file_list_map[dfile.metadata['FM_UID']] = dfile.metadata['title']
             next_dungeon.append_text( dfile.metadata['title'] )
+            order_map.append( dfile.metadata['FM_UID'] )
 
         row.pack_start(next_dungeon)
         container.pack_start( row, False )
 
         frame.add( container )
         window_container.pack_start( frame, False )
+
+        if not new_prop and self.dungeon:
+            name.set_text( self.dungeon.name )
+            theme.set_active( self.dungeon.theme )
+            next_dungeon.set_active( order_map.index( self.dungeon.next ) )
+
+        return (window_container, name, theme, next_dungeon, file_list_map)
+
+    def set_create_dungeon_settings(self, trash=None, trash2=None):
+        window_container, name, theme, next_dungeon, file_list_map = self._get_dungeon_prop_box(True)
 
         ## Dungeon Size
         ###############
@@ -335,6 +374,12 @@ class FortuneMaker(Activity):
         self.enable_room_icons(True, False)
         self.view_dungeon_grid()
 
+
+    def edit_dungeon_cb(self, widget, data):
+        self.dungeon.name = data['name'].get_text()
+        self.dungeon.theme = data['theme'].get_active()
+        self.dungeon.next = find_key( data['d_list'], data['next_dungeon'].get_active_text())
+        self._alert(_("Dungeon Setting Saved"), self.dungeon.theme)
 
     def create_dungeon_cb(self, widget, data):
         name = data['name'].get_text()
@@ -589,6 +634,9 @@ class FortuneMaker(Activity):
         self.set_gui_view( room_center )
 
     def save_room(self, widgit, data):
+        """
+        Saves room settings from the full room view
+        """
         for key in data['doors']:
             value = find_key( DOOR_FLAGS, data['doors'][key].get_active_text())
             if value:
