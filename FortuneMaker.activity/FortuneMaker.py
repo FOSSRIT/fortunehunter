@@ -12,6 +12,7 @@ from gettext import gettext as _
 
 from sugar.activity.activity import ActivityToolbox
 from sugar.graphics.toolbutton import ToolButton
+from sugar.graphics.icon import Icon
 from sugar.graphics.alert import NotifyAlert
 from sugar.util import unique_id
 
@@ -42,7 +43,7 @@ class FortuneMaker(Activity):
         self.build_toolbars()
         self.enable_room_icons(False, False)
 
-        self.show_dungeon_selection()
+        self.show_home()
 
     def build_toolbars(self):
         self.dungeon_buttons = {}
@@ -50,6 +51,7 @@ class FortuneMaker(Activity):
         self.view_bar = gtk.Toolbar()
 
         # BUILD CUSTOM TOOLBAR
+        # Dungeon Bar
         self.dungeon_buttons['new'] = ToolButton('add')
         self.dungeon_buttons['new'].set_tooltip(_("New Dungeon"))
         self.dungeon_buttons['new'].connect("clicked", self.view_change_cb, 'new')
@@ -61,10 +63,16 @@ class FortuneMaker(Activity):
         self.dungeon_bar.insert(self.dungeon_buttons['load'], -1)
 
         self.dungeon_buttons['save'] = ToolButton('filesave')
-        self.dungeon_buttons['save'].set_tooltip( _("Save dungeon file to journal") )
+        self.dungeon_buttons['save'].set_tooltip( _("Export dungeon file to journal") )
         self.dungeon_buttons['save'].connect("clicked", self.view_change_cb, 'export')
         self.dungeon_bar.insert(self.dungeon_buttons['save'], -1)
         self.dungeon_buttons['save'].set_sensitive( False )
+
+        # VIEW BAR
+        self.dungeon_buttons['home'] = ToolButton('go-home')
+        self.dungeon_buttons['home'].set_tooltip(_("Welcome Screen"))
+        self.dungeon_buttons['home'].connect("clicked", self.view_change_cb, 'home')
+        self.view_bar.insert(self.dungeon_buttons['home'], -1)
 
         self.dungeon_buttons['settings'] = ToolButton('view-spiral')
         self.dungeon_buttons['settings'].set_tooltip(_("View Dungeon Settings"))
@@ -119,6 +127,8 @@ class FortuneMaker(Activity):
             self.show_dungeon_selection()
         elif view == 'settings':
             self.show_dungeon_settings()
+        elif view == 'home':
+            self.show_home()
 
     def list_fh_files(self):
         ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
@@ -126,6 +136,110 @@ class FortuneMaker(Activity):
         for i in xrange(0, num_objects, 1):
             file_list.append( ds_objects[i] )
         return file_list
+
+
+    def show_home(self):
+        window_container = gtk.VBox()
+
+        label = gtk.Label(_("Welcome Message Here"))
+        window_container.pack_start(label, False)
+
+        # New Dungeon
+        button = gtk.Button()
+        button.set_image( Icon( icon_name="add" ) )
+        button.set_label( _("New Dungeon") )
+        button.set_alignment(0.0,0.5)
+        button.connect( 'clicked', self.view_change_cb, 'new')
+        window_container.pack_start(button, False)
+
+        # load fileopen
+        button = gtk.Button()
+        button.set_image( Icon( icon_name="fileopen" ) )
+        button.set_label( _("Load Exported Dungeon") )
+        button.set_alignment(0.0,0.5)
+        button.connect( 'clicked', self.view_change_cb, 'load')
+        window_container.pack_start(button, False)
+
+        #HELP EXAMPLES
+        label = gtk.Label(_("Dungeon Toolbar") )
+        label.set_alignment( 0, 0.5 )
+        window_container.pack_start(gtk.Label(" "), False)
+        window_container.pack_start(label, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="add" ), False )
+        label = gtk.Label( _("Creates New Dungeon") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="fileopen" ), False )
+        label = gtk.Label( _("Opens existing dungeon file") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="filesave" ), False )
+        label = gtk.Label( _("Export dungeon file to journal") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        # View Bar Help
+        label = gtk.Label(_("View Toolbar") )
+        label.set_alignment( 0, 0.5 )
+        window_container.pack_start(gtk.Label(" "), False)
+        window_container.pack_start(label, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="go-home" ), False )
+        label = gtk.Label( _("Display this home screen") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="view-spiral" ), False )
+        label = gtk.Label( _("Shows the dungeon settings") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="view-freeform" ), False )
+        label = gtk.Label( _("Shows the dungeon layout") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        row = gtk.HBox()
+        row.pack_start( Icon( icon_name="view-box" ), False )
+        label = gtk.Label( _("Shows the layout of the selected room") )
+        label.set_alignment( 0, 0.5 )
+        row.pack_start(gtk.Label(" "), False)
+        row.pack_start( label )
+        window_container.pack_start(row, False)
+
+        window_container.pack_start( gtk.Label(" "), False )
+        label = gtk.Label(_("Files must be exported before they\n" +
+                            "may be loaded into Fortune Hunter\n" +
+                            "or linked as a next dungeon."))
+        window_container.pack_start( label, False)
+
+        room_center = gtk.HBox()
+        room_center.pack_start( gtk.Label() )
+        room_center.pack_start( window_container )
+        room_center.pack_start( gtk.Label() )
+
+        self.set_gui_view( room_center )
 
     def export_view(self):
         data = self.dungeon.export()
@@ -182,11 +296,6 @@ class FortuneMaker(Activity):
 
     def show_dungeon_selection(self):
         window_container = gtk.VBox()
-
-        button = gtk.Button( _("Create New Dungeon") )
-        button.connect("clicked", self.set_create_dungeon_settings, None)
-        window_container.pack_start( button, False )
-
         frame = gtk.Frame( _("Load Dungeon") )
         file_container = gtk.VBox()
 
