@@ -41,7 +41,7 @@ class FortuneMaker(Activity):
 
         # Create Toolbox
         self.build_toolbars()
-        self.enable_room_icons(False, False)
+        self.enable_room_icons(False)
 
         self.show_home()
 
@@ -86,12 +86,6 @@ class FortuneMaker(Activity):
         self.view_bar.insert(self.dungeon_buttons['layout'], -1)
         self.dungeon_buttons['layout'].set_sensitive( False )
 
-        self.dungeon_buttons['room'] = ToolButton('view-box')
-        self.dungeon_buttons['room'].set_tooltip(_("View Room Layout"))
-        self.dungeon_buttons['room'].connect("clicked", self.view_change_cb, 'room')
-        self.view_bar.insert(self.dungeon_buttons['room'], -1)
-        self.dungeon_buttons['room'].set_sensitive( False )
-
         self.toolbox = ActivityToolbox(self)
 
         # Remove Share Bar
@@ -106,22 +100,18 @@ class FortuneMaker(Activity):
         self.set_toolbox(self.toolbox)
         self.toolbox.show()
 
-    def enable_room_icons(self, dn=True, rm = True):
+    def enable_room_icons(self, dn=True):
         self.dungeon_buttons['settings'].set_sensitive( dn )
         self.dungeon_buttons['save'].set_sensitive( dn )
         self.dungeon_buttons['layout'].set_sensitive( dn )
-        self.dungeon_buttons['room'].set_sensitive( rm )
 
 
     def view_change_cb(self, widget, view=None):
         if view == 'layout':
             self.view_dungeon_grid()
-        elif view == 'room':
-            self.view_room()
         elif view == 'export':
             self.export_view()
         elif view == 'new':
-            ##TODO CONFIRM
             self.set_create_dungeon_settings()
         elif view == 'load':
             self.show_dungeon_selection()
@@ -214,14 +204,6 @@ class FortuneMaker(Activity):
         row = gtk.HBox()
         row.pack_start( Icon( icon_name="view-freeform" ), False )
         label = gtk.Label( _("Shows the dungeon layout") )
-        label.set_alignment( 0, 0.5 )
-        row.pack_start(gtk.Label(" "), False)
-        row.pack_start( label )
-        window_container.pack_start(row, False)
-
-        row = gtk.HBox()
-        row.pack_start( Icon( icon_name="view-box" ), False )
-        label = gtk.Label( _("Shows the layout of the selected room") )
         label.set_alignment( 0, 0.5 )
         row.pack_start(gtk.Label(" "), False)
         row.pack_start( label )
@@ -480,7 +462,7 @@ class FortuneMaker(Activity):
                 room_str.append(line.strip())
 
         self.dungeon = Dungeon( name, theme, next, x, y, room_str)
-        self.enable_room_icons(True, False)
+        self.enable_room_icons(True)
         self.view_dungeon_grid()
 
 
@@ -498,7 +480,7 @@ class FortuneMaker(Activity):
         height = data['height'].get_value_as_int()
 
         self.dungeon = Dungeon( name, theme, next, width, height )
-        self.enable_room_icons(True, False)
+        self.enable_room_icons(True)
         self.view_dungeon_grid()
 
     def _draw_room_button_grid(self):
@@ -524,11 +506,8 @@ class FortuneMaker(Activity):
 
         # Setup Button Pannel
         listbox = gtk.VBox()
-        lbl = gtk.RadioButton(None,_('View Room Configuration'))
-        lbl.track_mode = 'VIEW'
-        listbox.pack_start( lbl, False )
 
-        lbl = gtk.RadioButton(lbl,_('Remove Enemy'))
+        lbl = gtk.RadioButton(None,_('Remove Enemy'))
         lbl.track_mode = 'REM_ENEMY'
         listbox.pack_start( lbl, False )
 
@@ -637,187 +616,12 @@ class FortuneMaker(Activity):
         self._draw_room_button_grid()
         self.set_gui_view( self.edit_pane )
 
-    def view_room(self):
-        self.enable_room_icons(True, True)
-        lbl_size = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        input_size =  gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-
-        room_holder = gtk.VBox()
-
-        ## Room Doors
-        #############
-        frame = gtk.Frame(_("Room Doors"))
-        frame.set_label_align(0.5, 0.5)
-        holder = gtk.VBox()
-
-        doors = {}
-
-        door_flags = [ _("None") ]
-        door_flags.extend( DOOR_FLAGS.values() )
-
-        for door_key in DOOR_INDEX:
-            row = gtk.HBox()
-            label = gtk.Label(DOOR_INDEX[door_key])
-            label.set_alignment( 0, 0.5 )
-            lbl_size.add_widget(label)
-            row.pack_start( label, False )
-
-            doors[door_key] = gtk.combo_box_new_text()
-            input_size.add_widget( doors[door_key] )
-
-            for value in door_flags:
-                doors[door_key].append_text( value )
-
-            door_flag = self.active_room.get_door( door_key )
-            if door_flag != '0':
-                doors[door_key].set_active( door_flags.index( DOOR_FLAGS[door_flag] ) )
-            else:
-                doors[door_key].set_active( 0 )
-
-            row.pack_end( doors[door_key], False )
-            holder.pack_start( row, False )
-
-        frame.add( holder )
-        room_holder.pack_start( frame, True )
-
-        ##Room Flags
-        ############
-        frame = gtk.Frame(_("Room Properties"))
-        frame.set_label_align(0.5, 0.5)
-        holder = gtk.VBox()
-
-        row = gtk.HBox()
-        label = gtk.Label(_("Room Flag"))
-        label.set_alignment( 0, 0.5 )
-        lbl_size.add_widget(label)
-        row.pack_start( label, False )
-
-        flag_sel = gtk.combo_box_new_text()
-        spec_flags = SPEC_FLAGS.values()
-        input_size.add_widget( flag_sel )
-        for flag in spec_flags:
-            flag_sel.append_text( flag )
-
-        flag = self.active_room.get_room_flag()
-        flag_sel.set_active( spec_flags.index( SPEC_FLAGS[flag] ) )
-
-        row.pack_end( flag_sel, False )
-        holder.pack_start( row, True)
-
-        frame.add( holder )
-        room_holder.pack_start( frame, True )
-
-        ## Room Enemies
-        ###############
-        frame = gtk.Frame(_("Room Enemies"))
-        frame.set_label_align(0.5, 0.5)
-        holder = gtk.VBox()
-
-        enem = []
-
-        for i in range(0,4):
-            enem.append( gtk.combo_box_new_text() )
-
-            row = gtk.HBox()
-            label = gtk.Label("%s (%d)" % (_("Enemy"), i))
-            label.set_alignment( 0, 0.5 )
-            lbl_size.add_widget( label )
-
-            row.pack_start(label, False)
-            em_list = ENEM_INDEX.values()
-            for em in em_list:
-                enem[i].append_text( em )
-
-            enem[i].set_active( em_list.index(ENEM_INDEX[self.active_room.get_enemy( i )] ) )
-            input_size.add_widget( enem[i] )
-            row.pack_end( enem[i], False )
-
-            holder.pack_start( row, False )
-
-        frame.add( holder )
-        room_holder.pack_start( frame, True )
-
-        ## Room Items
-        #############
-        frame = gtk.Frame(_("Room Item"))
-        frame.set_label_align(0.5, 0.5)
-        holder = gtk.VBox()
-
-        item_arr = []
-
-        item_list = ITEM_INDEX.values()
-        item_flags = ITEM_FLAGS.values()
-
-        for i in range(0,4):
-            itemType = gtk.combo_box_new_text()
-            itemFlag= gtk.combo_box_new_text()
-
-            for item in item_list:
-                itemType.append_text( item )
-
-            itemType.set_active( item_list.index(ITEM_INDEX[self.active_room.get_item( i )[0]] ) )
-
-            for item in item_flags:
-                itemFlag.append_text( item )
-
-            itemFlag.set_active( item_flags.index(ITEM_FLAGS[self.active_room.get_item( i )[1]] ) )
-
-            item_arr.append( [itemType, itemFlag] )
-
-            row = gtk.HBox()
-            row.pack_start( itemType, False )
-            row.pack_start( itemFlag, False )
-
-            holder.pack_start( row, False )
-
-        frame.add( holder )
-        room_holder.pack_start( frame, True )
-
-        ## Save Button
-        ##############
-        save = gtk.Button(_('Save'))
-        save.connect('clicked', self.save_room, {'doors':doors,'flag':flag_sel,'enemy':enem,'items':item_arr})
-
-        room_holder.pack_start( save, True )
-
-        room_center = gtk.HBox()
-        room_center.pack_start( gtk.Label() )
-        room_center.pack_start( room_holder )
-        room_center.pack_start( gtk.Label() )
-
-        self.set_gui_view( room_center )
-
-    def save_room(self, widgit, data):
-        """
-        Saves room settings from the full room view
-        """
-        for key in data['doors']:
-            value = find_key( DOOR_FLAGS, data['doors'][key].get_active_text())
-            if value:
-                self.active_room.add_door( key, value )
-            else:
-                self.active_room.remove_door( key )
-
-        self.active_room.set_room_flag( find_key(SPEC_FLAGS, data['flag'].get_active_text() ) )
-
-        i = 0
-        for enemy_select in data['enemy']:
-            en_id= find_key( ENEM_INDEX, enemy_select.get_active_text() )
-            self.active_room.set_enemy( i, en_id )
-            i = i + 1
-
-        #TODO ITEMS
-
-        self.dungeon.update_room( self.active_room )
-        self.view_dungeon_grid()
-
     def set_active_room(self, widgit, room):
         self.active_room = room
         self.view_room()
 
     def add_prop_to_room(self, widget, event, room, room_gui):
         self.active_room = room
-        self.enable_room_icons(True, True)
         for but in self.action_but_group:
             if but.get_active():
                 if but.track_mode == 'VIEW':
