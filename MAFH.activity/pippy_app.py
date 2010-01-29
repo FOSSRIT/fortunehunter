@@ -674,6 +674,9 @@ class Menu:
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
 	bgGroup=pygame.sprite.Group(self.background)
+        self.startX=xStart
+        self.startY=yStart
+        self.height=height
         if not self.name=="Inventory":
           bgGroup.draw(screen)
         i=0
@@ -820,7 +823,8 @@ class Menu:
           if player.invTutorial==False:
             k=0
             screen.fill((255,255,255),(0,0,400,400))
-            lines=["This is the statistics screen.","Here, you can view information","about your character,","and any items, you have equipped.","As  you can see, there are slots for","weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to","and press enter or check"]
+            lines=["This is the statistics screen.","Here, you can view information","about your character,","and any items, you have equipped.","As  you can see, there are slots for","weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to","and press enter or "] #draw check
+            screen.blit(pygame.image.load(TOUR_PATH+"buttonV.gif"),(225,375,40,40))
             for message in lines:
               screen.blit(font.render(message,True,(0,200,0)),(20,20+k,200,300))
               k+=40
@@ -838,10 +842,12 @@ class Menu:
               if player.invTutorial==False:
                 screen.fill((250,250,250),(900,300,800,400))
                 k=0
-                lines=["This list shows the items","you are carrying.  To equip","an item in the current slot,","select one with the arrow","keys, and press enter or","check.  If the item cannot","be equipped in that","slot, you will be taken back","to the stats screen"]
+                lines=["This list shows the items","you are carrying.  To equip","an item in the current slot,","select one with the arrow","keys, and press enter or","      If the item cannot","be equipped in that","slot, you will be taken back","to the stats screen"]
+                
                 for message in lines:
                   screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
                   k+=40
+                screen.blit(pygame.image.load(TOUR_PATH+"buttonV.gif"),(1165,460,40,40))
         if self.name=="Victory":
           self.bgSurface=pygame.Surface((1200,700))
           player.currentRoomGroup.draw(self.bgSurface)
@@ -864,6 +870,26 @@ class Menu:
           screen.blit(font.render("Continue",True,(150,0,0)),(470,515,0,0))
           screen.blit(font.render("Exit",True,(150,0,0)),(710,515,0,0))
           #draw continue/exit text
+        elif self.name=="Options Menu":
+          menuGroup.draw(screen)
+          screen.blit(font.render("Critical Attack",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("Special Attack",True,(150,0,0)),(450+40,400+53,0,0))
+          screen.blit(font.render("Magic Attack",True,(150,0,0)),(450+40,400+103,0,0))
+          screen.blit(font.render("Shop",True,(150,0,0)),(450+40,400+153,0,0))
+          screen.blit(font.render("Back",True,(150,0,0)),(450+40,400+203,0,0))
+        elif self.name=="Difficulty Menu":
+          menuGroup.add(player.previousMenu.optionsImages)
+          menuGroup.draw(screen)
+          screen.blit(font.render("Critical Attack",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("Special Attack",True,(150,0,0)),(450+40,400+53,0,0))
+          screen.blit(font.render("Magic Attack",True,(150,0,0)),(450+40,400+103,0,0))
+          screen.blit(font.render("Shop",True,(150,0,0)),(450+40,400+153,0,0))
+          screen.blit(font.render("Back",True,(150,0,0)),(450+40,400+203,0,0))
+          screen.blit(font.render("Disabled",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+3,0,0))
+          screen.blit(font.render("Easy",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+43,0,0))
+          screen.blit(font.render("Medium",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+83,0,0))
+          screen.blit(font.render("Hard",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+123,0,0))
+      
         if self.name=="AtkTut":
           screen.fill((255,255,255),(600,400,400,300))
           lines=["To perform a basic attack","select the attack button"]
@@ -925,9 +951,12 @@ class Menu:
           for message in lines:
             screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
-        if not self.name=="Defeat":
-          menuGroup.draw(screen)
 
+        if not self.name=="Defeat" and not self.name=="Difficulty Menu" and not self.name=="Options Menu":
+          menuGroup.draw(screen)
+        if self.name=="Main Menu":
+          screen.blit(font.render("Load",True,(150,0,0)),(450+40,400+103,0,0))
+          screen.blit(font.render("Options",True,(150,0,0)),(450+40,400+153,0,0))
         if player.battle==False:
           pygame.display.flip()
 
@@ -949,6 +978,8 @@ class Menu:
         if type(self.options[self.currentOption])==type(self):
             player.currentMenu=self.options[self.currentOption]
             player.previousMenu=self
+            player.currentMenu.sX=player.previousMenu.startX+200
+            player.currentMenu.sY=player.previousMenu.startY+player.previousMenu.currentOption*player.previousMenu.height
         else:
             self.updateByName(self.options[self.currentOption],player,screen)
 
@@ -986,14 +1017,61 @@ class Menu:
         elif name=="Tutorial":
             player.inTutorial=True
             player.mainMenu=False
-
+        elif name=="Disabled":
+          if player.previousMenu.currentOption==0:
+            player.critDifficulty=0
+          elif player.previousMenu.currentOption==1:
+            player.divDifficulty=0
+          elif player.previousMenu.currentOption==2:
+            player.geomDifficulty=0
+          elif player.previousMenu.currentOption==3:
+            player.shopDifficulty=1
+          player.currentMenu=player.previousMenu
+        elif name=="Easy":
+          if player.previousMenu.currentOption==0:
+            player.critDifficulty=1
+          elif player.previousMenu.currentOption==1:
+            player.divDifficulty=1
+          elif player.previousMenu.currentOption==2:
+            player.geomDifficulty=1
+          elif player.previousMenu.currentOption==3:
+            player.shopDifficulty=1
+          player.currentMenu=player.previousMenu
+        elif name=="Medium":
+          if player.previousMenu.currentOption==0:
+            player.critDifficulty=2
+          elif player.previousMenu.currentOption==1:
+            player.divDifficulty=2
+          elif player.previousMenu.currentOption==2:
+            player.geomDifficulty=2
+          elif player.previousMenu.currentOption==3:
+            player.shopDifficulty=2
+          player.currentMenu=player.previousMenu
+        elif name=="Hard":
+          if player.previousMenu.currentOption==0:
+            player.critDifficulty=3
+          elif player.previousMenu.currentOption==1:
+            player.divDifficulty=3
+          elif player.previousMenu.currentOption==2:
+            player.geomDifficulty=3
+          elif player.previousMenu.currentOption==3:
+            player.shopDifficulty=2
+          player.currentMenu=player.previousMenu
+        elif name=="Load Game":
+          print("Not Implemented")
+        elif name=="Return":
+          player.currentMenu.currentOption=0
+          player.currentMenu=player.MainMenu
         elif name=="Attack":
+          if player.critDifficulty>0:
             seed()
             crit=randint(0,2)
             if crit==1:
               player.curBattle.critical(player)
             else:
               player.curBattle.attack(player.battlePlayer,"basic")
+          else:
+            player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="0" or name=="1"or name=="2" or name=="3" or name=="4" or name=="5" or name=="6" or name=="7"or name=="8"or name=="9":
           if len(player.battlePlayer.currentInput)<7:
             player.battlePlayer.currentInput+=name
@@ -1209,14 +1287,15 @@ class Player:
     self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
+    self.movTutorial2=False
     self.hpTutorial=False
     self.hiddenTutorial=False
     self.battleTutorial=False
     self.puzzleTutorial=False
     self.lockTutorial=False
     self.invTutorial=False
-    self.puzzleTutorial=False
     self.shopTutorial=False
+    self.itemsPickedUp=False
 
     #state variables
     self.inTutorial=False
@@ -1246,10 +1325,24 @@ class Player:
     self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"door.wav")
     self.buyin=pygame.mixer.Sound(SOUND_PATH+"buyin.ogg")
     self.sellin=pygame.mixer.Sound(SOUND_PATH+"sellin.ogg")
+    self.basicAtk=pygame.mixer.Sound(SOUND_PATH+"basicAtk.ogg")
+    self.magicAtk=pygame.mixer.Sound(SOUND_PATH+"fireAtk.ogg")
+    self.specialAtk=pygame.mixer.Sound(SOUND_PATH+"specialAtk.ogg")
+    self.enemyDie=pygame.mixer.Sound(SOUND_PATH+"enemyDie1.ogg")
+    self.itemPickup=pygame.mixer.Sound(SOUND_PATH+"itemPickup.ogg")
+    self.buySell=pygame.mixer.Sound(SOUND_PATH+"buySell.ogg")
 
   def initializeMenu(self):
-    mainMenuImages=[MENU_PATH+"TutorialButton.gif",MENU_PATH+"NewGameButton.gif",MENU_PATH+"CloseButton.gif"]
-    self.MainMenu=Menu(["Tutorial","New Game","Close"],self,MENU_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
+    difficultyMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+    difficultyMenuOptions=["Disabled","Easy","Medium","Hard"]
+    difficultyMenu=Menu(difficultyMenuOptions,self,MENU_PATH+"mafh_splash.gif",difficultyMenuImages,"Difficulty Menu")
+
+    optionsMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+    optionsMenuOptions=[difficultyMenu,difficultyMenu,difficultyMenu,difficultyMenu,"Return"]
+    optionsMenu=Menu(optionsMenuOptions,self,MENU_PATH+"mafh_splash.gif",optionsMenuImages,"Options Menu")
+
+    mainMenuImages=[MENU_PATH+"TutorialButton.gif",MENU_PATH+"NewGameButton.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"CloseButton.gif"]
+    self.MainMenu=Menu(["Tutorial","New Game","Load Game",optionsMenu,"Close"],self,MENU_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
     
     statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
     statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif", MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
@@ -1392,13 +1485,23 @@ class Player:
     self.battleTutorial=True
 
   def initMovTutorial(self,screen):
-    font=pygame.font.SysFont("cmr10",42,False,False)
+    font=pygame.font.SysFont("cmr10",35,False,False)
     y=0
-    lines=["Welcome to the first Dungeon!","To look around, press left or right.","To move forward, press up","To check inventory or equipment,","Press space or Circle"]
+    screen.fill((255,255,255),(0,20,500,400))
+    lines=["Welcome to the first","     Dungeon!","To look around:","  press the left or right arrows.","To move forward:","  press the up arrow","To check inventory or stats:","  Press space or "]
+    screen.blit(pygame.image.load(TOUR_PATH+"buttonO.gif"),(260,300,40,40))
     for message in lines:
-      screen.blit(font.render(message,True,(0,200,0)),(400,20+y,200,300))
+      screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
       y+=40
-
+  def initMovTutorial2(self,screen):
+    font=pygame.font.SysFont("cmr10",35,False,False)
+    y=0
+    screen.fill((255,255,255),(0,20,500,300))
+    lines=["While you are navigating the","maze-like dungeon, you might","want to look at a map.","To display a large map:","  press M or "]
+    screen.blit(pygame.image.load(TOUR_PATH+"buttonL.gif"),(240,200,40,40))
+    for message in lines:
+      screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
+      y+=40
   def checkRoom(self):
     message="Your search reveals "
     found=False
@@ -1815,10 +1918,18 @@ class BattleEngine:
 	self.player.msg5= "Enemies are present, prepare to fight."
 
   def initializeMenus(self,player):
+    battleOptions=["Attack"]
 
-    battleOptions=["Attack","Division","Geometry","Use Item"]
     battleBackground=MENU_PATH+"battleMenubackground.gif"
-    battleOptImg=[MENU_PATH+"Attack.gif",MENU_PATH+"Special.gif",MENU_PATH+"Magic.gif",MENU_PATH+"Item.gif"]
+    battleOptImg=[MENU_PATH+"Attack.gif"]
+    if isinstance(player,Player) and player.divDifficulty>0:
+      battleOptions.append("Division")
+      battleOptImg.append(MENU_PATH+"Special.gif")
+    if isinstance(player,Player) and player.geomDifficulty>0:
+      battleOptions.append("Geometry")
+      battleOptImg.append(MENU_PATH+"Magic.gif")
+    battleOptions.append("Use Item")
+    battleOptImg.append(MENU_PATH+"Item.gif")
     
     self.battleMenu=Menu(battleOptions,player,battleBackground,battleOptImg,"Battle")
     self.battleMenu.background.rect=(0,300,0,200)
@@ -1936,7 +2047,8 @@ class BattleEngine:
           screen.blit(inputText,pygame.Rect(250,400,200,30))
       
       #screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
-      screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
+      if self.timeBonus>1:
+        screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
     pygame.display.flip()
 
   ###
@@ -1952,11 +2064,13 @@ class BattleEngine:
   def attack(self,attacker,attackName):
     if attackName=="critical":
       attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
+      self.player.basicAtk.play()
     elif attackName=="Fire":
       attacker.setBonusAP(int(self.timeBonus*20)+50)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.currentMenu=self.battleMenu
+      self.player.magicAtk.play()
     elif attackName=="Heal":
       attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
       self.glyphGroup.empty()
@@ -1966,13 +2080,16 @@ class BattleEngine:
       attacker.setBonusAP(int(self.timeBonus)+70)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
+      self.player.magicAtk.play()
       self.player.currentMenu=self.battleMenu
     elif attackName=="Missile":
       attacker.setBonusAP(0)
       self.player.currentMenu=self.battleMenu
     elif attackName=="Division":
       self.player.currentMenu=self.battleMenu
-
+      self.player.specialAtk.play()
+    else:
+      self.player.basicAtk.play()
     pygame.time.set_timer(USEREVENT+1,0)
     self.timeBonus=1
 
@@ -2289,7 +2406,7 @@ class BattleEngine:
           self.enemyValue+=150
         elif enemy.name=="Goblin":
           self.enemyValue+=50
-
+        self.player.enemyDie.play()
         enemies.remove(enemy)
     return enemies
   ###
@@ -2405,12 +2522,20 @@ class Shop:
     self.yes=True
     self.shopKeeperVariable=0
     self.message=[]
-    self.message.append("Got some rare things")
-    self.message.append("on sale stranger")
+    if self.player.shopTutorial==False:
+      self.message.append("Welcome.  You can view my")
+      self.message.append("wares by using the arrow keys")
+      self.message.append("If you want to switch between")
+      self.message.append("buying and selling, just press")
+      self.message.append("   (B) or    (S)")
+    else:
+      self.message.append("Got some rare things")
+      self.message.append("on sale stranger")
   def finish(self):
     if self.buyMode:
       enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
       if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
+        self.player.buySell.play()
         if self.player.shopDifficulty==1:
           self.player.battlePlayer.akhal-=self.totalPrice
         else:
@@ -2434,6 +2559,7 @@ class Shop:
         self.message=[]
         self.message.append("Not enough cash")
     elif self.sellMode:
+      self.player.buySell.play()
       self.player.battlePlayer.akhal+=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
       self.player.battlePlayer.inv_Ar.remove(self.player.battlePlayer.inv_Ar[self.selItem])
       self.selItem=0
@@ -2446,7 +2572,10 @@ class Shop:
     #handle key input
     elif event.type == KEYDOWN:
       newKey=pygame.key.name(event.key)
-
+      if player.shopTutorial==False:
+        self.message=[]
+        self.message.append("If you want to leave")
+        self.message.append("press    or backspace")
       if newKey=='escape':
         sys.exit()
       elif newKey=='[6]' or newKey=='right':
@@ -2558,6 +2687,7 @@ class Shop:
         else:
           self.player.shop=False
           self.player.traversal=True
+          self.player.shopTutorial=True
       elif newKey=='[7]' or newKey=='s':
         #circle, switch to sell mode
         if self.buyScreen==False:
@@ -3023,6 +3153,7 @@ def stopPuzzle(player,solved):
   HIDDEN=8
 
   if solved:
+    player.puzzleTutorial=True
     if player.playerFacing==NORTH:
       if player.currentRoom.doorNFlag==PUZZLE:
         player.currentRoom.doorNFlag=UNLOCKED
@@ -3227,19 +3358,22 @@ def updateWaiting(event,player):
     player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
     player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
     player.currentRoom.it1=0
+    player.itemsPickedUp=True
   if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
     player.migrateMessages(player.currentRoom.it2.name+" added to inventory")
     player.currentRoom.it2=0
+    player.itemsPickedUp=True
   if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
     player.migrateMessages(player.currentRoom.it3.name+" added to inventory")
     player.currentRoom.it3=0
+    player.itemsPickedUp=True
   if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
     player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
     player.migrateMessages(player.currentRoom.it4.name+" added to inventory")
     player.currentRoom.it4=0
-
+    player.itemsPickedUp=True
 
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
@@ -3302,6 +3436,15 @@ def drawPuzzle(player,screen):
   #draw background and completed image
   screen.fill((0,0,0),(0,0,1200,900))
   screen.blit(player.puzzle.puzBG,(75,-750,1200,900))
+  if player.puzzleTutorial==False:
+    font=pygame.font.SysFont("cmr10",35,False,False)
+    y=0
+    screen.fill((255,255,255),(0,2,1200,200))
+    lines=["This door is locked with a special lock.  In order to unlock it, you must"," re-arrange the tiles and make the image whole.  Use the arrow keys ","to slide the tiles.  You can view the completed image by pressing","any other button.  To give up, press  or backspace."]
+    screen.blit(pygame.image.load(TOUR_PATH+"buttonX.gif"),(570,150,40,40))
+    for message in lines:
+      screen.blit(font.render(message,True,(75,0,0)),(0,20+y,200,300))
+      y+=40
   if player.puzzle.showFull:
     screen.blit(player.puzzle.completedPuzzle,(300,100,600,400))
   else:
@@ -3344,15 +3487,20 @@ def drawTextBox(player,screen):
   screen.blit(tl4,line4)
   screen.blit(tl5,line5)
 
-setImage(player)
-
 while pippy.pygame.next_frame():
 
   for event in pygame.event.get():
+    if event.type==USEREVENT+4:
+      player.itemPickup.play()
+      player.itemsPickedUp=False
+      #UNDRAW ITEMS FROM ROOM
+      pygame.time.set_timer(USEREVENT+4,0)
     if event.type==USEREVENT+2:
       pygame.time.set_timer(USEREVENT+2,0)
       drawWaiting(player,screen)
       player.waiting=False
+      if player.itemsPickedUp:
+        pygame.time.set_timer(USEREVENT+4,1400)
       if player.msg5=='Enemies are present, prepare to fight.':
         player.battle=True
       if player.currentRoom.roomFlag==6:
@@ -3390,6 +3538,7 @@ while pippy.pygame.next_frame():
         player.animation.next(screen)
       except EOFError:
         player.stopMovie()
+        setImage(player)
     if event.type==QUIT:
       sys.exit()
     if player.traversal:
@@ -3424,6 +3573,8 @@ while pippy.pygame.next_frame():
     elif player.currentMenu.name=="Stats":
       player.currentMenu.draw(player,screen,450,400,50)
       drawTextBox(player,screen)
+    elif player.currentMenu.name=="Difficulty Menu":
+      player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
     elif player.currentMenu.name=="Defeat":
       player.currentMenu.draw(player,screen,450,500,50)
       
@@ -3451,6 +3602,8 @@ while pippy.pygame.next_frame():
     player.currentRoomGroup.draw(screen)
     if player.movTutorial==False:
       player.initMovTutorial(screen)
+    if player.movTutorial2==False and player.dgnIndex==0 and player.currentX==0 and player.currentY==0:
+      player.initMovTutorial2(screen)
     pygame.display.flip()
   # update the display
 
