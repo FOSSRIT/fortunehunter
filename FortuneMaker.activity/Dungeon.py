@@ -23,15 +23,26 @@ class Dungeon:
         return self.roomlist
 
     def get_adj_room( self, room, dir ):
+        if dir == "N":
+            next_x = room._x
+            next_y = room._y-1
+        elif dir == "E":
+            next_x = room._x+1
+            next_y = room._y
+        elif dir == "S":
+            next_x = room._x
+            next_y = room._y+1
+        elif dir == "W":
+            next_x = room._x-1
+            next_y = room._y
+        else:
+            return False
+
+        if next_x < 0 or next_y < 0:
+            return False
+
         try:
-            if dir == "N":
-                return self.roomlist[room._y-1][room._x]
-            elif dir == "E":
-                return self.roomlist[room._y][room._x+1]
-            elif dir == "S":
-                return self.roomlist[room._y+1][room._x]
-            elif dir == "W":
-                return self.roomlist[room._y][room._x-1]
+           return self.roomlist[next_y][next_x]
         except:
             return False
 
