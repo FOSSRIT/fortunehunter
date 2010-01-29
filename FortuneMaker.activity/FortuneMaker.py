@@ -510,8 +510,7 @@ class FortuneMaker(Activity):
             box.pack_start( row, False )
             for room in row_array:
                 room_gui = room.render_room()
-                room_gui.connect('button-press-event', self.add_prop_to_room, room)
-                #room_gui.connect('clicked', self.add_prop_to_room, room)
+                room_gui.connect('button-press-event', self.add_prop_to_room, room, room_gui)
                 row.pack_start( room_gui, False )
         if self._pane2:
             self.edit_pane.remove( self._pane2 )
@@ -816,8 +815,7 @@ class FortuneMaker(Activity):
         self.active_room = room
         self.view_room()
 
-    #def add_prop_to_room(self, widget, room):
-    def add_prop_to_room(self, widget, event, room):
+    def add_prop_to_room(self, widget, event, room, room_gui):
         self.active_room = room
         self.enable_room_icons(True, True)
         for but in self.action_but_group:
@@ -897,6 +895,7 @@ class FortuneMaker(Activity):
                                 adj_room.remove_door( "N" )
                             elif door_pos == "W":
                                 adj_room.remove_door( "E" )
+                            adj_room._room_gui.queue_draw()
                         except:
                             pass
 
@@ -915,6 +914,7 @@ class FortuneMaker(Activity):
                                     adj_room.add_door( "N", but.track_flag)
                                 elif door_pos == "W":
                                     adj_room.add_door( "E", but.track_flag)
+                                adj_room._room_gui.queue_draw()
                             else:
                                 self._alert( _("Door Not Added"), _("This door can not be placed at edge of dungeon"))
                         else:
@@ -933,8 +933,8 @@ class FortuneMaker(Activity):
                     def add_item(click, flag):
                         if not self.active_room.add_item( but.track_flag, flag ):
                             self._alert( _("Item not added to room"), _("Room can not hold any more items"))
-                            self.dungeon.update_room( self.active_room )
-                            self._draw_room_button_grid()
+                        self.dungeon.update_room( self.active_room )
+                        room_gui.queue_draw()
 
                     menu = gtk.Menu()
                     for flag in ITEM_FLAGS:
@@ -942,14 +942,14 @@ class FortuneMaker(Activity):
                             opt = gtk.MenuItem(ITEM_FLAGS[flag])
                             opt.connect("activate", add_item, flag)
                             menu.append(opt)
-                            #one.set_submenu(submenu)
 
                     menu.show_all()
                     menu.popup(None, None, None, event.button, event.get_time())
                     return
 
                 self.dungeon.update_room( self.active_room )
-                self._draw_room_button_grid()
+                room_gui.queue_draw()
+                #self._draw_room_button_grid()
                 break
 
     def _alert(self, title, text=None, timeout=5):

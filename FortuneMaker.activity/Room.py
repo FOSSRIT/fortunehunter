@@ -16,6 +16,7 @@ class Room:
         self.doors = {}
         self.enemy = []
         self.item = []
+        self._room_gui = None
 
         self.has_doors = False
         self.has_enemy = False
@@ -223,9 +224,9 @@ class Room:
             layout.set_font_description(font_desc)
             widget.window.draw_layout(xgc, 7, 7, layout)
 
-        drawing_area = gtk.DrawingArea()
-        drawing_area.set_size_request(ROOM_SIZE, ROOM_SIZE)
-        drawing_area.connect("expose-event", expose_handler)
-        drawing_area.set_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self._room_gui = gtk.DrawingArea()
+        self._room_gui.set_size_request(ROOM_SIZE, ROOM_SIZE)
+        self._room_gui.connect("expose-event", expose_handler)
+        self._room_gui.set_events(gtk.gdk.BUTTON_PRESS_MASK)
 
-        return drawing_area
+        return self._room_gui
