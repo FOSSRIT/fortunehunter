@@ -266,6 +266,7 @@ class FortuneMaker(Activity):
             file_dsobject.metadata['FM_UID'] = unique_id()
         else:
             file_dsobject = ds_objects[0]
+            file_dsobject.metadata['FM_UID'] = file_dsobject.metadata['FM_UID']
 
         # Write any metadata (here we specifically set the title of the file and
         # specify that this is a plain text file).
@@ -642,8 +643,6 @@ class FortuneMaker(Activity):
         lbl_size = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         input_size =  gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
 
-        #TODO CHECK IF ACTIVE ROOM SET
-
         room_holder = gtk.VBox()
 
         ## Room Doors
@@ -757,12 +756,12 @@ class FortuneMaker(Activity):
             for item in item_list:
                 itemType.append_text( item )
 
-            #TODO: ADD DEFUALT Flag
+            itemType.set_active( item_list.index(ITEM_INDEX[self.active_room.get_item( i )[0]] ) )
 
             for item in item_flags:
                 itemFlag.append_text( item )
 
-            #TODO: ADD DEFUALT Flag
+            itemFlag.set_active( item_flags.index(ITEM_FLAGS[self.active_room.get_item( i )[1]] ) )
 
             item_arr.append( [itemType, itemFlag] )
 
@@ -938,9 +937,24 @@ class FortuneMaker(Activity):
                         self._alert( _("Enemy not added to room"), _("Room can not hold any more enemies"))
 
                 elif but.track_mode == 'ITEM':
-                    self._alert("NOT IMPLEMENTED")
-                    #if not self.active_room.add_item( but.track_flag ):
-                    #    self._alert( _("Item not added to room"), _("Room can not hold any more items"))
+
+                    def add_item(click, flag):
+                        if not self.active_room.add_item( but.track_flag, flag ):
+                            self._alert( _("Item not added to room"), _("Room can not hold any more items"))
+                            self.dungeon.update_room( self.active_room )
+                            self._draw_room_button_grid()
+
+                    menu = gtk.Menu()
+                    for flag in ITEM_FLAGS:
+                        if flag != '0':
+                            opt = gtk.MenuItem(ITEM_FLAGS[flag])
+                            opt.connect("activate", add_item, flag)
+                            menu.append(opt)
+                            #one.set_submenu(submenu)
+
+                    menu.show_all()
+                    menu.popup(None, None, None, event.button, event.get_time())
+                    return
 
                 self.dungeon.update_room( self.active_room )
                 self._draw_room_button_grid()

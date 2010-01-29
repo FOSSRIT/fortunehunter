@@ -134,6 +134,10 @@ class Room:
             print "INVALID POS OR ID OR FLAG"
             return False
 
+    def get_item(self, pos):
+        if pos >=0 and pos <=3:
+            return self.item[pos]
+
     def room_to_string(self):
         str = ""
         for index in DOOR_ORDER:
