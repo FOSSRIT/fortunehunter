@@ -1229,11 +1229,8 @@ class Animation:
     self.currentIndex=0
     #self.bufferAnim()
   def next(self,screen):
-    #try:
     self.group.draw(screen)
     self.gif.seek(self.gif.tell()+1)
-    #except EOFError:
-    #  self.gif.seek(0)
     self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
     self.group.draw(screen)
     pygame.display.flip()
@@ -1410,13 +1407,15 @@ class Player:
   def startMovie(self,movieName,soundTrackName):
     screen.fill((0,0,0),(0,0,1200,900))
     self.animation=Animation(movieName,soundTrackName)
-    pygame.time.set_timer(USEREVENT+3,500)
+    pygame.time.set_timer(USEREVENT+3,100)
   def stopMovie(self):
     self.inAnimation=False 
+    pygame.time.set_timer(USEREVENT+3,0)
+    del self.animation
     self.traversal=True
     setImage(player)
     pygame.display.flip()
-    pygame.time.set_timer(USEREVENT+3,0)
+
   def migrateMessages(self,msg):
     self.msg1=self.msg2
     self.msg2=self.msg3
@@ -3533,12 +3532,16 @@ while pippy.pygame.next_frame():
         else:
           player.traversal=True
       setImage(player)
-    if event.type==USEREVENT+3:
+    if player.inAnimation:
+      if event.type==KEYDOWN:
+        player.stopMovie()
+    if event.type==USEREVENT+3 and player.inAnimation:
       try:
         player.animation.next(screen)
       except EOFError:
         player.stopMovie()
-        setImage(player)
+      except AttributeError:
+        print("HACK!!!!!")
     if event.type==QUIT:
       sys.exit()
     if player.traversal:
@@ -3547,9 +3550,8 @@ while pippy.pygame.next_frame():
       else:
         #################UPDATE##############################
         updateTraversal(event,player,screen)
-    elif player.inAnimation:
-      if event.type==KEYDOWN:
-        player.stopMovie()
+
+
     elif player.battle:
       ##battle processes
       updateBattle(event,player)
