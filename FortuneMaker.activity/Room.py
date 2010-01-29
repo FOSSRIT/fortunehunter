@@ -7,6 +7,8 @@ from constants import (
 import gtk
 import pango
 
+ROOM_SIZE = 150
+FONT = 'Serif 5'
 class Room:
     def __init__(self, x = -1, y = -1, str=None):
         self._x = x
@@ -196,14 +198,18 @@ class Room:
                 if enemy != '0':
                     room_text += ENEM_INDEX[enemy] + "\n"
 
+            for item in self.item:
+                if item[0] != '0':
+                    room_text += ITEM_INDEX[item[0]] + " (" + ITEM_FLAGS[item[1]] + ")\n"
+
             xgc.set_rgb_fg_color(gtk.gdk.color_parse("#000000"))
-            font_desc = pango.FontDescription('Serif 4')
+            font_desc = pango.FontDescription( FONT )
             layout = widget.create_pango_layout( room_text )
             layout.set_font_description(font_desc)
             widget.window.draw_layout(xgc, 7, 7, layout)
 
         drawing_area = gtk.DrawingArea()
-        drawing_area.set_size_request(100, 100)
+        drawing_area.set_size_request(ROOM_SIZE, ROOM_SIZE)
         drawing_area.connect("expose-event", expose_handler)
         drawing_area.set_events(gtk.gdk.BUTTON_PRESS_MASK)
 
