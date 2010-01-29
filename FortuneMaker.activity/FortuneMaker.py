@@ -881,16 +881,8 @@ class FortuneMaker(Activity):
 
 
                 elif but.track_mode == 'DOOR':
-                    if event.x < 30 and event.y > 30 and event.y < 70:
-                        door_pos = "W"
-                    elif event.x > 70 and event.y > 30 and event.y < 70:
-                        door_pos = "E"
-                    elif event.y < 30 and event.x > 30 and event.x < 70:
-                        door_pos = "N"
-                    elif event.y > 70 and event.x > 30 and event.x < 70:
-                        door_pos = "S"
-                    else:
-                        #self._alert("NONE", "%d, %d"%(event.x, event.y))
+                    door_pos = room.get_door_from_click( event.x, event.y )
+                    if not door_pos:
                         return
 
                     if but.track_flag == '0':

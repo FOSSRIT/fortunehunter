@@ -158,6 +158,21 @@ class Room:
     def not_empty_room(self):
         return self.has_doors or self.has_enemy or self.has_item
 
+    def get_door_from_click(self, x, y):
+        size_offset = ROOM_SIZE / 3
+        size_uoffset = ROOM_SIZE - size_offset
+        if x < size_offset and y > size_offset and y < size_uoffset:
+            door_pos = "W"
+        elif x > size_uoffset and y > size_offset and y < size_uoffset:
+            door_pos = "E"
+        elif y < size_offset and x > size_offset and x < size_uoffset:
+            door_pos = "N"
+        elif y > size_uoffset and x > size_offset and x < size_uoffset:
+            door_pos = "S"
+        else:
+            return False
+        return door_pos
+
     def render_room(self):
         def expose_handler(widget, event):
             w, h = widget.window.get_size()
