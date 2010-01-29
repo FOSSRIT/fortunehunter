@@ -113,10 +113,10 @@ class Room:
         if pos >=0 and pos <=3:
             return self.enemy[pos]
 
-    def add_item( self, enemy ):
+    def add_item( self, item, flag ):
         for index in range( 0,4 ):
-            if self.item[index] == "0":
-                return self.set_item(index, enemy)
+            if self.item[index][0] == "0":
+                return self.set_item(index, item, flag)
         return False
 
     def set_item(self, pos, id, flag):

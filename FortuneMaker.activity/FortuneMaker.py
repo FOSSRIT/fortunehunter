@@ -528,6 +528,14 @@ class FortuneMaker(Activity):
         lbl.track_mode = 'VIEW'
         listbox.pack_start( lbl, False )
 
+        lbl = gtk.RadioButton(lbl,_('Remove Enemy'))
+        lbl.track_mode = 'REM_ENEMY'
+        listbox.pack_start( lbl, False )
+
+        lbl = gtk.RadioButton(lbl,_('Remove Item'))
+        lbl.track_mode = 'REM_ITEM'
+        listbox.pack_start( lbl, False )
+
         # Doors
         exp = gtk.Expander(_("Doors"))
         box = gtk.VBox()
@@ -819,6 +827,60 @@ class FortuneMaker(Activity):
                     self.view_room()
                     return
 
+                elif but.track_mode == 'REM_ENEMY':
+                    dialog = gtk.Dialog(_("Remove Enemy"), buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+                    def rem_enm(widget, pos, row):
+                        room.set_enemy( pos, '0')
+                        row.hide()
+
+                    display_box = False
+                    for i in range(0,4):
+                        if room.enemy[i] != '0':
+                            display_box = True
+                            row = gtk.HBox()
+                            label = gtk.Label( ENEM_INDEX[room.enemy[i]] )
+                            label.set_alignment(0.0,0.5)
+                            row.pack_start(label)
+                            but = gtk.Button(_("Remove"))
+                            but.connect('clicked', rem_enm, i, row)
+                            row.pack_end(but, False)
+                            dialog.vbox.pack_start(row, False)
+
+                    if display_box:
+                        dialog.show_all()
+                        result = dialog.run()
+                    else:
+                        self._alert(_("No enemies found in this room"))
+                    dialog.destroy()
+
+                elif but.track_mode == 'REM_ITEM':
+                    dialog = gtk.Dialog(_("Remove Item"), buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+
+                    def rem_enm(widget, pos, row):
+                        room.set_item( pos, '0', '0')
+                        row.hide()
+
+                    display_box = False
+                    for i in range(0,4):
+                        if room.item[i][0] != '0':
+                            display_box = True
+                            row = gtk.HBox()
+                            label = gtk.Label( ITEM_INDEX[room.item[i][0]] )
+                            label.set_alignment(0.0,0.5)
+                            row.pack_start(label)
+                            but = gtk.Button(_("Remove"))
+                            but.connect('clicked', rem_enm, i, row)
+                            row.pack_end(but, False)
+                            dialog.vbox.pack_start(row, False)
+
+                    if display_box:
+                        dialog.show_all()
+                        result = dialog.run()
+                    else:
+                        self._alert(_("No items found in this room"))
+                    dialog.destroy()
+
+
                 elif but.track_mode == 'DOOR':
                     if event.x < 30 and event.y > 30 and event.y < 70:
                         door_pos = "W"
@@ -876,8 +938,9 @@ class FortuneMaker(Activity):
                         self._alert( _("Enemy not added to room"), _("Room can not hold any more enemies"))
 
                 elif but.track_mode == 'ITEM':
-                    if not self.active_room.add_item( but.track_flag ):
-                        self._alert( _("Item not added to room"), _("Room can not hold any more items"))
+                    self._alert("NOT IMPLEMENTED")
+                    #if not self.active_room.add_item( but.track_flag ):
+                    #    self._alert( _("Item not added to room"), _("Room can not hold any more items"))
 
                 self.dungeon.update_room( self.active_room )
                 self._draw_room_button_grid()
