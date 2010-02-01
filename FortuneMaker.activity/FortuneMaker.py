@@ -127,6 +127,7 @@ class FortuneMaker(Activity):
             if ds_objects[i].metadata.has_key('FM_UID'):
                 file_list.append( ds_objects[i] )
             else:
+                #TODO: Attempt to read uid from file?
                 self._alert('WARNING: File missing uid',ds_objects.metadata['title'])
         return file_list
 
@@ -475,9 +476,10 @@ class FortuneMaker(Activity):
             elif grab == 5:
                 room_str.append(line.strip())
 
-        self.dungeon = Dungeon( name, theme, next, x, y, room_str, d_id)
-        self.enable_room_icons(True)
-        self.view_dungeon_grid()
+        if grab == 5:
+            self.dungeon = Dungeon( name, theme, next, x, y, room_str, d_id)
+            self.enable_room_icons(True)
+            self.view_dungeon_grid()
 
 
     def edit_dungeon_cb(self, widget, data):
