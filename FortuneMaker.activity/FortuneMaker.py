@@ -534,11 +534,12 @@ class FortuneMaker(Activity):
         # Doors
         exp = gtk.Expander(_("Doors"))
         box = gtk.VBox()
-
-        for door_mode_key in DOOR_FLAGS:
-            lbl = gtk.RadioButton(lbl,DOOR_FLAGS[door_mode_key])
+        doors = DOOR_FLAGS.values()
+        doors.sort()
+        for val in doors:
+            door_mode_key = find_key( DOOR_FLAGS, val )
+            lbl = gtk.RadioButton(lbl,val)
             lbl.track_mode = 'DOOR'
-
             lbl.track_flag = door_mode_key
             box.pack_start(lbl, False)
 
@@ -548,9 +549,11 @@ class FortuneMaker(Activity):
         # Room Properties
         exp = gtk.Expander(_("Room Flags"))
         box = gtk.VBox()
-        SPEC_FLAGS
-        for flag_key in SPEC_FLAGS:
-            lbl = gtk.RadioButton(lbl, SPEC_FLAGS[flag_key])
+        flags = SPEC_FLAGS.values()
+        flags.sort()
+        for val in flags:
+            flag_key = find_key( SPEC_FLAGS, val )
+            lbl = gtk.RadioButton(lbl, val)
             lbl.track_mode = 'SPEC_FLAG'
             lbl.track_flag = flag_key
             box.pack_start(lbl, False)
@@ -560,10 +563,13 @@ class FortuneMaker(Activity):
         # Enemies
         exp = gtk.Expander(_("Enemies"))
         box = gtk.VBox()
-        for enemy_key in ENEM_INDEX:
+        enemies = ENEM_INDEX.values()
+        enemies.sort()
+        for val in enemies:
+            enemy_key = find_key( ENEM_INDEX, val )
             # Ignore None Key
             if enemy_key != '0':
-                lbl = gtk.RadioButton(lbl, ENEM_INDEX[enemy_key])
+                lbl = gtk.RadioButton(lbl, val)
                 lbl.track_mode = 'ENEMY'
                 lbl.track_flag = enemy_key
                 box.pack_start(lbl, False)
@@ -574,10 +580,14 @@ class FortuneMaker(Activity):
         # Items
         exp = gtk.Expander(_("Items"))
         box = gtk.VBox()
-        for item_key in ITEM_INDEX:
+
+        items = ITEM_INDEX.values()
+        items.sort()
+        for val in items:
+            item_key = find_key( ITEM_INDEX, val )
             # Ignore None Key
             if item_key != '0':
-                lbl = gtk.RadioButton(lbl,ITEM_INDEX[item_key])
+                lbl = gtk.RadioButton(lbl,val)
                 lbl.track_mode = 'ITEM'
                 lbl.track_flag = item_key
                 box.pack_start(lbl, False)
