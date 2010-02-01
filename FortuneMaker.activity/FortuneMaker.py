@@ -134,7 +134,7 @@ class FortuneMaker(Activity):
     def show_home(self):
         window_container = gtk.VBox()
 
-        label = gtk.Label(_("Welcome Message Here"))
+        label = gtk.Label(_("Welcome to Fortune Maker"))
         window_container.pack_start(label, False)
 
         # New Dungeon
@@ -214,7 +214,7 @@ class FortuneMaker(Activity):
         window_container.pack_start(row, False)
 
         window_container.pack_start( gtk.Label(" "), False )
-        label = gtk.Label(_("Files must be exported before they\n" +
+        label = gtk.Label(_("Dungeons must be exported before they\n" +
                             "may be loaded into Fortune Hunter\n" +
                             "or linked as a next dungeon."))
         window_container.pack_start( label, False)
