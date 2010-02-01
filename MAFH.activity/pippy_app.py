@@ -1285,6 +1285,7 @@ class Player:
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
     self.movTutorial=False
     self.movTutorial2=False
+    self.movTutorial3=False
     self.hpTutorial=False
     self.hiddenTutorial=False
     self.battleTutorial=False
@@ -1354,6 +1355,8 @@ class Player:
     self.tutorial=Tutorial(tutorialImages,0,0)
 
   def loadImages(self):
+    self.itemsGroup=pygame.sprite.Group()
+
     self.currentRoomSprite=pygame.sprite.Sprite()
     self.currentRoomSprite.image=pygame.image.load(ENV_PATH+"Black.gif")
     self.currentRoomSprite.rect=pygame.Rect(0,0,1200,700)
@@ -1492,7 +1495,7 @@ class Player:
     for message in lines:
       screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
       y+=40
-  def initMovTutorial2(self,screen):
+  def initMovTutorial3(self,screen):
     font=pygame.font.SysFont("cmr10",35,False,False)
     y=0
     screen.fill((255,255,255),(0,20,500,300))
@@ -1501,34 +1504,59 @@ class Player:
     for message in lines:
       screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
       y+=40
+  def initMovTutorial2(self,screen):
+    font=pygame.font.SysFont("cmr10",35,False,False)
+    y=0
+    screen.fill((255,255,255),(0,20,450,400))
+    lines=["This room has an item in it!","To pick it up:","   press    or E","To use it once equipped","  press E or  ","  on the stats screen","To unequip an item:","  press U or","  on the stats screen"]
+    screen.blit(pygame.image.load(TOUR_PATH+"buttonV.gif"),(135,90,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"buttonL.gif"),(200,190,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"buttonO.gif"),(200,300,40,40))
+    for message in lines:
+      screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
+      y+=40
   def checkRoom(self):
-    message="Your search reveals "
+    message=""
     found=False
-    if type(self.currentRoom.it1)==type(Item("","")) and self.currentRoom.it1.hidden:
+    hidden=False
+    if type(self.currentRoom.it1)==type(Item("","")):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it1)
-      message+=" "+self.currentRoom.it1.name
+      message+=self.currentRoom.it1.name
+      found=True
+      if self.currentRoom.it1.hidden:
+        hidden=True
       self.currentRoom.it1=0
-      found=True
-    if type(self.currentRoom.it2)==type(Item("","")) and self.currentRoom.it2.hidden:
+    if type(self.currentRoom.it2)==type(Item("","")):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it2)
-      message+=" "+self.currentRoom.it2.name
+      message+=" and "+self.currentRoom.it2.name
+      found=True
+      if self.currentRoom.it2.hidden:
+        hidden=True
       self.currentRoom.it2=0
-      found=True
-    if type(self.currentRoom.it3)==type(Item("","")) and self.currentRoom.it3.hidden:
+    if type(self.currentRoom.it3)==type(Item("","")):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it3)
-      message+=" "+self.currentRoom.it3.name
+      message+=" and "+self.currentRoom.it3.name
+      found=True
+      if self.currentRoom.it3.hidden:
+        hidden=True
       self.currentRoom.it3=0
-      found=True
-    if type(self.currentRoom.it4)==type(Item("","")) and self.currentRoom.it4.hidden:
+    if type(self.currentRoom.it4)==type(Item("","")):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it4)
-      message+=" "+self.currentRoom.it4.name
-      self.currentRoom.it4=0
+      message+=" and "+self.currentRoom.it4.name
       found=True
-    if found==False:
+      if self.currentRoom.it4.hidden:
+        hidden=True
+      self.currentRoom.it4=0
+    if hidden and found==False:
       message+="nothing"
-    if self.hiddenTutorial==False:
+    if hidden==True and self.hiddenTutorial==False:
       self.hiddenTutorial=True
       player.migrateMessages("You have found items in your search, try searching every room for items!")
+    if hidden:
+      message+=" discovered!"
+    else:
+      message+=" picked up"
+    player.itemPickup.play()
     return(message)
 
 #######################################################################
@@ -2257,6 +2285,7 @@ class BattleEngine:
       self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*item.power)
       self.player.battlePlayer.eqItem.remove(item)
       self.player.battlePlayer.eqItem.append(Item("",""))
+      player.migrateMessages("You heal for "+repr(int(self.player.battlePlayer.MHP*item.power)))
       if self.player.battlePlayer.HP>self.player.battlePlayer.MHP:
         self.player.battlePlayer.HP=self.player.battlePlayer.MHP
     self.playerTurn=False
@@ -2325,19 +2354,20 @@ class BattleEngine:
 
     if temp < 6:
       defender.defendAttack(enemy.attackPower("critical"))
-      player.migrateMessages("Enemy critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
+      player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
     elif temp > 90:
       defender.defendAttack(enemy.attackPower("special"))
+      player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
     #print special message differently depending on name
     if enemy.name == "Wizard":
       defender.defendAttack(enemy.attackPower("critical"))
-      player.migrateMessages("Enemy casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
+      player.migrateMessages("Wizard "+repr(enemy.place)+" casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
     elif enemy.name == "Goblin" or enemy.name == "Orc":
       defender.defendAttack(enemy.attackPower("critical"))
-      player.migrateMessages("Enemy head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+      player.migrateMessages("Goblin "+repr(enemy.place)+" head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
     #TODO: add enemy types here as levels are added
     else:
-      player.migrateMessages("Enemy attacks for "+repr(enemy.attackPower("basic"))+" damage")
+      player.migrateMessages(repr(enemy.name)+" "+repr(enemy.place)+" attacks for "+repr(enemy.attackPower("basic"))+" damage")
       defender.defendAttack(enemy.attackPower("basic"))
     self.playerTurn=True
 
@@ -2882,6 +2912,52 @@ def setImage(player):
     SOUTH=3
     EAST=0
     WEST=2
+    player.itemsGroup.empty()
+    emptySprite=pygame.sprite.Sprite()
+    emptySprite.image=pygame.image.load(ENV_PATH+"noItem.gif")
+    emptySprite.rect=pygame.Rect(700,300,50,50)
+    sprites=[emptySprite,emptySprite,emptySprite,emptySprite]
+
+    if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
+      itemSprite=pygame.sprite.Sprite()
+      if player.currentRoom.it1.type=="Weapon":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
+      elif player.currentRoom.it1.type=="Armor":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Armor.gif"))
+      else:
+        itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it1.name+".gif"))
+      sprites[0]=itemSprite
+
+    if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
+      itemSprite=pygame.sprite.Sprite()
+      if player.currentRoom.it2.type=="Weapon":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
+      elif player.currentRoom.it2.type=="Armor":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Armor.gif"))
+      else:
+        itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it2.name+".gif"))
+      sprites[1]=itemSprite
+
+    if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
+      itemSprite=pygame.sprite.Sprite()
+      if player.currentRoom.it3.type=="Weapon":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
+      elif player.currentRoom.it3.type=="Armor":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Armor.gif"))
+      else:
+        itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it3.name+".gif"))
+      sprites[2]=itemSprite
+
+    if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
+      itemSprite=pygame.sprite.Sprite()
+      if player.currentRoom.it4.type=="Weapon":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
+      elif player.currentRoom.it4.type=="Armor":
+        itemSprite.image=(pygame.image.load(ENV_PATH+"Armor.gif"))
+      else:
+        itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it4.name+".gif"))
+      sprites[3]=itemSprite
+
     ###Set up string for testing
     if player.playerFacing==NORTH:
         if player.currentRoom.doorN:
@@ -2892,6 +2968,11 @@ def setImage(player):
 
         if player.currentRoom.doorE:
             fileName+="R"
+        #set item image positions #Maybe based on a random positioning in the room?
+        sprites[0].rect=(700,300,50,50)
+        sprites[1].rect=(780,300,50,50)
+        sprites[2].rect=(850,300,50,50)
+        sprites[3].rect=(900,300,50,50)
 
     elif player.playerFacing==SOUTH:
         if player.currentRoom.doorS:
@@ -2902,6 +2983,11 @@ def setImage(player):
 
         if player.currentRoom.doorW:
             fileName+="R"
+     
+        sprites[0].rect=(1300,300,50,50)
+        sprites[1].rect=(1300,300,50,50)
+        sprites[2].rect=(1300,300,50,50)
+        sprites[3].rect=(1300,300,50,50)
 
     elif player.playerFacing==EAST:
         if player.currentRoom.doorE:
@@ -2913,6 +2999,11 @@ def setImage(player):
         if player.currentRoom.doorS:
             fileName+="R"
 
+        sprites[0].rect=(180,380,50,50)
+        sprites[1].rect=(200,350,50,50)
+        sprites[2].rect=(210,330,50,50)
+        sprites[3].rect=(240,300,50,50)
+
     elif player.playerFacing==WEST:
         if player.currentRoom.doorW:
             fileName+="F"
@@ -2922,6 +3013,11 @@ def setImage(player):
 
         if player.currentRoom.doorN:
             fileName+="R"
+
+        sprites[0].rect=(1110,550,50,50)
+        sprites[1].rect=(1130,580,50,50)
+        sprites[2].rect=(1155,600,50,50)
+        sprites[3].rect=(1160,650,50,50)
 
     ###set sprite depending on string
     player.currentRoomGroup.empty()
@@ -2951,6 +3047,8 @@ def setImage(player):
         player.currentRoomSprite=player.NoSprite
 
     player.currentRoomGroup.add(player.currentRoomSprite)
+    for sprite in sprites:
+      player.itemsGroup.add(sprite)
 
 def checkDoor(direction,player,screen):
     NORTH=1
@@ -2997,6 +3095,7 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorNFlag==PUZZLE or currentRoom.doorNFlag==BOTH:
                   startPuzzle(player)
                 else:
+                  player.itemsGroup.empty()
                   return(enterRoom('north',player,screen))
 
             else:
@@ -3021,6 +3120,7 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorSFlag==PUZZLE or currentRoom.doorSFlag==BOTH:
                   startPuzzle(player)
                 else:
+                  player.itemsGroup.empty()
                   return(enterRoom('south',player,screen))
 
             else:
@@ -3045,6 +3145,7 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorEFlag==PUZZLE or currentRoom.doorEFlag==BOTH:
                   startPuzzle(player)
                 else:
+                  player.itemsGroup.empty()
                   return(enterRoom('east',player,screen))
 
             else:
@@ -3069,6 +3170,7 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorWFlag==PUZZLE or currentRoom.doorWFlag==BOTH:
                   startPuzzle(player)
                 else:
+                  player.itemsGroup.empty()
                   return(enterRoom('west',player,screen))
 
             else:
@@ -3077,12 +3179,11 @@ def checkDoor(direction,player,screen):
     elif direction=='left':
         if playerFacing==NORTH:
             player.playerFacing=WEST
-            #setImage(player)
+
             return('You are now facing West')
 
         elif playerFacing==SOUTH:
             player.playerFacing=EAST
-            #setImage(player)
             return('You are now facing East')
 
         elif playerFacing==EAST:
@@ -3352,28 +3453,7 @@ def updateWaiting(event,player):
   #################
   #check items in room
   #################
-
-  if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
-    player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
-    player.migrateMessages(player.currentRoom.it1.name+" added to inventory")
-    player.currentRoom.it1=0
-    player.itemsPickedUp=True
-  if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
-    player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
-    player.migrateMessages(player.currentRoom.it2.name+" added to inventory")
-    player.currentRoom.it2=0
-    player.itemsPickedUp=True
-  if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
-    player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
-    player.migrateMessages(player.currentRoom.it3.name+" added to inventory")
-    player.currentRoom.it3=0
-    player.itemsPickedUp=True
-  if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
-    player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
-    player.migrateMessages(player.currentRoom.it4.name+" added to inventory")
-    player.currentRoom.it4=0
-    player.itemsPickedUp=True
-
+  ####MOVED TO setImage() and player.checkRoom()
 def updateBattle(event,player):
   player.curBattle.Run(event,screen)
 
@@ -3431,6 +3511,7 @@ def updatePuzzle(event,player):
 ###Draw methods###
 def drawTraversal(player,screen):
   setImage(player)
+
 def drawPuzzle(player,screen):
   #draw background and completed image
   screen.fill((0,0,0),(0,0,1200,900))
@@ -3489,11 +3570,6 @@ def drawTextBox(player,screen):
 while pippy.pygame.next_frame():
 
   for event in pygame.event.get():
-    if event.type==USEREVENT+4:
-      player.itemPickup.play()
-      player.itemsPickedUp=False
-      #UNDRAW ITEMS FROM ROOM
-      pygame.time.set_timer(USEREVENT+4,0)
     if event.type==USEREVENT+2:
       pygame.time.set_timer(USEREVENT+2,0)
       drawWaiting(player,screen)
@@ -3602,10 +3678,13 @@ while pippy.pygame.next_frame():
       player.currentRoom.shop.draw(screen,player)
   if player.traversal:
     player.currentRoomGroup.draw(screen)
+    player.itemsGroup.draw(screen)
     if player.movTutorial==False:
       player.initMovTutorial(screen)
-    if player.movTutorial2==False and player.dgnIndex==0 and player.currentX==0 and player.currentY==0:
+    if player.movTutorial2==False and player.dgnIndex==0 and player.currentX==1 and player.currentY==3:
       player.initMovTutorial2(screen)
+    if player.movTutorial3==False and player.dgnIndex==0 and player.currentX==0 and player.currentY==0:
+      player.initMovTutorial3(screen)
     pygame.display.flip()
   # update the display
 
