@@ -28,6 +28,17 @@ class Dungeon:
     def get_room_array(self):
         return self.roomlist
 
+    def has_door_type(self, key):
+        for room_row in self.roomlist:
+            for room in room_row:
+                for door_key in room.doors:
+                    if room.doors[door_key][1] == key:
+                        return True
+        return False
+
+    def valid_dungeon(self):
+        return self.has_door_type( 'e' ) and self.has_door_type( 'x' )
+
     def get_adj_room( self, room, dir ):
         if dir == "N":
             next_x = room._x

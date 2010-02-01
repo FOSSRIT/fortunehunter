@@ -227,17 +227,15 @@ class FortuneMaker(Activity):
         self.set_gui_view( room_center )
 
     def export_view(self):
-        data = self.dungeon.export()
+        if self.dungeon.valid_dungeon():
+            data = self.dungeon.export()
+            filename = self.dungeon.name
 
-        textbuffer = gtk.Label()
-        filename = self.dungeon.name
+            self._write_textfile( filename, data )
+            self._alert( _( "Dungeon Exported to Journal"), filename )
 
-        self._write_textfile( filename, data)
-
-        textbuffer.set_text( "File Saved to %s"%(filename) )
-
-        self.set_gui_view( textbuffer )
-
+        else:
+            self._alert( _( "Export Failed"), _("Invalid dungeon configuration") )
 
 
     #### Method: _write_textfile, which creates a simple text file
@@ -500,7 +498,7 @@ class FortuneMaker(Activity):
         self.view_dungeon_grid()
 
     def _draw_room_button_grid(self):
-        # Setup Room Pannel
+        # Setup Room Panel
         room_array = self.dungeon.get_room_array()
         box = gtk.VBox()
         for row_array in room_array:
@@ -520,7 +518,7 @@ class FortuneMaker(Activity):
         self.edit_pane = gtk.HPaned()
         self._pane2 = None
 
-        # Setup Button Pannel
+        # Setup Button Panel
         listbox = gtk.VBox()
 
         lbl = gtk.RadioButton(None,_('Remove Enemy'))
@@ -748,7 +746,10 @@ class FortuneMaker(Activity):
                             else:
                                 self._alert( _("Door Not Added"), _("This door can not be placed at edge of dungeon"))
                         else:
-                            self.active_room.add_door( door_pos, but.track_flag )
+                            if not self.dungeon.has_door_type( but.track_flag ):
+                                self.active_room.add_door( door_pos, but.track_flag )
+                            else:
+                                self._alert( _("Door Not Added"), _("The dungeon can only have one %s") % DOOR_FLAGS[but.track_flag] )
 
 
                 elif but.track_mode == 'SPEC_FLAG':
