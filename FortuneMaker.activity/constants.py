@@ -49,8 +49,32 @@ ENEM_INDEX = {
     }
 
 ITEM_INDEX = {
-    '0':_('None')
-
+    '0':_('None'),
+    '1':_("Ancient Amulet"),
+    '2':_("Rusted Blade"),
+    '3':_("Great Sword"),
+    '4':_("Crescent Sword"),
+    '5':_("Cardinal"),
+    '6':_("Sun Moon"),
+    '7':_("Earth Vest"),
+    '8':_("Wind Breaker"),
+    '9':_("Flame Leggings"),
+    '8':_("Dark Cowl"),
+    '9':_("Celestial Armor"),
+    'a':_("Jewel Shard"),
+    'b':_("Broken Hourglass"),
+    'c':_("Radiant Vial"),
+    'd':_("Honor Tome"),
+    'e':_("Valor Tome"),
+    'f':_("Ruby"),
+    'g':_("Sapphire"),
+    'h':_("Emerald"),
+    'i':_("Diamond"),
+    'j':_("Remedy"),
+    'k':_("Elixir"),
+    'l':_("Panacea"),
+    'm':_("High Elixir"),
+    'n':_("Nostrum")
 }
 
 ITEM_FLAGS = {
