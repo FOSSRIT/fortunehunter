@@ -19,6 +19,7 @@ from sugar.util import unique_id
 import gtk
 import os
 import re
+FILE_MIME = "application/x-fortune-map"
 
 MAX_GRID_WIDTH = 15
 MAX_GRID_HEIGHT = 15
@@ -253,7 +254,7 @@ class FortuneMaker(Activity):
         # Write any metadata (here we specifically set the title of the file and
         # specify that this is a plain text file).
         file_dsobject.metadata['title'] = filename
-        file_dsobject.metadata['mime_type'] = 'text/fm_map'
+        file_dsobject.metadata['mime_type'] = FILE_MIME
         file_dsobject.metadata['FortuneMaker_VERSION'] = '1'
 
         #Write the actual file to the data directory of this activity's root.
