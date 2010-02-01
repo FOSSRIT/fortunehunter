@@ -14,7 +14,6 @@ from sugar.activity.activity import ActivityToolbox
 from sugar.graphics.toolbutton import ToolButton
 from sugar.graphics.icon import Icon
 from sugar.graphics.alert import NotifyAlert
-from sugar.util import unique_id
 
 import gtk
 import os
@@ -125,7 +124,10 @@ class FortuneMaker(Activity):
         ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
         file_list = []
         for i in xrange(0, num_objects, 1):
-            file_list.append( ds_objects[i] )
+            if ds_objects[i].metadata.has_key('FM_UID'):
+                file_list.append( ds_objects[i] )
+            else:
+                self._alert('WARNING: File missing uid',ds_objects.metadata['title'])
         return file_list
 
     def show_home(self):
@@ -246,10 +248,12 @@ class FortuneMaker(Activity):
         if num_objects == 0:
             # Create a datastore object
             file_dsobject = datastore.create()
-            file_dsobject.metadata['FM_UID'] = unique_id()
+
         else:
             file_dsobject = ds_objects[0]
-            file_dsobject.metadata['FM_UID'] = file_dsobject.metadata['FM_UID']
+
+        # Store unique id for easy search of journal
+        file_dsobject.metadata['FM_UID'] = self.dungeon.id
 
         # Write any metadata (here we specifically set the title of the file and
         # specify that this is a plain text file).
@@ -435,34 +439,43 @@ class FortuneMaker(Activity):
         self.set_gui_view( room_center )
 
     def load_dungeon(self, widget, file_data):
-        name = file_data.metadata['title']
         dgnFile=open(file_data.get_file_path(),'r')
-        self.do_load( name, dgnFile)
+        self.do_load( dgnFile)
         dngFile.close()
 
-    def do_load( self, name, dgnFile ):
+    def do_load( self, dgnFile ):
         grab = 0
         room_str = []
         for line in dgnFile:
             if grab == 0:
+                name = line.strip()
+                grab = 1
+
+            elif grab == 1:
+                d_id = line.strip()
+                grab = 2
+
+            elif grab == 2:
                 match = re.match('(\d+)x(\d+)',line)
                 if match:
                     x = int(match.group(1))
                     y = int(match.group(2))
-                    grab = 1
+                    grab = 3
                 else:
                     raise BadInputException()
 
-            elif grab == 1:
-                theme = int(line)
-                grab = 2
-            elif grab == 2:
-                next = line.strip()
-                grab = 3
             elif grab == 3:
+                theme = int(line)
+                grab = 4
+
+            elif grab == 4:
+                next = line.strip()
+                grab = 5
+
+            elif grab == 5:
                 room_str.append(line.strip())
 
-        self.dungeon = Dungeon( name, theme, next, x, y, room_str)
+        self.dungeon = Dungeon( name, theme, next, x, y, room_str, d_id)
         self.enable_room_icons(True)
         self.view_dungeon_grid()
 
@@ -774,12 +787,9 @@ class FortuneMaker(Activity):
             return
 
         self.SHUT_UP_XO_CALLING_ME = True
-        # If no title, not valid save, don't continue loading file
-        if self.metadata.has_key( 'dungeon_title' ):
-            name = self.metadata['dungeon_title']
-            dgnFile=open(file_path,'r')
-            self.do_load( name, dgnFile )
-            dgnFile.close()
+        dgnFile=open(file_path,'r')
+        self.do_load( dgnFile )
+        dgnFile.close()
         return
 
     def write_file(self, file_path):

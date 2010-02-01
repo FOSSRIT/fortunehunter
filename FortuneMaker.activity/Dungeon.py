@@ -1,7 +1,13 @@
 from Room import Room
+from sugar.util import unique_id
 
 class Dungeon:
-    def __init__( self, name, theme, next, width, height, room_str = None ):
+    def __init__( self, name, theme, next, width, height, room_str = None, id = None ):
+        if id:
+            self.id = id
+        else:
+            self.id = unique_id()
+
         self.name = name
         self.theme = theme
         self.next = next
@@ -50,7 +56,9 @@ class Dungeon:
         self.roomlist[room._y][room._x] = room
 
     def export(self):
-        text = str(self.width) + "x" + str(self.height) + "\n"
+        text = self.name + "\n"
+        text += self.id + "\n"
+        text += str(self.width) + "x" + str(self.height) + "\n"
         text += str(self.theme) + "\n"
         text += str(self.next) + "\n"
         for row in self.roomlist:
