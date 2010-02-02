@@ -48,7 +48,7 @@ def export_textfile(activity, filename, dungeon_id, filetext=''):
 
 
 def list_fh_files():
-    ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
+    ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':FM_VERSION})
     file_list = []
     for i in xrange(0, num_objects, 1):
         if ds_objects[i].metadata.has_key('FM_UID'):
@@ -57,6 +57,14 @@ def list_fh_files():
             #TODO: Attempt to read uid from file?
             pass
     return file_list
+
+def load_dungeon_by_id(id):
+    ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':FM_VERSION,'FM_UID':id})
+
+    if num_objects == 0:
+        return False
+
+    return load_dungeon(ds_objects[0])
 
 def load_dungeon(file_data):
     """
@@ -81,7 +89,6 @@ def do_load( dgnFile ):
     grab = 0
     room_str = []
     for line in dgnFile:
-        print "PROCESSING LINE:",line
         if grab == 0:
             name = line.strip()
             grab = 1
