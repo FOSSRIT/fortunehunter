@@ -624,9 +624,9 @@ class Map:
     curSect=pygame.Rect(0,700,200,200)
     curSect.top+=((player.currentX*40-81)*math.cos(angle))-((player.currentY*40-81)*math.sin(angle))
     curSect.left-=((player.currentX*40-81)*math.sin(angle))+((player.currentY*40-81)*math.cos(angle))
-    if player.playerFacing==EAST and player.dgnIndex==0:
+    if player.playerFacing==EAST:
       curSect.top+=sideDifference*(40-81)
-    elif player.playerFacing==SOUTH and player.dgnIndex==0:
+    elif player.playerFacing==SOUTH:
       curSect.left+=sideDifference*(40-81)
     screen.fill(0,(0,700,200,300),0)
     screen.blit(mapView,curSect)
@@ -673,11 +673,14 @@ class Menu:
 
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
+        if self.name=="Pause Menu":
+          self.background.image.fill((255,255,255),(0,0,1200,900))
+          self.background.image.set_alpha(20)
 	bgGroup=pygame.sprite.Group(self.background)
         self.startX=xStart
         self.startY=yStart
         self.height=height
-        if not self.name=="Inventory":
+        if not self.name=="Inventory" and not self.name=="Defeat":
           bgGroup.draw(screen)
         i=0
         sel=0
@@ -864,12 +867,68 @@ class Menu:
             k+=40
           pygame.display.flip()
         elif self.name=="Defeat":
-          screen.fill((0,0,0),(0,0,1200,900))
+          alphaLayer=pygame.image.load(ENV_PATH+"Black.gif")
+          alphaLayer.set_alpha(10)
+          screen.blit(alphaLayer,(0,0,1200,900))
           menuGroup.draw(screen)
-          screen.blit(font.render("You have been defeated",True,(150,0,0)),(400,400,0,0))
-          screen.blit(font.render("Continue",True,(150,0,0)),(470,515,0,0))
-          screen.blit(font.render("Exit",True,(150,0,0)),(710,515,0,0))
-          #draw continue/exit text
+          font=pygame.font.SysFont("cmr10",40,False,False)
+          screen.blit(font.render("You have been defeated",True,(150,0,0)),(450,400,0,0))
+          font=pygame.font.SysFont("cmr10",24,False,False)
+          screen.blit(font.render("Continue",True,(150,0,0)),(520,515,0,0))
+          screen.blit(font.render("Exit",True,(150,0,0)),(760,515,0,0))
+          #draw player stats
+          screen.blit(font.render("Multiplication problems right/wrong:",True,(150,0,0)),(20,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(150,0,0)),(100,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.multiplicationStats[1][0])+"/"+repr(player.multiplicationStats[1][1]),True,(150,0,0)),(100,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.multiplicationStats[2][0])+"/"+repr(player.multiplicationStats[2][1]),True,(150,0,0)),(100,110,0,0))
+          screen.blit(font.render("Fraction problems right/wrong:",True,(150,0,0)),(450,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.divisionStats[0][0])+"/"+repr(player.divisionStats[0][1]),True,(150,0,0)),(530,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.divisionStats[1][0])+"/"+repr(player.divisionStats[1][1]),True,(150,0,0)),(530,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.divisionStats[2][0])+"/"+repr(player.divisionStats[2][1]),True,(150,0,0)),(530,110,0,0))
+          screen.blit(font.render("Geometry problems right/wrong:",True,(150,0,0)),(830,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.geometryStats[0][0])+"/"+repr(player.geometryStats[0][1]),True,(150,0,0)),(910,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.geometryStats[1][0])+"/"+repr(player.geometryStats[1][1]),True,(150,0,0)),(910,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(150,0,0)),(910,110,0,0))
+          screen.blit(font.render("Puzzles solved:"+repr(player.puzzlesSolved),True,(150,0,0)),(400,160,0,0))
+
+          screen.blit(font.render("Levels Beaten/Levels left:  "+repr(player.dgnIndex+1)+"/"+repr(len(player.dungeons)-player.dgnIndex+1),True,(150,0,0)),(600,160,0,0))
+       
+        elif self.name=="Pause Menu":
+          menuGroup.draw(screen)
+          font=pygame.font.SysFont("cmr10",40,False,False)
+          screen.blit(font.render("Paused",True,(50,150,50)),(550,350,0,0))
+          font=pygame.font.SysFont("cmr10",24,False,False)
+          screen.blit(font.render("Multiplication problems right/wrong:",True,(50,150,50)),(20,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(50,50,200)),(100,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.multiplicationStats[1][0])+"/"+repr(player.multiplicationStats[1][1]),True,(50,50,200)),(100,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.multiplicationStats[2][0])+"/"+repr(player.multiplicationStats[2][1]),True,(50,50,200)),(100,110,0,0))
+          screen.blit(font.render("Fraction problems right/wrong:",True,(50,150,50)),(450,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.divisionStats[0][0])+"/"+repr(player.divisionStats[0][1]),True,(50,50,200)),(530,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.divisionStats[1][0])+"/"+repr(player.divisionStats[1][1]),True,(50,50,200)),(530,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.divisionStats[2][0])+"/"+repr(player.divisionStats[2][1]),True,(50,50,200)),(530,110,0,0))
+          screen.blit(font.render("Geometry problems right/wrong:",True,(50,150,50)),(830,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.geometryStats[0][0])+"/"+repr(player.geometryStats[0][1]),True,(50,50,200)),(910,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.geometryStats[1][0])+"/"+repr(player.geometryStats[1][1]),True,(50,50,200)),(910,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(50,50,200)),(910,110,0,0))
+          screen.blit(font.render("Puzzles solved:",True,(50,150,50)),(500,160,0,0))
+          screen.blit(font.render(repr(player.puzzlesSolved),True,(50,50,200)),(670,160,0,0))
+          x1=0
+          x2=0
+          x3=0
+          x4=0
+          if self.currentOption==0:
+            x1=30
+          elif self.currentOption==1:
+            x2=30
+          elif self.currentOption==2:
+            x3=30
+          elif self.currentOption==3:
+            x4=30
+          screen.blit(font.render("Save Game",True,(20,20,100)),(460+x1,410,0,0))
+          screen.blit(font.render("Exit Game",True,(20,20,100)),(460+x2,460,0,0))
+          screen.blit(font.render("Main Menu",True,(20,20,100)),(460+x3,510,0,0))
+          screen.blit(font.render("Return to Game",True,(20,20,100)),(460+x4,560,0,0))
+
         elif self.name=="Options Menu":
           menuGroup.draw(screen)
           screen.blit(font.render("Critical Attack",True,(150,0,0)),(450+40,400+3,0,0))
@@ -952,7 +1011,7 @@ class Menu:
             screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
             y+=40
 
-        if not self.name=="Defeat" and not self.name=="Difficulty Menu" and not self.name=="Options Menu":
+        if not self.name=="Defeat" and not self.name=="Difficulty Menu" and not self.name=="Options Menu" and not self.name=="Pause Menu":
           menuGroup.draw(screen)
         if self.name=="Main Menu":
           screen.blit(font.render("Load",True,(150,0,0)),(450+40,400+103,0,0))
@@ -1013,7 +1072,16 @@ class Menu:
 
         elif name=="Close":
             sys.exit()
-
+        elif name=="Save":
+          print("Game Saved (not really)")
+          #do save stuff
+        elif name=="Main Menu":
+          player.traversal=False
+          player.currentMenu=player.MainMenu
+          player.mainMenu=True
+        elif name=="Return to Game":
+          player.traversal=True
+          player.mainMenu=False
         elif name=="Tutorial":
             player.inTutorial=True
             player.mainMenu=False
@@ -1082,8 +1150,14 @@ class Menu:
             if player.battlePlayer.currentAnswer==int(player.battlePlayer.currentInput):
               player.curBattle.attack(player.battlePlayer,"critical")
             else:
+              tup=self.player.multiplicationStats[self.player.critDifficulty-1]
+              tup=(tup[0],tup[1]+1)
+              self.player.multiplicationStats[self.player.critDifficulty-1]=tup
               player.curBattle.attack(player.battlePlayer,"basic")
           else:
+            tup=self.player.multiplicationStats[self.player.critDifficulty-1]
+            tup=(tup[0],tup[1]+1)
+            self.player.multiplicationStats[self.player.critDifficulty-1]=tup
             player.curBattle.attack(player.battlePlayer,"basic")
         elif name=="Division":
           player.curBattle.divisionAttack()
@@ -1097,7 +1171,7 @@ class Menu:
           player.battlePlayer.currentProb2=""
           player.battlePlayer.currentInput=""
           player.curBattle.startGlyph(name)
-	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4":
+	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4" or name=="Missile1" or name=="Missile2" or name=="Missile3" or name=="Missile4":
 	  player.curBattle.checkGlyph(name)
         elif name=="Use Item":
           for i in player.battlePlayer.eqItem:
@@ -1126,6 +1200,9 @@ class Menu:
           player.currentMenu=player.divMenu
         elif name=="Not":
           player.migrateMessages("Incorrect glyph.  Spell fizzles")
+          tup=self.player.divisionStats[self.player.divDifficulty-1]
+          tup=(tup[0],tup[1]+1)
+          self.player.divisionStats[self.player.divDifficulty-1]=tup
           player.curBattle.glyphGroup.empty()
           player.curBattle.glyphOverlayGroup.empty()
           player.curBattle.playerTurn=False
@@ -1277,9 +1354,10 @@ class Player:
     #Player stats
     self.name=""  #player name: to be set in options menu or upon new game (character select screen?)
     self.multiplicationStats=[(0,0),(0,0),(0,0)]   #[easy problems,medium problems,hard problems]
-    self.divisionSolved=[(0,0),(0,0),(0,0)]        #[easy problems,medium problems,hard problems]
-    self.geomSolved=[(0,0),(0,0),(0,0)]            #[easy,medium, hard]
-    self.shopSolved=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
+    self.divisionStats=[(0,0),(0,0),(0,0)]        #[easy problems,medium problems,hard problems]
+    self.geometryStats=[(0,0),(0,0),(0,0)]            #[easy,medium, hard]
+    self.shopStats=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
+    self.puzzlesSolved=0
 
     self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
@@ -1427,7 +1505,7 @@ class Player:
     self.msg5=msg
   def nextDungeon(self):
 
-    self.dgnIndex+=1
+    self.dgnIndex+=2
     self.battlePlayer.MHP+=2
     if self.dgnIndex>=len(self.dungeons):
       self.currentMenu=self.MainMenu
@@ -1554,9 +1632,13 @@ class Player:
       player.migrateMessages("You have found items in your search, try searching every room for items!")
     if hidden:
       message+=" discovered!"
-    else:
+      player.itemPickup.play()
+    elif found:
       message+=" picked up"
-    player.itemPickup.play()
+      player.itemPickup.play()
+    else:
+      message="No items found"
+
     return(message)
 
 #######################################################################
@@ -1620,7 +1702,7 @@ class Hero:
     elif name=="Division":
       return (self.ATT+self.BAE)*1.5
     elif name=="Missile":
-      return 0
+      return self.ATT+self.BAB
 
   #returns player's current defense power
   def defensePower(self):
@@ -1918,7 +2000,19 @@ class BattleEngine:
 	self.lightning4.image=pygame.image.load(PUZZLE_PATH+"LightningGlyph4.gif")
 
         self.missile=pygame.sprite.Sprite()
-	self.missile.image=pygame.image.load(PUZZLE_PATH+"MagicGlyph.gif")
+	self.missile.image=pygame.image.load(PUZZLE_PATH+"MissileGlyph.gif")
+        self.missile1btn=PUZZLE_PATH+"MissileGlyph1btn.gif"
+        self.missile1=pygame.sprite.Sprite()
+	self.missile1.image=pygame.image.load(PUZZLE_PATH+"MissileGlyph1.gif")
+        self.missile2btn=PUZZLE_PATH+"MissileGlyph2btn.gif"
+        self.missile2=pygame.sprite.Sprite()
+	self.missile2.image=pygame.image.load(PUZZLE_PATH+"MissileGlyph2.gif")
+        self.missile3btn=PUZZLE_PATH+"MissileGlyph3btn.gif"
+        self.missile3=pygame.sprite.Sprite()
+	self.missile3.image=pygame.image.load(PUZZLE_PATH+"MissileGlyph3.gif")
+        self.missile4btn=PUZZLE_PATH+"MissileGlyph4btn.gif"
+        self.missile4=pygame.sprite.Sprite()
+	self.missile4.image=pygame.image.load(PUZZLE_PATH+"MissileGlyph4.gif")
 
         self.heal=pygame.sprite.Sprite()
 	self.heal.image=pygame.image.load(PUZZLE_PATH+"HealGlyph.gif")
@@ -2092,29 +2186,55 @@ class BattleEngine:
     if attackName=="critical":
       attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
       self.player.basicAtk.play()
+      tup=self.player.multiplicationStats[self.player.critDifficulty-1]
+      tup=(tup[0]+1,tup[1])
+      self.player.multiplicationStats[self.player.critDifficulty-1]=tup
+
     elif attackName=="Fire":
-      attacker.setBonusAP(int(self.timeBonus*20)+50)
+      attacker.setBonusAP(int(self.timeBonus*20)+50) #change to +enemy.fireWeakness
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.currentMenu=self.battleMenu
       self.player.magicAtk.play()
+      tup=self.player.geometryStats[self.player.geomDifficulty-1]
+      tup=(tup[0]+1,tup[1])
+      self.player.geometryStats[self.player.geomDifficulty-1]=tup
+
     elif attackName=="Heal":
       attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.currentMenu=self.battleMenu
+      tup=self.player.geometryStats[self.player.geomDifficulty-1]
+      tup=(tup[0]+1,tup[1])
+      self.player.geometryStats[self.player.geomDifficulty-1]=tup
+
     elif attackName=="Lightning":
-      attacker.setBonusAP(int(self.timeBonus)+70)
+      attacker.setBonusAP(int(self.timeBonus)+70) #change to +enemy.lightningWeakness
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.magicAtk.play()
       self.player.currentMenu=self.battleMenu
+      tup=self.player.geometryStats[self.player.geomDifficulty-1]
+      tup=(tup[0]+1,tup[1])
+      self.player.geometryStats[self.player.geomDifficulty-1]=tup
     elif attackName=="Missile":
-      attacker.setBonusAP(0)
+      attacker.setBonusAP(int(self.timeBonus)+50) #change to +enemy.missileWeakness
+      self.glyphGroup.empty()
+      self.glyphOverlayGroup.empty()
+      self.player.magicAtk.play()
       self.player.currentMenu=self.battleMenu
+      tup=self.player.geometryStats[self.player.geomDifficulty-1]
+      tup=(tup[0]+1,tup[1])
+      self.player.geometryStats[self.player.geomDifficulty-1]=tup
+      print("Missile")
     elif attackName=="Division":
       self.player.currentMenu=self.battleMenu
       self.player.specialAtk.play()
+      tup=self.player.divisionStats[self.player.divDifficulty-1]
+      tup=(tup[0]+1,tup[1])
+      self.player.divisionStats[self.player.divDifficulty-1]=tup
+
     else:
       self.player.basicAtk.play()
     pygame.time.set_timer(USEREVENT+1,0)
@@ -2187,7 +2307,17 @@ class BattleEngine:
       self.glyphGroup.add(self.lightning)
 
     elif name=="Missile":
-	self.attack(self.player.battlePlayer,"Missile")
+      shuffle2D=[("Missile1",self.missile1btn),("Missile2",self.missile2btn),("Missile3",self.missile3btn),("Missile4",self.missile4btn),("Not",self.lightning1btn),("Not",self.heal4btn),("Not",self.fire3btn),("Not",self.lightning3btn)]
+      shuffle(shuffle2D)
+      glyphMenuOptions=[shuffle2D[0][0],shuffle2D[1][0],shuffle2D[2][0],shuffle2D[3][0],shuffle2D[4][0],shuffle2D[5][0],shuffle2D[6][0],shuffle2D[7][0]]
+      glyphMenuImages=[shuffle2D[0][1],shuffle2D[1][1],shuffle2D[2][1],shuffle2D[3][1],shuffle2D[4][1],shuffle2D[5][1],shuffle2D[6][1],shuffle2D[7][1]]
+
+      glyphMenu=Menu(glyphMenuOptions,self.player,MENU_PATH+"battleMenubackground.gif",glyphMenuImages,"Glyph Menu")
+      glyphMenu.numPad=True
+      glyphMenu.background.rect=(0,300,200,200)
+      player.currentMenu=glyphMenu
+      self.missile.rect=(500,350,300,300)
+      self.glyphGroup.add(self.missile)
     elif name=="Heal":
       shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn)]
       shuffle(shuffle2D)
@@ -2228,6 +2358,30 @@ class BattleEngine:
         self.glyphOverlayGroup.add(self.fire4)
         if self.glyphOverlayGroup.has([self.fire4,self.fire2,self.fire3,self.fire1])==True:
 	  self.attack(self.player.battlePlayer,"Fire")
+    elif name=="Missile1":
+      if self.glyphOverlayGroup.has(self.missile1)==False:
+	self.missile1.rect=self.missile.rect
+        self.glyphOverlayGroup.add(self.missile1)
+        if self.glyphOverlayGroup.has([self.missile1,self.missile2,self.missile3,self.missile4])==True:
+	  self.attack(self.player.battlePlayer,"Missile")
+    elif name=="Missile2":
+      if self.glyphOverlayGroup.has(self.missile2)==False:
+	self.missile2.rect=self.missile.rect
+        self.glyphOverlayGroup.add(self.missile2)
+        if self.glyphOverlayGroup.has([self.missile1,self.missile2,self.missile3,self.missile4])==True:
+	  self.attack(self.player.battlePlayer,"Missile")
+    elif name=="Missile3":
+      if self.glyphOverlayGroup.has(self.missile3)==False:
+	self.missile3.rect=self.missile.rect
+        self.glyphOverlayGroup.add(self.missile3)
+        if self.glyphOverlayGroup.has([self.missile1,self.missile2,self.missile3,self.missile4])==True:
+	  self.attack(self.player.battlePlayer,"Missile")
+    elif name=="Missile4":
+      if self.glyphOverlayGroup.has(self.missile4)==False:
+	self.missile4.rect=self.missile.rect
+        self.glyphOverlayGroup.add(self.missile4)
+        if self.glyphOverlayGroup.has([self.missile1,self.missile2,self.missile3,self.missile4])==True:
+	  self.attack(self.player.battlePlayer,"Missile")
     elif name=="Heal1":
       if self.glyphOverlayGroup.has(self.heal1)==False:
 	self.heal1.rect=self.heal.rect
@@ -2312,6 +2466,9 @@ class BattleEngine:
       self.playerTurn=False
       self.player.currentMenu=self.battleMenu	
       self.player.battlePlayer.fractionSum=0
+      tup=self.player.divisionStats[self.player.divDifficulty-1]
+      tup=(tup[0],tup[1]+1)
+      self.player.divisionStats[self.player.divDifficulty-1]=tup
       
 
   def divisionAttack(self):
@@ -2737,6 +2894,7 @@ class Shop:
   
   def draw(self,screen,player):
     player.currentRoomGroup.draw(screen)
+    font = pygame.font.Font(None, 36)
     merchantSprite=pygame.sprite.Sprite()
     bgSprite=pygame.sprite.Sprite()
     bgSprite.image=pygame.image.load(MENU_PATH+"ShopBG.gif")
@@ -2746,6 +2904,7 @@ class Shop:
     merchantGroup=pygame.sprite.Group(merchantSprite)
     bgGroup=pygame.sprite.Group(bgSprite)
     bgGroup.draw(screen)
+    screen.blit(font.render("Buy              Sell",True,(0,0,0)),(190,30,50,50))
     merchantGroup.draw(screen)
     screen.blit(pygame.image.load(MENU_PATH+"Speech.gif"),(550,0,400,400))
     if self.buyMode:
@@ -2754,7 +2913,7 @@ class Shop:
       y=80
       for item in self.itemList:
         #from left to right: arrow, box w/#, arrow, item name
-        font = pygame.font.Font(None, 36)
+
         if i==self.selItem:
           screen.fill((200,200,150),(150,y,400,40))
         screen.blit(pygame.image.load(MENU_PATH+"LArrow.gif"),(150,y,40,40))
@@ -3296,9 +3455,12 @@ def updateMenu(event,player):
       elif newKey=='[2]' or newKey=='down':
         menu.select("down")
 
-      elif newKey=='[3]' or newKey=='backspace':
+      elif newKey=='[3]' or newKey=='backspace' or newKey=='i':
         if menu.name=="Stats" or menu.name=="Inventory":
           menu.regress(player)
+        elif menu.name=="Pause Menu":
+          player.traversal=True
+          player.mainMenu=False
         
 
       elif newKey=='[4]' or newKey=='left':
@@ -3359,7 +3521,12 @@ def updateTraversal(event,player,screen):
         player.migrateMessages(checkDoor('down',player,screen))
 
       elif newKey=='[3]' or newKey=='i':
-        player.migrateMessages("")
+        if player.traversal:
+          player.traversal=False
+          player.mainMenu=True
+          pauseMenuOptions=["Save","Close","Main Menu","Return to Game"]
+          pauseMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+          player.currentMenu=Menu(pauseMenuOptions,player,ENV_PATH+"Black.gif",pauseMenuImages,"Pause Menu")
 
       elif newKey=='[4]' or newKey=='left':
         player.migrateMessages(checkDoor('left',player,screen))
@@ -3654,7 +3821,7 @@ while pippy.pygame.next_frame():
     elif player.currentMenu.name=="Difficulty Menu":
       player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
     elif player.currentMenu.name=="Defeat":
-      player.currentMenu.draw(player,screen,450,500,50)
+      player.currentMenu.draw(player,screen,500,500,50)
       
     else:
       player.currentMenu.draw(player,screen,450,400,50)
@@ -3679,6 +3846,7 @@ while pippy.pygame.next_frame():
   if player.traversal:
     player.currentRoomGroup.draw(screen)
     player.itemsGroup.draw(screen)
+
     if player.movTutorial==False:
       player.initMovTutorial(screen)
     if player.movTutorial2==False and player.dgnIndex==0 and player.currentX==1 and player.currentY==3:
