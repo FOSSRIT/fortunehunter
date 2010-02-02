@@ -1,5 +1,6 @@
 from Room import Room
 from Dungeon import Dungeon
+import JournalIntegration
 from constants import (
                         THEME_NAME, DOOR_INDEX, DOOR_FLAGS,
                         SPEC_FLAGS, ENEM_INDEX, ITEM_FLAGS,
@@ -16,16 +17,11 @@ from sugar.graphics.icon import Icon
 from sugar.graphics.alert import NotifyAlert
 
 import gtk
-import os
-import re
-FILE_MIME = "application/x-fortune-map"
 
 MAX_GRID_WIDTH = 15
 MAX_GRID_HEIGHT = 15
 MIN_GRID_WIDTH = 2
 MIN_GRID_HEIGHT = 2
-
-class BadInputException(Exception):pass
 
 class FortuneMaker(Activity):
     def __init__(self, handle):
@@ -119,17 +115,6 @@ class FortuneMaker(Activity):
             self.show_dungeon_settings()
         elif view == 'home':
             self.show_home()
-
-    def list_fh_files(self):
-        ds_objects, num_objects = datastore.find({'FortuneMaker_VERSION':'1'})
-        file_list = []
-        for i in xrange(0, num_objects, 1):
-            if ds_objects[i].metadata.has_key('FM_UID'):
-                file_list.append( ds_objects[i] )
-            else:
-                #TODO: Attempt to read uid from file?
-                self._alert('WARNING: File missing uid',ds_objects.metadata['title'])
-        return file_list
 
     def show_home(self):
         window_container = gtk.VBox()
@@ -231,49 +216,11 @@ class FortuneMaker(Activity):
             data = self.dungeon.export()
             filename = self.dungeon.name
 
-            self._write_textfile( filename, data )
+            JournalIntegration.export_textfile( self, filename, self.dungeon.id, data )
             self._alert( _( "Dungeon Exported to Journal"), filename )
 
         else:
             self._alert( _( "Export Failed"), _("Invalid dungeon configuration") )
-
-
-    #### Method: _write_textfile, which creates a simple text file
-    # with filetext as the data put in the file.
-    # @Returns: a DSObject representing the file in the datastore.
-    def _write_textfile(self, filename, filetext=''):
-        ds_objects, num_objects = datastore.find({'title':filename,'FortuneMaker_VERSION':'1'})
-
-        if num_objects == 0:
-            # Create a datastore object
-            file_dsobject = datastore.create()
-
-        else:
-            file_dsobject = ds_objects[0]
-
-        # Store unique id for easy search of journal
-        file_dsobject.metadata['FM_UID'] = self.dungeon.id
-
-        # Write any metadata (here we specifically set the title of the file and
-        # specify that this is a plain text file).
-        file_dsobject.metadata['title'] = filename
-        file_dsobject.metadata['mime_type'] = FILE_MIME
-        file_dsobject.metadata['FortuneMaker_VERSION'] = '1'
-
-        #Write the actual file to the data directory of this activity's root.
-        file_path = os.path.join(self.get_activity_root(), 'instance', filename)
-        f = open(file_path, 'w')
-        try:
-            f.write(filetext)
-        finally:
-            f.close()
-
-        #Set the file_path in the datastore.
-        file_dsobject.set_file_path(file_path)
-
-        datastore.write(file_dsobject)
-        return file_dsobject
-
 
     def set_gui_view(self,  view):
         self.set_canvas( view )
@@ -286,7 +233,7 @@ class FortuneMaker(Activity):
         file_container = gtk.VBox()
 
         ##LOAD FILE LIST HERE
-        file_list = self.list_fh_files()
+        file_list = JournalIntegration.list_fh_files()
 
         for dfile in file_list:
             row = gtk.HBox()
@@ -366,7 +313,7 @@ class FortuneMaker(Activity):
 
         next_dungeon = gtk.combo_box_new_text()
 
-        file_list = self.list_fh_files()
+        file_list = JournalIntegration.list_fh_files()
         file_list_map = {}
         file_list_map["0"] = _("None")
         next_dungeon.append_text( file_list_map["0"] )
@@ -438,47 +385,19 @@ class FortuneMaker(Activity):
         self.set_gui_view( room_center )
 
     def load_dungeon(self, widget, file_data):
-        dgnFile=open(file_data.get_file_path(),'r')
-        self.do_load( dgnFile)
-        dngFile.close()
+        #try:
+            dungeon_dict = JournalIntegration.load_dungeon( file_data )
+            self.make_dungeon_from_dict( dungeon_dict )
+        #except:
+        #    pass
 
-    def do_load( self, dgnFile ):
-        grab = 0
-        room_str = []
-        for line in dgnFile:
-            if grab == 0:
-                name = line.strip()
-                grab = 1
-
-            elif grab == 1:
-                d_id = line.strip()
-                grab = 2
-
-            elif grab == 2:
-                match = re.match('(\d+)x(\d+)',line)
-                if match:
-                    x = int(match.group(1))
-                    y = int(match.group(2))
-                    grab = 3
-                else:
-                    raise BadInputException()
-
-            elif grab == 3:
-                theme = int(line)
-                grab = 4
-
-            elif grab == 4:
-                next = line.strip()
-                grab = 5
-
-            elif grab == 5:
-                room_str.append(line.strip())
-
-        if grab == 5:
-            self.dungeon = Dungeon( name, theme, next, x, y, room_str, d_id)
-            self.enable_room_icons(True)
-            self.view_dungeon_grid()
-
+    def make_dungeon_from_dict(self, dungeon_dict):
+        self.dungeon = Dungeon( dungeon_dict['name'], dungeon_dict['theme'],
+                                dungeon_dict['next'], dungeon_dict['x'],
+                                dungeon_dict['y'], dungeon_dict['roomstr'],
+                                dungeon_dict['d_id'])
+        self.enable_room_icons(True)
+        self.view_dungeon_grid()
 
     def edit_dungeon_cb(self, widget, data):
         self.dungeon.name = data['name'].get_text()
@@ -795,7 +714,7 @@ class FortuneMaker(Activity):
         self.remove_alert(alert)
 
     def can_close( self ):
-        if self.metadata['mime_type'] == FILE_MIME and self.dungeon:
+        if self.metadata['mime_type'] == JournalIntegration.FILE_MIME and self.dungeon:
             if not self.dungeon.valid_dungeon():
                 self._alert(_("Dungeon Invalid"),_("Dungeon must be valid to save to an exported dungeon"))
                 return False
@@ -808,7 +727,13 @@ class FortuneMaker(Activity):
 
         self.SHUT_UP_XO_CALLING_ME = True
         dgnFile=open(file_path,'r')
-        self.do_load( dgnFile )
+
+        try:
+            dungeon_dict = JournalIntegration.do_load( dgnFile )
+            self.make_dungeon_from_dict( dungeon_dict )
+        except:
+            pass
+
         dgnFile.close()
         return
 
@@ -817,7 +742,6 @@ class FortuneMaker(Activity):
             f = open( file_path, 'w' )
             f.write( self.dungeon.export() )
             f.close()
-            self.metadata['dungeon_title'] = self.dungeon.name
         else:
             # Basically touch file to prevent it from keep error
             open( file_path, 'w' ).close()
