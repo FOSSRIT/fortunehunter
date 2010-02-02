@@ -794,6 +794,13 @@ class FortuneMaker(Activity):
     def _alert_cancel_cb(self, alert, response_id):
         self.remove_alert(alert)
 
+    def can_close( self ):
+        if self.metadata['mime_type'] == FILE_MIME and self.dungeon:
+            if not self.dungeon.valid_dungeon():
+                self._alert(_("Dungeon Invalid"),_("Dungeon must be valid to save to an exported dungeon"))
+                return False
+        return True
+
     def read_file(self, file_path):
         if hasattr(self, "SHUT_UP_XO_CALLING_ME"):
             print "CALLED YET AGAIN! (%s)"%file_path
