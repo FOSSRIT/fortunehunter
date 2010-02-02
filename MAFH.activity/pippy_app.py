@@ -2,6 +2,7 @@ import pippy, pygame, sys, math
 from PIL import Image
 from pygame.locals import *
 from pygame import movie
+from sugar.activity import activity
 from random import *
 from time import time
 import os.path
@@ -23,6 +24,16 @@ CHAR_PATH = BASE_PATH + "/image/character/"
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
+def write_file(self, file_path):
+  f = open(file_path, 'w')
+  f2= open(os.path.join(activity.get_activity_root(),"instance/player.txt"),'r')
+  try:
+    for line in f2:
+      f.write(line)
+  finally:
+      f.close()
+      f2.close()
+
 #################################################################################
 #Item class: stores info about items
 #################################################################################
@@ -1073,7 +1084,12 @@ class Menu:
         elif name=="Close":
             sys.exit()
         elif name=="Save":
-          print("Game Saved (not really)")
+          dataList=player.toString()
+          FILE=open(os.path.join(activity.get_activity_root(),"instance/player.txt"),"w")
+          FILE.seek(0)
+          for line in dataList:
+            FILE.write(repr(line)+"\n")
+          FILE.close()
           #do save stuff
         elif name=="Main Menu":
           player.traversal=False
@@ -1407,7 +1423,29 @@ class Player:
     self.enemyDie=pygame.mixer.Sound(SOUND_PATH+"enemyDie1.ogg")
     self.itemPickup=pygame.mixer.Sound(SOUND_PATH+"itemPickup.ogg")
     self.buySell=pygame.mixer.Sound(SOUND_PATH+"buySell.ogg")
-
+  def toString(self):
+    dataList=[]
+    dataList.append(self.name)
+    dataList.append(self.dgnIndex)
+    dataList.append(self.critDifficulty)
+    dataList.append(self.divDifficulty)
+    dataList.append(self.geomDifficulty)
+    dataList.append(self.shopDifficulty)
+    dataList.append(self.multiplicationStats)
+    dataList.append(self.divisionStats)
+    dataList.append(self.geometryStats)
+    dataList.append(self.shopStats)
+    dataList.append(self.puzzlesSolved)
+    dataList.append(self.battlePlayer.MHP)
+    for item in self.battlePlayer.inv_Ar:
+      dataList.append((item.name,item.type))
+    for item in self.battlePlayer.eqItem:
+      dataList.append((item.name,item.type))
+    dataList.append((self.battlePlayer.weapon.name,self.battlePlayer.weapon.type))
+    dataList.append((self.battlePlayer.armor.name,self.battlePlayer.armor.type))
+    dataList.append((self.battlePlayer.accessory.name,self.battlePlayer.accessory.type))
+    dataList.append(self.battlePlayer.akhal)
+    return(dataList)
   def initializeMenu(self):
     difficultyMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
     difficultyMenuOptions=["Disabled","Easy","Medium","Hard"]
@@ -2698,7 +2736,7 @@ class Shop:
     self.player=player
     self.itemList=[Item("Remedy","Usable"),Item("Elixir","Usable")]
     self.selItem=0
-    self.numItem=0
+    self.numItem=[0,0]
     self.totalPrice=0
     self.selDigit=3
     self.enteredDigits=[0,0,0,0]
@@ -2739,8 +2777,11 @@ class Shop:
         else:
           self.message=[]
           self.message.append("Here you are")
-        for i in range(self.numItem):
-          self.player.battlePlayer.inv_Ar.append(self.itemList[self.selItem])
+        i=0
+
+        for item in self.itemList:
+          for i in range(self.numItem[i]):
+            self.player.battlePlayer.inv_Ar.append(self.itemList[i])
       else:
         self.message=[]
         self.message.append("Not enough cash")
@@ -2775,10 +2816,10 @@ class Shop:
           else:
             self.selDigit=0
         else:
-          if self.numItem<9:
-            self.numItem+=1
+          if self.numItem[self.selItem]<9:
+            self.numItem[self.selItem]+=1
           else:
-            self.numItem=0
+            self.numItem[self.selItem]=0
       elif newKey=='[2]' or newKey=='down':
         #Down
         #decrement selected item/enteredDigits[selItem]
@@ -2795,7 +2836,7 @@ class Shop:
             else:
               self.enteredDigits[self.selDigit]=9
           else:
-            self.numItem=0
+
             if self.selItem<len(self.itemList)-1:
               self.selItem+=1
             else:
@@ -2811,10 +2852,10 @@ class Shop:
           else:
             self.selDigit=3
         else:
-          if self.numItem>0:
-            self.numItem-=1
+          if self.numItem[self.selItem]>0:
+            self.numItem[self.selItem]-=1
           else:
-            self.numItem=9
+            self.numItem[self.selItem]=9
       elif newKey=='[8]' or newKey=='up':
         #Up
         #increment selected item/enteredDigits[selItem]
@@ -2831,7 +2872,7 @@ class Shop:
             else:
               self.enteredDigits[self.selDigit]=0
           else:
-            self.numItem=0
+
             if self.selItem>0:
               self.selItem-=1
             else:
@@ -2866,7 +2907,10 @@ class Shop:
             self.finish()
           else:
             self.buyScreen=True
-            self.totalPrice=self.numItem*self.itemList[self.selItem].buyVal
+            i=0
+            for item in self.itemList:
+              self.totalPrice+=self.numItem[i]*self.itemList[i].buyVal
+              i=i+1
       elif newKey=='[3]' or newKey=='backspace':
         if self.buyScreen:
           self.buyScreen=False
@@ -2880,7 +2924,7 @@ class Shop:
           self.buyMode=False
           self.sellMode=True
           self.selItem=0
-          self.numItem=0
+          self.numItem=[0,0]
           #self.player.sellin.play()
 
       elif newKey=='[9]' or newKey=='b':
@@ -2889,7 +2933,7 @@ class Shop:
           self.sellMode=False
           self.buyMode=True
           self.selItem=0
-          self.numItem=0
+          self.numItem=[0,0]
           #self.player.buyin.play()
   
   def draw(self,screen,player):
@@ -2918,22 +2962,25 @@ class Shop:
           screen.fill((200,200,150),(150,y,400,40))
         screen.blit(pygame.image.load(MENU_PATH+"LArrow.gif"),(150,y,40,40))
         screen.fill((150,150,10),(190,y,40,40))
-        if i==self.selItem:
-          screen.blit(font.render(repr(self.numItem),True,(255,255,255)),(190,y,50,40))
-        else:
-          screen.blit(font.render("0",True,(255,255,255)),(190,y,50,40))
+        screen.blit(font.render(repr(self.numItem[i]),True,(255,255,255)),(190,y,50,40))
         screen.blit(pygame.image.load(MENU_PATH+"RArrow.gif"),(230,y,40,40))
         screen.blit(font.render(item.name,True,(255,255,255)),(270,y,500,40))
         y+=40
         i+=1
 
       if self.buyScreen:
-        screen.blit(font.render(repr(self.numItem)+" "+self.itemList[self.selItem].name+" at "+repr(self.itemList[self.selItem].buyVal),True,(0,0,0)),(650,50,500,40))
+        i=0
+        y=7
+        for item in self.itemList:
+          if not self.numItem[i] == 0:
+            screen.blit(font.render(repr(self.numItem[i])+" "+self.itemList[i].name+" at "+repr(self.itemList[i].buyVal),True,(0,0,0)),(650,y,500,40))
+            y+=40
+          i+=1
         x=650
         i=0
         for digit in self.enteredDigits:
           if i==self.selDigit:
-            screen.fill((150,150,200),(x,100,45,100))
+            screen.fill((150,150,200),(x,125,40,130))
           screen.blit(pygame.transform.rotate(pygame.image.load(MENU_PATH+"LArrow.gif"),-90),(x,125,40,40))
           screen.fill((50,100,100),(x,175,50,40))
           screen.blit(font.render(repr(digit),True,(255,255,255)),(x,175,40,40))
