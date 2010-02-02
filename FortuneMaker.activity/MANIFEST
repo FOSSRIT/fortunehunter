@@ -1,0 +1,12 @@
+LICENSE
+constants.py
+setup.py
+Dungeon.py
+JournalIntegration.py
+FortuneMaker.py
+Room.py
+activity/fm-icon.svg
+activity/application-x-fortune-map.svg
+activity/mimetypes.xml
+activity/activity.info
+po/FortuneMaker.pot

@@ -1,0 +1,431 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-02 18:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: activity/activity.info:2
+msgid "Fortune Maker"
+msgstr ""
+
+#: constants.py:4
+msgid "North"
+msgstr ""
+
+#: constants.py:5
+msgid "South"
+msgstr ""
+
+#: constants.py:6
+msgid "East"
+msgstr ""
+
+#: constants.py:7
+msgid "West"
+msgstr ""
+
+#: constants.py:11 constants.py:30 constants.py:42 constants.py:52
+#: constants.py:81 FortuneMaker.py:318
+msgid "None"
+msgstr ""
+
+#: constants.py:12
+msgid "Unlocked"
+msgstr ""
+
+#: constants.py:13
+msgid "Locked"
+msgstr ""
+
+#: constants.py:14 constants.py:32
+msgid "Puzzle"
+msgstr ""
+
+#: constants.py:15
+msgid "Locked Puzzle"
+msgstr ""
+
+#: constants.py:16
+msgid "Entrance"
+msgstr ""
+
+#: constants.py:17
+msgid "Exit"
+msgstr ""
+
+#: constants.py:31
+msgid "Merchant"
+msgstr ""
+
+#: constants.py:43
+msgid "Wizard Adept"
+msgstr ""
+
+#: constants.py:44
+msgid "Goblin"
+msgstr ""
+
+#: constants.py:45
+msgid "Orc"
+msgstr ""
+
+#: constants.py:46
+msgid "Stone Golem"
+msgstr ""
+
+#: constants.py:47
+msgid "Serratula"
+msgstr ""
+
+#: constants.py:48
+msgid "Feren"
+msgstr ""
+
+#: constants.py:53
+msgid "Ancient Amulet"
+msgstr ""
+
+#: constants.py:54
+msgid "Rusted Blade"
+msgstr ""
+
+#: constants.py:55
+msgid "Great Sword"
+msgstr ""
+
+#: constants.py:56
+msgid "Crescent Sword"
+msgstr ""
+
+#: constants.py:57
+msgid "Cardinal"
+msgstr ""
+
+#: constants.py:58
+msgid "Sun Moon"
+msgstr ""
+
+#: constants.py:59
+msgid "Earth Vest"
+msgstr ""
+
+#: constants.py:60
+msgid "Wind Breaker"
+msgstr ""
+
+#: constants.py:61
+msgid "Flame Leggings"
+msgstr ""
+
+#: constants.py:62
+msgid "Dark Cowl"
+msgstr ""
+
+#: constants.py:63
+msgid "Celestial Armor"
+msgstr ""
+
+#: constants.py:64
+msgid "Jewel Shard"
+msgstr ""
+
+#: constants.py:65
+msgid "Broken Hourglass"
+msgstr ""
+
+#: constants.py:66
+msgid "Radiant Vial"
+msgstr ""
+
+#: constants.py:67
+msgid "Honor Tome"
+msgstr ""
+
+#: constants.py:68
+msgid "Valor Tome"
+msgstr ""
+
+#: constants.py:69
+msgid "Ruby"
+msgstr ""
+
+#: constants.py:70
+msgid "Sapphire"
+msgstr ""
+
+#: constants.py:71
+msgid "Emerald"
+msgstr ""
+
+#: constants.py:72
+msgid "Diamond"
+msgstr ""
+
+#: constants.py:73
+msgid "Remedy"
+msgstr ""
+
+#: constants.py:74
+msgid "Elixir"
+msgstr ""
+
+#: constants.py:75
+msgid "Panacea"
+msgstr ""
+
+#: constants.py:76
+msgid "High Elixir"
+msgstr ""
+
+#: constants.py:77
+msgid "Nostrum"
+msgstr ""
+
+#: constants.py:82
+msgid "Visible"
+msgstr ""
+
+#: constants.py:83
+msgid "Hidden"
+msgstr ""
+
+#: constants.py:84
+msgid "Battle"
+msgstr ""
+
+#: constants.py:89
+msgid "Default Theme"
+msgstr ""
+
+#: constants.py:90
+msgid "Theme 2"
+msgstr ""
+
+#: FortuneMaker.py:52 FortuneMaker.py:128
+msgid "New Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:57
+msgid "Open Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:62 FortuneMaker.py:165
+msgid "Export dungeon file to journal"
+msgstr ""
+
+#: FortuneMaker.py:69
+msgid "Welcome Screen"
+msgstr ""
+
+#: FortuneMaker.py:74
+msgid "View Dungeon Settings"
+msgstr ""
+
+#: FortuneMaker.py:80
+msgid "View Dungeon Layout"
+msgstr ""
+
+#: FortuneMaker.py:93
+msgid "Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:94
+msgid "View"
+msgstr ""
+
+#: FortuneMaker.py:122
+msgid "Welcome to Fortune Maker"
+msgstr ""
+
+#: FortuneMaker.py:136
+msgid "Load Exported Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:142
+msgid "Dungeon Toolbar"
+msgstr ""
+
+#: FortuneMaker.py:149
+msgid "Creates New Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:157
+msgid "Opens existing dungeon file"
+msgstr ""
+
+#: FortuneMaker.py:172
+msgid "View Toolbar"
+msgstr ""
+
+#: FortuneMaker.py:179
+msgid "Display this home screen"
+msgstr ""
+
+#: FortuneMaker.py:187
+msgid "Shows the dungeon settings"
+msgstr ""
+
+#: FortuneMaker.py:195
+msgid "Shows the dungeon layout"
+msgstr ""
+
+#: FortuneMaker.py:202
+msgid "Dungeons must be exported before they\n"
+msgstr ""
+
+#: FortuneMaker.py:220
+msgid "Dungeon Exported to Journal"
+msgstr ""
+
+#: FortuneMaker.py:223
+msgid "Export Failed"
+msgstr ""
+
+#: FortuneMaker.py:223
+msgid "Invalid dungeon configuration"
+msgstr ""
+
+#: FortuneMaker.py:232
+msgid "Load Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:243
+msgid "Load"
+msgstr ""
+
+#: FortuneMaker.py:264
+msgid "Save Dungeon Settings"
+msgstr ""
+
+#: FortuneMaker.py:283
+msgid "Dungeon Properties"
+msgstr ""
+
+#: FortuneMaker.py:289
+msgid "Name:"
+msgstr ""
+
+#: FortuneMaker.py:298
+msgid "Theme:"
+msgstr ""
+
+#: FortuneMaker.py:310
+msgid "Next Dungeon:"
+msgstr ""
+
+#: FortuneMaker.py:346
+msgid "Dungeon Size"
+msgstr ""
+
+#: FortuneMaker.py:353
+msgid "Width:"
+msgstr ""
+
+#: FortuneMaker.py:363
+msgid "Height:"
+msgstr ""
+
+#: FortuneMaker.py:373
+msgid "Create Dungeon"
+msgstr ""
+
+#: FortuneMaker.py:406
+msgid "Dungeon Setting Saved"
+msgstr ""
+
+#: FortuneMaker.py:443 FortuneMaker.py:575
+msgid "Remove Enemy"
+msgstr ""
+
+#: FortuneMaker.py:447 FortuneMaker.py:601
+msgid "Remove Item"
+msgstr ""
+
+#: FortuneMaker.py:452
+msgid "Doors"
+msgstr ""
+
+#: FortuneMaker.py:467
+msgid "Room Flags"
+msgstr ""
+
+#: FortuneMaker.py:481
+msgid "Enemies"
+msgstr ""
+
+#: FortuneMaker.py:498
+msgid "Items"
+msgstr ""
+
+#: FortuneMaker.py:520
+msgid "Door Legend"
+msgstr ""
+
+#: FortuneMaker.py:535
+msgid "Room Legend"
+msgstr ""
+
+#: FortuneMaker.py:554
+msgid "Legend"
+msgstr ""
+
+#: FortuneMaker.py:588 FortuneMaker.py:615
+msgid "Remove"
+msgstr ""
+
+#: FortuneMaker.py:597
+msgid "No enemies found in this room"
+msgstr ""
+
+#: FortuneMaker.py:624
+msgid "No items found in this room"
+msgstr ""
+
+#: FortuneMaker.py:666 FortuneMaker.py:671
+msgid "Door Not Added"
+msgstr ""
+
+#: FortuneMaker.py:666
+msgid "This door can not be placed at edge of dungeon"
+msgstr ""
+
+#: FortuneMaker.py:671
+#, python-format
+msgid "The dungeon can only have one %s"
+msgstr ""
+
+#: FortuneMaker.py:679
+msgid "Enemy not added to room"
+msgstr ""
+
+#: FortuneMaker.py:679
+msgid "Room can not hold any more enemies"
+msgstr ""
+
+#: FortuneMaker.py:685
+msgid "Item not added to room"
+msgstr ""
+
+#: FortuneMaker.py:685
+msgid "Room can not hold any more items"
+msgstr ""
+
+#: FortuneMaker.py:719
+msgid "Dungeon Invalid"
+msgstr ""
+
+#: FortuneMaker.py:719
+msgid "Dungeon must be valid to save to an exported dungeon"
+msgstr ""
