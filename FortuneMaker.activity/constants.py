@@ -74,7 +74,9 @@ ITEM_INDEX = {
     'm':_("Elixir"),
     'n':_("Panacea"),
     'o':_("High Elixir"),
-    'p':_("Nostrum")
+    'p':_("Nostrum"),
+    'q':_("Small Key"),
+    'r':_("Big Key"),
 }
 
 ITEM_FLAGS = {
