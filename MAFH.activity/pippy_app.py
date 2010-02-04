@@ -8,6 +8,8 @@ from time import time
 import simplejson
 import os.path
 
+from Items import get_item, Item
+
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
@@ -25,90 +27,6 @@ CHAR_PATH = BASE_PATH + "/image/character/"
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
-
-
-#################################################################################
-#Item class: stores info about items
-#################################################################################
-class Item:
-  def __init__(self,name,typ):
-    self.name=name
-    self.type=typ
-    self.power=0
-    self.buyVal=0
-    self.sellVal=1
-    self.hidden=False
-    self.battle=False
-
-    #WEAPONS
-    if self.name=="Ancient Amulet":
-      self.power=1
-    elif self.name=="Rusted Blade":
-      self.power=5
-    elif self.name=="Great Sword":
-      self.power=15
-    elif self.name=="Crescent Sword":
-      self.power=25
-    elif self.name=="Cardinal":
-      self.power=35
-    elif self.name=="Sun Moon":
-      self.power=50
-
-    #ARMOR
-    elif self.name=="Earth Vest":
-      self.power=5
-    elif self.name=="Wind Breaker":
-      self.power=15
-    elif self.name=="Flame Leggings":
-      self.power=25
-    elif self.name=="Dark Cowl":
-      self.power=35
-    elif self.name=="Celestial Armor":
-      self.power=50
-
-    #ACCESSORY
-    elif self.name=="Jewel Shard":
-      self.power=10
-    elif self.name=="Broken Hourglass":
-      self.power=10
-    elif self.name=="Radiant Vial":
-      self.power=20
-    elif self.name=="Honor Tome":
-      self.power=.2
-    elif self.name=="Valor Tome":
-      self.power=.2
-
-    #TREASURES
-    elif self.name=="Ruby":
-      self.sellVal=500
-    elif self.name=="Sapphire":
-      self.sellVal=500
-    elif self.name=="Emerald":
-      self.sellVal=500
-    elif self.name=="Diamond":
-      self.sellVal=500
-
-    #HEALING
-    elif self.name=="Remedy":
-      self.sellVal=2
-      self.buyVal=20
-      self.power=.10
-    elif self.name=="Elixir":
-      self.sellVal=10
-      self.buyVal=60
-      self.power=.20
-    elif self.name=="Panacea":
-      self.sellVal=50
-      self.buyVal=150
-      self.power=.80
-    elif self.name=="High Elixir":
-      self.sellVal=20
-      self.buyVal=100
-      self.power=.40
-    elif self.name=="Nostrum":
-      self.sellVal=100
-      self.buyVal=250
-      self.power=.5
 
 
 ##################################################################
@@ -250,19 +168,19 @@ class Dungeon:
     #TYPES BASED ON DUNGEON INDEX OR FILENAME#
     if self.index<5 and self.index>=0:
       self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
-      self.itemList=[0,Item("Remedy","Usable"),Item("Small Key","key"),Item("Big Key","key"),Item("Rusted Blade","Weapon"),Item("Earth Vest","Armor")]
+      self.itemList=[0,'l','q','r','2','7']
     elif self.index<10 and self.index>=5:
       self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
-      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Great Sword","Weapon"),Item("Wind Breaker","Armor")]
+      self.itemList=[0,'l','m','r','q', '3','8']
     elif self.index<15 and self.index>=10:
       self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
-      self.itemList=[0,Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"), Item("Crescent Sword","Weapon"),Item("Flame Leggings","Armor")]
+      self.itemList=[0,'m','o','r','q','4','9']
     elif self.index<20 and self.index>=15:
       self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
-      self.itemList=[0,Item("Elixir","Usable"),Item("Panacea","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Cardinal","Weapon"),Item("Dark Cowl","Armor")]
+      self.itemList=[0,'m','n','r','q','5','a']
     elif self.index<25 and self.index>=20:
       self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
-      self.itemList=[0,Item("Remedy","Usable"),Item("Elixir","Usable"),Item("High Elixir","Usable"),Item("Big Key","key"),Item("Small Key","key"),Item("Sun Moon","Weapon"),Item("Celestial Armor","Armor")]
+      self.itemList=[0,'l','m','o','r','q','6','b']
 
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
@@ -473,13 +391,13 @@ class Room:
 
   def fillItems(self):
     if not int(self.it1)==0:
-      self.it1=Item(self.itemList[int(self.it1)].name,self.itemList[int(self.it1)].type)
+      self.it1=get_item(self.itemList[int(self.it1)])
     if not int(self.it2)==0:
-      self.it2=Item(self.itemList[int(self.it2)].name,self.itemList[int(self.it2)].type)
+      self.it2=get_item(self.itemList[int(self.it2)])
     if not int(self.it3)==0:
-      self.it3=Item(self.itemList[int(self.it3)].name,self.itemList[int(self.it3)].type)
+      self.it3=get_item(self.itemList[int(self.it3)])
     if not int(self.it4)==0:
-      self.it4=Item(self.itemList[int(self.it4)].name,self.itemList[int(self.it4)].type)
+      self.it4=get_item(self.itemList[int(self.it4)])
     
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
@@ -1682,28 +1600,28 @@ class Player:
     message=""
     found=False
     hidden=False
-    if type(self.currentRoom.it1)==type(Item("","")):
+    if isinstance( self.currentRoom.it1, Item ):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it1)
       message+=self.currentRoom.it1.name
       found=True
       if self.currentRoom.it1.hidden:
         hidden=True
       self.currentRoom.it1=0
-    if type(self.currentRoom.it2)==type(Item("","")):
+    if isinstance( self.currentRoom.it2, Item):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it2)
       message+=" and "+self.currentRoom.it2.name
       found=True
       if self.currentRoom.it2.hidden:
         hidden=True
       self.currentRoom.it2=0
-    if type(self.currentRoom.it3)==type(Item("","")):
+    if isinstance( self.currentRoom.it3, Item):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it3)
       message+=" and "+self.currentRoom.it3.name
       found=True
       if self.currentRoom.it3.hidden:
         hidden=True
       self.currentRoom.it3=0
-    if type(self.currentRoom.it4)==type(Item("","")):
+    if isinstance(self.currentRoom.it4, Item):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it4)
       message+=" and "+self.currentRoom.it4.name
       found=True
@@ -1744,9 +1662,9 @@ class Hero:
 	self.BDE	= 0		#bonus defense  power(from equipment)
         
         self.player=player
-	self.weapon=Item("","")
-	self.armor=Item("","")
-	self.accessory=Item("","")
+	self.weapon=None
+	self.armor=None
+	self.accessory=None
         self.eqItem=[]			#player can equip up to 4 usable items to use in battle
 	self.inv_Ar 	= []		#inventory
 	self.attacks_Ar = []		#associated array for attack string names and attack power values
@@ -1757,9 +1675,9 @@ class Hero:
         self.fractionSum=0
         self.akhal=0
 
-        amulet=Item("Ancient Amulet","Weapon")
-        calculator=Item("Calculator","")
-        emptyItem=Item("","Usable")
+        amulet=get_item('1')
+        calculator=get_item('s')
+        emptyItem=None
         self.eqItem=[emptyItem,emptyItem,emptyItem,emptyItem]
         self.inv_Ar=[amulet,calculator]
 
@@ -1865,7 +1783,7 @@ class Hero:
       self.BHP=item.power
     elif target[0:8]=="ItemSlot" and item.type=="Usable":
         for i in range(len(self.eqItem)-1,3):
-          self.eqItem.append(Item("",""))
+          self.eqItem.append(None)
         if not self.eqItem[int(target[8])-1].name=="":
           self.inv_Ar.append(self.eqItem[int(target[8])-1])
         self.inv_Ar.remove(item)
@@ -1875,15 +1793,15 @@ class Hero:
   #remove item from equipment
   def remEquipment(self,item):
     if item.type=="Weapon":
-      self.weapon=Item("","")
+      self.weapon=None
       self.BAE=0
       self.inv_Ar.append(item)
     elif item.type=="Armor":
-      self.armor=Item("","")
+      self.armor=None
       self.BDE=0
       self.inv_Ar.appen(item)
     elif item.type=="Accessory":
-      self.accessory=Item("","")
+      self.accessory=None
       self.BHP=0
       self.inv_Ar.append(item)
     elif item.name=="":
@@ -2523,7 +2441,7 @@ class BattleEngine:
     if item.type=="Usable":
       self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*item.power)
       self.player.battlePlayer.eqItem.remove(item)
-      self.player.battlePlayer.eqItem.append(Item("",""))
+      self.player.battlePlayer.eqItem.append(None)
       player.migrateMessages("You heal for "+repr(int(self.player.battlePlayer.MHP*item.power)))
       if self.player.battlePlayer.HP>self.player.battlePlayer.MHP:
         self.player.battlePlayer.HP=self.player.battlePlayer.MHP
@@ -2623,19 +2541,19 @@ class BattleEngine:
   ##
   def Victory(self):
     self.battleItems=["Items Won: "]
-    if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.battle:
+    if isinstance( player.currentRoom.it1, Item ) and player.currentRoom.it1.battle:
       player.battlePlayer.inv_Ar.append(player.currentRoom.it1)
       self.battleItems.append(player.currentRoom.it1.name)
       player.currentRoom.it1=0
-    if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.battle:
+    if isinstance( player.currentRoom.it2, Item ) and player.currentRoom.it2.battle:
       self.battleItems.append(player.currentRoom.it2.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
       player.currentRoom.it2=0
-    if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.i3.battle:
+    if isinstance( player.currentRoom.it3, Item ) and player.currentRoom.i3.battle:
       self.battleItems.append(player.currentRoom.it3.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
       player.currentRoom.it3=0
-    if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.battle:
+    if isinstance( player.currentRoom.it4, Item ) and player.currentRoom.it4.battle:
       self.battleItems.append(player.currentRoom.it4.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
       player.currentRoom.it4=0
@@ -2781,7 +2699,7 @@ class BattleEngine:
 class Shop:
   def __init__(self,player):
     self.player=player
-    self.itemList=[Item("Remedy","Usable"),Item("Elixir","Usable")]
+    self.itemList=[get_item('l'),get_item('m')]
     self.selItem=0
     self.numItem=[0,0]
     self.totalPrice=0
@@ -3171,7 +3089,7 @@ def setImage(player):
     emptySprite.rect=pygame.Rect(700,300,50,50)
     sprites=[emptySprite,emptySprite,emptySprite,emptySprite]
 
-    if type(player.currentRoom.it1)==type(Item("","")) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
+    if isinstance( player.currentRoom.it1, Item ) and player.currentRoom.it1.hidden==False and player.currentRoom.it1.battle==False:
       itemSprite=pygame.sprite.Sprite()
       if player.currentRoom.it1.type=="Weapon":
         itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
@@ -3181,7 +3099,7 @@ def setImage(player):
         itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it1.name+".gif"))
       sprites[0]=itemSprite
 
-    if type(player.currentRoom.it2)==type(Item("","")) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
+    if isinstance( player.currentRoom.it2, Item ) and player.currentRoom.it2.hidden==False and player.currentRoom.it2.battle==False:
       itemSprite=pygame.sprite.Sprite()
       if player.currentRoom.it2.type=="Weapon":
         itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
@@ -3191,7 +3109,7 @@ def setImage(player):
         itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it2.name+".gif"))
       sprites[1]=itemSprite
 
-    if type(player.currentRoom.it3)==type(Item("","")) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
+    if isinstance( player.currentRoom.it3, Item ) and player.currentRoom.it3.hidden==False and player.currentRoom.it3.battle==False:
       itemSprite=pygame.sprite.Sprite()
       if player.currentRoom.it3.type=="Weapon":
         itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
@@ -3201,7 +3119,7 @@ def setImage(player):
         itemSprite.image=(pygame.image.load(ENV_PATH+player.currentRoom.it3.name+".gif"))
       sprites[2]=itemSprite
 
-    if type(player.currentRoom.it4)==type(Item("","")) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
+    if isinstance( player.currentRoom.it4, Item ) and player.currentRoom.it4.hidden==False and player.currentRoom.it4.battle==False:
       itemSprite=pygame.sprite.Sprite()
       if player.currentRoom.it4.type=="Weapon":
         itemSprite.image=(pygame.image.load(ENV_PATH+"Weapon.gif"))
@@ -3580,7 +3498,7 @@ def updateMenu(event,player):
           if item.type=="Usable" and not item.name=="":
             player.battlePlayer.HP+=int(player.battlePlayer.MHP*item.power)
             player.battlePlayer.eqItem.remove(item)
-            player.battlePlayer.eqItem.append(Item("",""))
+            player.battlePlayer.eqItem.append(None)
             if player.battlePlayer.HP>player.battlePlayer.MHP:
               player.battlePlayer.HP=player.battlePlayer.MHP
       elif newKey=='[8]' or newKey=='up':
