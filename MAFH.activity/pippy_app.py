@@ -1574,7 +1574,7 @@ class Player:
       if self.currentRoom.it3.hidden:
         hidden=True
       self.currentRoom.it3=0
-    if ininstance(self.currentRoom.it4, Item):
+    if isinstance(self.currentRoom.it4, Item):
       self.battlePlayer.inv_Ar.append(self.currentRoom.it4)
       message+=" and "+self.currentRoom.it4.name
       found=True
