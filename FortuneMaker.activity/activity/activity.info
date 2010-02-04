@@ -2,7 +2,7 @@
 name = Fortune Maker
 service_name = org.laptop.MAFH.Creator
 class = FortuneMaker.FortuneMaker
-icon = application-x-fortune-map
+icon = fm-icon
 mime_types=application/x-fortune-map
 activity_version = 1
 show_launcher = yes
