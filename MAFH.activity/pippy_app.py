@@ -5,6 +5,7 @@ from pygame import movie
 from sugar.activity import activity
 from random import *
 from time import time
+import simplejson
 import os.path
 
 ################################################################################
@@ -24,15 +25,7 @@ CHAR_PATH = BASE_PATH + "/image/character/"
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
-def write_file(self, file_path):
-  f = open(file_path, 'w')
-  f2= open(os.path.join(activity.get_activity_root(),"instance/player.txt"),'r')
-  try:
-    for line in f2:
-      f.write(line)
-  finally:
-      f.close()
-      f2.close()
+
 
 #################################################################################
 #Item class: stores info about items
@@ -1085,11 +1078,13 @@ class Menu:
             sys.exit()
         elif name=="Save":
           dataList=player.toString()
-          FILE=open(os.path.join(activity.get_activity_root(),"instance/player.txt"),"w")
-          FILE.seek(0)
-          for line in dataList:
-            FILE.write(repr(line)+"\n")
+          FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"w")
+          FILE.write(simplejson.dumps(dataList))
           FILE.close()
+          #FILE.seek(0)
+          #for line in dataList:
+          #  FILE.write(repr(line)+'\n')
+          #FILE.close()
           #do save stuff
         elif name=="Main Menu":
           player.traversal=False
@@ -1142,7 +1137,18 @@ class Menu:
             player.shopDifficulty=2
           player.currentMenu=player.previousMenu
         elif name=="Load Game":
-          print("Not Implemented")
+           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
+           data=simplejson.loads(FILE.read())
+           print(data)
+           player.fromData(data)
+           
+           player.dgnMap.updateMacro(player)
+           player.traversal=True
+           player.mainMenu=False
+           setImage(player)
+           player.currentRoomGroup.draw(screen)
+           pygame.display.flip()
+
         elif name=="Return":
           player.currentMenu.currentOption=0
           player.currentMenu=player.MainMenu
@@ -1175,7 +1181,7 @@ class Menu:
             tup=(tup[0],tup[1]+1)
             self.player.multiplicationStats[self.player.critDifficulty-1]=tup
             player.curBattle.attack(player.battlePlayer,"basic")
-        elif name=="Division":
+        elif name=="Division": 
           player.curBattle.divisionAttack()
         elif name[1:2]=="/":
 	  player.battlePlayer.fractionSum += float(name[0])/float(name[2])
@@ -1437,10 +1443,13 @@ class Player:
     dataList.append(self.shopStats)
     dataList.append(self.puzzlesSolved)
     dataList.append(self.battlePlayer.MHP)
+    dataList.append(self.battlePlayer.HP)
     for item in self.battlePlayer.inv_Ar:
       dataList.append((item.name,item.type))
+    dataList.append('End Inventory')
     for item in self.battlePlayer.eqItem:
       dataList.append((item.name,item.type))
+    dataList.append('End Equip')
     dataList.append((self.battlePlayer.weapon.name,self.battlePlayer.weapon.type))
     dataList.append((self.battlePlayer.armor.name,self.battlePlayer.armor.type))
     dataList.append((self.battlePlayer.accessory.name,self.battlePlayer.accessory.type))
@@ -1523,6 +1532,44 @@ class Player:
     self.divSword=pygame.sprite.Group(divSwordImg)
 
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
+  def fromData(self,data):
+    self.name=data[0]
+    self.dgnIndex=data[1]-1
+    self.nextDungeon()
+    self.critDifficulty=data[2]
+    self.divDifficulty=data[3]
+    self.geomDifficulty=data[4]
+    self.shopDifficulty=data[5]
+    self.multiplicationStats=data[6]
+    self.divisionStats=data[7]
+    self.geometryStats=data[8]
+    self.shopStats=data[9]
+    self.puzzlesSolved=data[10]
+    self.battlePlayer.MHP=data[11]
+    self.battlePlayer.HP=data[12]
+    i=13
+    self.battlePlayer.inv_Ar=[]
+    while data[i]!= 'End Inventory':
+      self.battlePlayer.inv_Ar.append(Item(data[i][0],data[i][1]))
+      i+=1
+    i+=1
+    line=data[i]
+    j=0
+    while line!='End Equip':
+      self.battlePlayer.eqItem[j]=Item(data[i][0],data[i][1])
+      i+=1
+      j+=1
+      line=data[i]
+    i+=1
+    self.battlePlayer.weapon=Item(data[i][0],data[i][1])
+    i+=1
+    self.battlePlayer.armor=Item(data[i][0],data[i][1])
+    i+=1
+    self.battlePlayer.accessory=Item(data[i][0],data[i][1])
+    i+=1
+    self.battlePlayer.akhal=data[i]
+
+    
   def startMovie(self,movieName,soundTrackName):
     screen.fill((0,0,0),(0,0,1200,900))
     self.animation=Animation(movieName,soundTrackName)
@@ -1543,7 +1590,7 @@ class Player:
     self.msg5=msg
   def nextDungeon(self):
 
-    self.dgnIndex+=2
+    self.dgnIndex+=1
     self.battlePlayer.MHP+=2
     if self.dgnIndex>=len(self.dungeons):
       self.currentMenu=self.MainMenu
@@ -3902,6 +3949,7 @@ while pippy.pygame.next_frame():
       player.initMovTutorial3(screen)
     pygame.display.flip()
   # update the display
+
 
 
 
