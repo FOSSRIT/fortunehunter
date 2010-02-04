@@ -690,42 +690,35 @@ class Menu:
           self.optionsImages[self.currentOption].rect.height=33
           self.bgSurface.fill((125,125,255),self.optionsImages[self.currentOption].rect)
 	  #draw dynamic text
-          if player.battlePlayer.weapon.name=="":
+          if player.battlePlayer.weapon==None:
             wp="Weapon"
           else:
             wp=player.battlePlayer.weapon.name
-          if player.battlePlayer.armor.name=="":
+          if player.battlePlayer.armor==None:
             arm="Armor"
           else:
             arm=player.battlePlayer.armor.name
-          if player.battlePlayer.accessory.name=="":
+          if player.battlePlayer.accessory==None:
             acc="Accessory"
           else:
             acc=player.battlePlayer.accessory.name
           it1,it2,it3,it4="","","",""
-          if len(player.battlePlayer.eqItem)>0:
+          if player.battlePlayer.eqItem[0]==None:
+            it1="Empty"
+          else:
             it1=player.battlePlayer.eqItem[0].name
-          if len(player.battlePlayer.eqItem)>1:
+          if player.battlePlayer.eqItem[1]==None:
+            it2="Empty"
+          else:
             it2=player.battlePlayer.eqItem[1].name
-          if len(player.battlePlayer.eqItem)>2:
+          if player.battlePlayer.eqItem[2]==None:
+            it3="Empty"
+          else:
             it3=player.battlePlayer.eqItem[2].name
-          if len(player.battlePlayer.eqItem)==4:
-            if player.battlePlayer.eqItem[0].name=="":
-              it1="Item 1"
-            else:
-              it1=player.battlePlayer.eqItem[0].name
-            if player.battlePlayer.eqItem[1].name=="":
-              it2="Item 2"
-            else:
-              it2=player.battlePlayer.eqItem[1].name
-            if player.battlePlayer.eqItem[2].name=="":
-              it3="Item 3"
-            else:
-              it3=player.battlePlayer.eqItem[2].name
-            if player.battlePlayer.eqItem[3].name=="":
-              it4="Item 4"
-            else:
-              it4=player.battlePlayer.eqItem[3].name
+          if player.battlePlayer.eqItem[3]==None:
+            it4="Empty"
+          else:
+            it4=player.battlePlayer.eqItem[3].name
 
 
           weapon=font.render(wp,True,(0,0,0))
@@ -936,7 +929,7 @@ class Menu:
         if not self.name=="Defeat" and not self.name=="Difficulty Menu" and not self.name=="Options Menu" and not self.name=="Pause Menu":
           menuGroup.draw(screen)
         if self.name=="Main Menu":
-          screen.blit(font.render("Load",True,(150,0,0)),(450+40,400+103,0,0))
+          screen.blit(font.render("Continue",True,(150,0,0)),(450+40,400+103,0,0))
           screen.blit(font.render("Options",True,(150,0,0)),(450+40,400+153,0,0))
         if player.battle==False:
           pygame.display.flip()
@@ -1114,9 +1107,6 @@ class Menu:
 	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4" or name=="Missile1" or name=="Missile2" or name=="Missile3" or name=="Missile4":
 	  player.curBattle.checkGlyph(name)
         elif name=="Use Item":
-          for i in player.battlePlayer.eqItem:
-            if i.name=="":
-              player.battlePlayer.eqItem.remove(i)
           player.currentMenu=player.curBattle.itemMenu
         elif name=="Item1" or name=="Item2" or name=="Item3" or name=="Item4":
           index=int(repr(name)[5])-1
@@ -1363,14 +1353,26 @@ class Player:
     dataList.append(self.battlePlayer.MHP)
     dataList.append(self.battlePlayer.HP)
     for item in self.battlePlayer.inv_Ar:
-      dataList.append((item.name,item.type))
+      dataList.append(item.id)
     dataList.append('End Inventory')
     for item in self.battlePlayer.eqItem:
-      dataList.append((item.name,item.type))
+      if item==None:
+        dataList.append(item)
+      else:
+        dataList.append(item.id)
     dataList.append('End Equip')
-    dataList.append((self.battlePlayer.weapon.name,self.battlePlayer.weapon.type))
-    dataList.append((self.battlePlayer.armor.name,self.battlePlayer.armor.type))
-    dataList.append((self.battlePlayer.accessory.name,self.battlePlayer.accessory.type))
+    if self.battlePlayer.weapon==None:
+      dataList.append(None)
+    else:
+      dataList.append(self.battlePlayer.weapon.id)
+    if self.battlePlayer.armor==None:
+      dataList.append(None)
+    else:
+      dataList.append(self.battlePlayer.armor.id)
+    if self.battlePlayer.accessory==None:
+      dataList.append(None)
+    else:
+      dataList.append(self.battlePlayer.accessory.id)
     dataList.append(self.battlePlayer.akhal)
     return(dataList)
   def initializeMenu(self):
@@ -1468,22 +1470,34 @@ class Player:
     i=13
     self.battlePlayer.inv_Ar=[]
     while data[i]!= 'End Inventory':
-      self.battlePlayer.inv_Ar.append(Item(data[i][0],data[i][1]))
+      self.battlePlayer.inv_Ar.append(get_item(data[i]))
       i+=1
     i+=1
     line=data[i]
     j=0
-    while line!='End Equip':
-      self.battlePlayer.eqItem[j]=Item(data[i][0],data[i][1])
+    while data[i]!='End Equip':
+      if data[i]==None:
+        self.battlePlayer.eqItem[j]=None
+      else:
+        self.battlePlayer.eqItem[j]=get_item(data[i])
       i+=1
       j+=1
-      line=data[i]
+
     i+=1
-    self.battlePlayer.weapon=Item(data[i][0],data[i][1])
+    if data[i]==None:
+      self.battlePlayer.weapon=None
+    else:
+      self.battlePlayer.weapon=get_item(data[i])
     i+=1
-    self.battlePlayer.armor=Item(data[i][0],data[i][1])
+    if data[i]==None:
+      self.battlePlayer.armor=None
+    else:
+      self.battlePlayer.armor=get_item(data[i])
     i+=1
-    self.battlePlayer.accessory=Item(data[i][0],data[i][1])
+    if data[i]==None:
+      self.battlePlayer.accessory=None
+    else:
+      self.battlePlayer.accessory=get_item(data[i])
     i+=1
     self.battlePlayer.akhal=data[i]
 
@@ -1764,19 +1778,19 @@ class Hero:
   def equip(self,item,target):
     #add  _item to equipment
     if target=="Weapon" and item.type=="Weapon":
-      if not self.weapon.name=="":
+      if not self.weapon==None:
         self.inv_Ar.append(self.weapon)
       self.weapon=item
       self.inv_Ar.remove(item)
       self.BAE=item.power
     elif target=="Armor" and item.type=="Armor":
-      if not self.armor.name=="":
+      if not self.armor==None:
         self.inv_Ar.append(self.armor)
       self.armor=item
       self.inv_Ar.remove(item)
       self.BDE=item.power
     elif target=="Accessory" and item.type=="Accessory":
-      if not self.accessory.name=="":
+      if not self.accessory==None:
         self.inv_Ar.append(self.accessory)
       self.accessory=item
       self.inv_Ar.remove(item)
@@ -1784,7 +1798,7 @@ class Hero:
     elif target[0:8]=="ItemSlot" and item.type=="Usable":
         for i in range(len(self.eqItem)-1,3):
           self.eqItem.append(None)
-        if not self.eqItem[int(target[8])-1].name=="":
+        if not self.eqItem[int(target[8])-1]==None:
           self.inv_Ar.append(self.eqItem[int(target[8])-1])
         self.inv_Ar.remove(item)
         self.eqItem[int(target[8])-1]=item
@@ -1792,24 +1806,25 @@ class Hero:
 
   #remove item from equipment
   def remEquipment(self,item):
-    if item.type=="Weapon":
-      self.weapon=None
-      self.BAE=0
-      self.inv_Ar.append(item)
-    elif item.type=="Armor":
-      self.armor=None
-      self.BDE=0
-      self.inv_Ar.appen(item)
-    elif item.type=="Accessory":
-      self.accessory=None
-      self.BHP=0
-      self.inv_Ar.append(item)
-    elif item.name=="":
-      i=0
-    else:
-      if item in self.eqItem:
-        self.eqItem.remove(item)
+    if item != None:
+      if item.type=="Weapon":
+        self.weapon=None
+        self.BAE=0
         self.inv_Ar.append(item)
+      elif item.type=="Armor":
+        self.armor=None
+        self.BDE=0
+        self.inv_Ar.appen(item)
+      elif item.type=="Accessory":
+        self.accessory=None
+        self.BHP=0
+        self.inv_Ar.append(item)
+      elif item==None:
+        i=0
+      else:
+        if item in self.eqItem:
+          self.eqItem[self.eqItem.index(item)]=None
+          self.inv_Ar.append(item)
     #remove _item from equipment -- leave cell empty
 
   #add item to inventory
@@ -2144,8 +2159,9 @@ class BattleEngine:
         for image in player.currentMenu.optionsImages:
           if i<len(player.battlePlayer.eqItem):
             font = pygame.font.Font(None, 36)
-            t=font.render(player.battlePlayer.eqItem[i].name,True,(255,255,255))
-            screen.blit(t,image.rect) 
+            if player.battlePlayer.eqItem[i]!=None:
+              t=font.render(player.battlePlayer.eqItem[i].name,True,(255,255,255))
+              screen.blit(t,image.rect) 
             i+=1     
       elif player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
         screen.fill((0,0,0),(500,300,100,400))
@@ -2438,10 +2454,10 @@ class BattleEngine:
   #uses an item in the player's equipped item list
   ###
   def useItem(self,item):
-    if item.type=="Usable":
+    if item!=None and item.type=="Usable":
       self.player.battlePlayer.HP+=int(self.player.battlePlayer.MHP*item.power)
-      self.player.battlePlayer.eqItem.remove(item)
-      self.player.battlePlayer.eqItem.append(None)
+      self.player.battlePlayer.eqItem[self.player.battlePlayer.eqItem.index(item)]=None
+      print(len(self.player.battlePlayer.eqItem))
       player.migrateMessages("You heal for "+repr(int(self.player.battlePlayer.MHP*item.power)))
       if self.player.battlePlayer.HP>self.player.battlePlayer.MHP:
         self.player.battlePlayer.HP=self.player.battlePlayer.MHP
@@ -2745,8 +2761,9 @@ class Shop:
         i=0
 
         for item in self.itemList:
-          for i in range(self.numItem[i]):
+          for k in range(self.numItem[i]):
             self.player.battlePlayer.inv_Ar.append(self.itemList[i])
+          i+=1
       else:
         self.message=[]
         self.message.append("Not enough cash")
@@ -3493,12 +3510,11 @@ def updateMenu(event,player):
       elif newKey=='[7]' or newKey=='e':
         #USE ITEM
         itemIndex=menu.currentOption
-        if itemIndex>2 and itemIndex-3<len(player.battlePlayer.eqItem)-1:
+        if itemIndex>2 and itemIndex-3<len(player.battlePlayer.eqItem):
           item=player.battlePlayer.eqItem[itemIndex-3]
-          if item.type=="Usable" and not item.name=="":
+          if not item==None and item.type=="Usable":
             player.battlePlayer.HP+=int(player.battlePlayer.MHP*item.power)
-            player.battlePlayer.eqItem.remove(item)
-            player.battlePlayer.eqItem.append(None)
+            player.battlePlayer.eqItem[player.battlePlayer.eqItem.index(item)]=None
             if player.battlePlayer.HP>player.battlePlayer.MHP:
               player.battlePlayer.HP=player.battlePlayer.MHP
       elif newKey=='[8]' or newKey=='up':
@@ -3514,8 +3530,7 @@ def updateMenu(event,player):
             player.battlePlayer.remEquipment(player.battlePlayer.armor)
           elif itemIndex==2:
             player.battlePlayer.remEquipment(player.battlePlayer.accessory)
-          elif itemIndex-3<len(player.battlePlayer.eqItem)-1:
-            player.migrateMessages(player.battlePlayer.eqItem[itemIndex-3].name)
+          elif itemIndex-3<len(player.battlePlayer.eqItem):
             player.battlePlayer.remEquipment(player.battlePlayer.eqItem[itemIndex-3])
           player.currentMenu=player.statsMenu
           player.currentRoomGroup.draw(screen)
