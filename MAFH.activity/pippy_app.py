@@ -2107,7 +2107,7 @@ class BattleEngine:
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
     elif attackName=="Missile":
       attacker.setBonusAP(int(self.timeBonus)+10)
-      if isinstance(defender,Enemy) and defender.wewakness=='missile':
+      if isinstance(defender,Enemy) and defender.weakness=='missile':
         attacker.setBonusAP(attacker.BAB+55)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
