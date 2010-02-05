@@ -11,6 +11,8 @@ import os.path
 from Items import get_item, Item
 from Enemy import get_enemy, Enemy
 
+from JournalIntegration import do_load
+
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
@@ -156,8 +158,6 @@ class PuzzleMap (object):
 
 class Dungeon:
   def __init__(self,sizeX=5,sizeY=5,fileName="al2.txt"):
-    self.sizeX=sizeX
-    self.sizeY=sizeY
     self.fileName=fileName
     self.start=[0,0]
     self.index=0
@@ -181,9 +181,18 @@ class Dungeon:
     SHOP=6
     PUZZLEROOM=7
     HIDDEN=8
-    for line in dgnFile:
-      ###print line for testing###
 
+    d_dict = do_load( dgnFile )
+    dgnFile.close()
+
+    self.sizeX = d_dict['x']
+    self.sizeY = d_dict['y']
+    self.theme = d_dict['theme']
+    self.name = d_dict['name']
+    self.id = d_dict['d_id']
+    self.next = d_dict['next']
+
+    for line in d_dict['roomstr']:
       ###initialize room variables###
       doorN=False
       doorNFlag=NONE
