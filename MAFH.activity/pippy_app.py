@@ -163,19 +163,14 @@ class Dungeon:
     self.index=0
     #TYPES BASED ON DUNGEON INDEX OR FILENAME#
     if self.index<5 and self.index>=0:
-      self.types=[0,'1','2','3','4','5','6']
       self.itemList=[0,'l','q','r','2','7']
     elif self.index<10 and self.index>=5:
-      self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
       self.itemList=[0,'l','m','r','q', '3','8']
     elif self.index<15 and self.index>=10:
-      self.types=["none","Cave Yeti","Cave Yeti J","Dire Wolf","Dire Wolf Lord","Great Skua","Beast King"]
       self.itemList=[0,'m','o','r','q','4','9']
     elif self.index<20 and self.index>=15:
-      self.types=["none","Boom Shroom","Roseweaver","Sacateran","Volcanaboar","Sacatetra","Root Golem"]
       self.itemList=[0,'m','n','r','q','5','a']
     elif self.index<25 and self.index>=20:
-      self.types=["none","Dragon Slug","Flame Elemental","Frost Giant","Wake Angel","Wind Elemental","Ice Golem","Celestial Dragon"]
       self.itemList=[0,'l','m','o','r','q','6','b']
 
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
