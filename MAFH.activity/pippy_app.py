@@ -161,17 +161,6 @@ class Dungeon:
     self.fileName=fileName
     self.start=[0,0]
     self.index=0
-    #TYPES BASED ON DUNGEON INDEX OR FILENAME#
-    if self.index<5 and self.index>=0:
-      self.itemList=[0,'l','q','r','2','7']
-    elif self.index<10 and self.index>=5:
-      self.itemList=[0,'l','m','r','q', '3','8']
-    elif self.index<15 and self.index>=10:
-      self.itemList=[0,'m','o','r','q','4','9']
-    elif self.index<20 and self.index>=15:
-      self.itemList=[0,'m','n','r','q','5','a']
-    elif self.index<25 and self.index>=20:
-      self.itemList=[0,'l','m','o','r','q','6','b']
 
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
@@ -289,9 +278,6 @@ class Dungeon:
         event=int(line[8])
 
       rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
-   
-      rm.setItemList(self.itemList)
-      rm.fillItems()
 
       #check hidden items
       if line[14]=='h':
@@ -358,10 +344,25 @@ class Room:
     self.en3=en3
     self.en4=en4
 
-    self.it1=it1
-    self.it2=it2
-    self.it3=it3
-    self.it4=it4
+    if it1 != '0':
+        self.it1=get_item(it1)
+    else:
+        self.it1=None
+
+    if it2 != '0':
+        self.it2=get_item(it2)
+    else:
+        self.it2=None
+
+    if it3 != '0':
+        self.it3=get_item(it3)
+    else:
+        self.it3=None
+
+    if it4 != '0':
+        self.it4=get_item(it4)
+    else:
+        self.it4=None
 
     self.image=0
     self.transport=False
@@ -374,22 +375,10 @@ class Room:
 
   def setImage(self,imagePath):
     self.image=pygame.image.load(imagePath)
-  def setItemList(self,_itemList):
-    self.itemList=_itemList
 
   def setShop(self,player):
     self.shop=Shop(player)
 
-  def fillItems(self):
-    if not int(self.it1)==0:
-      self.it1=get_item(self.itemList[int(self.it1)])
-    if not int(self.it2)==0:
-      self.it2=get_item(self.itemList[int(self.it2)])
-    if not int(self.it3)==0:
-      self.it3=get_item(self.itemList[int(self.it3)])
-    if not int(self.it4)==0:
-      self.it4=get_item(self.itemList[int(self.it4)])
-    
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
 ###############################################################################
