@@ -5,10 +5,10 @@ class InvalidEnemyException(Exception): pass
 import pygame
 
 ENEMY = {
-    '1':{'name':_('Wizard Adept'),'img':"concept_wizard.gif",'hp':20,'att':3},
-    '2':{'name':_('Goblin'),'img':"concept_goblin.gif",'hp':40,'att':10},
-    '3':{'name':_('Orc'),'img':"concept_orc.gif",'hp':50,'att':6},
-    '4':{'name':_('Stone Golem'),'img':"concept_orc.gif",'hp':10,'att':10},
+    '1':{'name':_('Wizard Adept'),'img':"concept_wizard.gif",'hp':20,'att':3,'weak':'special'},
+    '2':{'name':_('Goblin'),'img':"concept_goblin.gif",'hp':40,'att':5,'weak':'fire'},
+    '3':{'name':_('Orc'),'img':"concept_orc.gif",'hp':50,'att':6,'weak':'lightning'},
+    '4':{'name':_('Stone Golem'),'img':"concept_orc.gif",'hp':10,'att':8,'weak':'missile'},
     #'5':{'name':_('Serratula')},
     #'6':{'name':_('Feren')},
 }
@@ -16,12 +16,13 @@ ENEMY = {
 class Enemy:
     def __init__(self, id):
         self.MHP    = 12                #maximum health points (base HP)
-        self.HP     = 12                #cur print "Fire"rent health points
+        self.HP     = 12                #current health points
         self.BHP    = 0             #bonus health points (from equipment)
         self.ATT    = 13                #base attack power
         self.BAE    = 0             #bonus attack power (from equipment)
         self.DEF    = 1             #base defense power
         self.BDE    = 0             #bonus defense  power(from equipment)
+        self.weakness=None
         self.eqItems_Ar = []    #equipped items
         self.attacks_Ar = []    #associated array for attack string names and attack power values
         self.eqItem_Ar = []
@@ -35,6 +36,7 @@ class Enemy:
         self.sprite.image=pygame.image.load(CHAR_PATH + ENEMY[id]['img'])
         self.HP = ENEMY[id]['hp']
         self.ATT = ENEMY[id]['att']
+        self.weakness=ENEMY[id]['weak']
         self.sprite.rect=(200,200,50,300)
 
     #****ENEMY ACCESSORS*********************************************#
@@ -128,3 +130,4 @@ def get_enemy(key):
         return Enemy( key )
     else:
         raise InvalidEnemyException()
+

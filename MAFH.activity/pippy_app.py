@@ -1708,7 +1708,7 @@ class Hero:
     elif name=="Lightning":
       return self.ATT+self.BAB
     elif name=="Division":
-      return (self.ATT+self.BAE)*1.5
+      return (self.ATT+self.BAE+self.BAB)*1.5
     elif name=="Missile":
       return self.ATT+self.BAB
 
@@ -2065,15 +2065,20 @@ class BattleEngine:
     self.player.currentMenu=self.battleMenu
 
   def attack(self,attacker,attackName):
+    defender=self.enemies[self.selEnemyIndex]
     if attackName=="critical":
       attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
+      if isinstance(defender,Enemy) and defender.weakness=='normal':
+        attacker.setBonusAP(attacker.BAB*2)
       self.player.basicAtk.play()
       tup=self.player.multiplicationStats[self.player.critDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.multiplicationStats[self.player.critDifficulty-1]=tup
 
     elif attackName=="Fire":
-      attacker.setBonusAP(int(self.timeBonus*20)+50) #change to +enemy.fireWeakness
+      attacker.setBonusAP(int(self.timeBonus*20)+10)
+      if isinstance(defender,Enemy) and defender.weakness=='fire':
+        attacker.setBonusAP(attacker.BAB+50)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.currentMenu=self.battleMenu
@@ -2092,7 +2097,9 @@ class BattleEngine:
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
 
     elif attackName=="Lightning":
-      attacker.setBonusAP(int(self.timeBonus)+70) #change to +enemy.lightningWeakness
+      attacker.setBonusAP(int(self.timeBonus)+10)
+      if isinstance(defender,Enemy) and defender.weakness=='lightning':
+        attacker.setBonusAP(attacker.BAB+60)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.magicAtk.play()
@@ -2101,7 +2108,9 @@ class BattleEngine:
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
     elif attackName=="Missile":
-      attacker.setBonusAP(int(self.timeBonus)+50) #change to +enemy.missileWeakness
+      attacker.setBonusAP(int(self.timeBonus)+10)
+      if isinstance(defender,Enemy) and defender.wewakness=='missile':
+        attacker.setBonusAP(attacker.BAB+55)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
       self.player.magicAtk.play()
@@ -2111,6 +2120,10 @@ class BattleEngine:
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
       print("Missile")
     elif attackName=="Division":
+      if isinstance(defender,Enemy) and defender.weakness=='special':
+        attacker.setBonusAP(attacker.BAE+4)
+      else:
+        attacker.setBonusAP(0)
       self.player.currentMenu=self.battleMenu
       self.player.specialAtk.play()
       tup=self.player.divisionStats[self.player.divDifficulty-1]
@@ -2122,7 +2135,6 @@ class BattleEngine:
     pygame.time.set_timer(USEREVENT+1,0)
     self.timeBonus=1
 
-    defender=self.enemies[self.selEnemyIndex]
     if attackName=="Heal":
       defender=attacker
       if -1*int(attacker.attackPower(attackName))>attacker.MHP:
