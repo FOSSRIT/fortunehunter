@@ -9,21 +9,17 @@ import simplejson
 import os.path
 
 from Items import get_item, Item
+from Enemy import get_enemy, Enemy
 
 ################################################################################
 #Start of external classes and functions
 ###############################################################################
-BASE_PATH = os.path.dirname(__file__) + "/assets/"
-#BASE_PATH = "/home/liveuser/GIT_REPOS/MAFH/mainline/MAFH.activity/assets/"
-SOUND_PATH = BASE_PATH + "sound/"
-MAP_PATH = BASE_PATH + "map/"
-MENU_PATH = BASE_PATH + "image/menu/"
-HUD_PATH = BASE_PATH + "image/hud/"
-ENV_PATH = BASE_PATH + "image/environment/"
-PUZZLE_PATH = BASE_PATH + "image/puzzle/"
-FMC_PATH = BASE_PATH + "fmc/"
-TOUR_PATH = BASE_PATH + "/image/tutorial/"
-CHAR_PATH = BASE_PATH + "/image/character/"
+
+from constants import (
+    BASE_PATH, SOUND_PATH, MAP_PATH, MENU_PATH, HUD_PATH, ENV_PATH,
+    PUZZLE_PATH, FMC_PATH, TOUR_PATH, CHAR_PATH
+)
+
 #       STAT COLLECTION
 #       for each difficulty, track each correct and incorrect for each attack
 #       geometry attack, division, critical, shop purchases/sales, puzzle solve times/quits
@@ -167,7 +163,7 @@ class Dungeon:
     self.index=0
     #TYPES BASED ON DUNGEON INDEX OR FILENAME#
     if self.index<5 and self.index>=0:
-      self.types=["none","Wizard Adept","Goblin","Orc","Stone Golem","Serratula","Feren"]
+      self.types=[0,'1','2','3','4','5','6']
       self.itemList=[0,'l','q','r','2','7']
     elif self.index<10 and self.index>=5:
       self.types=["none","Bonesprout","Dark Knight","Necromancer","Wizard Master","Bitter Biter","Undead Scourge"]
@@ -1290,7 +1286,7 @@ class Player:
     self.puzzlesSolved=0
 
     self.nextDungeon()
-    self.curBattle=BattleEngine(self.battlePlayer,[Enemy(self,'0')])
+    self.curBattle=BattleEngine(self.battlePlayer,[None])
     self.movTutorial=False
     self.movTutorial2=False
     self.movTutorial3=False
@@ -1837,135 +1833,6 @@ class Hero:
     #remove _item from inventory
 #end class Hero
 
-##############################################################################		
-#Enemy class - represents an enemy and holds all of its data
-#############################################################
-class Enemy:
-  def __init__(self,player,name):
-#****property********value**********************description**********************#
-	self.MHP 	= 12				#maximum health points (base HP)
-	self.HP		= 12				#cur print "Fire"rent health points
-	self.BHP 	= 0				#bonus health points (from equipment)
-	self.ATT 	= 13 				#base attack power
-	self.BAE	= 0				#bonus attack power (from equipment)
-	self.DEF	= 1				#base defense power
-	self.BDE	= 0				#bonus defense  power(from equipment)
-	self.eqItems_Ar	= []	#equipped items
-	self.attacks_Ar = []	#associated array for attack string names and attack power values
-	self.eqItem_Ar = []
-	self.inv_Ar = []
-	self.attacks_Ar = []
-        self.sprite=pygame.sprite.Sprite()
-        self.place=0
-        #load image based on type later
-        self.name=player.dgn.types[int(name)]
-        print(self.name)
-        if self.name=="Wizard Adept":
-          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_wizard.gif")
-          self.HP=20
-          self.ATT=3
-        elif self.name=="Goblin":
-          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_goblin.gif")
-          self.HP=40
-          self.ATT=10
-        elif self.name=="Orc":
-          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_orc.gif")
-          self.HP=50
-          self.ATT=6
-        else:
-          self.sprite.image=pygame.image.load(CHAR_PATH+"concept_orc.gif")
-          self.HP=10
-          self.ATT=10
-          #TODO:  add all enemy types here as artwork is completed
-        self.sprite.rect=(200,200,50,300) 
-
-#****ENEMY ACCESSORS*********************************************#
-  #returns enemy's maximum health
-  def maxHealthPoints(self):
-    return (self.HP + self.BHP)	
-
-  #returns enemy's current health
-  def healthPoints(self):
-    return (self.HP)
-
-  #returns enemy's current attack power
-  def attackPower(self):
-    return (self.ATT+self.BAE)
-
-  #returns enemy's current defense power
-  def defensePower(self):
-    return (self.DEF + self.BDE)
-
-  #returns enemy's equipped items
-  def equipment(self):
-    return self.eqItems_Ar
-
-  #returns enemy's current inventory
-  def inventory(self):
-    return self.inv_Ar
-
-#returns player's current attack power
-  def attackPower(self,name):
-    if name=="basic":
-      return self.ATT+self.BAE
-    elif name=="critical":
-      return int((self.ATT+self.BAE) * 1.5)
-    elif name=="special":
-      return int((self.ATT+self.BAE) * 1.3)
-#****ENEMY MUTATORS************************************************#
-  #sets enemy's current health
-  def setHealth(self,_HP):
-    self.HP = _HP
-
-  #sets enemy's bonus health
-  def setBonusHP(self,_BHP):
-    self.BHP = _BHP
-
-  #sets enemy's bonus attack power (from battle timer)
-  def setBonusAP(self,_BAP):
-    self.BAP = _BAP
-
-  #sets enemy's bonus attack power (from equipment)
-  def setBonusAE(self,_BAE):
-    self.BAE = _BAE
-
-  #sets enemy's bonus defense power (from equipment)
-  def setBonusDE(self,_BDE):
-    self.BDE = _BDE
-
-  #increases enemy's current health by given amount
-  def giveHealth(self,_inc):
-    self.HP += _inc
-    if healthPoints(self) > maxHealthPoints(self):
-	setHealth(self,maxHealthPoints(self))
-
-  #enemy is attacked by given damage
-  def defendAttack(self,dmg):
-    self.HP -= (dmg - self.defensePower())
-    if self.HP<0:
-      self.HP=0
-
-#****BATTLE ACCESSORS***********************************************#
-  #returns player's list of attacks that are currently available for use
-  def availableAttacks(self):
-    return self.attacks_Ar
-
-#****INVENTORY MUTATORS********************************************#
-  #add item to equipment
-  def addEquipment(self,_item):
-    print("add equip")
-      #add  _item to equipment
-      #if _item is weapon - add to first slot
-      #if _item is armor - add to second slot
-      #if _item is consumable - add to slots 3-6
-      #remove item from equipment
-
-  def remEquipment(self,_item):
-    print("remove equip")
-    #remove _item from equipment -- leave cell empty
-#end class Enemy
-###################################################################
-
 # Begin Battle Engine Class
 
 ################################################################
@@ -2052,7 +1919,8 @@ class BattleEngine:
         self.enemyValue=0
         i=0
 	for enemy in self.enemies:
-          enemy.place=i
+          if enemy:
+            enemy.place=i
           i+=1
 	self.player.msg5= "Enemies are present, prepare to fight."
 
@@ -3625,19 +3493,19 @@ def updateWaiting(event,player):
   #Check enemies in room
   #####################
   if  not int(player.currentRoom.en1)==0:
-    en=Enemy(player,player.currentRoom.en1)
+    en=get_enemy( player.currentRoom.en1 )
     en.place=0
     enemyList.append(en)
   if  not int(player.currentRoom.en2)==0:
-    en=Enemy(player,player.currentRoom.en2)
+    en=get_enemy(player.currentRoom.en2)
     en.place=1
     enemyList.append(en)
   if  not int(player.currentRoom.en3)==0:
-    en=Enemy(player,player.currentRoom.en3)
+    en=get_enemy(player.currentRoom.en3)
     en.place=2
     enemyList.append(en)
   if  not int(player.currentRoom.en4)==0:
-    en=Enemy(player,player.currentRoom.en4)
+    en=get_enemy(player.currentRoom.en4)
     en.place=3
     enemyList.append(en)
   if len(enemyList)>0:   
@@ -3785,7 +3653,7 @@ while pippy.pygame.next_frame():
         if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
           player.traversal=False
           player.battle=True
-          player.curBattle=BattleEngine(player,[Enemy(player,3)])
+          player.curBattle=BattleEngine(player,[get_enemy( '3' )])
           player.initInGameBattleTutorial(screen)
         elif player.currentX==1 and player.currentY==4 and player.movTutorial==False:
           player.initMovTutorial(screen)
