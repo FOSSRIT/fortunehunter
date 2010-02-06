@@ -44,7 +44,7 @@ def export_textfile(activity, filename, dungeon_id, filetext=''):
     file_dsobject.set_file_path(file_path)
 
     datastore.write(file_dsobject)
-    return file_dsobject
+    file_dsobject.destroy()
 
 
 def list_fh_files():
