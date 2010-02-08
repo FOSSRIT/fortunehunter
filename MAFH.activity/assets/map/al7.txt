@@ -1,5 +1,5 @@
 Dungeon 6
-7d1c88ea2279a1ea107773acfcd8e8f5f3cf9f8e
+al7.txt
 1x1
 0
 0

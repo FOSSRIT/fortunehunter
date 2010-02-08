@@ -9,7 +9,7 @@ import os.path
 from Items import get_item, Item
 from Enemy import get_enemy, Enemy
 
-from JournalIntegration import do_load
+from JournalIntegration import do_load, load_dungeon_by_id
 
 ################################################################################
 #Start of external classes and functions
@@ -155,7 +155,7 @@ class PuzzleMap (object):
   #######################################################################
 
 class Dungeon:
-  def __init__(self,sizeX=5,sizeY=5,fileName="al2.txt"):
+  def __init__(self,fileName):
     self.fileName=fileName
     self.start=[0,0]
     self.index=0
@@ -163,9 +163,6 @@ class Dungeon:
     ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
     self.rooms={}
 
-  def fill(self):
-    #####open text file######
-    dgnFile=open(self.fileName,'r')
     currentX=0
     currentY=0
     ###ENUM###
@@ -180,8 +177,12 @@ class Dungeon:
     PUZZLEROOM=7
     HIDDEN=8
 
-    d_dict = do_load( dgnFile )
-    dgnFile.close()
+    if os.path.exists( MAP_PATH + self.fileName ):
+        dgnFile=open( MAP_PATH + self.fileName,'r')
+        d_dict = do_load( dgnFile )
+        dgnFile.close()
+    else:
+        d_dict = load_dungeon_by_id( fileName )
 
     self.sizeX = d_dict['x']
     self.sizeY = d_dict['y']
@@ -390,7 +391,7 @@ class Room:
   #Map class: stores information about the layout of the dungeon for easy display
 ###############################################################################
 class Map:
-  def __init__(self,dgn=Dungeon(0,0,'')):
+  def __init__(self,dgn):
     self.sizeX=dgn.sizeX
     self.sizeY=dgn.sizeY
     self.rectSizeX=38
@@ -1223,13 +1224,13 @@ class Player:
     SOUTH=3
     EAST=0
     WEST=2
-    
+   
+    self.dgn = None
+
     self.initializeMenu()
     self.loadImages()
     self.currentX=x
     self.currentY=y
-    self.dgnIndex=-1
-    self.dungeons=[("al1.txt",3,5),("al2.txt",4,7),("al3.txt",4,4),("al4.txt",4,5),("al5.txt",5,4),("al6.txt",5,5),("al7.txt",1,1)]
     self.battlePlayer=Hero(self)
     #Difficulty: 1=Easy 2=Meduim 3=Hard
     self.critDifficulty=2 
@@ -1478,25 +1479,14 @@ class Player:
     self.msg4=self.msg5
     self.msg5=msg
   def nextDungeon(self):
-
-    self.dgnIndex+=1
-    self.battlePlayer.MHP+=2
-    if self.dgnIndex>=len(self.dungeons):
-      self.currentMenu=self.MainMenu
-      self.mainMenu=True
-      self.traversal=False
-    else:
-      if self.dgnIndex==3:
-        player.migrateMessages("Thank you for playing the demo!  The remaining levels are unfinished")
-        player.migrateMessages("but you are welcome to explore")
+      self.battlePlayer.MHP+=2
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
-      dgnWidth=self.dungeons[self.dgnIndex][1]
-      dgnHeight=self.dungeons[self.dgnIndex][2]
-      self.dgn=Dungeon(dgnWidth,dgnHeight,MAP_PATH+self.dungeons[self.dgnIndex][0])
-      self.dgn.index=self.dgnIndex
-      self.dgn.fill()
+      if self.dgn:
+          self.dgn=Dungeon(self.dgn.next)
+      else:
+          self.dgn=Dungeon('al1.txt')
       self.currentX=self.dgn.start[0]
       self.currentY=self.dgn.start[1]
       self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
