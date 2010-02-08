@@ -957,11 +957,10 @@ class Menu:
     def updateByName(self,name,player,screen):
         if name=="New Game":
             player.dgnIndex=-1
-            player.currentX=0
-            player.currentY=0
             player.playerFacing=1
             player.nextDungeon()
             player.dgnMap.updateMacro(player)
+            player.loadImages(player.dgn.theme)
             player.traversal=True
             player.mainMenu=False
             setImage(player)
@@ -1226,9 +1225,8 @@ class Player:
     WEST=2
    
     self.dgn = None
-
+    self.theme=None
     self.initializeMenu()
-    self.loadImages()
     self.currentX=x
     self.currentY=y
     self.battlePlayer=Hero(self)
@@ -1246,7 +1244,6 @@ class Player:
     self.shopStats=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
     self.puzzlesSolved=0
 
-    #self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[None])
     self.movTutorial=False
     self.movTutorial2=False
@@ -1283,17 +1280,20 @@ class Player:
     #sound
     self.comic=None
     pygame.mixer.init()
-    pygame.mixer.music.load(SOUND_PATH+"MAFHbg.ogg")
-    #pygame.mixer.music.play(-1)
     self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"door.wav")
-    self.buyin=pygame.mixer.Sound(SOUND_PATH+"buyin.ogg")
-    self.sellin=pygame.mixer.Sound(SOUND_PATH+"sellin.ogg")
+    self.doorEffect.set_volume(.25)
     self.basicAtk=pygame.mixer.Sound(SOUND_PATH+"basicAtk.ogg")
+    self.basicAtk.set_volume(.5)
     self.magicAtk=pygame.mixer.Sound(SOUND_PATH+"fireAtk.ogg")
+    self.magicAtk.set_volume(.5)
     self.specialAtk=pygame.mixer.Sound(SOUND_PATH+"specialAtk.ogg")
+    self.specialAtk.set_volume(.5)
     self.enemyDie=pygame.mixer.Sound(SOUND_PATH+"enemyDie1.ogg")
+    self.enemyDie.set_volume(1)
     self.itemPickup=pygame.mixer.Sound(SOUND_PATH+"itemPickup.ogg")
+    self.itemPickup.set_volume(.4)
     self.buySell=pygame.mixer.Sound(SOUND_PATH+"buySell.ogg")
+    self.buySell.set_volume(.5)
   def toString(self):
     dataList=[]
     dataList.append(self.name)
@@ -1352,7 +1352,17 @@ class Player:
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
 
-  def loadImages(self):
+  def loadImages(self,theme):
+    LVL_PATH=ENV_PATH
+    if theme==1:
+      LVL_PATH=ENV_PATH+"Ice/"
+      pygame.mixer.music.load(SOUND_PATH+"Ice.ogg")
+      pygame.mixer.music.play(-1)
+    elif theme==2:
+      LVL_PATH=ENV_PATH+"Fire/"
+    else:
+      pygame.mixer.music.load(SOUND_PATH+"MAFHbg.ogg")
+      pygame.mixer.music.play(-1)
     self.itemsGroup=pygame.sprite.Group()
 
     self.currentRoomSprite=pygame.sprite.Sprite()
@@ -1364,35 +1374,35 @@ class Player:
     self.Black.rect=pygame.Rect(0,0,1200,700)
 
     self.FLRSprite=pygame.sprite.Sprite()
-    self.FLRSprite.image=pygame.image.load(ENV_PATH+"flr.gif")
+    self.FLRSprite.image=pygame.image.load(LVL_PATH+"flr.gif")
     self.FLRSprite.rect=self.currentRoomSprite.rect
 
     self.FRSprite=pygame.sprite.Sprite()
-    self.FRSprite.image=pygame.image.load(ENV_PATH+"fr.gif")
+    self.FRSprite.image=pygame.image.load(LVL_PATH+"fr.gif")
     self.FRSprite.rect=self.currentRoomSprite.rect
 
     self.FSprite=pygame.sprite.Sprite()
-    self.FSprite.image=pygame.image.load(ENV_PATH+"f.gif")
+    self.FSprite.image=pygame.image.load(LVL_PATH+"f.gif")
     self.FSprite.rect=self.currentRoomSprite.rect
 
     self.FLSprite=pygame.sprite.Sprite()
-    self.FLSprite.image=pygame.image.load(ENV_PATH+"fl.gif")
+    self.FLSprite.image=pygame.image.load(LVL_PATH+"fl.gif")
     self.FLSprite.rect=self.currentRoomSprite.rect
 
     self.LRSprite=pygame.sprite.Sprite()
-    self.LRSprite.image=pygame.image.load(ENV_PATH+"lr.gif")
+    self.LRSprite.image=pygame.image.load(LVL_PATH+"lr.gif")
     self.LRSprite.rect=self.currentRoomSprite.rect
 
     self.LSprite=pygame.sprite.Sprite()
-    self.LSprite.image=pygame.image.load(ENV_PATH+"l.gif")
+    self.LSprite.image=pygame.image.load(LVL_PATH+"l.gif")
     self.LSprite.rect=self.currentRoomSprite.rect
 
     self.NoSprite=pygame.sprite.Sprite()
-    self.NoSprite.image=pygame.image.load(ENV_PATH+"_.gif")
+    self.NoSprite.image=pygame.image.load(LVL_PATH+"_.gif")
     self.NoSprite.rect=self.currentRoomSprite.rect
 
     self.RSprite=pygame.sprite.Sprite()
-    self.RSprite.image=pygame.image.load(ENV_PATH+"r.gif")
+    self.RSprite.image=pygame.image.load(LVL_PATH+"r.gif")
     self.RSprite.rect=self.currentRoomSprite.rect
     
     self.akhalSprite=pygame.sprite.Sprite()
@@ -1487,6 +1497,9 @@ class Player:
           self.dgn=Dungeon(self.dgn.next)
       else:
           self.dgn=Dungeon('al1.txt')
+      if self.dgn.theme != self.theme:
+        self.loadImages(self.dgn.theme)
+        self.theme=self.dgn.theme
       self.currentX=self.dgn.start[0]
       self.currentY=self.dgn.start[1]
       self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
@@ -3532,7 +3545,7 @@ def drawPuzzle(player,screen):
     y=0
     screen.fill((255,255,255),(0,2,1200,200))
     lines=["This door is locked with a special lock.  In order to unlock it, you must"," re-arrange the tiles and make the image whole.  Use the arrow keys ","to slide the tiles.  You can view the completed image by pressing","any other button.  To give up, press  or backspace."]
-    screen.blit(pygame.image.load(TOUR_PATH+"buttonX.gif"),(570,150,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonX.gif"),(570,150,40,40))
     for message in lines:
       screen.blit(font.render(message,True,(75,0,0)),(0,20+y,200,300))
       y+=40
