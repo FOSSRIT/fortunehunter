@@ -892,7 +892,7 @@ class Menu:
             player.currentX=0
             player.currentY=0
             player.playerFacing=1
-            player.nextDungeon()
+            player.nextDungeon(True)
             player.dgnMap.updateMacro(player)
             player.traversal=True
             player.mainMenu=False
@@ -1168,6 +1168,7 @@ class Player:
   def fromData(self,data):
     self.name=data[0]
     self.dgnIndex=data[1]-1
+    ##FIXME: nextDungeon now uses file name not by id
     self.nextDungeon()
     self.critDifficulty=data[2]
     self.divDifficulty=data[3]
@@ -1238,13 +1239,15 @@ class Player:
     self.msg3=self.msg4
     self.msg4=self.msg5
     self.msg5=msg
-  def nextDungeon(self):
+  def nextDungeon(self,reload=False):
       self.battlePlayer.MHP+=2
       self.dgnIndex+=1
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
-      if self.dgn:
+      if reload:
+          self.dgn=Dungeon(self.dgn.fileName)
+      elif self.dgn:
           self.dgn=Dungeon(self.dgn.next)
       else:
           self.dgn=Dungeon('al1.txt')
