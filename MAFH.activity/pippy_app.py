@@ -1,7 +1,5 @@
 import pippy, pygame, sys, math
-from PIL import Image
 from pygame.locals import *
-from pygame import movie
 from sugar.activity import activity
 from random import *
 from time import time
@@ -731,7 +729,7 @@ class Menu:
             k=0
             screen.fill((255,255,255),(0,0,400,400))
             lines=["This is the statistics screen.","Here, you can view information","about your character,","and any items, you have equipped.","As  you can see, there are slots for","weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to","and press enter or "] #draw check
-            screen.blit(pygame.image.load(TOUR_PATH+"buttonV.gif"),(225,375,40,40))
+            screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(225,375,40,40))
             for message in lines:
               screen.blit(font.render(message,True,(0,200,0)),(20,20+k,200,300))
               k+=40
@@ -754,7 +752,7 @@ class Menu:
                 for message in lines:
                   screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
                   k+=40
-                screen.blit(pygame.image.load(TOUR_PATH+"buttonV.gif"),(1165,460,40,40))
+                screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(1165,460,40,40))
         if self.name=="Victory":
           self.bgSurface=pygame.Surface((1200,700))
           player.currentRoomGroup.draw(self.bgSurface)
@@ -969,9 +967,9 @@ class Menu:
             player.battlePlayer=Hero(player)
             player.currentRoomGroup.draw(screen)
             player.initMovTutorial(screen)
-            player.startMovie("FMC1.gif","MAFHbg.ogg")
+            player.startComic(FMC_PATH+"FMC1/",None)
             player.traversal=False
-            player.inAnimation=True
+            player.inComic=True
             pygame.display.flip()
 
         elif name=="Close":
@@ -981,10 +979,6 @@ class Menu:
           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"w")
           FILE.write(simplejson.dumps(dataList))
           FILE.close()
-          #FILE.seek(0)
-          #for line in dataList:
-          #  FILE.write(repr(line)+'\n')
-          #FILE.close()
           #do save stuff
         elif name=="Main Menu":
           player.traversal=False
@@ -995,7 +989,9 @@ class Menu:
           player.mainMenu=False
         elif name=="Tutorial":
             player.inTutorial=True
+            player.inComic=True
             player.mainMenu=False
+            player.startComic(TOUR_PATH+"setup/",None)
         elif name=="Disabled":
           if player.previousMenu.currentOption==0:
             player.critDifficulty=0
@@ -1173,29 +1169,34 @@ class Menu:
       player.currentMenu=self.inventoryMenu
 
 ######################################################################
-#Tutorial Class: stores image list, traverses through list
+#Comic Class: stores an image list and possible BGM, traverses through list and tries to play BGM
 ######################################################################
-class Tutorial:
-    def __init__(self,imageList,sX,sY):
+class Comic:
+    def __init__(self,Folder,BGM):
         self.currentIndex = 0
         self.images=[]
-
-        for image in imageList:
+        #load images into sprites
+        i=0
+        for image in os.listdir(Folder):
           spt=pygame.sprite.Sprite()
-          spt.image=pygame.image.load(image)
-          spt.rect=pygame.Rect(sX,sY,1290,700)
+          spt.image=pygame.image.load(Folder+image)
+          spt.rect=pygame.Rect(0,0,1200,900)
 	  self.images.append(spt)
+          i+=1
 
-       	self.size=len(imageList)
+       	self.size=i
+        #try to load music
+        if BGM != None:
+          pygame.mixer.muxic.stop()
+          pygame.mixer.music.load(SOUND_PATH+BGM)
+          pygame.mixer.music.play(-1)
 
-    def next(self):
+    def next(self,player):
     	if  self.currentIndex < self.size - 1:
        	  self.currentIndex+=1
 
     	else:
-          self.currentIndex=0
-	  player.mainMenu = True
-	  player.inTutorial = False
+          player.stopComic()
 
     def previous(self):
       if self.currentIndex > 0:
@@ -1209,40 +1210,7 @@ class Tutorial:
         group.add(self.images[self.currentIndex])
         group.draw(screen)
         pygame.display.flip()
-##############################################################################################
-#Animation Class: stores a .gif images and adapts it for use in pygame 
-############################################################################################
-class Animation:
-  def __init__(self,imageFileName,soundFileName):
-    self.soundTrack=pygame.mixer.Sound(SOUND_PATH+soundFileName)
-    self.gif=Image.open(FMC_PATH+imageFileName)
-    self.gif.seek(0)
-    self.sprite=pygame.sprite.Sprite()
-    self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
-    self.sprite.rect=(0,0,1200,900)
-    self.group=pygame.sprite.Group(self.sprite)
-    self.bufferArray=[]
-    self.currentIndex=0
-    #self.bufferAnim()
-  def next(self,screen):
-    self.group.draw(screen)
-    self.gif.seek(self.gif.tell()+1)
-    self.sprite.image=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
-    self.group.draw(screen)
-    pygame.display.flip()
-  def bufferAnim(self):
-    while 1==1:
-      try:
-        self.gif.seek(self.gif.tell()+1)
-        temp=pygame.image.frombuffer(self.gif.convert("RGBA").tostring(),self.gif.size,"RGBA")
-        self.bufferArray.append(temp)
-      except EOFError:
-        self.gif.seek(0)
-  def nextBuffer(self,screen):
-    screen.blit(self.bufferArray[self.currentIndex],(0,0,1200,900))
-    self.currentIndex+=1
-    screen.blit(self.bufferArray[self.currentIndex],(0,0,1200,900))
-    pygame.display.flip()
+
 ################################################################################
 
 # Player Class: stores info about the player ie. current position in dungeon etc
@@ -1257,7 +1225,6 @@ class Player:
     WEST=2
     
     self.initializeMenu()
-    self.loadTutorial()
     self.loadImages()
     self.currentX=x
     self.currentY=y
@@ -1278,7 +1245,7 @@ class Player:
     self.shopStats=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
     self.puzzlesSolved=0
 
-    self.nextDungeon()
+    #self.nextDungeon()
     self.curBattle=BattleEngine(self.battlePlayer,[None])
     self.movTutorial=False
     self.movTutorial2=False
@@ -1301,7 +1268,7 @@ class Player:
     self.inGameTutorial=False
     self.macroMap=False
     self.shop=False
-    self.inAnimation=False
+    self.inComic=False
     self.inPuzzle=False
 
     self.msg1=""
@@ -1313,10 +1280,10 @@ class Player:
     self.playerFacing=NORTH
 
     #sound
-    self.animation=0
+    self.comic=None
     pygame.mixer.init()
     pygame.mixer.music.load(SOUND_PATH+"MAFHbg.ogg")
-    pygame.mixer.music.play(-1)
+    #pygame.mixer.music.play(-1)
     self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"door.wav")
     self.buyin=pygame.mixer.Sound(SOUND_PATH+"buyin.ogg")
     self.sellin=pygame.mixer.Sound(SOUND_PATH+"sellin.ogg")
@@ -1383,10 +1350,6 @@ class Player:
 
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
-    
-  def loadTutorial(self):
-    tutorialImages=[TOUR_PATH+"t1.gif",TOUR_PATH+"t2.gif",TOUR_PATH+"t3.gif"]
-    self.tutorial=Tutorial(tutorialImages,0,0)
 
   def loadImages(self):
     self.itemsGroup=pygame.sprite.Group()
@@ -1491,17 +1454,22 @@ class Player:
     self.battlePlayer.akhal=data[i]
 
     
-  def startMovie(self,movieName,soundTrackName):
-    screen.fill((0,0,0),(0,0,1200,900))
-    self.animation=Animation(movieName,soundTrackName)
-    pygame.time.set_timer(USEREVENT+3,100)
-  def stopMovie(self):
-    self.inAnimation=False 
-    pygame.time.set_timer(USEREVENT+3,0)
-    del self.animation
-    self.traversal=True
-    setImage(player)
-    pygame.display.flip()
+  def startComic(self,comicPath,soundPath):
+    self.comic=Comic(comicPath,soundPath)
+    self.inComic=True
+    self.traversal=False
+    self.mainMenu=False
+  def stopComic(self):
+    self.inComic=False
+    del self.comic
+    if self.inTutorial:
+      self.mainMenu=True
+      self.inTutorial=False
+    else:
+      self.traversal=True
+    if self.traversal:
+      setImage(player)
+      pygame.display.flip()
 
   def migrateMessages(self,msg):
     self.msg1=self.msg2
@@ -1575,7 +1543,7 @@ class Player:
     y=0
     screen.fill((255,255,255),(0,20,500,400))
     lines=["Welcome to the first","     Dungeon!","To look around:","  press the left or right arrows.","To move forward:","  press the up arrow","To check inventory or stats:","  Press space or "]
-    screen.blit(pygame.image.load(TOUR_PATH+"buttonO.gif"),(260,300,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonO.gif"),(260,300,40,40))
     for message in lines:
       screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
       y+=40
@@ -1584,7 +1552,7 @@ class Player:
     y=0
     screen.fill((255,255,255),(0,20,500,300))
     lines=["While you are navigating the","maze-like dungeon, you might","want to look at a map.","To display a large map:","  press M or "]
-    screen.blit(pygame.image.load(TOUR_PATH+"buttonL.gif"),(240,200,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonL.gif"),(240,200,40,40))
     for message in lines:
       screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
       y+=40
@@ -1593,9 +1561,9 @@ class Player:
     y=0
     screen.fill((255,255,255),(0,20,450,400))
     lines=["This room has an item in it!","To pick it up:","   press    or E","To use it once equipped","  press E or  ","  on the stats screen","To unequip an item:","  press U or","  on the stats screen"]
-    screen.blit(pygame.image.load(TOUR_PATH+"buttonV.gif"),(135,90,40,40))
-    screen.blit(pygame.image.load(TOUR_PATH+"buttonL.gif"),(200,190,40,40))
-    screen.blit(pygame.image.load(TOUR_PATH+"buttonO.gif"),(200,300,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(135,90,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonL.gif"),(200,190,40,40))
+    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonO.gif"),(200,300,40,40))
     for message in lines:
       screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
       y+=40
@@ -3451,7 +3419,7 @@ def updateTraversal(event,player,screen):
         player.currentMenu=player.statsMenu
         player.previousMenu=player.statsMenu
 
-def updateTutorial(event,player):
+def updateComic(event,player):
     if event.type == QUIT:
       sys.exit()
 
@@ -3462,31 +3430,17 @@ def updateTutorial(event,player):
         sys.exit()
 
       elif newKey=='[1]' or newKey=='right':
-        player.tutorial.next()
-
-      elif newKey=='[2]':
-        player.migrateMessages('down')
+        player.comic.next(player)
 
       elif newKey=='[3]' or newKey=='left':
-        player.tutorial.previous()
+        player.comic.previous()
 
       elif newKey=='[4]' or newKey=='backspace':
-        player.tutorial.previous()
-
-      elif newKey=='[5]':
-        player.migrateMessages('check')
+        player.comic.previous()
 
       elif newKey=='[6]' or newKey=='return':
-        player.tutorial.next()
+        player.comic.next(player)
 
-      elif newKey=='[7]':
-        player.migrateMessages('square')
-
-      elif newKey=='[8]':
-        player.migrateMessages('up')
-
-      elif newKey=='[9]':
-        player.migrateMessages('circle')
 #while waiting between rooms...
 def updateWaiting(event,player):
   pygame.time.set_timer(USEREVENT+2,500)
@@ -3641,8 +3595,6 @@ while pippy.pygame.next_frame():
       pygame.time.set_timer(USEREVENT+2,0)
       drawWaiting(player,screen)
       player.waiting=False
-      if player.itemsPickedUp:
-        pygame.time.set_timer(USEREVENT+4,1400)
       if player.msg5=='Enemies are present, prepare to fight.':
         player.battle=True
       if player.currentRoom.roomFlag==6:
@@ -3675,16 +3627,8 @@ while pippy.pygame.next_frame():
         else:
           player.traversal=True
       setImage(player)
-    if player.inAnimation:
-      if event.type==KEYDOWN:
-        player.stopMovie()
-    if event.type==USEREVENT+3 and player.inAnimation:
-      try:
-        player.animation.next(screen)
-      except EOFError:
-        player.stopMovie()
-      except AttributeError:
-        print("HACK!!!!!")
+    if player.inComic:
+      updateComic(event,player)
     if event.type==QUIT:
       sys.exit()
     if player.traversal:
@@ -3703,8 +3647,6 @@ while pippy.pygame.next_frame():
     elif player.mainMenu:
       ## main menu processes
       updateMenu(event,player)
-    elif player.inTutorial:
-      updateTutorial(event,player)
     elif player.macroMap:
       updateMacroMap(event,player)
     elif player.shop:
@@ -3726,22 +3668,23 @@ while pippy.pygame.next_frame():
     else:
       player.currentMenu.draw(player,screen,450,400,50)
   else:
-    if not player.inAnimation:
-      drawTextBox(player,screen)
     if player.traversal:
       if player.waiting:
         drawWaiting(player,screen)
       else:
+        drawTextBox(player,screen)
         drawTraversal(player,screen)
     elif player.macroMap:
       player.dgnMap.drawMacro(player,screen)
     elif player.battle:
+      drawTextBox(player,screen)
       player.curBattle.draw(player,screen)
     elif player.inPuzzle:
       drawPuzzle(player,screen)
-    elif player.inTutorial:
-      player.tutorial.draw(player.currentRoomGroup,screen)
+    elif player.inComic:
+      player.comic.draw(player.currentRoomGroup,screen)
     elif player.shop:
+      drawTextBox(player,screen)
       player.currentRoom.shop.draw(screen,player)
   if player.traversal:
     player.currentRoomGroup.draw(screen)
