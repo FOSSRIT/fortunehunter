@@ -1,5 +1,6 @@
 from Items import get_item
 import pygame
+from pygame.locals import *
 from constants import MENU_PATH, CHAR_PATH
 
 ############################################################################
