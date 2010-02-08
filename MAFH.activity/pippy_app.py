@@ -8,8 +8,7 @@ import os.path
 
 from Items import get_item, Item
 from Enemy import get_enemy, Enemy
-
-from JournalIntegration import do_load, load_dungeon_by_id
+from Dungeon import Dungeon
 
 ################################################################################
 #Start of external classes and functions
@@ -148,245 +147,6 @@ class PuzzleMap (object):
                     self.solved = False
 
         return self.solved
-
-  ########################################################################
-  #Dungeon class:  stores a 2d array of rooms representing the dungeon
-  #                reads/parses a text file containing the data for a dungeon
-  #######################################################################
-
-class Dungeon:
-  def __init__(self,fileName):
-    self.fileName=fileName
-    self.start=[0,0]
-    self.index=0
-
-    ###INITALIZE DICTIONARY, TUPLE:ROOM PAIRINGS
-    self.rooms={}
-
-    currentX=0
-    currentY=0
-    ###ENUM###
-    NONE=-1
-    PUZZLE=0
-    LOCKED=1
-    BOTH=2
-    UNLOCKED=3
-    EXIT=4
-    ENTRANCE=5
-    SHOP=6
-    PUZZLEROOM=7
-    HIDDEN=8
-
-    if os.path.exists( MAP_PATH + self.fileName ):
-        dgnFile=open( MAP_PATH + self.fileName,'r')
-        d_dict = do_load( dgnFile )
-        dgnFile.close()
-    else:
-        d_dict = load_dungeon_by_id( fileName )
-
-    self.sizeX = d_dict['x']
-    self.sizeY = d_dict['y']
-    self.theme = d_dict['theme']
-    self.name = d_dict['name']
-    self.id = d_dict['d_id']
-    self.next = d_dict['next']
-
-    for line in d_dict['roomstr']:
-      ###initialize room variables###
-      doorN=False
-      doorNFlag=NONE
-      doorS=False
-      doorSFlag=NONE
-      doorE=False
-      doorEFlag=NONE
-      doorW=False
-      doorWFlag=NONE
-      roomFlag=NONE
-      en1=0
-      en2=0
-      en3=0
-      en4=0
-      it1=0
-      it2=0
-      it3=0
-      it4=0
-      ###check characters in current line, set variables accordingly###
-      ###KEY:1st character=door to north
-      ###    2nd=door to south
-      ###    3rd=door to east
-      ###    4th=door to west
-      ###    5th=if the room is a shop
-      ###    6-9=enemy number in each slot (0 for no enemy)
-
-      if line[0]=='N':
-        doorN=True
-        if line[1]=='l':
-          doorNFlag=LOCKED
-        elif line[1]=='p':
-          doorNFlag=PUZZLE
-        elif line[1]=='b':
-          doorNFlag=BOTH
-        elif line[1]=='u':
-          doorNFlag=UNLOCKED
-        elif line[1]=='e':
-          doorNFlag=ENTRANCE
-        elif line[1]=='x':
-          doorNFlag=EXIT
-
-      if line[2]=='S':
-        doorS=True
-        if line[3]=='l':
-          doorSFlag=LOCKED
-        elif line[3]=='p':
-          doorSFlag=PUZZLE
-        elif line[3]=='b':
-          doorSFlag=BOTH
-        elif line[3]=='u':
-          doorSFlag=UNLOCKED
-        elif line[3]=='e':
-          doorSFlag=ENTRANCE
-        elif line[3]=='x':
-          doorSFlag=EXIT
-
-      if line[4]=='W':
-        doorW=True
-        if line[5]=='l':
-          doorWFlag=LOCKED
-        elif line[5]=='p':
-          doorWFlag=PUZZLE
-        elif line[5]=='b':
-          doorWFlag=BOTH
-        elif line[5]=='u':
-          doorWFlag=UNLOCKED
-        elif line[5]=='e':
-          doorWFlag=ENTRANCE
-        elif line[5]=='x':
-          doorWFlag=EXIT
-
-      if line[6]=='E':
-        doorE=True
-        if line[7]=='l':
-          doorEFlag=LOCKED
-        elif line[7]=='p':
-          doorEFlag=PUZZLE
-        elif line[7]=='b':
-          doorEFlag=BOTH
-        elif line[7]=='u':
-          doorEFlag=UNLOCKED
-        elif line[7]=='e':
-          doorEFlag=ENTRANCE
-        elif line[7]=='x':
-          doorEFlag=EXIT
-
-      if line[8]=='S':
-        roomFlag=SHOP
-      elif line[8]=='P':
-        roomFlag=PUZZLE
-      else:
-        event=int(line[8])
-
-      rm=Room(doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,line[9],line[10],line[11],line[12],line[13],line[15],line[17],line[19])
-
-      #check hidden items
-      if line[14]=='h':
-        rm.it1.hidden=True
-      elif line[14]=='v':
-        rm.it1.hidden=False
-      if line[16]=='h':
-        rm.it2.hidden=True
-      elif line[16]=='v':
-        rm.it2.hidden=False
-      if line[18]=='h':
-        rm.it3.hidden=True
-      elif line[18]=='v':
-        rm.it3.hidden=False
-      if line[20]=='h':
-        rm.it4.hidden=True
-      elif line[20]=='v':
-        rm.it4.hidden=False
-
-      #check battle items
-      if line[14]=='b':
-        rm.it1.battle=True
-      if line[16]=='b':
-        rm.it2.battle=True
-      if line[18]=='b':
-        rm.it3.battle=True
-      if line[20]=='b':
-        rm.it4.battle=True
-
-      if doorSFlag==ENTRANCE or doorNFlag==ENTRANCE or doorWFlag==ENTRANCE or doorEFlag==ENTRANCE:
-        self.start=(currentX,currentY)
- 
-      #start=[1,4]
-      
-      self.rooms[(currentX,currentY)]=rm
-      ###update position in array###
-      currentX+=1
-
-      if currentX==self.sizeX:
-        currentY+=1
-        currentX=0
-
-      if currentY>self.sizeY:
-        break
-
-##################################################################################
-
-#Room class: stores data about a room in the dungeon.  IE doors, enemies, mood etc
-####################################################################################
-class Room:
-  def __init__(self,doorN,doorNFlag,doorS,doorSFlag,doorE,doorEFlag,doorW,doorWFlag,roomFlag,en1,en2,en3,en4,it1,it2,it3,it4):
-    self.doorN=doorN
-    self.doorNFlag=doorNFlag
-    self.doorS=doorS
-    self.doorSFlag=doorSFlag
-    self.doorE=doorE
-    self.doorEFlag=doorEFlag
-    self.doorW=doorW
-    self.doorWFlag=doorWFlag
-    self.roomFlag=roomFlag
-
-    self.en1=en1
-    self.en2=en2
-    self.en3=en3
-    self.en4=en4
-
-    if it1 != '0':
-        self.it1=get_item(it1)
-    else:
-        self.it1=None
-
-    if it2 != '0':
-        self.it2=get_item(it2)
-    else:
-        self.it2=None
-
-    if it3 != '0':
-        self.it3=get_item(it3)
-    else:
-        self.it3=None
-
-    if it4 != '0':
-        self.it4=get_item(it4)
-    else:
-        self.it4=None
-
-    self.image=0
-    self.transport=False
-  #######To string method########
-  def getData(self):
-    string=""
-    string+=repr(self.doorN)+repr(self.doorS)+repr(self.doorE)+repr(self.doorW)
-    string+=self.en1+self.en2+self.en3+self.en4
-    return(string)
-
-  def setImage(self,imagePath):
-    self.image=pygame.image.load(imagePath)
-
-  def setShop(self,player):
-    self.shop=Shop(player)
-
 #################################################################################
   #Map class: stores information about the layout of the dungeon for easy display
 ###############################################################################
@@ -794,7 +554,7 @@ class Menu:
           screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(150,0,0)),(910,110,0,0))
           screen.blit(font.render("Puzzles solved:"+repr(player.puzzlesSolved),True,(150,0,0)),(400,160,0,0))
 
-          screen.blit(font.render("Levels Beaten/Levels left:  "+repr(player.dgnIndex+1)+"/"+repr(len(player.dungeons)-player.dgnIndex+1),True,(150,0,0)),(600,160,0,0))
+          screen.blit(font.render("Levels Beaten:  "+repr(player.dgnIndex),True,(150,0,0)),(600,160,0,0))
        
         elif self.name=="Pause Menu":
           menuGroup.draw(screen)
@@ -1131,7 +891,7 @@ class Menu:
             player.currentX=0
             player.currentY=0
             player.playerFacing=1
-            player.nextDungeon()
+            player.nextDungeon(True)
             player.dgnMap.updateMacro(player)
             player.traversal=True
             player.mainMenu=False
@@ -1418,6 +1178,7 @@ class Player:
   def fromData(self,data):
     self.name=data[0]
     self.dgnIndex=data[1]-1
+    ##FIXME: nextDungeon now uses file name not by id
     self.nextDungeon()
     self.critDifficulty=data[2]
     self.divDifficulty=data[3]
@@ -1488,12 +1249,15 @@ class Player:
     self.msg3=self.msg4
     self.msg4=self.msg5
     self.msg5=msg
-  def nextDungeon(self):
+  def nextDungeon(self,reload=False):
       self.battlePlayer.MHP+=2
+      self.dgnIndex+=1
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
-      if self.dgn:
+      if reload:
+          self.dgn=Dungeon(self.dgn.fileName)
+      elif self.dgn:
           self.dgn=Dungeon(self.dgn.next)
       else:
           self.dgn=Dungeon('al1.txt')
@@ -2552,300 +2316,6 @@ class BattleEngine:
 
     #Run a check to see if battle is over
       self.CheckEndBattle()
-
-############################################################################
-#Shop class
-############################################################################
-class Shop:
-  def __init__(self,player):
-    self.player=player
-    self.itemList=[get_item('l'),get_item('m')]
-    self.selItem=0
-    self.numItem=[0,0]
-    self.totalPrice=0
-    self.selDigit=3
-    self.enteredDigits=[0,0,0,0]
-    self.buyScreen=False
-    self.buyMode=True
-    self.sellMode=False
-    self.yes=True
-    self.shopKeeperVariable=0
-    self.message=[]
-    if self.player.shopTutorial==False:
-      self.message.append("Welcome.  You can view my")
-      self.message.append("wares by using the arrow keys")
-      self.message.append("If you want to switch between")
-      self.message.append("buying and selling, just press")
-      self.message.append("   (B) or    (S)")
-    else:
-      self.message.append("Got some rare things")
-      self.message.append("on sale stranger")
-  def finish(self):
-    if self.buyMode:
-      enteredNumber=1000*self.enteredDigits[0]+100*self.enteredDigits[1]+10*self.enteredDigits[2]+self.enteredDigits[3]
-      if enteredNumber>=self.totalPrice and self.player.battlePlayer.akhal>=enteredNumber:
-        self.player.buySell.play()
-        if self.player.shopDifficulty==1:
-          self.player.battlePlayer.akhal-=self.totalPrice
-        else:
-          self.player.battlePlayer.akhal-=enteredNumber
-        if enteredNumber>self.totalPrice:
-          if self.player.shopDifficulty==1:
-            self.message=[]
-            self.message.append("Here you are,")
-            self.message.append("and your change")
-          else:
-            self.message=[]
-            self.message.append("Hehe, with that generosity")
-            self.message.append("you can come back")
-            self.message.append("ANY time sir")
-        else:
-          self.message=[]
-          self.message.append("Here you are")
-        i=0
-
-        for item in self.itemList:
-          for k in range(self.numItem[i]):
-            self.player.battlePlayer.inv_Ar.append(self.itemList[i])
-          i+=1
-      else:
-        self.message=[]
-        self.message.append("Not enough cash")
-    elif self.sellMode:
-      self.player.buySell.play()
-      self.player.battlePlayer.akhal+=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
-      self.player.battlePlayer.inv_Ar.remove(self.player.battlePlayer.inv_Ar[self.selItem])
-      self.selItem=0
-      self.message=[]
-    self.buyScreen=False
-  def update(self,event,player):
-    if event.type == QUIT:
-      sys.exit()
-
-    #handle key input
-    elif event.type == KEYDOWN:
-      newKey=pygame.key.name(event.key)
-      if player.shopTutorial==False:
-        self.message=[]
-        self.message.append("If you want to leave")
-        self.message.append("press    or backspace")
-      if newKey=='escape':
-        sys.exit()
-      elif newKey=='[6]' or newKey=='right':
-        #Right
-        #increment numItems/selectedDigit
-        if self.buyScreen:
-          if self.sellMode:
-            self.yes=False
-          if self.selDigit<3:
-            self.selDigit+=1
-          else:
-            self.selDigit=0
-        else:
-          if self.numItem[self.selItem]<9:
-            self.numItem[self.selItem]+=1
-          else:
-            self.numItem[self.selItem]=0
-      elif newKey=='[2]' or newKey=='down':
-        #Down
-        #decrement selected item/enteredDigits[selItem]
-        if self.sellMode:
-          if not self.buyScreen:
-            if self.selItem<len(self.player.battlePlayer.inv_Ar)-1:
-              self.selItem+=1
-            else:
-              self.selItem=0
-        else:
-          if self.buyScreen:
-            if self.enteredDigits[self.selDigit]>0:
-              self.enteredDigits[self.selDigit]-=1
-            else:
-              self.enteredDigits[self.selDigit]=9
-          else:
-
-            if self.selItem<len(self.itemList)-1:
-              self.selItem+=1
-            else:
-              self.selItem=0
-      elif newKey=='[4]' or newKey=='left':
-        #Left
-        #decrement numItems/selectedDigit
-        if self.buyScreen:
-          if self.sellMode:
-            self.yes=True
-          elif self.selDigit>0:
-            self.selDigit-=1
-          else:
-            self.selDigit=3
-        else:
-          if self.numItem[self.selItem]>0:
-            self.numItem[self.selItem]-=1
-          else:
-            self.numItem[self.selItem]=9
-      elif newKey=='[8]' or newKey=='up':
-        #Up
-        #increment selected item/enteredDigits[selItem]
-        if self.sellMode:
-          if not self.buyScreen:
-            if self.selItem>0:
-              self.selItem-=1
-            else:
-              self.selItem=len(self.player.battlePlayer.inv_Ar)-1
-        else:
-          if self.buyScreen:
-            if self.enteredDigits[self.selDigit]<9:
-              self.enteredDigits[self.selDigit]+=1
-            else:
-              self.enteredDigits[self.selDigit]=0
-          else:
-
-            if self.selItem>0:
-              self.selItem-=1
-            else:
-              self.selItem=len(self.itemList)-1
-      elif newKey=='[1]' or newKey=='return':
-        #Check
-        #buy/finish
-        if self.sellMode:
-          if self.buyScreen:
-            if self.yes:
-              self.finish()
-            else:
-              self.buyScreen=False
-          else:
-            itName=self.player.battlePlayer.inv_Ar[self.selItem].name
-            self.yes=False
-            if itName=="Small Key" or itName=="Big Key" or itName=="Calculator" or itName=="Ancient Amulet":
-              #have shop merchant say
-              self.message=[]
-              self.message.append("That looks important,")
-              self.message.append("I wouldn't sell that if I were you")
-            else:
-              self.buyScreen=True
-              if self.player.shopDifficulty==1:
-                self.shopKeeperVariable=self.player.battlePlayer.inv_Ar[self.selItem].sellVal
-              else:
-                seed()
-                self.shopKeeperVariable=randint(1,self.player.battlePlayer.inv_Ar[self.selItem].sellVal*2)
-
-        elif self.buyMode:
-          if self.buyScreen:
-            self.finish()
-          else:
-            self.buyScreen=True
-            i=0
-            for item in self.itemList:
-              self.totalPrice+=self.numItem[i]*self.itemList[i].buyVal
-              i=i+1
-      elif newKey=='[3]' or newKey=='backspace':
-        if self.buyScreen:
-          self.buyScreen=False
-        else:
-          self.player.shop=False
-          self.player.traversal=True
-          self.player.shopTutorial=True
-      elif newKey=='[7]' or newKey=='s':
-        #circle, switch to sell mode
-        if self.buyScreen==False:
-          self.buyMode=False
-          self.sellMode=True
-          self.selItem=0
-          self.numItem=[0,0]
-          #self.player.sellin.play()
-
-      elif newKey=='[9]' or newKey=='b':
-        #square, switch to buy mode
-        if self.buyScreen==False:
-          self.sellMode=False
-          self.buyMode=True
-          self.selItem=0
-          self.numItem=[0,0]
-          #self.player.buyin.play()
-  
-  def draw(self,screen,player):
-    player.currentRoomGroup.draw(screen)
-    font = pygame.font.Font(None, 36)
-    merchantSprite=pygame.sprite.Sprite()
-    bgSprite=pygame.sprite.Sprite()
-    bgSprite.image=pygame.image.load(MENU_PATH+"ShopBG.gif")
-    bgSprite.rect=(0,0,600,900)
-    merchantSprite.image=pygame.transform.scale(pygame.image.load(CHAR_PATH+"Merchant.gif"),(550,550))
-    merchantSprite.rect=pygame.Rect(640,160,200,200)
-    merchantGroup=pygame.sprite.Group(merchantSprite)
-    bgGroup=pygame.sprite.Group(bgSprite)
-    bgGroup.draw(screen)
-    screen.blit(font.render("Buy              Sell",True,(0,0,0)),(190,30,50,50))
-    merchantGroup.draw(screen)
-    screen.blit(pygame.image.load(MENU_PATH+"Speech.gif"),(550,0,400,400))
-    if self.buyMode:
-
-      i=0
-      y=80
-      for item in self.itemList:
-        #from left to right: arrow, box w/#, arrow, item name
-
-        if i==self.selItem:
-          screen.fill((200,200,150),(150,y,400,40))
-        screen.blit(pygame.image.load(MENU_PATH+"LArrow.gif"),(150,y,40,40))
-        screen.fill((150,150,10),(190,y,40,40))
-        screen.blit(font.render(repr(self.numItem[i]),True,(255,255,255)),(190,y,50,40))
-        screen.blit(pygame.image.load(MENU_PATH+"RArrow.gif"),(230,y,40,40))
-        screen.blit(font.render(item.name,True,(255,255,255)),(270,y,500,40))
-        y+=40
-        i+=1
-
-      if self.buyScreen:
-        i=0
-        y=7
-        for item in self.itemList:
-          if not self.numItem[i] == 0:
-            screen.blit(font.render(repr(self.numItem[i])+" "+self.itemList[i].name+" at "+repr(self.itemList[i].buyVal),True,(0,0,0)),(650,y,500,40))
-            y+=40
-          i+=1
-        x=650
-        i=0
-        for digit in self.enteredDigits:
-          if i==self.selDigit:
-            screen.fill((150,150,200),(x,125,40,130))
-          screen.blit(pygame.transform.rotate(pygame.image.load(MENU_PATH+"LArrow.gif"),-90),(x,125,40,40))
-          screen.fill((50,100,100),(x,175,50,40))
-          screen.blit(font.render(repr(digit),True,(255,255,255)),(x,175,40,40))
-          screen.blit(pygame.transform.rotate(pygame.image.load(MENU_PATH+"RArrow.gif"),-90),(x,215,40,40))
-          x+=50
-          i+=1
-      else:
-        y=60
-        for line in self.message:
-          screen.blit(font.render(line,True,(0,0,0)),(575,y,500,40))
-          y+=40
-    elif self.sellMode:
-      i=0
-      y=80
-      for item in self.player.battlePlayer.inv_Ar:
-          font = pygame.font.Font(None, 36)
-          if i==self.selItem:
-            screen.fill((150,150,200),(150,y,375,40))
-          screen.blit(font.render(item.name,True,(255,255,255)),(200,y,500,40))
-          y+=40
-          i+=1
-
-      if self.buyScreen:
-        screen.blit(font.render("For a "+self.player.battlePlayer.inv_Ar[self.selItem].name,True,(0,0,0)),(575,60,500,40))
-        screen.blit(font.render(" I will give you "+repr(self.shopKeeperVariable),True,(0,0,0)),(575,100,500,40))
-        screen.blit(font.render("OK?",True,(0,0,0)),(600,140,500,40))
-        if self.yes:
-          screen.fill((150,150,250),(660,180,60,40))
-        else:
-          screen.fill((150,150,250),(760,180,60,40))
-        screen.blit(font.render("Yes",True,(0,0,0)),(660,180,100,40))
-        screen.blit(font.render("No",True,(0,0,0)),(760,180,100,40))
-      else:
-        y=60
-        for line in self.message:
-          screen.blit(font.render(line,True,(0,0,0)),(575,y,500,40))
-          y+=40
-    pygame.display.flip()
-
 
 #############################################################################
 #End External Classes
