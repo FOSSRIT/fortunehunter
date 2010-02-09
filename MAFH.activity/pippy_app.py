@@ -4,6 +4,7 @@ from sugar.activity import activity
 from time import time
 import simplejson
 import os.path
+from random import *
 
 from Items import get_item, Item
 from Enemy import get_enemy, Enemy
