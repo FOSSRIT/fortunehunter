@@ -718,17 +718,9 @@ class Menu:
         if name=="New Game":
             player.dgnIndex=-1
             player.playerFacing=1
-            player.nextDungeon()
-            player.dgnMap.updateMacro(player)
-            player.loadImages(player.dgn.theme)
-            player.traversal=True
-            player.mainMenu=False
-            setImage(player)
-            player.battlePlayer=Hero(player)
-            player.currentRoomGroup.draw(screen)
-            player.initMovTutorial(screen)
-            player.startComic(FMC_PATH+"FMC1/",None)
             player.traversal=False
+            player.mainMenu=False
+            player.startComic(FMC_PATH+"FMC1/",None)
             player.inComic=True
             pygame.display.flip()
 
@@ -851,8 +843,8 @@ class Menu:
           player.curBattle.startGlyph(name)
 	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4" or name=="Missile1" or name=="Missile2" or name=="Missile3" or name=="Missile4":
 	  player.curBattle.checkGlyph(name)
-        elif name=="Use Item":
-          player.currentMenu=player.curBattle.itemMenu
+        elif name=="Scan":
+          player.curBattle.scanEnemy()
         elif name=="Item1" or name=="Item2" or name=="Item3" or name=="Item4":
           index=int(repr(name)[5])-1
           if index<len(player.battlePlayer.eqItem):
@@ -965,10 +957,8 @@ class Comic:
       else:
         self.currentIndex=0
 
-    def draw(self,group,screen):
-        group.empty()
-        group.add(self.images[self.currentIndex])
-        group.draw(screen)
+    def draw(self,screen):
+        screen.blit(self.images[self.currentIndex].image,(0,0,1200,900))
         pygame.display.flip()
 
 ################################################################################
@@ -1240,6 +1230,10 @@ class Player:
     else:
       self.traversal=True
     if self.traversal:
+      self.nextDungeon()
+      self.loadImages(self.dgn.theme)
+      self.dgnMap.updateMacro(self)
+      self.battlePlayer=Hero(self)
       setImage(player)
       pygame.display.flip()
 
@@ -1271,7 +1265,7 @@ class Player:
       self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
 
   def initInGameBattleTutorial(self,screen):
-    batImages=[MENU_PATH+"Attack.gif",MENU_PATH+"Special.gif",MENU_PATH+"Magic.gif",MENU_PATH+"Item.gif"]
+    batImages=[MENU_PATH+"Attack.gif",MENU_PATH+"Special.gif",MENU_PATH+"Magic.gif",MENU_PATH+"Blank.gif"]
     batBg=MENU_PATH+"battleMenubackground.gif"
     batBgRect=(0,300,400,400)
     numPadImages=[MENU_PATH+"1.gif",MENU_PATH+"2.gif",MENU_PATH+"3.gif",MENU_PATH+"4.gif",MENU_PATH+"5.gif",MENU_PATH+"6.gif",MENU_PATH+"7.gif",MENU_PATH+"8.gif",MENU_PATH+"9.gif",MENU_PATH+"0.gif",MENU_PATH+"Clear.gif",MENU_PATH+"Enter.gif"]
@@ -1663,8 +1657,8 @@ class BattleEngine:
     if isinstance(player,Player) and player.geomDifficulty>0:
       battleOptions.append("Geometry")
       battleOptImg.append(MENU_PATH+"Magic.gif")
-    battleOptions.append("Use Item")
-    battleOptImg.append(MENU_PATH+"Item.gif")
+    battleOptions.append("Scan")
+    battleOptImg.append(MENU_PATH+"Blank.gif")
     
     self.battleMenu=Menu(battleOptions,player,battleBackground,battleOptImg,"Battle")
     self.battleMenu.background.rect=(0,300,0,200)
@@ -2113,7 +2107,12 @@ class BattleEngine:
     self.maxBonusTime = timeLength
     self.tTracker = Timer(1,trackerExpires)
     #Update GUI Timer Bar
-	
+  ###
+  # Scans an enemy's HP and weaknesses
+  ###	
+  def scanEnemy(self):
+    player.migrateMessages("Remaining HP: "+repr(self.enemies[self.selEnemyIndex].HP))
+    player.migrateMessages("Enemy Weakness: "+repr(self.enemies[self.selEnemyIndex].weakness))
   ###
   # Tracks how long the bonus timer has been running
   ###
@@ -3100,11 +3099,11 @@ while pippy.pygame.next_frame():
         else:
           player.traversal=True
       setImage(player)
-    if player.inComic:
-      updateComic(event,player)
     if event.type==QUIT:
       sys.exit()
-    if player.traversal:
+    elif player.inComic:
+      updateComic(event,player)
+    elif player.traversal:
       if player.waiting==True:
         updateWaiting(event,player)
       else:
@@ -3155,7 +3154,7 @@ while pippy.pygame.next_frame():
     elif player.inPuzzle:
       drawPuzzle(player,screen)
     elif player.inComic:
-      player.comic.draw(player.currentRoomGroup,screen)
+      player.comic.draw(screen)
     elif player.shop:
       drawTextBox(player,screen)
       player.currentRoom.shop.draw(screen,player)
