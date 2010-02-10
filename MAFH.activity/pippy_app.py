@@ -166,8 +166,11 @@ class Player:
 
     pauseMenuOptions=["Save","Close","Main Menu","Return to Game"]
     pauseMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
-    self.pauseMenu=Menu(pauseMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",pauseMenuImages,"Pause Menu")
+    self.pauseMenu=Menu(pauseMenuOptions,self,MENU_PATH+"VictoryScreen.gif",pauseMenuImages,"Pause Menu")
+    self.pauseMenu.background.rect.top=11
 
+    self.mathStats=Menu([],self,MENU_PATH+"VictoryScreen.gif",[],"Math Stats")
+    self.mathStats.background.rect.top=11
 
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
@@ -1683,7 +1686,8 @@ def updateMenu(event,player):
         sys.exit()
 
       elif newKey=='[1]' or newKey=='return':
-        menu.progress(player,screen)
+        if menu.name != "Math Stats":
+          menu.progress(player,screen)
 
       elif newKey=='[2]' or newKey=='down':
         menu.select("down")
@@ -1697,7 +1701,9 @@ def updateMenu(event,player):
           #set to stats menu
           player.currentMenu=player.statsMenu
         elif menu.name=="Pause Menu":
-          #set to inventory menu
+          #set to math stats
+          player.currentMenu=player.mathStats
+        elif menu.name=="Math Stats":
           player.currentMenu.createInventory(player)
             
 
@@ -1725,28 +1731,20 @@ def updateMenu(event,player):
           player.currentMenu.createInventory(player)
         elif menu.name=="Inventory":
           #set to stats menu
-          player.currentMenu=player.pauseMenu
+          player.currentMenu=player.mathStats
         elif menu.name=="Pause Menu":
           #set to inventory menu
           player.currentMenu=player.statsMenu
+        elif menu.name=="Math Stats":
+          player.currentMenu=player.pauseMenu
 
       elif newKey=='[8]' or newKey=='up':
         menu.select("up")
 
-      elif newKey=='[9]' or newKey=='u':
-        if menu.name=="Stats":
-         #UNEQUIP ITEM
-          itemIndex=menu.currentOption
-          if itemIndex==0:
-            player.battlePlayer.remEquipment(player.battlePlayer.weapon)
-          elif itemIndex==1:
-            player.battlePlayer.remEquipment(player.battlePlayer.armor)
-          elif itemIndex==2:
-            player.battlePlayer.remEquipment(player.battlePlayer.accessory)
-          elif itemIndex-3<len(player.battlePlayer.eqItem):
-            player.battlePlayer.remEquipment(player.battlePlayer.eqItem[itemIndex-3])
-          player.currentMenu=player.statsMenu
-          player.currentRoomGroup.draw(screen)
+      elif newKey=='[9]' or newKey=='backspace':
+        player.mainMenu=False
+        player.traversal=True
+        
 
 def updateTraversal(event,player,screen):
     if event.type == QUIT:
@@ -2018,7 +2016,7 @@ while pippy.pygame.next_frame():
       updatePuzzle(event,player)
     elif player.mainMenu:
       ## main menu processes
-      updateMenu(event,player)
+        updateMenu(event,player)
     elif player.macroMap:
       updateMacroMap(event,player)
     elif player.shop:
@@ -2027,10 +2025,11 @@ while pippy.pygame.next_frame():
   ###############DRAW#########################
   #draw based on state
   if player.mainMenu==True:
-    if player.currentMenu.name=="Inventory":
-      player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
-    elif player.currentMenu.name=="Stats":
+    if player.currentMenu.name=="Stats" or player.currentMenu.name=="Inventory":
       player.currentMenu.draw(player,screen,450,400,50)
+      drawTextBox(player,screen)
+    elif player.currentMenu.name=="Pause Menu":
+      player.currentMenu.draw(player,screen,540,240,50)
       drawTextBox(player,screen)
     elif player.currentMenu.name=="Difficulty Menu":
       player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)

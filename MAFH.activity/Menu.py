@@ -40,13 +40,18 @@ class Menu:
             sprite.rectangle=pygame.Rect(0,0,1290,60)
             self.optionsImages.append(sprite)
             i+=1
-
+  
         self.size=i
+       # if name=="Pause Menu" or name=="Stats" or name=="Math Stats" or name=="Inventory":
+        self.LArrow=pygame.image.load(MENU_PATH+"LArrow.gif")
+        self.XButton=pygame.image.load(TOUR_PATH+"button/buttonX.gif")
+        self.RArrow=pygame.image.load(MENU_PATH+"RArrow.gif")
+        self.LButton=pygame.image.load(TOUR_PATH+"button/buttonL.gif")
 
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
         if self.name=="Inventory":
-          self.background.rect=(0,self.xY,1200,900)
+          self.background.rect=(0,self.sY,1200,900)
 	bgGroup=pygame.sprite.Group(self.background)
         self.startX=xStart
         self.startY=yStart
@@ -152,7 +157,12 @@ class Menu:
           self.bgSurface.blit(armor,armorRect)
           accessory=font.render(acc,True,(0,0,0))
           self.bgSurface.blit(accessory,accessoryRect)
-          
+          self.bgSurface.fill((255,150,150),(502,417,123,98))
+          self.bgSurface.fill((150,255,150),(502,511,123,99))
+          self.bgSurface.blit(self.LArrow,(504,450,20,20))
+          self.bgSurface.blit(pygame.transform.scale(self.XButton,(50,50)),(550,450,20,20))
+          self.bgSurface.blit(self.RArrow,(575,550,20,20)) 
+          self.bgSurface.blit(pygame.transform.scale(self.LButton,(50,50)),(520,540,20,20))
           screen.blit(self.bgSurface,(0,0,0,0))
 
           if player.invTutorial==False:
@@ -164,28 +174,38 @@ class Menu:
               screen.blit(font.render(message,True,(0,200,0)),(20,20+k,200,300))
               k+=40
         if self.name=="Inventory":
-            y=0
-            x=0
+            y=140
             sel=0
-            screen.fill((100,100,255,.5),pygame.Rect(self.sX,self.sY,300,570))
+            self.bgSurface=pygame.Surface((1200,700))
+            player.currentRoomGroup.draw(self.bgSurface)
+            bgGroup.draw(self.bgSurface)
+            screen.blit(self.bgSurface,(0,0,1200,900))
+            screen.blit(font.render("Inventory:",True,(0,0,0)),(self.sX+80,self.sY+100,200,40))
             for item in player.battlePlayer.inv_Ar:
               if sel==self.currentOption:
-                screen.fill((50,50,250),pygame.Rect(self.sX+x,self.sY+y,200,40))
-              screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX+x,self.sY+y,200,40))
+                screen.fill((50,50,250),pygame.Rect(self.sX+40,self.sY+y,200,40))
+              screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX+40,self.sY+y,200,40))
               y+=40
               sel+=1
               if y==400:
                 y=0
                 x+=200
-              if player.invTutorial==False:
-                screen.fill((250,250,250),(900,300,800,400))
-                k=0
-                lines=["This list shows the items","you are carrying.  To equip","an item in the current slot,","select one with the arrow","keys, and press enter or","      If the item cannot","be equipped in that","slot, you will be taken back","to the stats screen"]
+            screen.fill((255,150,150),(500,555,125,50))
+            screen.fill((150,255,150),(625,555,127,50))
+            screen.blit(self.LArrow,(504,560,20,20))
+            screen.blit(pygame.transform.scale(self.XButton,(40,40)),(550,560,20,20))
+            screen.blit(self.RArrow,(710,560,20,20))
+            screen.blit(pygame.transform.scale(self.LButton,(40,40)),(675,560,20,20))
+
+            if player.invTutorial==False:
+              screen.fill((250,250,250),(900,300,800,400))
+              k=0
+              lines=["This list shows the items","you are carrying.  To equip","an item in the current slot,","select one with the arrow","keys, and press enter or","      If the item cannot","be equipped in that","slot, you will be taken back","to the stats screen"]
                 
-                for message in lines:
-                  screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
-                  k+=40
-                screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(1165,460,40,40))
+              for message in lines:
+                screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
+                k+=40
+              screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(1165,460,40,40))
         if self.name=="Victory":
           self.bgSurface=pygame.Surface((1200,700))
           player.currentRoomGroup.draw(self.bgSurface)
@@ -229,24 +249,14 @@ class Menu:
           screen.blit(font.render("Levels Beaten:  "+repr(player.dgnIndex),True,(150,0,0)),(600,160,0,0))
        
         elif self.name=="Pause Menu":
+          self.bgSurface=pygame.Surface((1200,700))
+          player.currentRoomGroup.draw(self.bgSurface)
+          bgGroup.draw(self.bgSurface)
+
           menuGroup.draw(screen)
           font=pygame.font.SysFont("cmr10",40,False,False)
-          screen.blit(font.render("Paused",True,(50,150,50)),(550,350,0,0))
+          screen.blit(font.render("Options",True,(0,0,0)),(525,200,0,0))
           font=pygame.font.SysFont("cmr10",24,False,False)
-          screen.blit(font.render("Multiplication problems right/wrong:",True,(50,150,50)),(20,20,0,0))
-          screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(50,50,200)),(100,50,0,0))
-          screen.blit(font.render("Medium: "+repr(player.multiplicationStats[1][0])+"/"+repr(player.multiplicationStats[1][1]),True,(50,50,200)),(100,80,0,0))
-          screen.blit(font.render("Hard: "+repr(player.multiplicationStats[2][0])+"/"+repr(player.multiplicationStats[2][1]),True,(50,50,200)),(100,110,0,0))
-          screen.blit(font.render("Fraction problems right/wrong:",True,(50,150,50)),(450,20,0,0))
-          screen.blit(font.render("Easy: "+repr(player.divisionStats[0][0])+"/"+repr(player.divisionStats[0][1]),True,(50,50,200)),(530,50,0,0))
-          screen.blit(font.render("Medium: "+repr(player.divisionStats[1][0])+"/"+repr(player.divisionStats[1][1]),True,(50,50,200)),(530,80,0,0))
-          screen.blit(font.render("Hard: "+repr(player.divisionStats[2][0])+"/"+repr(player.divisionStats[2][1]),True,(50,50,200)),(530,110,0,0))
-          screen.blit(font.render("Geometry problems right/wrong:",True,(50,150,50)),(830,20,0,0))
-          screen.blit(font.render("Easy: "+repr(player.geometryStats[0][0])+"/"+repr(player.geometryStats[0][1]),True,(50,50,200)),(910,50,0,0))
-          screen.blit(font.render("Medium: "+repr(player.geometryStats[1][0])+"/"+repr(player.geometryStats[1][1]),True,(50,50,200)),(910,80,0,0))
-          screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(50,50,200)),(910,110,0,0))
-          screen.blit(font.render("Puzzles solved:",True,(50,150,50)),(500,160,0,0))
-          screen.blit(font.render(repr(player.puzzlesSolved),True,(50,50,200)),(670,160,0,0))
           x1=0
           x2=0
           x3=0
@@ -259,10 +269,41 @@ class Menu:
             x3=30
           elif self.currentOption==3:
             x4=30
-          screen.blit(font.render("Save Game",True,(20,20,100)),(460+x1,410,0,0))
-          screen.blit(font.render("Exit Game",True,(20,20,100)),(460+x2,460,0,0))
-          screen.blit(font.render("Main Menu",True,(20,20,100)),(460+x3,510,0,0))
-          screen.blit(font.render("Return to Game",True,(20,20,100)),(460+x4,560,0,0))
+          screen.blit(font.render("Save Game",True,(20,20,100)),(550+x1,250,0,0))
+          screen.blit(font.render("Exit Game",True,(20,20,100)),(550+x2,300,0,0))
+          screen.blit(font.render("Main Menu",True,(20,20,100)),(550+x3,350,0,0))
+          screen.blit(font.render("Return to Game",True,(20,20,100)),(550+x4,400,0,0))
+          screen.fill((255,150,150),(500,555,125,50))
+          screen.fill((150,255,150),(625,555,127,50))
+          screen.blit(self.LArrow,(504,560,20,20))
+          screen.blit(pygame.transform.scale(self.XButton,(40,40)),(550,560,20,20))
+          screen.blit(self.RArrow,(710,560,20,20))
+          screen.blit(pygame.transform.scale(self.LButton,(40,40)),(675,560,20,20))
+
+        elif self.name=="Math Stats":
+          font=pygame.font.SysFont("cmr10",40,False,False)
+          screen.blit(font.render("Math Stats",True,(0,0,0)),(525,120,0,0))
+          font=pygame.font.SysFont("cmr10",24,False,False)
+          screen.blit(font.render("Multiplication problems:",True,(0,0,50)),(510,160,0,0))
+          screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(0,50,0)),(550,200,0,0))
+          screen.blit(font.render("Medium: "+repr(player.multiplicationStats[1][0])+"/"+repr(player.multiplicationStats[1][1]),True,(0,50,0)),(550,225,0,0))
+          screen.blit(font.render("Hard: "+repr(player.multiplicationStats[2][0])+"/"+repr(player.multiplicationStats[2][1]),True,(0,50,0)),(550,250,0,0))
+          screen.blit(font.render("Fraction problems:",True,(0,0,50)),(510,300,0,0))
+          screen.blit(font.render("Easy: "+repr(player.divisionStats[0][0])+"/"+repr(player.divisionStats[0][1]),True,(0,50,0)),(550,340,0,0))
+          screen.blit(font.render("Medium: "+repr(player.divisionStats[1][0])+"/"+repr(player.divisionStats[1][1]),True,(0,50,0)),(550,365,0,0))
+          screen.blit(font.render("Hard: "+repr(player.divisionStats[2][0])+"/"+repr(player.divisionStats[2][1]),True,(0,50,0)),(550,390,0,0))
+          screen.blit(font.render("Geometry problems:",True,(0,0,50)),(510,420,0,0))
+          screen.blit(font.render("Easy: "+repr(player.geometryStats[0][0])+"/"+repr(player.geometryStats[0][1]),True,(0,50,0)),(550,455,0,0))
+          screen.blit(font.render("Medium: "+repr(player.geometryStats[1][0])+"/"+repr(player.geometryStats[1][1]),True,(0,50,0)),(550,480,0,0))
+          screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(0,50,0)),(550,505,0,0))
+          screen.blit(font.render("Puzzles solved:",True,(0,0,50)),(510,535,0,0))
+          screen.blit(font.render(repr(player.puzzlesSolved),True,(0,50,0)),(670,535,0,0))
+          screen.fill((255,150,150),(500,555,125,50))
+          screen.fill((150,255,150),(625,555,127,50))
+          screen.blit(self.LArrow,(504,560,20,20))
+          screen.blit(pygame.transform.scale(self.XButton,(40,40)),(550,560,20,20))
+          screen.blit(self.RArrow,(710,560,20,20))
+          screen.blit(pygame.transform.scale(self.LButton,(40,40)),(675,560,20,20))
 
         elif self.name=="Options Menu":
           menuGroup.draw(screen)
@@ -525,9 +566,8 @@ class Menu:
             player.currentMenu=player.curBattle.battleMenu
 	  #if we decide to add puzzle/minigame items, here's where they'd go
         elif name=="Weapon" or name=="Armor" or name=="Accessory":
-          self.createInventory(player,name)
-          player.currentMenu=self.inventoryMenu
-          player.currentRoomGroup.draw(screen)
+          self.createInventory(player)
+  
         elif name[0:9]=="Equipment":
           player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:len(name)])])
           player.invTutorial=True
@@ -587,11 +627,10 @@ class Menu:
         invOptions.append("Equipment"+repr(i))
         i+=1
         invImages.append(MENU_PATH+"Blank.gif")
-      player.inventoryMenu=Menu(invOptions,player,MENU_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
+      player.inventoryMenu=Menu(invOptions,player,MENU_PATH+"VictoryScreen.gif",invImages,"Inventory")
      
       player.inventoryMenu.sX=485
-      player.inventoryMenu.sY=60
-      player.inventoryMenu.background.rect.top=350
+      player.inventoryMenu.sY=11
      # self.inventoryMenu.bgSurface=self.bgSurface
       player.currentMenu=player.inventoryMenu
 
