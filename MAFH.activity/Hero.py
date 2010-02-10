@@ -44,36 +44,39 @@ class Hero(Actor):
       return (self.ATT+self.BAE+self.BAB)*1.5
     elif name=="Missile":
       return self.ATT+self.BAB
-
+  def setBonusAP(self,BAP):
+    self.BAB=BAP
 #****INVENTORY MUTATORS********************************************#
   #add item to equipment
-  def equip(self,item,target):
+  def equip(self,item):
     #add  _item to equipment
-    if target=="Weapon" and item.type=="Weapon":
+    if item.type=="Weapon":
       if not self.weapon==None:
         self.inv_Ar.append(self.weapon)
       self.weapon=item
       self.inv_Ar.remove(item)
       self.BAE=item.power
-    elif target=="Armor" and item.type=="Armor":
+    elif item.type=="Armor":
       if not self.armor==None:
         self.inv_Ar.append(self.armor)
       self.armor=item
       self.inv_Ar.remove(item)
       self.BDE=item.power
-    elif target=="Accessory" and item.type=="Accessory":
+    elif item.type=="Accessory":
       if not self.accessory==None:
         self.inv_Ar.append(self.accessory)
       self.accessory=item
       self.inv_Ar.remove(item)
       self.BHP=item.power
-    elif target[0:8]=="ItemSlot" and item.type=="Usable":
-        for i in range(len(self.eqItem)-1,3):
-          self.eqItem.append(None)
-        if not self.eqItem[int(target[8])-1]==None:
-          self.inv_Ar.append(self.eqItem[int(target[8])-1])
+    elif item.type=="Usable":
+        #for i in range(len(self.eqItem)-1,3):
+        #  self.eqItem.append(None)
+        #if not self.eqItem[int(target[8])-1]==None:
+        #  self.inv_Ar.append(self.eqItem[int(target[8])-1])
+        self.HP+=int(self.MHP*item.power)
+        self.player.migrateMessages("You heal for "+repr(int(self.MHP*item.power)))
         self.inv_Ar.remove(item)
-        self.eqItem[int(target[8])-1]=item
+        #self.eqItem[int(target[8])-1]=item
 
 
   #remove item from equipment

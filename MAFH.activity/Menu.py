@@ -1,6 +1,7 @@
-import pygame
+import pygame, sys
 from constants import FMC_PATH, MENU_PATH, TOUR_PATH, ENV_PATH, PUZZLE_PATH
 import os.path
+from random import *
 from sugar.activity import activity
 ###########################################################################
 #  Menu class:  contains a list of options (which can be other menus)
@@ -43,14 +44,13 @@ class Menu:
 
     def draw(self,player,screen,xStart,yStart,height):
         menuGroup=pygame.sprite.Group()
-        if self.name=="Pause Menu":
-          self.background.image.fill((255,255,255),(0,0,1200,900))
-          self.background.image.set_alpha(20)
+        if self.name=="Inventory":
+          self.background.rect=(0,self.xY,1200,900)
 	bgGroup=pygame.sprite.Group(self.background)
         self.startX=xStart
         self.startY=yStart
         self.height=height
-        if not self.name=="Inventory" and not self.name=="Defeat":
+        if not self.name=="Defeat":
           bgGroup.draw(screen)
         i=0
         sel=0
@@ -126,13 +126,7 @@ class Menu:
           accessoryRect=pygame.Rect(635,570,200,42)
           self.optionsImages[2].rect=accessoryRect
           itemRect=pygame.Rect(508,435,200,42)
-          self.optionsImages[3].rect=itemRect
-          item2Rect=pygame.Rect(508,475,200,42)
-          self.optionsImages[4].rect=item2Rect
-          item3Rect=pygame.Rect(508,525,200,42)
-          self.optionsImages[5].rect=item3Rect
-          item4Rect=pygame.Rect(508,565,200,42)
-          self.optionsImages[6].rect=item4Rect
+          
           self.optionsImages[self.currentOption].rect.top-=5
           self.optionsImages[self.currentOption].rect.width=115
           self.optionsImages[self.currentOption].rect.height=33
@@ -150,24 +144,6 @@ class Menu:
             acc="Accessory"
           else:
             acc=player.battlePlayer.accessory.name
-          it1,it2,it3,it4="","","",""
-          if player.battlePlayer.eqItem[0]==None:
-            it1="Empty"
-          else:
-            it1=player.battlePlayer.eqItem[0].name
-          if player.battlePlayer.eqItem[1]==None:
-            it2="Empty"
-          else:
-            it2=player.battlePlayer.eqItem[1].name
-          if player.battlePlayer.eqItem[2]==None:
-            it3="Empty"
-          else:
-            it3=player.battlePlayer.eqItem[2].name
-          if player.battlePlayer.eqItem[3]==None:
-            it4="Empty"
-          else:
-            it4=player.battlePlayer.eqItem[3].name
-
 
           weapon=font.render(wp,True,(0,0,0))
           self.bgSurface.blit(weapon,weaponRect)
@@ -175,14 +151,6 @@ class Menu:
           self.bgSurface.blit(armor,armorRect)
           accessory=font.render(acc,True,(0,0,0))
           self.bgSurface.blit(accessory,accessoryRect)
-          item1=font.render(it1,True,(0,0,0))
-          self.bgSurface.blit(item1,itemRect)
-          item2=font.render(it2,True,(0,0,0))
-          self.bgSurface.blit(item2,item2Rect)
-          item3=font.render(it3,True,(0,0,0))
-          self.bgSurface.blit(item3,item3Rect)
-          item4=font.render(it4,True,(0,0,0))
-          self.bgSurface.blit(item4,item4Rect)
           
           screen.blit(self.bgSurface,(0,0,0,0))
 
@@ -196,15 +164,18 @@ class Menu:
               k+=40
         if self.name=="Inventory":
             y=0
+            x=0
             sel=0
-            screen.blit(self.bgSurface,(0,0,0,0))
-            screen.fill((100,100,255,.5),pygame.Rect(xStart,yStart,200,40*len(player.battlePlayer.inv_Ar)))
+            screen.fill((100,100,255,.5),pygame.Rect(self.sX,self.sY,300,570))
             for item in player.battlePlayer.inv_Ar:
               if sel==self.currentOption:
-                screen.fill((50,50,250),pygame.Rect(self.sX,self.sY+y,200,40))
-              screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX,self.sY+y,200,40))
+                screen.fill((50,50,250),pygame.Rect(self.sX+x,self.sY+y,200,40))
+              screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX+x,self.sY+y,200,40))
               y+=40
               sel+=1
+              if y==400:
+                y=0
+                x+=200
               if player.invTutorial==False:
                 screen.fill((250,250,250),(900,300,800,400))
                 k=0
@@ -552,12 +523,12 @@ class Menu:
           else:
             player.currentMenu=player.curBattle.battleMenu
 	  #if we decide to add puzzle/minigame items, here's where they'd go
-        elif name=="Weapon" or name=="Armor" or name=="Accessory" or name=="ItemSlot1" or name=="ItemSlot2" or name=="ItemSlot3" or name=="ItemSlot4":
+        elif name=="Weapon" or name=="Armor" or name=="Accessory":
           self.createInventory(player,name)
           player.currentMenu=self.inventoryMenu
           player.currentRoomGroup.draw(screen)
         elif name[0:9]=="Equipment":
-          player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:10])],self.target)
+          player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:len(name)])])
           player.invTutorial=True
           player.currentMenu=player.statsMenu
           player.currentRoomGroup.draw(screen)
@@ -587,7 +558,6 @@ class Menu:
             player.dgnMap.updateMacro(player)
             player.traversal=True
             player.mainMenu=False
-            setImage(player)
             player.battlePlayer.MHP-=2
             player.battlePlayer.HP=player.battlePlayer.MHP
             player.currentRoomGroup.draw(screen)
@@ -604,19 +574,23 @@ class Menu:
 	else:
 	    sys.exit()
 
-    def createInventory(self,player,name):
+    def createInventory(self,player):
       invOptions=[]
       invImages=[]
+      ##Create a 10X2 menu of all items in player's inventory
+      ##TODO: make scrollable
+      x=0
+      y=0
       i=0
       for item in player.battlePlayer.inv_Ar:
         invOptions.append("Equipment"+repr(i))
         i+=1
         invImages.append(MENU_PATH+"Blank.gif")
-      self.inventoryMenu=Menu(invOptions,player,MENU_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
-      self.inventoryMenu.sX=self.optionsImages[self.currentOption].rect.left+50
-      self.inventoryMenu.sY=self.optionsImages[self.currentOption].rect.top
-      self.inventoryMenu.background.rect.top=10
-      self.inventoryMenu.target=name
-      self.inventoryMenu.bgSurface=self.bgSurface
-      player.currentMenu=self.inventoryMenu
+      player.inventoryMenu=Menu(invOptions,player,MENU_PATH+"PauseMenuBackground.gif",invImages,"Inventory")
+     
+      player.inventoryMenu.sX=485
+      player.inventoryMenu.sY=60
+      player.inventoryMenu.background.rect.top=350
+     # self.inventoryMenu.bgSurface=self.bgSurface
+      player.currentMenu=player.inventoryMenu
 

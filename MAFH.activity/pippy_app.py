@@ -160,10 +160,15 @@ class Player:
     mainMenuImages=[MENU_PATH+"TutorialButton.gif",MENU_PATH+"NewGameButton.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"CloseButton.gif"]
     self.MainMenu=Menu(["Tutorial","New Game","Load Game",optionsMenu,"Close"],self,MENU_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
     
-    statMenuOptions=["Weapon","Armor","Accessory","ItemSlot1","ItemSlot2","ItemSlot3","ItemSlot4"]
-    statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif", MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+    statMenuOptions=["Weapon","Armor","Accessory"]
+    statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
     self.statsMenu=Menu(statMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
     self.statsMenu.background.rect.top=10
+
+    pauseMenuOptions=["Save","Close","Main Menu","Return to Game"]
+    pauseMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+    self.pauseMenu=Menu(pauseMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",pauseMenuImages,"Pause Menu")
+
 
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
@@ -688,7 +693,7 @@ class BattleEngine:
       tup=self.player.multiplicationStats[self.player.critDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.multiplicationStats[self.player.critDifficulty-1]=tup
-
+      player.migrateMessages("Crit"+repr(attacker.attackPower("critical")))
     elif attackName=="Fire":
       attacker.setBonusAP(int(self.timeBonus*20)+10)
       if isinstance(defender,Enemy) and defender.weakness=='fire':
@@ -1684,39 +1689,48 @@ def updateMenu(event,player):
       elif newKey=='[2]' or newKey=='down':
         menu.select("down")
 
-      elif newKey=='[3]' or newKey=='backspace' or newKey=='i':
-        if menu.name=="Stats" or menu.name=="Inventory":
-          menu.regress(player)
+      elif newKey=='[3]' or newKey=='r':
+        #Swap menus to right on 'stats' screen
+        if menu.name=="Stats":
+          #set to pause menu
+          player.currentMenu=player.pauseMenu
+        elif menu.name=="Inventory":
+          #set to stats menu
+          player.currentMenu=player.statsMenu
         elif menu.name=="Pause Menu":
-          player.traversal=True
-          player.mainMenu=False
-        
+          #set to inventory menu
+          player.currentMenu.createInventory(player)
+            
+
 
       elif newKey=='[4]' or newKey=='left':
         if menu.name=="Defeat":
           menu.select("up")
-        elif menu.name=="Stats":
-          for i in range(4):
+        elif menu.name=="Inventory":
+          for i in range(10):
             menu.select("down")
+ 
       elif newKey=='[5]':
         print('check')
 
       elif newKey=='[6]' or newKey=='right':
         if menu.name=="Defeat":
           menu.select("down")
-        elif menu.name=="Stats":
-          for i in range(4):
+        elif menu.name=="Inventory":
+          for i in range(10):
             menu.select("up")
-      elif newKey=='[7]' or newKey=='e':
-        #USE ITEM
-        itemIndex=menu.currentOption
-        if itemIndex>2 and itemIndex-3<len(player.battlePlayer.eqItem):
-          item=player.battlePlayer.eqItem[itemIndex-3]
-          if not item==None and item.type=="Usable":
-            player.battlePlayer.HP+=int(player.battlePlayer.MHP*item.power)
-            player.battlePlayer.eqItem[player.battlePlayer.eqItem.index(item)]=None
-            if player.battlePlayer.HP>player.battlePlayer.MHP:
-              player.battlePlayer.HP=player.battlePlayer.MHP
+      elif newKey=='[7]' or newKey=='l':
+        #Swap menus left on 'stats' screen
+        if menu.name=="Stats":
+          #set to pause menu
+          player.currentMenu.createInventory(player)
+        elif menu.name=="Inventory":
+          #set to stats menu
+          player.currentMenu=player.pauseMenu
+        elif menu.name=="Pause Menu":
+          #set to inventory menu
+          player.currentMenu=player.statsMenu
+
       elif newKey=='[8]' or newKey=='up':
         menu.select("up")
 
