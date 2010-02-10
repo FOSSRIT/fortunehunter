@@ -2,7 +2,6 @@ import pippy, pygame, sys, math
 from pygame.locals import *
 from sugar.activity import activity
 from time import time
-import simplejson
 import os.path
 from random import *
 

@@ -2,6 +2,7 @@ import pygame
 from constants import FMC_PATH, MENU_PATH, TOUR_PATH, ENV_PATH, PUZZLE_PATH
 import os.path
 from sugar.activity import activity
+import simplejson
 ###########################################################################
 #  Menu class:  contains a list of options (which can be other menus)
 #               has a background image as well as images for each option
