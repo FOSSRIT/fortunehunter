@@ -3,8 +3,8 @@ from gettext import gettext as _
 class InvalidItemException(Exception): pass
 
 WEAPONS = {
-    '1':{'name':_("Ancient Amulet"),'power':1},
-    '2':{'name':_("Rusted Blade"),'power':5},
+    '1':{'name':_("Ancient Amulet"),'power':3},
+    '2':{'name':_("Rusted Blade"),'power':9},
     '3':{'name':_("Great Sword"),'power':15},
     '4':{'name':_("Crescent Sword"),'power':25},
     '5':{'name':_("Cardinal"),'power':35},
@@ -12,7 +12,7 @@ WEAPONS = {
 }
 
 ARMOR = {
-    '7':{'name':_("Earth Vest"),'power':5},
+    '7':{'name':_("Earth Vest"),'power':8},
     '8':{'name':_("Wind Breaker"),'power':15},
     '9':{'name':_("Flame Leggings"),'power':25},
     'a':{'name':_("Dark Cowl"),'power':35},
@@ -32,11 +32,11 @@ USABLE = {
     'i':{'name':_("Sapphire"),'sell':500},
     'j':{'name':_("Emerald"),'sell':500},
     'k':{'name':_("Diamond"),'sell':500},
-    'l':{'name':_("Remedy"),'sell':2,'buy':20,'power':.10},
-    'm':{'name':_("Elixir"),'sell':10,'buy':60,'power':.20},
-    'n':{'name':_("Panacea"),'sell':50,'buy':150,'power':.80},
-    'o':{'name':_("High Elixir"),'sell':20,'buy':400,'power':.40},
-    'p':{'name':_("Nostrum"),'sell':100,'buy':250,'power':.5},
+    'l':{'name':_("Remedy"),'sell':6,'buy':20,'power':.30},
+    'm':{'name':_("Elixir"),'sell':15,'buy':60,'power':.5},
+    'n':{'name':_("Panacea"),'sell':50,'buy':100,'power':1.0},
+    'o':{'name':_("High Elixir"),'sell':30,'buy':300,'power':.65},
+    'p':{'name':_("Nostrum"),'sell':100,'buy':200,'power':.75},
 }
 KEYS = {
     'q':{'name':_("Small Key")},
