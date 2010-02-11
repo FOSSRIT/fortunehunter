@@ -23,8 +23,10 @@ class Menu:
         self.sX=0
         self.xY=0
         i=0
+
         for name in optionImageFiles:
             sprite=pygame.sprite.Sprite()
+
             if self.name=="Glyph Menu":
               if player.geomDifficulty==2:
                 rotate=90*randint(0,3)
@@ -35,8 +37,10 @@ class Menu:
                 sprite.image=pygame.transform.flip(pygame.transform.rotate(pygame.image.load(name),rotate),flip==1,flip==2)
               else:
                 sprite.image=pygame.image.load(name)
+
             else:
               sprite.image=pygame.image.load(name)
+
             sprite.rectangle=pygame.Rect(0,0,1290,60)
             self.optionsImages.append(sprite)
             i+=1
@@ -264,13 +268,25 @@ class Menu:
           screen.blit(font.render("Main Menu",True,(20,20,100)),(460+x3,510,0,0))
           screen.blit(font.render("Return to Game",True,(20,20,100)),(460+x4,560,0,0))
 
-        elif self.name=="Options Menu":
-          menuGroup.draw(screen)
-          screen.blit(font.render("Critical Attack",True,(150,0,0)),(450+40,400+3,0,0))
-          screen.blit(font.render("Special Attack",True,(150,0,0)),(450+40,400+53,0,0))
-          screen.blit(font.render("Magic Attack",True,(150,0,0)),(450+40,400+103,0,0))
-          screen.blit(font.render("Shop",True,(150,0,0)),(450+40,400+153,0,0))
-          screen.blit(font.render("Back",True,(150,0,0)),(450+40,400+203,0,0))
+        elif self.name=="Adventure Play":
+          screen.blit(font.render("Continue",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("Load Game",True,(150,0,0)),(450+40,400+53,0,0))
+          screen.blit(font.render("New Game",True,(150,0,0)),(450+40,400+103,0,0))
+		  
+        elif self.name=="Creative Play":
+          screen.blit(font.render("Play Custom Map",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("New Custom Map",True,(150,0,0)),(450+40,400+53,0,0))
+          screen.blit(font.render("Share Maps",True,(150,0,0)),(450+40,400+103,0,0))
+		  
+        elif self.name=="Network Play":
+          screen.blit(font.render("Local Cooperative Play",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("Local Treasure Trekkers Play",True,(150,0,0)),(450+40,400+53,0,0))
+          screen.blit(font.render("View Scoreboards",True,(150,0,0)),(450+40,400+103,0,0))
+		  
+        elif self.name=="Extras":
+          screen.blit(font.render("View Awards",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("View Statistics",True,(150,0,0)),(450+40,400+53,0,0))
+		  
         elif self.name=="Difficulty Menu":
           menuGroup.add(player.previousMenu.optionsImages)
           menuGroup.draw(screen)
@@ -279,10 +295,18 @@ class Menu:
           screen.blit(font.render("Magic Attack",True,(150,0,0)),(450+40,400+103,0,0))
           screen.blit(font.render("Shop",True,(150,0,0)),(450+40,400+153,0,0))
           screen.blit(font.render("Back",True,(150,0,0)),(450+40,400+203,0,0))
-          screen.blit(font.render("Disabled",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+3,0,0))
-          screen.blit(font.render("Easy",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+43,0,0))
-          screen.blit(font.render("Medium",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+83,0,0))
-          screen.blit(font.render("Hard",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+123,0,0))
+		  
+          screen.blit(font.render("ON",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+3,0,0))
+          screen.blit(font.render("OFF",True,(150,0,0)),(player.currentMenu.sX+40,player.currentMenu.sY+43,0,0))	
+		  
+        elif self.name=="Options Menu":
+          menuGroup.draw(screen)
+          screen.blit(font.render("Critical Attack",True,(150,0,0)),(450+40,400+3,0,0))
+          screen.blit(font.render("Special Attack",True,(150,0,0)),(450+40,400+53,0,0))
+          screen.blit(font.render("Magic Attack",True,(150,0,0)),(450+40,400+103,0,0))
+          screen.blit(font.render("Shop",True,(150,0,0)),(450+40,400+153,0,0))
+          screen.blit(font.render("Back",True,(150,0,0)),(450+40,400+203,0,0))
+        
       
         if self.name=="AtkTut":
           screen.fill((255,255,255),(600,400,400,300))
@@ -396,8 +420,9 @@ class Menu:
             player.inComic=True
             pygame.display.flip()
 
-        elif name=="Close":
+        elif name=="Exit Game":
             sys.exit()
+			
         elif name=="Save":
           dataList=player.toString()
           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"w")
@@ -411,12 +436,14 @@ class Menu:
         elif name=="Return to Game":
           player.traversal=True
           player.mainMenu=False
-        elif name=="Tutorial":
+		  
+        elif name=="Controls":
             player.inTutorial=True
             player.inComic=True
             player.mainMenu=False
             player.startComic(TOUR_PATH+"setup/",None)
-        elif name=="Disabled":
+			
+        elif name=="OFF":  #was disable
           if player.previousMenu.currentOption==0:
             player.critDifficulty=0
           elif player.previousMenu.currentOption==1:
@@ -426,7 +453,7 @@ class Menu:
           elif player.previousMenu.currentOption==3:
             player.shopDifficulty=1
           player.currentMenu=player.previousMenu
-        elif name=="Easy":
+        elif name=="ON":   #was easy
           if player.previousMenu.currentOption==0:
             player.critDifficulty=1
           elif player.previousMenu.currentOption==1:
@@ -436,6 +463,7 @@ class Menu:
           elif player.previousMenu.currentOption==3:
             player.shopDifficulty=1
           player.currentMenu=player.previousMenu
+#remove following code til the next #------------------------
         elif name=="Medium":
           if player.previousMenu.currentOption==0:
             player.critDifficulty=2
@@ -456,6 +484,9 @@ class Menu:
           elif player.previousMenu.currentOption==3:
             player.shopDifficulty=2
           player.currentMenu=player.previousMenu
+#-------------------------------------------------------------------------------
+
+#Load game - we want to load the profile, but not start a level. Continue will actually start the level
         elif name=="Load Game":
            FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
            data=simplejson.loads(FILE.read())
@@ -472,6 +503,7 @@ class Menu:
         elif name=="Return":
           player.currentMenu.currentOption=0
           player.currentMenu=player.MainMenu
+		  
         elif name=="Attack":
           if player.critDifficulty>0:
             seed()

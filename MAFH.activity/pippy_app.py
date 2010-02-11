@@ -109,6 +109,7 @@ class Player:
     self.itemPickup.set_volume(.4)
     self.buySell=pygame.mixer.Sound(SOUND_PATH+"buySell.ogg")
     self.buySell.set_volume(.5)
+
   def toString(self):
     dataList=[]
     dataList.append(self.name)
@@ -147,18 +148,31 @@ class Player:
       dataList.append(self.battlePlayer.accessory.id)
     dataList.append(self.battlePlayer.akhal)
     return(dataList)
+
   def initializeMenu(self):
-    difficultyMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
-    difficultyMenuOptions=["Disabled","Easy","Medium","Hard"]
-    difficultyMenu=Menu(difficultyMenuOptions,self,MENU_PATH+"mafh_splash.gif",difficultyMenuImages,"Difficulty Menu")
+    mafh_splashBG=MENU_PATH+"mafh_splash.gif"
+    menuElementBG=[MENU_PATH+"TitleButton.gif"]
 
-    optionsMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
-    optionsMenuOptions=[difficultyMenu,difficultyMenu,difficultyMenu,difficultyMenu,"Return"]
-    optionsMenu=Menu(optionsMenuOptions,self,MENU_PATH+"mafh_splash.gif",optionsMenuImages,"Options Menu")
+    adventureMenuOptions=["Continue","Load Game","New Game","Return to Title"]
+    adventureMenu=Menu(adventureMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Adventure Play")
 
-    mainMenuImages=[MENU_PATH+"TutorialButton.gif",MENU_PATH+"NewGameButton.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"CloseButton.gif"]
-    self.MainMenu=Menu(["Tutorial","New Game","Load Game",optionsMenu,"Close"],self,MENU_PATH+"mafh_splash.gif",mainMenuImages,"Main Menu")
-    
+    creativeMenuOptions=["Play Custom Map","New Custom Map","Share Map","Return to Title"]
+    creativeMenu=Menu(creativeMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Creative Play")
+
+    networkMenuOptions=["Local Cooperative Play","Local Treasure Trekkers Play","View Scoreboards","Return to Title"]
+    networkMenu=Menu(networkMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Network Play")
+
+    extrasMenuOptions=["View Awards","View Statistics","Return to Title"]
+    extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
+	
+    difficultyMenuOptions=["ON","OFF"]
+    difficultyMenu=Menu(difficultyMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Difficulty Menu")
+
+    optionsMenuOptions=[difficultyMenu,difficultyMenu,difficultyMenu,difficultyMenu,"Return to Title"]
+    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options Menu")
+
+    self.MainMenu=Menu(["Controls",adventureMenu,creativeMenu,networkMenu,extrasMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
+
     statMenuOptions=["Weapon","Armor","Accessory"]
     statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
     self.statsMenu=Menu(statMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
@@ -166,8 +180,11 @@ class Player:
 
     pauseMenuOptions=["Save","Close","Main Menu","Return to Game"]
     pauseMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
-    self.pauseMenu=Menu(pauseMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",pauseMenuImages,"Pause Menu")
+    self.pauseMenu=Menu(pauseMenuOptions,self,MENU_PATH+"VictoryScreen.gif",pauseMenuImages,"Pause Menu")
+    self.pauseMenu.background.rect.top=11
 
+    self.mathStats=Menu([],self,MENU_PATH+"VictoryScreen.gif",[],"Math Stats")
+    self.mathStats.background.rect.top=11
 
     self.currentMenu=self.MainMenu
     self.previousMenu=self.MainMenu
@@ -1683,7 +1700,8 @@ def updateMenu(event,player):
         sys.exit()
 
       elif newKey=='[1]' or newKey=='return':
-        menu.progress(player,screen)
+        if menu.name != "Math Stats":
+          menu.progress(player,screen)
 
       elif newKey=='[2]' or newKey=='down':
         menu.select("down")
@@ -1697,7 +1715,9 @@ def updateMenu(event,player):
           #set to stats menu
           player.currentMenu=player.statsMenu
         elif menu.name=="Pause Menu":
-          #set to inventory menu
+          #set to math stats
+          player.currentMenu=player.mathStats
+        elif menu.name=="Math Stats":
           player.currentMenu.createInventory(player)
             
 
@@ -1725,28 +1745,20 @@ def updateMenu(event,player):
           player.currentMenu.createInventory(player)
         elif menu.name=="Inventory":
           #set to stats menu
-          player.currentMenu=player.pauseMenu
+          player.currentMenu=player.mathStats
         elif menu.name=="Pause Menu":
           #set to inventory menu
           player.currentMenu=player.statsMenu
+        elif menu.name=="Math Stats":
+          player.currentMenu=player.pauseMenu
 
       elif newKey=='[8]' or newKey=='up':
         menu.select("up")
 
-      elif newKey=='[9]' or newKey=='u':
-        if menu.name=="Stats":
-         #UNEQUIP ITEM
-          itemIndex=menu.currentOption
-          if itemIndex==0:
-            player.battlePlayer.remEquipment(player.battlePlayer.weapon)
-          elif itemIndex==1:
-            player.battlePlayer.remEquipment(player.battlePlayer.armor)
-          elif itemIndex==2:
-            player.battlePlayer.remEquipment(player.battlePlayer.accessory)
-          elif itemIndex-3<len(player.battlePlayer.eqItem):
-            player.battlePlayer.remEquipment(player.battlePlayer.eqItem[itemIndex-3])
-          player.currentMenu=player.statsMenu
-          player.currentRoomGroup.draw(screen)
+      elif newKey=='[9]' or newKey=='backspace':
+        player.mainMenu=False
+        player.traversal=True
+        
 
 def updateTraversal(event,player,screen):
     if event.type == QUIT:
@@ -2018,7 +2030,7 @@ while pippy.pygame.next_frame():
       updatePuzzle(event,player)
     elif player.mainMenu:
       ## main menu processes
-      updateMenu(event,player)
+        updateMenu(event,player)
     elif player.macroMap:
       updateMacroMap(event,player)
     elif player.shop:
@@ -2027,10 +2039,11 @@ while pippy.pygame.next_frame():
   ###############DRAW#########################
   #draw based on state
   if player.mainMenu==True:
-    if player.currentMenu.name=="Inventory":
-      player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
-    elif player.currentMenu.name=="Stats":
+    if player.currentMenu.name=="Stats" or player.currentMenu.name=="Inventory":
       player.currentMenu.draw(player,screen,450,400,50)
+      drawTextBox(player,screen)
+    elif player.currentMenu.name=="Pause Menu":
+      player.currentMenu.draw(player,screen,540,240,50)
       drawTextBox(player,screen)
     elif player.currentMenu.name=="Difficulty Menu":
       player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
