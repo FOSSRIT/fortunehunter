@@ -615,12 +615,6 @@ class BattleEngine:
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
 
-    itemOptions=["Item1","Item2","Item3","Item4"]
-    itemBackground=MENU_PATH+"battleMenubackground.gif"
-    itemOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
-    
-    self.itemMenu=Menu(itemOptions,player,itemBackground,itemOptImg,"Item")
-    self.itemMenu.background.rect=(0,300,200,200)
 
     self.player.currentMenu=self.battleMenu
     self.player.previousMenu=self.numPadMenu
@@ -651,31 +645,19 @@ class BattleEngine:
 
     #draw player
     if player.currentMenu.numPad==False:
-      player.currentMenu.draw(player,screen,235,450,45)
-      if player.currentMenu.name=="Item":
-        i=0
-        for image in player.currentMenu.optionsImages:
-          if i<len(player.battlePlayer.eqItem):
-            font = pygame.font.Font(None, 36)
-            if player.battlePlayer.eqItem[i]!=None:
-              t=font.render(player.battlePlayer.eqItem[i].name,True,(255,255,255))
-              screen.blit(t,image.rect) 
-            i+=1     
-      elif player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
+      player.currentMenu.battleDraw(player,screen,235,450,45)
+          
+      if player.currentMenu.name=="Division Menu" or player.currentMenu.name=="DivTut2":
         screen.fill((0,0,0),(500,300,100,400))
         screen.fill((255,150,0),(500,(620-310*player.battlePlayer.fractionSum),137,310*player.battlePlayer.fractionSum))
         y=460
-        font=pygame.font.SysFont("cmr10",24,False,False)
-        if not player.currentMenu.name=="DivTut2":
-          for item in player.currentMenu.options:
-            screen.blit(font.render(item,True,(50,0,150)),(275,y,400,40))
-            y+=45
+        
         player.divSword.draw(screen)
     else:
       if player.currentMenu.name=="GeomTut3" or player.currentMenu.name=="Glyph Menu":
-        player.currentMenu.draw(player,screen,235,390,60)
+        player.currentMenu.battleDraw(player,screen,235,390,60)
       else:
-        player.currentMenu.draw(player,screen,235,450,40)
+        player.currentMenu.battleDraw(player,screen,235,450,40)
       if not player.battlePlayer.currentProb1=="":
         font = pygame.font.Font(None, 36)
         probText=font.render(repr(player.battlePlayer.currentProb1)+" X "+repr(player.battlePlayer.currentProb2),True,(255,255,255))
@@ -684,8 +666,8 @@ class BattleEngine:
           screen.blit(probText,pygame.Rect(250,350,200,30))
           screen.blit(inputText,pygame.Rect(250,400,200,30))
       
-      #screen.fill((50,250,50),pygame.Rect(200,50,self.timeBonus*500,50))
-      if self.timeBonus>1:
+      
+      if self.timeBonus<1:
         screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
     pygame.display.flip()
 
@@ -1991,12 +1973,12 @@ while pippy.pygame.next_frame():
 ####################################
 ###TEST FOR IN GAME TUTORIALS
 ####################################
-        if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
-          player.traversal=False
-          player.battle=True
-          player.curBattle=BattleEngine(player,[get_enemy( '3' )])
-          player.initInGameBattleTutorial(screen)
-        elif player.currentX==1 and player.currentY==4 and player.movTutorial==False:
+      #  if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
+      #    player.traversal=False
+      #    player.battle=True
+       #   player.curBattle=BattleEngine(player,[get_enemy( '3' )])
+      #    player.initInGameBattleTutorial(screen)
+        if player.currentX==1 and player.currentY==4 and player.movTutorial==False:
           player.initMovTutorial(screen)
         elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
           player.battlePlayer.HP-=10
@@ -2039,19 +2021,19 @@ while pippy.pygame.next_frame():
   ###############DRAW#########################
   #draw based on state
   if player.mainMenu==True:
-    if player.currentMenu.name=="Stats" or player.currentMenu.name=="Inventory":
-      player.currentMenu.draw(player,screen,450,400,50)
+    if player.currentMenu.name=="Stats" or player.currentMenu.name=="Inventory" or player.currentMenu.name=="Math Stats" or player.currentMenu.name=="Victory" or player.currentMenu.name=="Defeat":
+      player.currentMenu.pauseMenuDraw(player,screen,450,400,24)
       drawTextBox(player,screen)
     elif player.currentMenu.name=="Pause Menu":
-      player.currentMenu.draw(player,screen,540,240,50)
+      player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
       drawTextBox(player,screen)
     elif player.currentMenu.name=="Difficulty Menu":
-      player.currentMenu.draw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
+      player.currentMenu.mainMenuDraw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
     elif player.currentMenu.name=="Defeat":
-      player.currentMenu.draw(player,screen,500,500,50)
+      player.currentMenu.mainMenuDraw(player,screen,500,500,50)
       
     else:
-      player.currentMenu.draw(player,screen,450,400,50)
+      player.currentMenu.mainMenuDraw(player,screen,450,400,50)
   else:
     if player.traversal:
       if player.waiting:
