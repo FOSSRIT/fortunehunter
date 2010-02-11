@@ -1228,19 +1228,16 @@ class BattleEngine:
 #End External Classes
 ######################################################################
 
-# always need to init first thing
-pygame.init()
+from GameEngine import GameEngine
 
-# turn off cursor
-pygame.mouse.set_visible(False)
+ge = GameEngine()
 
-# XO screen is 1200x900
-size = width, height = 1200, 900
+#REMOVE THESE THIS IS FOR BACKWARDS COMPATIBILITY
+font = ge.font
+screen = ge.screen
 
-font=pygame.font.Font(None,36)
-# create the window and keep track of the surface
-# for drawing into
-screen = pygame.display.set_mode(size)
+
+
 
 player=Player(0,0)
 
@@ -1972,69 +1969,81 @@ def drawTextBox(player,screen):
   screen.blit(tl4,line4)
   screen.blit(tl5,line5)
 
-while pippy.pygame.next_frame():
 
-  for event in pygame.event.get():
-    if event.type==USEREVENT+2:
-      pygame.time.set_timer(USEREVENT+2,0)
-      drawWaiting(player,screen)
-      player.waiting=False
-      if player.msg5=='Enemies are present, prepare to fight.':
-        player.battle=True
-      if player.currentRoom.roomFlag==6:
-        player.currentRoom.setShop(player)
-        player.shop=True
-        player.traversal=False
-        player.currentRoom.shop.draw(screen,player)
 
-      if player.battle==False and player.shop==False:
-####################################
-###TEST FOR IN GAME TUTORIALS
-####################################
-        if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
-          player.traversal=False
-          player.battle=True
-          player.curBattle=BattleEngine(player,[get_enemy( '3' )])
-          player.initInGameBattleTutorial(screen)
-        elif player.currentX==1 and player.currentY==4 and player.movTutorial==False:
-          player.initMovTutorial(screen)
-        elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
-          player.battlePlayer.HP-=10
-          player.migrateMessages("You trip on a crack in the floor and lose 10 HP")
-          player.migrateMessages("But you can heal yourself with the remedy that you picked up")
-          player.hpTutorial=True
-          player.traversal=True
-        elif player.currentX==2 and player.currentY==1 and player.hiddenTutorial==False:
-          player.migrateMessages("You sense hidden items in this room, to search the room, press e or check")
-          player.migrateMessages("If you discover an item, it will be added to your inventory, try it now")
-          player.traversal=True
+def global_event_handler(event):
+    if event.type == QUIT:
+        sys.exit()
+
+def comic_event_handler(event):
+    #TODO BE REMOVED AS THIS HANDLER SHOULD NOT BE FIRED IF NOT IN COMIC
+    if player.inComic:
+        updateComic(event,player)
+        if hasattr(player, 'comic') and player.comic:
+            player.comic.draw(screen)
         else:
-          player.traversal=True
-      setImage(player)
-    if event.type==QUIT:
-      sys.exit()
-    elif player.inComic:
-      updateComic(event,player)
-    elif player.traversal:
-      if player.waiting==True:
-        updateWaiting(event,player)
+            print "WARNING: COMIC_EVENT: player.comic is not set or null"
+
+def traversal_event_handler(event):
+    #TODO BE REMOVED AS THIS HANDLER SHOULD NOT BE FIRED IF NOT IN TRAVERSAL
+    if player.traversal:
+        if player.waiting==True:
+            updateWaiting(event,player)
+            drawWaiting(player,screen)
+        else:
+            updateTraversal(event,player,screen)
+            drawTextBox(player,screen)
+            drawTraversal(player,screen)
+
+def old_event_handler(event):  
+  if event.type==USEREVENT+2:
+    pygame.time.set_timer(USEREVENT+2,0)
+    drawWaiting(player,screen)
+    player.waiting=False
+    if player.msg5=='Enemies are present, prepare to fight.':
+      player.battle=True
+    if player.currentRoom.roomFlag==6:
+      player.currentRoom.setShop(player)
+      player.shop=True
+      player.traversal=False
+      player.currentRoom.shop.draw(screen,player)
+
+    if player.battle==False and player.shop==False:
+##################################
+#TEST FOR IN GAME TUTORIALS
+##################################
+      if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
+        player.traversal=False
+        player.battle=True
+        player.curBattle=BattleEngine(player,[get_enemy( '3' )])
+        player.initInGameBattleTutorial(screen)
+      elif player.currentX==1 and player.currentY==4 and player.movTutorial==False:
+        player.initMovTutorial(screen)
+      elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
+        player.battlePlayer.HP-=10
+        player.migrateMessages("You trip on a crack in the floor and lose 10 HP")
+        player.migrateMessages("But you can heal yourself with the remedy that you picked up")
+        player.hpTutorial=True
+        player.traversal=True
+      elif player.currentX==2 and player.currentY==1 and player.hiddenTutorial==False:
+        player.migrateMessages("You sense hidden items in this room, to search the room, press e or check")
+        player.migrateMessages("If you discover an item, it will be added to your inventory, try it now")
+        player.traversal=True
       else:
-        #################UPDATE##############################
-        updateTraversal(event,player,screen)
-
-
-    elif player.battle:
-      ##battle processes
-      updateBattle(event,player)
-    elif player.inPuzzle:
-      updatePuzzle(event,player)
-    elif player.mainMenu:
-      ## main menu processes
-        updateMenu(event,player)
-    elif player.macroMap:
-      updateMacroMap(event,player)
-    elif player.shop:
-      player.currentRoom.shop.update(event,player)
+        player.traversal=True
+    setImage(player)
+  if player.battle:
+    ##battle processes
+    updateBattle(event,player)
+  elif player.inPuzzle:
+    updatePuzzle(event,player)
+  elif player.mainMenu:
+    ## main menu processes
+      updateMenu(event,player)
+  elif player.macroMap:
+    updateMacroMap(event,player)
+  elif player.shop:
+    player.currentRoom.shop.update(event,player)
 
   ###############DRAW#########################
   #draw based on state
@@ -2053,21 +2062,13 @@ while pippy.pygame.next_frame():
     else:
       player.currentMenu.draw(player,screen,450,400,50)
   else:
-    if player.traversal:
-      if player.waiting:
-        drawWaiting(player,screen)
-      else:
-        drawTextBox(player,screen)
-        drawTraversal(player,screen)
-    elif player.macroMap:
+    if player.macroMap:
       player.dgnMap.drawMacro(player,screen)
     elif player.battle:
       drawTextBox(player,screen)
       player.curBattle.draw(player,screen)
     elif player.inPuzzle:
       drawPuzzle(player,screen)
-    elif player.inComic:
-      player.comic.draw(screen)
     elif player.shop:
       drawTextBox(player,screen)
       player.currentRoom.shop.draw(screen,player)
@@ -2084,6 +2085,8 @@ while pippy.pygame.next_frame():
     pygame.display.flip()
   # update the display
 
-
-
-
+ge.add_event_callback("global", global_event_handler)
+ge.add_event_callback("old", old_event_handler)
+ge.add_event_callback("comic", comic_event_handler)
+ge.add_event_callback("traverse", traversal_event_handler)
+ge.start_event_loop()
