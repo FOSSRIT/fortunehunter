@@ -162,14 +162,14 @@ class Player:
     networkMenuOptions=["Local Cooperative Play","Local Treasure Trekkers Play","View Scoreboards","Return to Title"]
     networkMenu=Menu(networkMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Network Play")
 
-    extrasMenuOptions=["View Awards","View Statistics","Return to Title"]
-    extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
-	
+    extrasMenuOptions=["View Bestiary","View Awards","View Statistics","Return to Title"]
+    extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
+
     difficultyMenuOptions=["ON","OFF"]
     difficultyMenu=Menu(difficultyMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Difficulty Menu")
 
-    optionsMenuOptions=[difficultyMenu,difficultyMenu,difficultyMenu,difficultyMenu,"Return to Title"]
-    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options Menu")
+    optionsMenuOptions=["Audio","FMCs","Subtitles",difficultyMenu,difficultyMenu,difficultyMenu,difficultyMenu,"Return to Title"]
+    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options")
 
     self.MainMenu=Menu(["Controls",adventureMenu,creativeMenu,networkMenu,extrasMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
 
