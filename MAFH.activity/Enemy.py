@@ -5,10 +5,10 @@ class InvalidEnemyException(Exception): pass
 import pygame
 from Actor import Actor
 ENEMY = {
-    '1':{'name':_('Wizard Adept'),'img':"concept_wizard.gif",'hp':20,'att':3,'weak':'special'},
-    '2':{'name':_('Goblin'),'img':"concept_goblin.gif",'hp':40,'att':5,'weak':'fire'},
-    '3':{'name':_('Orc'),'img':"concept_orc.gif",'hp':50,'att':6,'weak':'lightning'},
-    '4':{'name':_('Stone Golem'),'img':"concept_orc.gif",'hp':10,'att':8,'weak':'missile'},
+    '1':{'name':_('Wizard Adept'),'img':"concept_wizard.gif",'hp':20,'att':2,'weak':'special'},
+    '2':{'name':_('Goblin'),'img':"concept_goblin.gif",'hp':40,'att':3,'weak':'fire'},
+    '3':{'name':_('Orc'),'img':"concept_orc.gif",'hp':50,'att':5,'weak':'lightning'},
+    '4':{'name':_('Stone Golem'),'img':"concept_orc.gif",'hp':10,'att':6,'weak':'missile'},
     #'5':{'name':_('Serratula')},
     #'6':{'name':_('Feren')},
 }
