@@ -1047,6 +1047,7 @@ class BattleEngine:
       defender.defendAttack(enemy.attackPower("special"))
       player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" special attacks for "+repr(enemy.attackPower("special"))+" damage")
     #print special message differently depending on name
+    #test
     elif temp < 6 and enemy.name == "Wizard":
       defender.defendAttack(enemy.attackPower("critical"))
       player.migrateMessages("Wizard "+repr(enemy.place)+" casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("critical"))+" damage")
