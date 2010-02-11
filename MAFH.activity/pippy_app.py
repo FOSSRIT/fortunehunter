@@ -595,20 +595,24 @@ class BattleEngine:
         denom2=randint(2,9)
         denom3=randint(2,9)
         denom4=randint(2,9)
+        denom1=randint(2,3)
+        denom2=randint(4,5)
+        denom3=randint(6,7)
+        denom4=randint(8,9)
         divisionOptions=["1/"+repr(denom1),"1/"+repr(denom2),"1/"+repr(denom3),"1/"+repr(denom4)]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
       elif player.divDifficulty==3:
-        denom1=randint(2,9)
-        denom2=randint(2,9)
-        denom3=randint(2,9)
-        denom4=randint(2,9)
-        num1=randint(1,4)
-        num2=randint(1,4)
-        num3=randint(1,4)
-        num4=randint(1,4)
+        denom1=randint(2,3)
+        denom2=randint(4,5)
+        denom3=randint(6,7)
+        denom4=randint(8,9)
+        num1=randint(1,2)
+        num2=randint(3,4)
+        num3=randint(1,2)
+        num4=randint(3,4)
         divisionOptions=[repr(num1)+"/"+repr(denom1),repr(num2)+"/"+repr(denom2),repr(num3)+"/"+repr(denom3),repr(num4)+"/"+repr(denom4)]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
@@ -1025,19 +1029,19 @@ class BattleEngine:
     temp = randint(1,100)
     defender=self.player.battlePlayer
 
-    if temp < 6:
-      defender.defendAttack(enemy.attackPower("critical"))
-      player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
-    elif temp > 90:
+    if temp > 90:
       defender.defendAttack(enemy.attackPower("special"))
-      player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
+      player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" special attacks for "+repr(enemy.attackPower("special"))+" damage")
     #print special message differently depending on name
-    if enemy.name == "Wizard":
+    elif temp < 6 and enemy.name == "Wizard":
       defender.defendAttack(enemy.attackPower("critical"))
-      player.migrateMessages("Wizard "+repr(enemy.place)+" casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("special"))+" damage")
-    elif enemy.name == "Goblin" or enemy.name == "Orc":
+      player.migrateMessages("Wizard "+repr(enemy.place)+" casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("critical"))+" damage")
+    elif temp < 6 and (enemy.name == "Goblin" or enemy.name == "Orc"):
       defender.defendAttack(enemy.attackPower("critical"))
-      player.migrateMessages("Goblin "+repr(enemy.place)+" head bonks you for "+repr(enemy.attackPower("special"))+" damage. Ouch!")
+      player.migrateMessages(enemy.name + repr(enemy.place)+ " head bonks you for " +repr(enemy.attackPower("critical"))+" damage. Ouch!")
+    elif temp < 6:
+      defender.defendAttack(enemy.attackPower("critical"))
+      player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
     #TODO: add enemy types here as levels are added
     else:
       player.migrateMessages(repr(enemy.name)+" "+repr(enemy.place)+" attacks for "+repr(enemy.attackPower("basic"))+" damage")
