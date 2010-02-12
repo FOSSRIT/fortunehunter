@@ -75,6 +75,8 @@ class Hero(Actor):
           self.inv_Ar.remove(item)
         else:
           self.player.migrateMessages("You are already at full health")
+        if self.HP>self.MHP:
+          self.player.HP=self.player.MHP
 
 
   #remove item from equipment

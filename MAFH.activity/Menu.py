@@ -79,69 +79,69 @@ class Menu:
 #Title Menu buttons' functions
 
     #when 'Return to Title' is selected
-    def tm_return():
+    #def tm_return():
         #return player to the title menu
 
     #when 'Controls' is selected
-    def tm_controls():
+    #def tm_controls():
         #show the controls for the XO input, let them switch between the two layouts
 
     #when 'Exit Game' is selected
-    def tm_exitGame():
+    #def tm_exitGame():
         #exits the game and returns the player to the XO home screen
 
     #when 'Continue' is selected
-    def tm_ap_continue():
+    #def tm_ap_continue():
         #starts a play of the last 'loaded' game file
 		
     #when 'Level Select' is selected
-    def tm_ap_levelSelect():
+    #def tm_ap_levelSelect():
         #allows the player to choose which level to play, from a list of completed levels within a save file
 
     #when 'Load Game' is selected
-    def tm_ap_loadGame():
+    #def tm_ap_loadGame():
         #loads a game file into memory, doesn't actually start the game
 
     #when 'New Game' is selected
-    def tm_ap_newGame():
+    #def tm_ap_newGame():
         #creates a new game file to work with, runs new game
 
     #when 'Play Custom Map' is selected
-    def tm_cp_playCustomMap():
+    #def tm_cp_playCustomMap():
         #loads and plays a custom map set created by Fortune Maker
 
     #when 'New Custom Map' is selected
-    def tm_cp_newCustomMap():
+    #def tm_cp_newCustomMap():
         #shows an overview of Fortune Maker and what it can do
         #offers them to quit Fortune Hunter in order to load Fortune Maker
 
     #when 'Share Map' is selected
-    def tm_cp_shareMap():
+    #def tm_cp_shareMap():
         #shares (send or receive) custom maps from the directory with friends over local mesh
 
     #when 'Local Cooperative Play' is selected
-    def tm_np_localCoop():
+    #def tm_np_localCoop():
         #starts a game with the option to have a friend join in
         #probably this will just be an option to turn on and off
 
     #when 'Local Treasure Trekkers Play' is selected
-    def tm_np_localTreasure():
+   # def tm_np_localTreasure():
         #starts a racing type game and allows players to compete over mesh
 
     #when 'View Scoreboard' is selected
-    def tm_np_scoreboard():
+   # def tm_np_scoreboard():
         #shows the classroom scoreboard
 
     #when 'View Bestiary' is selected
-    def tm_np_viewBestiary():
+   # def tm_np_viewBestiary():
         #shows bestiary of loaded game profile, otherwise shows empty one
 
     #when 'View Awards' is selected
-    def tm_np_viewAwards():
+   # def tm_np_viewAwards():
         #shows awards of a loaded game profile, otherwise shows locked ones
 
     #when 'View Statistics' is selected
-    def tm_np_viewStats():
+   # def tm_np_viewStats():
         #shows statistics of a loaded game profile, otherwise shows 0s
 
     #possibly options menu elements here#
@@ -223,16 +223,22 @@ class Menu:
       elif self.name=="Inventory":
           y=140
           sel=0
+          if self.currentOption>8:
+            i=self.currentOption-8
+          else:
+            i=0
           screen.blit(font.render("Inventory:",True,(0,0,0)),(self.sX+80,self.sY+100,200,40))
-          for item in player.battlePlayer.inv_Ar:
-            if sel==self.currentOption:
+          for k in range(10):
+            try:
+              item=player.battlePlayer.inv_Ar[i]
+            except IndexError:
+              break
+            if i==self.currentOption:
               screen.fill((50,50,250),pygame.Rect(self.sX+40,self.sY+y,200,40))
             screen.blit(font.render(item.name,True,(0,0,0)),pygame.Rect(self.sX+40,self.sY+y,200,40))
             y+=40
             sel+=1
-            if y==400:
-              y=0
-              x+=200
+            i+=1
           screen.fill((255,150,150),(500,555,125,50))
           screen.fill((150,255,150),(625,555,127,50))
           screen.blit(self.LArrow,(504,560,20,20))
@@ -564,13 +570,7 @@ class Menu:
 	  player.curBattle.checkGlyph(name)
         elif name=="Scan":
           player.curBattle.scanEnemy()
-        elif name=="Item1" or name=="Item2" or name=="Item3" or name=="Item4":
-          index=int(repr(name)[5])-1
-          if index<len(player.battlePlayer.eqItem):
-            player.curBattle.useItem(player.battlePlayer.eqItem[index])
-          else:
-            player.currentMenu=player.curBattle.battleMenu
-	  #if we decide to add puzzle/minigame items, here's where they'd go
+        
         elif name=="Weapon" or name=="Armor" or name=="Accessory":
           self.createInventory(player)
   
