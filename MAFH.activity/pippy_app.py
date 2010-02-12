@@ -153,8 +153,8 @@ class Player:
     mafh_splashBG=MENU_PATH+"mafh_splash.gif"
     menuElementBG=[MENU_PATH+"TitleButton.gif"]
 
-    adventureMenuOptions=["Continue","Load Game","New Game","Return to Title"]
-    adventureMenu=Menu(adventureMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Adventure Play")
+    adventureMenuOptions=["Continue","Level Select","Load Game","New Game","Return to Title"]
+    adventureMenu=Menu(adventureMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Adventure Play")
 
     creativeMenuOptions=["Play Custom Map","New Custom Map","Share Map","Return to Title"]
     creativeMenu=Menu(creativeMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Creative Play")
