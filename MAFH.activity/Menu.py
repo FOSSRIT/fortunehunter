@@ -79,69 +79,71 @@ class Menu:
 #Title Menu buttons' functions
 
     #when 'Return to Title' is selected
-    #def tm_return():
+    def tm_return():
         #return player to the title menu
+        player.currentMenu.currentOption=0
+        player.currentMenu=player.MainMenu
 
     #when 'Controls' is selected
-    #def tm_controls():
+    def tm_controls():
         #show the controls for the XO input, let them switch between the two layouts
 
     #when 'Exit Game' is selected
-    #def tm_exitGame():
+    def tm_exitGame():
         #exits the game and returns the player to the XO home screen
 
     #when 'Continue' is selected
-    #def tm_ap_continue():
+    def tm_ap_continue():
         #starts a play of the last 'loaded' game file
-		
+
     #when 'Level Select' is selected
-    #def tm_ap_levelSelect():
+    def tm_ap_levelSelect():
         #allows the player to choose which level to play, from a list of completed levels within a save file
 
     #when 'Load Game' is selected
-    #def tm_ap_loadGame():
+    def tm_ap_loadGame():
         #loads a game file into memory, doesn't actually start the game
 
     #when 'New Game' is selected
-    #def tm_ap_newGame():
+    def tm_ap_newGame():
         #creates a new game file to work with, runs new game
 
     #when 'Play Custom Map' is selected
-    #def tm_cp_playCustomMap():
+    def tm_cp_playCustomMap():
         #loads and plays a custom map set created by Fortune Maker
 
     #when 'New Custom Map' is selected
-    #def tm_cp_newCustomMap():
+    def tm_cp_newCustomMap():
         #shows an overview of Fortune Maker and what it can do
         #offers them to quit Fortune Hunter in order to load Fortune Maker
 
     #when 'Share Map' is selected
-    #def tm_cp_shareMap():
+    def tm_cp_shareMap():
         #shares (send or receive) custom maps from the directory with friends over local mesh
 
     #when 'Local Cooperative Play' is selected
-    #def tm_np_localCoop():
+    def tm_np_localCoop():
         #starts a game with the option to have a friend join in
         #probably this will just be an option to turn on and off
 
     #when 'Local Treasure Trekkers Play' is selected
-   # def tm_np_localTreasure():
+    def tm_np_localTreasure():
         #starts a racing type game and allows players to compete over mesh
 
     #when 'View Scoreboard' is selected
-   # def tm_np_scoreboard():
+    def tm_np_scoreboard():
         #shows the classroom scoreboard
 
     #when 'View Bestiary' is selected
-   # def tm_np_viewBestiary():
+    def tm_np_viewBestiary():
         #shows bestiary of loaded game profile, otherwise shows empty one
 
     #when 'View Awards' is selected
-   # def tm_np_viewAwards():
+    def tm_np_viewAwards():
         #shows awards of a loaded game profile, otherwise shows locked ones
 
     #when 'View Statistics' is selected
-   # def tm_np_viewStats():
+    def tm_np_viewStats():
         #shows statistics of a loaded game profile, otherwise shows 0s
 
     #possibly options menu elements here#
