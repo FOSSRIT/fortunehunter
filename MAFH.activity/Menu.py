@@ -481,14 +481,26 @@ class Menu:
           player.currentMenu=player.previousMenu
 #Load game - we want to load the profile, but not start a level. Continue will actually start the level
         elif name=="Load Game":
-           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
-           data=simplejson.loads(FILE.read())
-           print(data)
-           player.fromData(data)
+           menuOptions=["Name:"]
+           menuButtons=[MENU_PATH+"Blank.gif"]
+           for file in os.listdir(os.path.join(activity.get_activity_root(),"data/")):
+             menuOptions.append("Name:"+file)
+             menuButtons.append(MENU_PATH+"Blank.gif")
            
-           player.dgnMap.updateMacro(player)
-           #player.traversal=True
-           #player.mainMenu=False
+           player.currentMenu=Menu(menuOptions,player,MENU_PATH+"mafh_splash.gif",menuButtons,"Save Files")
+         
+        elif name[0:5]=="Name:":
+          if len(name)==5:
+            player.nameEntry=True
+            player.mainMenu=False
+          else:
+            player.name=name[5:len(name)]
+            FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name),"r")
+            data=simplejson.loads(FILE.read())
+            print(data)
+            player.fromData(data)
+            player.currentMenu=player.previousMenu
+            
 
         elif name=="Return":
           player.currentMenu.currentOption=0

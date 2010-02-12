@@ -73,6 +73,7 @@ class Player:
     self.itemsPickedUp=False
 
     #state variables
+    self.nameEntry=False
     self.inTutorial=False
     self.mainMenu=True
     self.traversal=False
@@ -364,7 +365,6 @@ class Player:
         self.geomDifficulty+=self.scaleDifficulty(self.geometryStats[self.geomDifficulty-1])      
    
       self.battlePlayer.MHP+=2
-      self.dgnIndex+=1
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
@@ -1705,6 +1705,21 @@ def stopPuzzle(player,solved):
   player.traversal=True
 
 ###Update methods###
+def updateNameEntry(event,player):
+    if event.type == KEYDOWN:
+      if pygame.key.name(event.key)=='backspace':
+        player.name=player.name[0:len(player.name)-1]
+      elif pygame.key.name(event.key)=='return':
+        player.dgn=Dungeon('al1.txt')
+        player.nextDungeon(True)
+        player.dgnIndex=0
+        player.currentMenu.updateByName("Save",player,screen)
+        player.nameEntry=False
+        player.mainMenu=True
+        player.currentMenu=player.previousMenu
+      else:
+        player.name+=event.unicode
+
 
 def updateMenu(event,player):
     menu=player.currentMenu
@@ -1972,6 +1987,15 @@ def drawWaiting(player,screen):
   screen.fill(0,(0,0,1290,700),0)
 def drawMacroMap(player,screen):
   player.dgnMap.drawMacro(player,screen)
+def drawNameEntry(player,screen):
+  text=font.render(player.name,True,(0,0,0))
+  textRect=(400,400,400,400)
+  screen.blit(pygame.image.load(MENU_PATH+"mafh_splash.gif"),(0,0,1200,900))
+  screen.fill((150,150,255),(250,250,600,400))
+  screen.blit(font.render("Enter name:",True,(0,0,0)),(300,300,20,20))
+  screen.blit(font.render("Return to continue",True,(0,0,0)),(500,500,20,20))
+  screen.blit(text, textRect)
+  pygame.display.flip()
   
 def drawTextBox(player,screen):
   screen.fill(0,bigRect,0)
@@ -2031,6 +2055,8 @@ while pippy.pygame.next_frame():
       setImage(player)
     if event.type==QUIT:
       sys.exit()
+    elif player.nameEntry:
+      updateNameEntry(event,player)
     elif player.inComic:
       updateComic(event,player)
     elif player.traversal:
@@ -2077,6 +2103,8 @@ while pippy.pygame.next_frame():
       else:
         drawTextBox(player,screen)
         drawTraversal(player,screen)
+    elif player.nameEntry:
+      drawNameEntry(player,screen)
     elif player.macroMap:
       player.dgnMap.drawMacro(player,screen)
     elif player.battle:
