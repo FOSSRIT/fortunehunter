@@ -416,9 +416,8 @@ class Menu:
     def progress(self,player,screen):
         if type(self.options[self.currentOption])==type(self):
             player.currentMenu=self.options[self.currentOption]
-           # player.previousMenu=self
-           # player.currentMenu.sX=player.previousMenu.startX+200
-           # player.currentMenu.sY=player.previousMenu.startY+player.previousMenu.currentOption*player.previousMenu.height
+            player.previousMenu=self
+          
         else:
             self.updateByName(self.options[self.currentOption],player,screen)
 
@@ -465,48 +464,21 @@ class Menu:
             player.startComic(TOUR_PATH+"setup/",None)
 			
         elif name=="OFF":  #was disable
-          if player.previousMenu.currentOption==0:
+          if player.previousMenu.currentOption==3:
             player.critDifficulty=0
-          elif player.previousMenu.currentOption==1:
+          elif player.previousMenu.currentOption==4:
             player.divDifficulty=0
-          elif player.previousMenu.currentOption==2:
+          elif player.previousMenu.currentOption==5:
             player.geomDifficulty=0
-          elif player.previousMenu.currentOption==3:
-            player.shopDifficulty=1
           player.currentMenu=player.previousMenu
         elif name=="ON":   #was easy
-          if player.previousMenu.currentOption==0:
+          if player.previousMenu.currentOption==3:
             player.critDifficulty=1
-          elif player.previousMenu.currentOption==1:
+          elif player.previousMenu.currentOption==4:
             player.divDifficulty=1
-          elif player.previousMenu.currentOption==2:
+          elif player.previousMenu.currentOption==5:
             player.geomDifficulty=1
-          elif player.previousMenu.currentOption==3:
-            player.shopDifficulty=1
           player.currentMenu=player.previousMenu
-#remove following code til the next #------------------------
-        elif name=="Medium":
-          if player.previousMenu.currentOption==0:
-            player.critDifficulty=2
-          elif player.previousMenu.currentOption==1:
-            player.divDifficulty=2
-          elif player.previousMenu.currentOption==2:
-            player.geomDifficulty=2
-          elif player.previousMenu.currentOption==3:
-            player.shopDifficulty=2
-          player.currentMenu=player.previousMenu
-        elif name=="Hard":
-          if player.previousMenu.currentOption==0:
-            player.critDifficulty=3
-          elif player.previousMenu.currentOption==1:
-            player.divDifficulty=3
-          elif player.previousMenu.currentOption==2:
-            player.geomDifficulty=3
-          elif player.previousMenu.currentOption==3:
-            player.shopDifficulty=2
-          player.currentMenu=player.previousMenu
-#-------------------------------------------------------------------------------
-
 #Load game - we want to load the profile, but not start a level. Continue will actually start the level
         elif name=="Load Game":
            FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
@@ -515,11 +487,8 @@ class Menu:
            player.fromData(data)
            
            player.dgnMap.updateMacro(player)
-           player.traversal=True
-           player.mainMenu=False
-           setImage(player)
-           player.currentRoomGroup.draw(screen)
-           pygame.display.flip()
+           #player.traversal=True
+           #player.mainMenu=False
 
         elif name=="Return":
           player.currentMenu.currentOption=0
@@ -593,9 +562,17 @@ class Menu:
           player.curBattle.playerTurn=False
           player.currentMenu=player.curBattle.battleMenu
         elif name=="Continue":
-            player.mainMenu=False
-            player.traversal=True
-            player.battlePlayer.akhal+=player.curBattle.enemyValue
+            if self.name=="Adventure Play":
+              try:
+                player.dgnMap.updateMacro(player)
+                player.traversal=True
+                player.mainMenu=False
+              except AttributeError:
+                self.updateByName("New Game",player,screen)
+            else:
+              player.mainMenu=False
+              player.traversal=True
+              player.battlePlayer.akhal+=player.curBattle.enemyValue
         elif name=="LoseContinue":
            # player.currentX=player.dgn
            # player.currentY=player.dgn
@@ -618,7 +595,7 @@ class Menu:
             player.currentMenu.draw(player,screen,0,0,45)
             pygame.display.flip()
 	else:
-	    sys.exit()
+	    player.currentMenu=player.MainMenu
 
     def createInventory(self,player):
       invOptions=[]

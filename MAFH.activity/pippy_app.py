@@ -165,10 +165,11 @@ class Player:
     extrasMenuOptions=["View Bestiary","View Awards","View Statistics","Return to Title"]
     extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
 
-    difficultyMenuOptions=["ON","OFF"]
-    difficultyMenu=Menu(difficultyMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Difficulty Menu")
+    multiplicationDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Multiplication Difficulty")
+    divisionDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Division Difficulty")
+    geometryDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Geometry Difficulty")
 
-    optionsMenuOptions=["Audio","FMCs","Subtitles",difficultyMenu,difficultyMenu,difficultyMenu,difficultyMenu,"Return to Title"]
+    optionsMenuOptions=["Audio","FMCs","Subtitles",multiplicationDifficulty,divisionDifficulty,geometryDifficulty,"Return to Title"]
     optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options")
 
     self.MainMenu=Menu(["Controls",adventureMenu,creativeMenu,networkMenu,extrasMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
@@ -197,6 +198,12 @@ class Player:
       pygame.mixer.music.play(-1)
     elif theme==2:
       LVL_PATH=ENV_PATH+"Fire/"
+    elif theme==3:
+      LVL_PATH=ENV_PATH+"Jungle/"
+    elif theme==4:
+      LVL_PATH=ENV_PATH+"Desert/"
+    elif theme==5:
+      LVL_PATH=ENV_PATH+"Astral/"
     else:
       pygame.mixer.music.load(SOUND_PATH+"MAFHbg.ogg")
       pygame.mixer.music.play(-1)
@@ -330,7 +337,32 @@ class Player:
     self.msg3=self.msg4
     self.msg4=self.msg5
     self.msg5=msg
+  def scaleDifficulty(self,statArray):
+      statWrong=float(statArray[1])
+      statRight=float(statArray[0])
+      total=statWrong+statRight
+    
+      if total==0:
+        return 0
+      percent=100*statRight/total
+    
+      if percent>=80:
+        return 1
+      elif percent<=50:
+        return -1
+      else:
+        return 0
+       
   def nextDungeon(self,reload=False):
+      ##Scale Difficulty##
+      
+      if self.critDifficulty>0:
+        self.critDifficulty+=self.scaleDifficulty(self.multiplicationStats[self.critDifficulty-1])
+      if self.divDifficulty>0:
+        self.divDifficulty+=self.scaleDifficulty(self.divisionStats[self.divDifficulty-1])
+      if self.geomDifficulty>0:
+        self.geomDifficulty+=self.scaleDifficulty(self.geometryStats[self.geomDifficulty-1])      
+   
       self.battlePlayer.MHP+=2
       self.dgnIndex+=1
       for item in self.battlePlayer.inv_Ar:
