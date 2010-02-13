@@ -119,14 +119,14 @@ class Menu:
     #when 'Load Game' is selected
     def tm_ap_loadGame(self,player):
         #loads a game file into memory, doesn't actually start the game
-        FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
-        data=simplejson.loads(FILE.read())
-        print(data)
-        player.fromData(data)
-   
-        player.dgnMap.updateMacro(player)
-        #player.traversal=True
-        #player.mainMenu=False
+        menuOptions=["Name:"]
+        menuButtons=[MENU_PATH+"Blank.gif"]
+
+        for file in os.listdir(os.path.join(activity.get_activity_root(),"data/")):
+            menuOptions.append("Name:"+file)
+            menuButtons.append(MENU_PATH+"Blank.gif")
+
+        player.currentMenu=Menu(menuOptions,player,MENU_PATH+"mafh_splash.gif",menuButtons,"Save Files")
 
     #when 'New Game' is selected
     def tm_ap_newGame(self,player):
@@ -556,8 +556,20 @@ class Menu:
           elif player.previousMenu.currentOption==5:
             player.geomDifficulty=1
           player.currentMenu=player.previousMenu
-		   
+
 #########Attack Menu Buttons###################################################
+        elif name[0:5]=="Name:":
+          if len(name)==5:
+            player.nameEntry=True
+            player.mainMenu=False
+          else:
+            player.name=name[5:len(name)]
+            FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name),"r")
+            data=simplejson.loads(FILE.read())
+            print(data)
+            player.fromData(data)
+            player.currentMenu=player.previousMenu
+
         elif name=="Attack":
           if player.critDifficulty>0:
             seed()
@@ -682,4 +694,3 @@ class Menu:
       player.inventoryMenu.sY=11
      # self.inventoryMenu.bgSurface=self.bgSurface
       player.currentMenu=player.inventoryMenu
-
