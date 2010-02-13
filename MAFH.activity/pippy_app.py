@@ -160,20 +160,20 @@ class Player:
     creativeMenuOptions=["Play Custom Map","New Custom Map","Share Map","Return to Title"]
     creativeMenu=Menu(creativeMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Creative Play")
 
-    networkMenuOptions=["Local Cooperative Play","Local Treasure Trekkers Play","View Scoreboards","Return to Title"]
-    networkMenu=Menu(networkMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Network Play")
+    networkMenuOptions=["Local Treasure Trekkers Play","View Scoreboards","Return to Title"]
+    networkMenu=Menu(networkMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Network")
 
     extrasMenuOptions=["View Bestiary","View Awards","View Statistics","Return to Title"]
     extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
 
-    multiplicationDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Multiplication Difficulty")
-    divisionDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Division Difficulty")
-    geometryDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Geometry Difficulty")
+    multiplicationDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Multiplication")
+    divisionDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Division")
+    geometryDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Geometry")
 
-    optionsMenuOptions=["Audio","FMCs","Subtitles",multiplicationDifficulty,divisionDifficulty,geometryDifficulty,"Return to Title"]
-    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options")
+    optionsMenuOptions=["Controls","Language","Audio","FMCs","Subtitles","Cooperative Play","Merchant","Credits","About",multiplicationDifficulty,divisionDifficulty,geometryDifficulty,"Return to Title"]
+    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options")
 
-    self.MainMenu=Menu(["Controls",adventureMenu,creativeMenu,networkMenu,extrasMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
+    self.MainMenu=Menu([adventureMenu,creativeMenu,networkMenu,extrasMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
 
     statMenuOptions=["Weapon","Armor","Accessory"]
     statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
