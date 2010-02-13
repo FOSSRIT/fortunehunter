@@ -76,75 +76,115 @@ class Menu:
           i+=1
         pygame.display.flip()
 
-#Title Menu buttons' functions
-
+####Title Menu Button Functions###################################################
     #when 'Return to Title' is selected
-    def tm_return():
+    def tm_return(self,player):
         #return player to the title menu
         player.currentMenu.currentOption=0
         player.currentMenu=player.MainMenu
 
     #when 'Controls' is selected
-    def tm_controls():
+    def tm_controls(self,player):
         #show the controls for the XO input, let them switch between the two layouts
+        player.inTutorial=True
+        player.inComic=True
+        player.mainMenu=False
+        player.startComic(TOUR_PATH+"setup/",None)
 
     #when 'Exit Game' is selected
-    def tm_exitGame():
+    def tm_exitGame(self):
         #exits the game and returns the player to the XO home screen
+        sys.exit()
 
     #when 'Continue' is selected
-    def tm_ap_continue():
+    def tm_ap_continue(self,player,screen):
         #starts a play of the last 'loaded' game file
+        if self.name=="Adventure Play":
+            try:
+                player.dgnMap.updateMacro(player)
+                player.traversal=True
+                player.mainMenu=False
+            except AttributeError:
+                self.updateByName("New Game",player,screen)
+        else:
+            player.mainMenu=False
+            player.traversal=True
+            player.battlePlayer.akhal+=player.curBattle.enemyValue
 
     #when 'Level Select' is selected
-    def tm_ap_levelSelect():
+    def tm_ap_levelSelect(self):
         #allows the player to choose which level to play, from a list of completed levels within a save file
+        print("Level Select not supported yet.");
 
     #when 'Load Game' is selected
-    def tm_ap_loadGame():
+    def tm_ap_loadGame(self,player):
         #loads a game file into memory, doesn't actually start the game
+        FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
+        data=simplejson.loads(FILE.read())
+        print(data)
+        player.fromData(data)
+   
+        player.dgnMap.updateMacro(player)
+        #player.traversal=True
+        #player.mainMenu=False
 
     #when 'New Game' is selected
-    def tm_ap_newGame():
+    def tm_ap_newGame(self,player):
         #creates a new game file to work with, runs new game
+        player.dgnIndex=-1
+        player.playerFacing=1
+        player.traversal=False
+        player.mainMenu=False
+        player.startComic(FMC_PATH+"FMC1/",None)
+        player.inComic=True
+        pygame.display.flip()
 
     #when 'Play Custom Map' is selected
-    def tm_cp_playCustomMap():
+    def tm_cp_playCustomMap(self):
         #loads and plays a custom map set created by Fortune Maker
+        print("Play Custom Map not supported yet");
 
     #when 'New Custom Map' is selected
-    def tm_cp_newCustomMap():
+    def tm_cp_newCustomMap(self):
         #shows an overview of Fortune Maker and what it can do
         #offers them to quit Fortune Hunter in order to load Fortune Maker
+        print("New Custom Map not supported yet");
 
     #when 'Share Map' is selected
-    def tm_cp_shareMap():
+    def tm_cp_shareMap(self):
         #shares (send or receive) custom maps from the directory with friends over local mesh
+        print("Share Map not supported yet");
 
     #when 'Local Cooperative Play' is selected
-    def tm_np_localCoop():
+    def tm_np_localCooperativePlay(self):
         #starts a game with the option to have a friend join in
         #probably this will just be an option to turn on and off
+        print("Local Cooperative Play not supported yet");
 
     #when 'Local Treasure Trekkers Play' is selected
-    def tm_np_localTreasure():
+    def tm_np_localTreasureTrekkersPlay(self):
         #starts a racing type game and allows players to compete over mesh
+        print("Local Treasure Trekkers Play not supported yet");
 
     #when 'View Scoreboard' is selected
-    def tm_np_scoreboard():
+    def tm_np_scoreboard(self):
         #shows the classroom scoreboard
+        print("Scoreboard not supported yet");
 
     #when 'View Bestiary' is selected
-    def tm_np_viewBestiary():
+    def tm_em_viewBestiary(self):
         #shows bestiary of loaded game profile, otherwise shows empty one
+        print("View Bestiary not supported yet");
 
     #when 'View Awards' is selected
-    def tm_np_viewAwards():
+    def tm_em_viewAwards(self):
         #shows awards of a loaded game profile, otherwise shows locked ones
+        print("View Awards not supported yet");
 
     #when 'View Statistics' is selected
-    def tm_np_viewStats():
+    def tm_em_viewStatistics(self):
         #shows statistics of a loaded game profile, otherwise shows 0s
+        print("View Statistics not supported yet");
 
     #possibly options menu elements here#
 
@@ -433,37 +473,71 @@ class Menu:
           player.previousMenu=temp
 
     def updateByName(self,name,player,screen):
-        if name=="New Game":
-            player.dgnIndex=-1
-            player.playerFacing=1
-            player.traversal=False
-            player.mainMenu=False
-            player.startComic(FMC_PATH+"FMC1/",None)
-            player.inComic=True
-            pygame.display.flip()
+#########Title menu buttons############################################
+        if name=="Return to Title":
+            self.tm_return(player)
+
+        elif name=="Controls":
+            self.tm_controls(player)
 
         elif name=="Exit Game":
-            sys.exit()
-			
+            self.tm_exitGame()
+
+        elif name=="Continue":
+            self.tm_ap_continue(player,screen)
+
+        elif name=="Level Select":
+            self.tm_ap_levelSelect()
+
+        elif name=="Load Game":
+            self.tm_ap_loadGame(player)
+
+        elif name=="New Game":
+            self.tm_ap_newGame(player)
+
+        elif name=="Play Custom Map":
+            self.tm_cp_playCustomMap()
+
+        elif name=="New Custom Map":
+            self.tm_cp_newCustomMap()
+
+        elif name=="Share Map":
+            self.tm_cp_shareMap()
+
+        elif name=="Local Cooperative Play":
+            self.tm_np_localCooperativePlay()
+
+        elif name=="Local Treasure Trekkers Play":
+            self.tm_np_localTreasureTrekkersPlay()
+
+        elif name=="View Scoreboard":
+            self.tm_np_viewScoreboard()
+
+        elif name=="View Bestiary":
+            self.tm_em_viewBestiary()
+
+        elif name=="View Awards":
+            self.tm_em_viewAwards()
+
+        elif name=="View Statistics":
+            self.tm_em_viewStatistics()
+
+#########Pause Menu Buttons######################################
         elif name=="Save":
           dataList=player.toString()
           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"w")
           FILE.write(simplejson.dumps(dataList))
           FILE.close()
           #do save stuff
+        
         elif name=="Main Menu":
           player.traversal=False
           player.currentMenu=player.MainMenu
           player.mainMenu=True
+        
         elif name=="Return to Game":
           player.traversal=True
           player.mainMenu=False
-		  
-        elif name=="Controls":
-            player.inTutorial=True
-            player.inComic=True
-            player.mainMenu=False
-            player.startComic(TOUR_PATH+"setup/",None)
 			
         elif name=="OFF":  #was disable
           if player.previousMenu.currentOption==3:
@@ -473,6 +547,7 @@ class Menu:
           elif player.previousMenu.currentOption==5:
             player.geomDifficulty=0
           player.currentMenu=player.previousMenu
+        
         elif name=="ON":   #was easy
           if player.previousMenu.currentOption==3:
             player.critDifficulty=1
@@ -481,21 +556,8 @@ class Menu:
           elif player.previousMenu.currentOption==5:
             player.geomDifficulty=1
           player.currentMenu=player.previousMenu
-#Load game - we want to load the profile, but not start a level. Continue will actually start the level
-        elif name=="Load Game":
-           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"r")
-           data=simplejson.loads(FILE.read())
-           print(data)
-           player.fromData(data)
-           
-           player.dgnMap.updateMacro(player)
-           #player.traversal=True
-           #player.mainMenu=False
-
-        elif name=="Return":
-          player.currentMenu.currentOption=0
-          player.currentMenu=player.MainMenu
-		  
+		   
+#########Attack Menu Buttons###################################################
         elif name=="Attack":
           if player.critDifficulty>0:
             seed()
@@ -506,11 +568,14 @@ class Menu:
               player.curBattle.attack(player.battlePlayer,"basic")
           else:
             player.curBattle.attack(player.battlePlayer,"basic")
+        
         elif name=="0" or name=="1"or name=="2" or name=="3" or name=="4" or name=="5" or name=="6" or name=="7"or name=="8"or name=="9":
           if len(player.battlePlayer.currentInput)<7:
             player.battlePlayer.currentInput+=name
+
         elif name=="Clear":
           player.battlePlayer.currentInput=""
+
         elif name=="Enter Answer":
           if not player.battlePlayer.currentInput =="":
             if player.battlePlayer.currentAnswer==int(player.battlePlayer.currentInput):
@@ -525,20 +590,26 @@ class Menu:
             tup=(tup[0],tup[1]+1)
             self.player.multiplicationStats[self.player.critDifficulty-1]=tup
             player.curBattle.attack(player.battlePlayer,"basic")
+        
         elif name=="Division": 
           player.curBattle.divisionAttack()
+        
         elif name[1:2]=="/":
-	  player.battlePlayer.fractionSum += float(name[0])/float(name[2])
-	  player.curBattle.checkFraction()
+	      player.battlePlayer.fractionSum += float(name[0])/float(name[2])
+	      player.curBattle.checkFraction()
+        
         elif name=="Geometry":
           player.curBattle.magic(player)
+        
         elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
           player.battlePlayer.currentProb1=""
           player.battlePlayer.currentProb2=""
           player.battlePlayer.currentInput=""
           player.curBattle.startGlyph(name)
-	elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4" or name=="Missile1" or name=="Missile2" or name=="Missile3" or name=="Missile4":
-	  player.curBattle.checkGlyph(name)
+	
+        elif name=="Fire1" or name=="Fire2" or name=="Fire3" or name=="Fire4" or name=="Heal1" or name=="Heal2" or name=="Heal3" or name=="Heal4" or name=="Lightning1" or name=="Lightning2" or name=="Lightning3" or name=="Lightning4" or name=="Missile1" or name=="Missile2" or name=="Missile3" or name=="Missile4":
+	      player.curBattle.checkGlyph(name)
+        
         elif name=="Scan":
           player.curBattle.scanEnemy()
         
@@ -550,10 +621,13 @@ class Menu:
           player.invTutorial=True
           player.currentMenu=player.statsMenu
           player.currentRoomGroup.draw(screen)
+        
         elif name=="Wrong":
           print("Wrong choice")
+        
         elif name=="Enter":
           player.currentMenu=player.divMenu
+        
         elif name=="Not":
           player.migrateMessages("Incorrect glyph.  Spell fizzles")
           tup=self.player.divisionStats[self.player.divDifficulty-1]
@@ -563,18 +637,7 @@ class Menu:
           player.curBattle.glyphOverlayGroup.empty()
           player.curBattle.playerTurn=False
           player.currentMenu=player.curBattle.battleMenu
-        elif name=="Continue":
-            if self.name=="Adventure Play":
-              try:
-                player.dgnMap.updateMacro(player)
-                player.traversal=True
-                player.mainMenu=False
-              except AttributeError:
-                self.updateByName("New Game",player,screen)
-            else:
-              player.mainMenu=False
-              player.traversal=True
-              player.battlePlayer.akhal+=player.curBattle.enemyValue
+        
         elif name=="LoseContinue":
            # player.currentX=player.dgn
            # player.currentY=player.dgn
@@ -587,17 +650,19 @@ class Menu:
             player.battlePlayer.HP=player.battlePlayer.MHP
             player.currentRoomGroup.draw(screen)
             pygame.display.flip()
+        
         elif name=="LoseExit":
-	    for i in range(6):
-              player.migrateMessages("")
+          for i in range(6):
+            player.migrateMessages("")
             player.__init__(0,0)
             player.traversal=False
             player.mainMenu=True
             player.currentMenu=player.MainMenu
             player.currentMenu.draw(player,screen,0,0,45)
             pygame.display.flip()
-	else:
-	    player.currentMenu=player.MainMenu
+
+        else:
+	        player.currentMenu=player.MainMenu
 
     def createInventory(self,player):
       invOptions=[]
