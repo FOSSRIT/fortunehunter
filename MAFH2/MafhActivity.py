@@ -4,10 +4,12 @@ from MafhGameMenu import GameMenuHolder
 from constants import MENU_PATH, FMC_PATH, TOUR_PATH
 
 from Comic import Comic
-
+from TermBox import TermBox
 ge = GameEngine()
 
 def start_game():
+    ge.add_object( 'mesg', TermBox(ge, 300,700,800,200,5) )
+    ge.get_object('mesg').add_line("Welcome to Fortune Hunter")
     print "START GAME NOW"
 
 def menu_screen():
