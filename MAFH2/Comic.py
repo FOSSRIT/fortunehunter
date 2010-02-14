@@ -62,7 +62,7 @@ class Comic:
     def draw(self,screen):
         screen.blit(self.images[self.currentIndex].image,(0,0,1200,900))
 
-    def event_handler(self,event,engine):
+    def event_handler(self,event):
         if event.type == pygame.KEYDOWN:
             newKey=pygame.key.name(event.key)
 

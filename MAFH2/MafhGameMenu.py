@@ -1,14 +1,18 @@
 import pygame, ezmenu
+from GameEngine import GameEngineElement
 
-class GameMenuHolder:
-    def __init__(self, game_engine, callback, background=None, width=1200, height=900):
-        self.ge = game_engine
+class GameMenuHolder( GameEngineElement ):
+    def __init__(self, callback, background=None, width=1200, height=900):
+        GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
         self.background = background
         self.width = width
         self.height = height
-        self._in_engine = False
+
+    def remove_from_engine(self):
+        super( GameMenuHolder, self ).remove_from_engine()
+        self.clear_menu()
 
     def draw(self, screen):
         if self.background:
@@ -16,32 +20,17 @@ class GameMenuHolder:
         else:
             screen.fill((0, 0, 255))
 
-    def __del__(self):
-        self.remove_from_engine()
-
-    def add_to_engine(self):
-        if not self._in_engine:
-            self._in_engine = True
-            self.ge.add_draw_callback( self.draw )
-
-    def remove_from_engine(self):
-        if self._in_engine:
-            self._in_engine = False
-            self._clear_menu()
-            self.ge.remove_draw_callback(self.draw)
-
-    def _clear_menu(self):
-        if self.menu:
-            self.ge.remove_event_callback( self.menu.event_handler )
-            self.ge.remove_draw_callback( self.menu.draw )
-            self.menu = None
-
     def menu_called(self, id):
         self.callback(id, self)
 
+    def clear_menu(self):
+        if self.menu:
+            self.menu.remove_from_engine()
+            self.menu = None
+
     def show_menu(self,id):
-        if self._in_engine:
-            self._clear_menu()
+        if self.is_in_engine():
+            self.clear_menu()
         else:
             self.add_to_engine()
 
@@ -52,7 +41,7 @@ class GameMenuHolder:
                     ['Creative Play', lambda: self.show_menu("creative"), "Play Custom Maps"],
                     ['Extras', lambda: self.show_menu("extras"), "View Extra Options"],
                     ['Options', lambda: self.menu_called("options"), "View Options Menu"],
-                    ['Exit Game', lambda: self.ge.stop_event_loop(), "Exit Game"]
+                    ['Exit Game', lambda: self.game_engine.stop_event_loop(), "Exit Game"]
             ]
 
         elif id == "adventure":
@@ -92,18 +81,18 @@ class GameMenuHolder:
             return
 
         self.menu = GameMenu(menu_options)
-        self.ge.add_event_callback( self.menu.event_handler )
-        self.ge.add_draw_callback( self.menu.draw )
 
-class GameMenu:
+class GameMenu(GameEngineElement):
     def __init__(self, game_menu, center_x=800, center_y=400):
+        GameEngineElement.__init__(self, has_draw=True, has_event=True)
         self.menu = ezmenu.EzMenu(game_menu)
         self.menu.center_at(center_x, center_y)
         self.menu.set_font(pygame.font.SysFont("Arial", 32))
         self.menu.set_highlight_color((0, 255, 0))
         self.menu.set_normal_color((255, 255, 255))
+        self.add_to_engine()
 
-    def event_handler(self, event, engine):
+    def event_handler(self, event):
         self.menu.update([event])
 
     def draw(self, screen):

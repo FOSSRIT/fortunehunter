@@ -1,7 +1,9 @@
 import pygame
 
-class GameEngine:
+class GameEngine(object):
+    instance = None
     def __init__(self, width=1200, height=900):
+        GameEngine.instance = self
         pygame.init()
         pygame.mouse.set_visible(False)
 
@@ -36,7 +38,7 @@ class GameEngine:
 
                 for cb in list_cp:
                     # Fire the event for all in cb and stop if return True
-                    if cb(event, self) == True:
+                    if cb(event) == True:
                         break
                 self.draw()
 
@@ -123,6 +125,15 @@ class GameEngine:
         except:
             return False
 
+    def has_object(self, name):
+        """
+        Returns true if object is stored in game engine
+
+        @param name     Name of the object to check if exists
+        @return         Returns true if object found
+        """
+        return self.__object_hold.has_key( name )
+
     def add_object(self, name, obj):
         """
         Adds an object to the game engine datastore
@@ -148,3 +159,39 @@ class GameEngine:
         @param name     The name of the object to remove
         """
         del self.__object_hold[name]
+
+class GameEngineElement(object):
+    def __init__(self, has_draw=True, has_event=True):
+        self.__has_draw = has_draw
+        self.__has_event = has_event
+        self.__in_engine = False
+        self.game_engine = GameEngine.instance
+
+    def is_in_engine(self):
+        return self.__in_engine
+
+    def add_to_engine(self):
+        if not self.__in_engine:
+            self.__in_engine = True
+
+            if self.__has_draw:
+                self.game_engine.add_draw_callback( self.draw )
+
+            if self.__has_event:
+                self.game_engine.add_event_callback( self.event_handler )
+
+    def remove_from_engine(self):
+        if self.__in_engine:
+            self.__in_engine = False
+
+            if self.__has_draw:
+                self.game_engine.remove_draw_callback(self.draw)
+
+            if self.__has_event:
+                self.game_engine.remove_event_callback( self.event_handler )
+
+    def event_handler(self, event):
+        pass
+
+    def draw(self, screen):
+        pass
