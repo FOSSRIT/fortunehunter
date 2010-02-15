@@ -4,7 +4,10 @@ import os.path
 from GameEngine import GameEngineElement
 
 from Room import Room
-from constants import MAP_PATH, ENV_PATH, RIGHT, LEFT
+from constants import (
+        MAP_PATH, ENV_PATH, RIGHT, LEFT, NORTH, SOUTH, EAST,
+        WEST, UNLOCKED_DOOR, LOCKED_DOOR
+        )
 from JournalIntegration import do_load, load_dungeon_by_id
 
 class Dungeon(GameEngineElement):
@@ -15,9 +18,13 @@ class Dungeon(GameEngineElement):
         self.id = id
         self.rooms={}
         self.__images={}
-        self.current_room = None
         self.__load_dungeon()
         self.__load_images()
+        profile = self.game_engine.get_object('profile')
+
+        if profile.position == (-1, -1):
+            x,y = self.start
+            profile.move_to( x, y )
 
     def __load_dungeon(self):
         currentX=0
@@ -41,9 +48,9 @@ class Dungeon(GameEngineElement):
             self.rooms[(currentX,currentY)] = the_room
 
             if the_room.is_entrance():
-                self.current_room = the_room
                 self.start=(currentX,currentY)
 
+            currentX+=1
             if currentX==self.sizeX:
                 currentY+=1
                 currentX=0
@@ -51,7 +58,6 @@ class Dungeon(GameEngineElement):
             if currentY>self.sizeY:
                 break
 
-            currentX+=1
 
     def __load_images(self):
         LVL_PATH = ENV_PATH
@@ -59,9 +65,44 @@ class Dungeon(GameEngineElement):
         for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
             self.__images[img_key] = pygame.image.load(LVL_PATH+img_key.lower()+".gif")
 
+    def move_permissions(self, door_type):
+        print door_type
+        if door_type == UNLOCKED_DOOR:
+            return True
+
+        print "A WEIRD DOOR", door_type
+
+        return False
+
+
     def move_forward(self):
-        pass
-        #self.game_engine.get_object('profile')
+        profile = self.game_engine.get_object('profile')
+        x,y = profile.position
+
+        if profile.playerFacing == NORTH:
+            dX = x
+            dY = y - 1
+            dc = 'N'
+
+        elif profile.playerFacing == SOUTH:
+            dX = x
+            dY = y + 1
+            dc = 'S'
+
+        elif profile.playerFacing == EAST:
+            dX = x + 1
+            dY = y
+            dc = 'E'
+
+        elif profile.playerFacing == WEST:
+            dX = x - 1
+            dY = y
+            dc = 'W'
+
+        if self.rooms.has_key( (dX, dY) ) and self.move_permissions( self.rooms[profile.position].get_door( dc ) ):
+            profile.move_to( dX, dY )
+        else:
+            print "CANT ENTER DOOR"
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -80,11 +121,12 @@ class Dungeon(GameEngineElement):
                 return True
 
             elif newKey=='[8]' or newKey=='up':
-                self.move_forward( self.game_engine.get_object('profile') )
+                self.move_forward()
                 return True
 
     def draw(self, screen):
-        dir = self.game_engine.get_object('profile').playerFacing
-        door_cfg = self.current_room.door_str( dir )
+        profile = self.game_engine.get_object('profile')
+        dir = profile.playerFacing
+        door_cfg = self.rooms[profile.position].door_str( dir )
 
         screen.blit(self.__images[door_cfg],(0,0,1200,700))

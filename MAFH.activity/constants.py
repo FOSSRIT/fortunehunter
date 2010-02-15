@@ -21,10 +21,14 @@ DOOR_INDEX = {
     'W':_('West')
     }
 
+
+UNLOCKED_DOOR = 'u'
+LOCKED_DOOR = 'l'
+
 DOOR_FLAGS = {
     '0':_('None'),
-    'u':_('Unlocked'),
-    'l':_('Locked'),
+    UNLOCKED_DOOR:_('Unlocked'),
+    LOCKED_DOOR:_('Locked'),
     'p':_('Puzzle'),
     'b':_('Locked Puzzle'),
     'e':_('Entrance'),

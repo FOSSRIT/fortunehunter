@@ -69,7 +69,9 @@ class Room(object):
 
     def get_door( self, door):
         if door in DOOR_INDEX:
-            return self.doors[door][1]
+            if self.doors[door][0] != '0':
+                return self.doors[door][1]
+            return '0'
 
     def set_room_flag(self, flag):
         if flag in SPEC_FLAGS:
