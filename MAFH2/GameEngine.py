@@ -34,7 +34,7 @@ class GameEngine(object):
             else:
                 # Send event to all event listeners
                 # Make a copy first so that adding events don't get fired right away
-                list_cp = self.__event_cb
+                list_cp = self.__event_cb[:]
 
                 # Reverse list so that newest stuff is on top
                 list_cp.reverse()

@@ -5,6 +5,7 @@ from time import time
 import os.path
 from random import *
 
+from PopUp import PopUp
 from Items import get_item, Item
 from Enemy import get_enemy, Enemy
 from Hero import Hero
@@ -60,6 +61,9 @@ class Player:
     self.puzzlesSolved=0
 
     self.curBattle=BattleEngine(self.battlePlayer,[None])
+
+    ###Tutoaial Variables###
+    self.popUp=None
     self.movTutorial=False
     self.movTutorial2=False
     self.movTutorial3=False
@@ -67,10 +71,10 @@ class Player:
     self.hiddenTutorial=False
     self.battleTutorial=False
     self.puzzleTutorial=False
-    self.lockTutorial=False
     self.invTutorial=False
-    self.shopTutorial=False
-    self.itemsPickedUp=False
+    self.statTutorial=False
+    self.mathStatTutorial=False
+    self.optionsTutorial=False
 
     #state variables
     self.nameEntry=False
@@ -330,6 +334,7 @@ class Player:
       self.dgnMap.updateMacro(self)
       self.battlePlayer=Hero(self)
       setImage(player)
+      self.initMovTutorial()
       pygame.display.flip()
 
   def migrateMessages(self,msg):
@@ -359,10 +364,23 @@ class Player:
       
       if self.critDifficulty>0:
         self.critDifficulty+=self.scaleDifficulty(self.multiplicationStats[self.critDifficulty-1])
+        if self.critDifficulty>3:
+          self.critDifficulty=3
+        elif self.critDifficulty<0:
+          self.critDifficulty=0
       if self.divDifficulty>0:
         self.divDifficulty+=self.scaleDifficulty(self.divisionStats[self.divDifficulty-1])
+        if self.divDifficulty>3:
+          self.divDifficulty=3
+        elif self.divDifficulty<0:
+          self.divDifficulty=0
       if self.geomDifficulty>0:
-        self.geomDifficulty+=self.scaleDifficulty(self.geometryStats[self.geomDifficulty-1])      
+        self.geomDifficulty+=self.scaleDifficulty(self.geometryStats[self.geomDifficulty-1])     
+        if self.geomDifficulty>3:
+          self.geomDifficulty=3
+        elif self.geomDifficulty<0:
+          self.geomDifficulty=0
+ 
    
       self.battlePlayer.MHP+=2
       for item in self.battlePlayer.inv_Ar:
@@ -383,70 +401,15 @@ class Player:
       self.dgnMap=Map(self.dgn)
       self.currentRoom=self.dgn.rooms.get((self.currentX,self.currentY))
 
-  def initInGameBattleTutorial(self,screen):
-    batImages=[MENU_PATH+"Attack.gif",MENU_PATH+"Special.gif",MENU_PATH+"Magic.gif",MENU_PATH+"Blank.gif"]
-    batBg=MENU_PATH+"battleMenubackground.gif"
-    batBgRect=(0,300,400,400)
-    numPadImages=[MENU_PATH+"1.gif",MENU_PATH+"2.gif",MENU_PATH+"3.gif",MENU_PATH+"4.gif",MENU_PATH+"5.gif",MENU_PATH+"6.gif",MENU_PATH+"7.gif",MENU_PATH+"8.gif",MENU_PATH+"9.gif",MENU_PATH+"0.gif",MENU_PATH+"Clear.gif",MENU_PATH+"Enter.gif"]
-    geomImages=[MENU_PATH+"Fire.gif",MENU_PATH+"Lightning.gif",MENU_PATH+"Missile.gif",MENU_PATH+"Heal.gif"]
-    itemMenuOption=["Wrong","Wrong","Wrong",self.curBattle.battleMenu]
-    itemMenu=Menu(itemMenuOption,self,batBg,batImages,"ItemTut")
-    itemMenu.background.rect=batBgRect
-    geomMenu3Option=[itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu,itemMenu]
-    geomMenu3=Menu(geomMenu3Option,self,batBg,[PUZZLE_PATH+"FireGlyph1btn.gif",PUZZLE_PATH+"FireGlyph2btn.gif",PUZZLE_PATH+"HealGlyph1btn.gif",PUZZLE_PATH+"FireGlyph3btn.gif",PUZZLE_PATH+"LightningGlyph1btn.gif",PUZZLE_PATH+"FireGlyph4btn.gif",PUZZLE_PATH+"HealGlyph3btn.gif",PUZZLE_PATH+"MissileGlyph2btn.gif"],"GeomTut3")
-    geomMenu3.background.rect=batBgRect
-    geomMenu3.numPad=True
-    geomMenu2Option=[geomMenu3,"Wrong","Wrong","Wrong"]
-    geomMenu2=Menu(geomMenu2Option,self,batBg,geomImages,"GeomTut2")
-    geomMenu2.background.rect=batBgRect
-    geomMenuOption=["Wrong","Wrong",geomMenu2,"Wrong"]
-    geomMenu=Menu(geomMenuOption,self,batBg,batImages,"GeomTut")
-    geomMenu.background.rect=batBgRect
-    divMenu2Option=[geomMenu,geomMenu,geomMenu,geomMenu]
-    divMenu2=Menu(divMenu2Option,self,batBg,[MENU_PATH+"12Power.gif",MENU_PATH+"14Power.gif",MENU_PATH+"13Power.gif",MENU_PATH+"16Power.gif"],"DivTut2")
-    divMenu2.background.rect=batBgRect
-    divMenuOption=["Wrong",divMenu2,"Wrong","Wrong"]
-    self.divMenu=Menu(divMenuOption,self,batBg,batImages,"DivTut")
-    self.divMenu.background.rect=batBgRect
-    critMenuOption=[self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,self.divMenu,"Enter"]
-    critMenu=Menu(critMenuOption,self,batBg,numPadImages,"CritTut")
-    critMenu.numPad=True
-    critMenu.background.rect=batBgRect
-    atkMenuOption=[critMenu,"Wrong","Wrong","Wrong"]
-    atkMenu=Menu(atkMenuOption,self,batBg,batImages,"AtkTut")
-    atkMenu.background.rect=batBgRect
-    self.currentMenu=atkMenu
-    self.battleTutorial=True
-
-  def initMovTutorial(self,screen):
-    font=pygame.font.SysFont("cmr10",35,False,False)
-    y=0
-    screen.fill((255,255,255),(0,20,500,400))
-    lines=["Welcome to the first","     Dungeon!","To look around:","  press the left or right arrows.","To move forward:","  press the up arrow","To check inventory or stats:","  Press space or "]
-    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonO.gif"),(260,300,40,40))
-    for message in lines:
-      screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
-      y+=40
-  def initMovTutorial3(self,screen):
-    font=pygame.font.SysFont("cmr10",35,False,False)
-    y=0
-    screen.fill((255,255,255),(0,20,500,300))
-    lines=["While you are navigating the","maze-like dungeon, you might","want to look at a map.","To display a large map:","  press M or "]
-    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonL.gif"),(240,200,40,40))
-    for message in lines:
-      screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
-      y+=40
-  def initMovTutorial2(self,screen):
-    font=pygame.font.SysFont("cmr10",35,False,False)
-    y=0
-    screen.fill((255,255,255),(0,20,450,400))
-    lines=["This room has an item in it!","To pick it up:","   press    or E","To use it once equipped","  press E or  ","  on the stats screen","To unequip an item:","  press U or","  on the stats screen"]
-    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(135,90,40,40))
-    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonL.gif"),(200,190,40,40))
-    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonO.gif"),(200,300,40,40))
-    for message in lines:
-      screen.blit(font.render(message,True,(0,200,0)),(0,20+y,200,300))
-      y+=40
+  def initMovTutorial(self):
+    lines=["Welcome to the first","     Dungeon!","To look around:","  press the left or right arrows.","To move forward:","  press the up arrow"]
+    self.popUp=PopUp(50,50,lines)
+  def initMovTutorial3(self):
+    lines=["While you are navigating the","maze-like dungeon, you might","want to look at a map.","To display a large map:","  press M or square"]
+    self.popUp=PopUp(50,50,lines)
+  def initMovTutorial2(self):
+    lines=["This room has an item in it!","To pick it up:","   press check or E","To see your inventory:","  press circle or space"]
+    self.popUp=PopUp(50,50,lines)
   def checkRoom(self):
     message=""
     found=False
@@ -590,13 +553,13 @@ class BattleEngine:
     battleOptions=["Attack"]
 
     battleBackground=MENU_PATH+"battleMenubackground.gif"
-    battleOptImg=[MENU_PATH+"Attack.gif"]
+    battleOptImg=[MENU_PATH+"Blank.gif"]
     if isinstance(player,Player) and player.divDifficulty>0:
-      battleOptions.append("Division")
-      battleOptImg.append(MENU_PATH+"Special.gif")
+      battleOptions.append("Special")
+      battleOptImg.append(MENU_PATH+"Blank.gif")
     if isinstance(player,Player) and player.geomDifficulty>0:
-      battleOptions.append("Geometry")
-      battleOptImg.append(MENU_PATH+"Magic.gif")
+      battleOptions.append("Magic")
+      battleOptImg.append(MENU_PATH+"Blank.gif")
     battleOptions.append("Scan")
     battleOptImg.append(MENU_PATH+"Blank.gif")
     
@@ -617,7 +580,7 @@ class BattleEngine:
     self.magicMenu.background.rect=(0,300,200,200)
     if isinstance(player,Player):
       if player.divDifficulty==1:
-        divisionOptions=["1/2","1/3","1/4","1/6"]
+        divisionOptions=["1/2 Power","1/3 Power","1/4 Power","1/6 Power"]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
@@ -631,7 +594,7 @@ class BattleEngine:
         denom2=randint(4,5)
         denom3=randint(6,7)
         denom4=randint(8,9)
-        divisionOptions=["1/"+repr(denom1),"1/"+repr(denom2),"1/"+repr(denom3),"1/"+repr(denom4)]
+        divisionOptions=["1/"+repr(denom1)+"Power","1/"+repr(denom2)+"Power","1/"+repr(denom3)+"Power","1/"+repr(denom4)+"Power"]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
@@ -645,7 +608,7 @@ class BattleEngine:
         num2=randint(3,4)
         num3=randint(1,2)
         num4=randint(3,4)
-        divisionOptions=[repr(num1)+"/"+repr(denom1),repr(num2)+"/"+repr(denom2),repr(num3)+"/"+repr(denom3),repr(num4)+"/"+repr(denom4)]
+        divisionOptions=[repr(num1)+"/"+repr(denom1)+"Power",repr(num2)+"/"+repr(denom2)+"Power",repr(num3)+"/"+repr(denom3)+"Power",repr(num4)+"/"+repr(denom4)+"Power"]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
@@ -1330,6 +1293,25 @@ def enterRoom(direction,player,screen):
     player.currentRoomGroup.draw(screen)
     player.waiting=True
     player.dgnMap.updateMacro(player)
+    
+    if not player.movTutorial2 and player.dgn.fileName=="al1.txt":
+      player.initMovTutorial2()
+      player.movTutorial2=True
+    elif player.dgn.fileName=="al1.txt" and player.currentX==2 and player.currentY==1:
+      messages=["You sense an item in this room.","To check for items:","  press check"]
+      player.popUp=PopUp(50,50,messages)
+    elif not player.movTutorial3 and player.currentX==0 and player.currentY==0 and player.dgn.fileName=="al1.txt":
+      player.initMovTutorial3()
+      player.movTutorial3=True
+    elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
+      player.battlePlayer.HP-=10
+      player.migrateMessages("You trip on a crack in the floor and lose 10 HP")
+      player.migrateMessages("But you can heal yourself with the remedy that you picked up")
+      player.hpTutorial=True
+
+    else:
+      player.popUp=None
+
 
     return("You enter room at "+repr(player.currentX)+", "+repr(player.dgn.sizeY-player.currentY-1))
 
@@ -1743,14 +1725,40 @@ def updateMenu(event,player):
         #Swap menus to right on 'stats' screen
         if menu.name=="Stats":
           #set to pause menu
+          if not player.optionsTutorial:
+            player.optionsTutorial=True
+            message=["This is the options menu.","Here you can save progress,","return to the main menu,","or exit the game"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
           player.currentMenu=player.pauseMenu
         elif menu.name=="Inventory":
           #set to stats menu
+          if not player.statTutorial:
+            player.statTutorial=True
+            message=["This screen shows equipment","and stats.","HP is your health points,","ATT is your attack power,","and DEF is your defense power"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
           player.currentMenu=player.statsMenu
         elif menu.name=="Pause Menu":
+          if not player.mathStatTutorial:
+            player.mathStatTutorial=True
+            message=["This shows your performance","in math-related areas of the game.","If you haven't encountered some","types of problems, don't worry","you will see them when","the time is right..."]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
+
           #set to math stats
           player.currentMenu=player.mathStats
         elif menu.name=="Math Stats":
+          if not player.invTutorial:
+            player.invTutorial=True
+            message=["This is your inventory.","To equip or use an item:","  press check or enter"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
+
           player.currentMenu.createInventory(player)
             
 
@@ -1775,14 +1783,38 @@ def updateMenu(event,player):
         #Swap menus left on 'stats' screen
         if menu.name=="Stats":
           #set to pause menu
+          if not player.invTutorial:
+            player.invTutorial=True
+            message=["This is your inventory.","To equip or use an item:","  press check or enter"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
           player.currentMenu.createInventory(player)
         elif menu.name=="Inventory":
           #set to stats menu
+          if not player.mathStatTutorial:
+            player.mathStatTutorial=True
+            message=["This shows your performance","in math-related areas of the game.","If you haven't encountered some","types of problems, don't worry","you will see them when","the time is right..."]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
           player.currentMenu=player.mathStats
         elif menu.name=="Pause Menu":
           #set to inventory menu
+          if not player.statTutorial:
+            player.statTutorial=True
+            message=["This screen shows equipment","and stats.","HP is your health points,","ATT is your attack power,","and DEF is your defense power"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
           player.currentMenu=player.statsMenu
         elif menu.name=="Math Stats":
+          if not player.optionsTutorial:
+            player.optionsTutorial=True
+            message=["This is the options menu.","Here you can save progress,","return to the main menu,","or exit the game"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
           player.currentMenu=player.pauseMenu
 
       elif newKey=='[8]' or newKey=='up':
@@ -2028,31 +2060,8 @@ while pippy.pygame.next_frame():
         player.shop=True
         player.traversal=False
         player.currentRoom.shop.draw(screen,player)
-
-      if player.battle==False and player.shop==False:
-####################################
-###TEST FOR IN GAME TUTORIALS
-####################################
-      #  if player.currentX==0 and player.currentY==2 and player.battleTutorial==False:
-      #    player.traversal=False
-      #    player.battle=True
-       #   player.curBattle=BattleEngine(player,[get_enemy( '3' )])
-      #    player.initInGameBattleTutorial(screen)
-        if player.currentX==1 and player.currentY==4 and player.movTutorial==False:
-          player.initMovTutorial(screen)
-        elif player.currentX==1 and player.currentY==3 and player.hpTutorial==False:
-          player.battlePlayer.HP-=10
-          player.migrateMessages("You trip on a crack in the floor and lose 10 HP")
-          player.migrateMessages("But you can heal yourself with the remedy that you picked up")
-          player.hpTutorial=True
-          player.traversal=True
-        elif player.currentX==2 and player.currentY==1 and player.hiddenTutorial==False:
-          player.migrateMessages("You sense hidden items in this room, to search the room, press e or check")
-          player.migrateMessages("If you discover an item, it will be added to your inventory, try it now")
-          player.traversal=True
-        else:
-          player.traversal=True
-      setImage(player)
+      if not player.shop and not player.battle:
+        player.traversal=True
     if event.type==QUIT:
       sys.exit()
     elif player.nameEntry:
@@ -2095,14 +2104,16 @@ while pippy.pygame.next_frame():
       player.currentMenu.mainMenuDraw(player,screen,500,500,50)
       
     else:
-      player.currentMenu.mainMenuDraw(player,screen,450,400,50)
+      player.currentMenu.mainMenuDraw(player,screen,450,400,50) 
   else:
     if player.traversal:
       if player.waiting:
         drawWaiting(player,screen)
       else:
         drawTextBox(player,screen)
-        drawTraversal(player,screen)
+        setImage(player)
+        player.currentRoomGroup.draw(screen)
+        player.itemsGroup.draw(screen)
     elif player.nameEntry:
       drawNameEntry(player,screen)
     elif player.macroMap:
@@ -2117,16 +2128,8 @@ while pippy.pygame.next_frame():
     elif player.shop:
       drawTextBox(player,screen)
       player.currentRoom.shop.draw(screen,player)
-  if player.traversal:
-    player.currentRoomGroup.draw(screen)
-    player.itemsGroup.draw(screen)
-
-    if player.movTutorial==False:
-      player.initMovTutorial(screen)
-    if player.movTutorial2==False and player.dgnIndex==0 and player.currentX==1 and player.currentY==3:
-      player.initMovTutorial2(screen)
-    if player.movTutorial3==False and player.dgnIndex==0 and player.currentX==0 and player.currentY==0:
-      player.initMovTutorial3(screen)
+    if player.popUp != None:
+      player.popUp.draw(screen)
     pygame.display.flip()
   # update the display
 

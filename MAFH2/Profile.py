@@ -10,7 +10,7 @@ class Profile(GameEngineElement):
         GameEngineElement.__init__(self)
         self.name = ""
         self.dungeon_id = "al1.txt"
-        self.position = (0, 0)
+        self.position = (-1, -1)
         self.playerFacing=NORTH
 
         # 4 types of stats and difficulties
@@ -50,6 +50,9 @@ class Profile(GameEngineElement):
             self.problem_stats[p_type][level] = (correct + 1, wrong)
         else:
             self.problem_stats[p_type][level] = (correct, wrong + 1)
+
+    def move_to(self, x, y):
+        self.position = (x, y)
 
     def turn(self, dir):
         if dir == RIGHT:

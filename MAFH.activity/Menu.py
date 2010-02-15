@@ -1,6 +1,7 @@
 import pygame, sys
 from constants import FMC_PATH, MENU_PATH, TOUR_PATH, ENV_PATH, PUZZLE_PATH
 import os.path
+from PopUp import PopUp
 from random import *
 from sugar.activity import activity
 import simplejson
@@ -190,12 +191,12 @@ class Menu:
 
     def pauseMenuDraw(self,player,screen,xStart,yStart,height):
       font=pygame.font.SysFont("cmr10",height,False,False)
-      bgSurface=pygame.Surface((1200,900))
+      bgSurface=pygame.Surface((1200,700))
       player.currentRoomGroup.draw(bgSurface)
       if self.name=="Inventory":
-        self.background.rect=(0,self.sY,1200,900)
+        self.background.rect=(0,self.sY,1200,700)
       bgSurface.blit(self.background.image,self.background.rect)
-      screen.blit(bgSurface,(0,0,1200,900))
+      screen.blit(bgSurface,(0,0,1200,700))
       ###BUTTON STUFF??###
       if self.name=="Stats":
           hp=font.render("HP: "+repr(player.battlePlayer.HP),True,(0,0,0))
@@ -253,14 +254,6 @@ class Menu:
           screen.blit(self.RArrow,(575,550,20,20))
           screen.blit(pygame.transform.scale(self.LButton,(50,50)),(520,540,20,20))
 
-          if player.invTutorial==False:
-            k=0
-            screen.fill((255,255,255),(0,0,400,400))
-            lines=["This is the statistics screen.","Here, you can view information","about your character,","and any items, you have equipped.","As  you can see, there are slots for","weapon,armor,and accessory","as well as 4 slots for items.","To equip an item, select which slot","you want to equip to","and press enter or "] #draw check
-            screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(225,375,40,40))
-            for message in lines:
-              screen.blit(font.render(message,True,(0,200,0)),(20,20+k,200,300))
-              k+=40
 
       elif self.name=="Inventory":
           y=140
@@ -287,14 +280,6 @@ class Menu:
           screen.blit(pygame.transform.scale(self.XButton,(40,40)),(550,560,20,20))
           screen.blit(self.RArrow,(710,560,20,20))
           screen.blit(pygame.transform.scale(self.LButton,(40,40)),(675,560,20,20))
-          if player.invTutorial==False:
-            screen.fill((250,250,250),(900,300,800,400))
-            k=0
-            lines=["This list shows the items","you are carrying.  To equip","an item in the current slot,","select one with the arrow","keys, and press enter or","      If the item cannot","be equipped in that","slot, you will be taken back","to the stats screen"]
-            for message in lines:
-              screen.blit(font.render(message,True,(0,200,0)),(900,300+k,200,300))
-              k+=40
-            screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonV.gif"),(1165,460,40,40))
 
       elif self.name=="Pause Menu":
           font=pygame.font.SysFont("cmr10",40,False,False)
@@ -379,7 +364,8 @@ class Menu:
           screen.blit(font.render("Medium: "+repr(player.geometryStats[1][0])+"/"+repr(player.geometryStats[1][1]),True,(150,0,0)),(910,80,0,0))
           screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(150,0,0)),(910,110,0,0))
           screen.blit(font.render("Puzzles solved:"+repr(player.puzzlesSolved),True,(150,0,0)),(400,160,0,0))
-
+      if player.popUp != None:
+          player.popUp.draw(screen)
       pygame.display.flip()
 
 
@@ -429,18 +415,9 @@ class Menu:
               screen.blit(font.render(option,True,(50,50,100)),(x+xMod+10,y+10,200,height))
             y+=height
             i+=1
-    
+        if player.popUp != None:
+          player.popUp.draw(screen)
 
-      
-      ###########KEEPING AS A REFERENCE FOR WHEN I MAKE A BETTER TUTORIAL SYSTEM##############3
-      #  if self.name=="AtkTut":
-      #    screen.fill((255,255,255),(600,400,400,300))
-      #    lines=["To perform a basic attack","select the attack button"]
-      #    y=0
-      #    for message in lines:
-      #      screen.blit(font.render(message,True,(0,200,0)),(600,400+y,400,300))
-      #      y+=40
-      #######################################################################################
     def select(self,direction):
         if direction=="up":
             if self.currentOption>0:
@@ -603,14 +580,14 @@ class Menu:
             self.player.multiplicationStats[self.player.critDifficulty-1]=tup
             player.curBattle.attack(player.battlePlayer,"basic")
         
-        elif name=="Division": 
+        elif name=="Special": 
           player.curBattle.divisionAttack()
         
         elif name[1:2]=="/":
 	      player.battlePlayer.fractionSum += float(name[0])/float(name[2])
 	      player.curBattle.checkFraction()
         
-        elif name=="Geometry":
+        elif name=="Magic":
           player.curBattle.magic(player)
         
         elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
@@ -626,9 +603,23 @@ class Menu:
           player.curBattle.scanEnemy()
         
         elif name=="Weapon" or name=="Armor" or name=="Accessory":
+          if not player.invTutorial:
+            player.invTutorial=True
+            message=["This shows your inventory","To equip or use an item:","  press check or enter"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
+
           self.createInventory(player)
   
         elif name[0:9]=="Equipment":
+          if not player.statTutorial:
+            player.statTutorial=True
+            message=["This shows your equipment and stats","HP is your health points","ATT is your attack power","and DEF is your defense power"]
+            player.popUp=PopUp(10,10,message)
+          else:
+            player.popUp=None
+
           player.battlePlayer.equip(player.battlePlayer.inv_Ar[int(name[9:len(name)])])
           player.invTutorial=True
           player.currentMenu=player.statsMenu
