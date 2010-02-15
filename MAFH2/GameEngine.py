@@ -17,6 +17,8 @@ class GameEngine(object):
         self.__draw_lst = []
         self.__object_hold = {}
 
+        self.debug = False
+
     def start_event_loop(self):
         """
         Starts the pygame event loop.
@@ -28,6 +30,7 @@ class GameEngine(object):
 
             if event.type == pygame.QUIT:
                 self.__run = False
+
             else:
                 # Send event to all event listeners
                 # Make a copy first so that adding events don't get fired right away
@@ -42,18 +45,24 @@ class GameEngine(object):
                         break
                 self.draw()
 
-            #DEBUG PRINT
-            print "\n\n\nEvent Listeners:", self.__event_cb
-            for eventlst in self.__event_cb:
-                print "\t",eventlst
 
-            print "\nDraw Callbacks:", self.__draw_lst
-            for eventlst in self.__draw_lst:
-                print "\t",eventlst
+            if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == '`':
+                self.debug = not self.debug
+                print "Debug set:",self.debug
 
-            print "\nObjects Registered:"
-            for eventlst in self.__object_hold:
-                print "\t",eventlst
+            if self.debug:
+                print "\n\n",event
+                print "Event Listeners:", self.__event_cb
+                for eventlst in self.__event_cb:
+                    print "\t",eventlst
+
+                print "\nDraw Callbacks:", self.__draw_lst
+                for eventlst in self.__draw_lst:
+                    print "\t",eventlst
+
+                print "\nObjects Registered:"
+                for eventlst in self.__object_hold:
+                    print "\t",eventlst
 
     def stop_event_loop(self):
         """

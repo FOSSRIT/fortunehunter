@@ -89,5 +89,10 @@ ITEM_FLAGS = {
 # Integer Driven
 THEME_NAME = [
     _('Default Theme'),
-    _('Theme 2')
+    _('Ice'),
+    _('Fire'),
+    _('Ice'),
+    _('Jungle'),
+    _('Desert'),
+    _('Astral')
     ]
