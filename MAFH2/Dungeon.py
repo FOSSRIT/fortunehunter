@@ -70,7 +70,8 @@ class Dungeon(GameEngineElement):
     def move_permissions(self, door_type):
         if door_type == UNLOCKED_DOOR:
             return True
-        elif door_type == LOCKED_DOOR or door_type == LOCKED_PUZZLE_DOOR:
+
+        elif door_type == LOCKED_DOOR:
             #DO CHECK FOR SMALL KEY
             if(False):
                 self.game_engine.get_object('mesg').add_line(_("You use a SMALL KEY"))
@@ -79,7 +80,7 @@ class Dungeon(GameEngineElement):
                 self.game_engine.get_object('mesg').add_line(_("This door is locked, you need a SMALL KEY"))
                 return False
 
-        elif door_type == PUZZLE_DOOR:
+        elif door_type == PUZZLE_DOOR or door_type == LOCKED_PUZZLE_DOOR:
             #TODO: START PUZZLE
             return False
 
@@ -94,8 +95,6 @@ class Dungeon(GameEngineElement):
             else:
                 self.game_engine.get_object('mesg').add_line(_("This door is locked, you need a BIG KEY"))
                 return False
-
-
 
         return False
 
