@@ -1,0 +1,133 @@
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fortune Hunter Development Team
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+Design
+~~~~~~
+
+Jon Meschino
+Eric Kenvin
+David Silverman
+Preston Johnson
+
+
+
+
+Programming
+~~~~~~~~~~~
+
+Eric Kenvin
+Kevin Hockey
+Justin Lewis
+Preston Johnson
+Jon Meschino
+
+
+
+
+Environment Art
+~~~~~~~~~~~~~~~
+David Silverman
+
+
+
+
+Character Art
+~~~~~~~~~~~~~
+
+Mike DeVine
+
+
+
+
+Audio Art
+~~~~~~~~~
+
+Preston Johnson
+
+
+
+
+General Art
+~~~~~~~~~~~
+
+David Silverman
+Jon Meschino
+
+
+
+
+Producer
+~~~~~~~~
+
+Jon Meschino
+
+
+
+
+Supervisors
+~~~~~~~~~~~
+
+Stephen Jacobs
+Mel Chua
+
+
+
+
+Game Testing
+~~~~~~~~~~~~
+
+A.Petersburg	C.Newpie
+J.Numskull	R.Novarre
+L.Blanchette	D.Piggybackrider
+J.Porkins	Z.Hu
+
+
+
+
+Special Thanks
+~~~~~~~~~~~~~~
+
+Sugar Labs
+
+Woodstown Elementary School
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Fortune Maker Development Team
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+Design
+~~~~~~
+
+Jon Meschino
+Justin Lewis
+Eric Kenvin
+
+
+
+
+Programming
+~~~~~~~~~~~
+
+Justin Lewis
+
+
+
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~
+Thank you for playing!
+~~~~~~~~~~~~~~~~~~~~~~
