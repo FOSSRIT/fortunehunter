@@ -1,5 +1,6 @@
 import pygame
 import os.path
+from time import time
 from gettext import gettext as _
 
 from GameEngine import GameEngineElement
@@ -12,6 +13,10 @@ from constants import (
         ENTRANCE_DOOR, EXIT_DOOR
         )
 from JournalIntegration import do_load, load_dungeon_by_id
+
+FADE_SPEED = 150
+SEARCH_TIME = 2
+COLOR_DELTA = 255/SEARCH_TIME
 
 class Dungeon(GameEngineElement):
     def __init__(self, id):
@@ -159,6 +164,23 @@ class Dungeon(GameEngineElement):
                 return
         self.game_engine.get_object('mesg').add_line(_("No items found."))
 
+    def amulet_search(self):
+        profile = self.game_engine.get_object('profile')
+        current_room = self.rooms[profile.position]
+
+        found = False
+        for i in range( 0, 4 ):
+            item_key = current_room.get_item( i )
+
+            # If visible, remove from room and place in players inventory
+            if item_key[0] != '0' and item_key[1] == 'h':
+                current_room.set_item( i, item_key[0], 'v' )
+                found = True
+        if found:
+            self.game_engine.get_object('mesg').add_line(_("Amulet Search has revealed new items."))
+        else:
+            self.game_engine.get_object('mesg').add_line(_("No items found."))
+
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
             newKey=pygame.key.name(event.key)
@@ -180,8 +202,21 @@ class Dungeon(GameEngineElement):
                 return True
 
             elif newKey=='[1]' or newKey=='e':
-                self.item_pickup()
+                self.pickup_time = time()
+                self.game_engine.start_event_timer( 0, FADE_SPEED )
                 return True
+
+        elif event.type == pygame.KEYUP:
+            newKey=pygame.key.name(event.key)
+
+            if newKey=='[1]' or newKey=='e':
+                if time() - self.pickup_time < SEARCH_TIME:
+                    self.item_pickup()
+                else:
+                    self.amulet_search()
+                    self.game_engine.stop_event_timer( 0 )
+
+                del self.pickup_time
 
     def draw(self, screen):
         profile = self.game_engine.get_object('profile')
@@ -216,3 +251,14 @@ class Dungeon(GameEngineElement):
         screen.blit(img_list[1],(100,600,50,50))
         screen.blit(img_list[2],(1100,600,50,50))
         screen.blit(img_list[3],(900,330,50,50))
+
+        #Amulet Search Function
+        if hasattr(self, 'pickup_time'):
+            elp = time() - self.pickup_time
+            color_a = int(elp*COLOR_DELTA)
+            if color_a > 255:
+                color_a = 255
+                self.game_engine.stop_event_timer( 0 )
+            surf1 = pygame.Surface((1200,700), pygame.SRCALPHA)
+            pygame.draw.rect(surf1, pygame.Color(255, 255, 255, color_a), (0, 0, 1200, 700))
+            screen.blit( surf1, (0, 0) )
