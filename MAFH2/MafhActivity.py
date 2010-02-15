@@ -26,8 +26,7 @@ def menu_called(id, menu):
             ge.add_object( 'profile',
                 Profile( name_entry_cb=lambda: ge.add_object('comic', Comic(FMC_PATH+"FMC1/",None,start_game)) ) )
 
-
-    if id == 'controls':
+    elif id == 'controls':
         menu.remove_from_engine()
         ge.remove_object('menu')
         ge.add_object('comic', Comic(TOUR_PATH+"setup/",None,menu_screen))

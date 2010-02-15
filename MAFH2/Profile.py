@@ -1,7 +1,7 @@
 import pygame
 
 from GameEngine import GameEngineElement
-from constants import MENU_PATH
+from constants import MENU_PATH, NORTH, SOUTH, EAST, WEST, RIGHT, LEFT
 
 from gettext import gettext as _
 
@@ -9,8 +9,9 @@ class Profile(GameEngineElement):
     def __init__(self, recall_string=None, name_entry_cb=None):
         GameEngineElement.__init__(self)
         self.name = ""
-        self.dungeon_id = -1
+        self.dungeon_id = "al1.txt"
         self.position = (0, 0)
+        self.playerFacing=NORTH
 
         # 4 types of stats and difficulties
         self.problem_stats = {}
@@ -49,6 +50,13 @@ class Profile(GameEngineElement):
             self.problem_stats[p_type][level] = (correct + 1, wrong)
         else:
             self.problem_stats[p_type][level] = (correct, wrong + 1)
+
+    def turn(self, dir):
+        if dir == RIGHT:
+            self.playerFacing = (self.playerFacing - 1) % 4
+
+        elif dir == LEFT:
+            self.playerFacing = (self.playerFacing + 1) % 4
 
     def event_handler(self, event):
         """
