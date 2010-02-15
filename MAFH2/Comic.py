@@ -1,15 +1,15 @@
 import pygame
 import os
-
+from GameEngine import GameEngineElement
 ######################################################################
 #Comic Class: stores an image list and possible BGM, traverses through list and tries to play BGM
 ######################################################################
-class Comic:
-    def __init__(self,ge,Folder,BGM,endcb):
+class Comic(GameEngineElement):
+    def __init__(self,Folder,BGM,endcb):
+        GameEngineElement.__init__(self)
         self.currentIndex = 0
         self.images=[]
         self.endcb = endcb
-        self.ge = ge
         #load images into sprites
         i=0
         for image in os.listdir(Folder):
@@ -25,24 +25,11 @@ class Comic:
             pygame.mixer.music.load(SOUND_PATH+BGM)
             pygame.mixer.music.play(-1)
 
-        self.__inEngine = False
         self.add_to_engine()
-
-    def add_to_engine(self):
-        if not self.__inEngine:
-            self.__inEngine = True
-            self.ge.add_draw_callback( self.draw )
-            self.ge.add_event_callback( self.event_handler )
-
-    def remove_from_engine(self):
-        if self.__inEngine:
-            self.__inEngine = False
-            self.ge.remove_draw_callback( self.draw )
-            self.ge.remove_event_callback( self.event_handler )
 
     def end(self):
         self.remove_from_engine()
-        self.ge.remove_object("comic")
+        self.game_engine.remove_object("comic")
         self.endcb()
 
     def next(self):
