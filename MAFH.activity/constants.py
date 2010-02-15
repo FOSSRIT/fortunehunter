@@ -24,15 +24,19 @@ DOOR_INDEX = {
 
 UNLOCKED_DOOR = 'u'
 LOCKED_DOOR = 'l'
+PUZZLE_DOOR = 'p'
+LOCKED_PUZZLE_DOOR = 'b'
+ENTRANCE_DOOR = 'e'
+EXIT_DOOR = 'x'
 
 DOOR_FLAGS = {
     '0':_('None'),
     UNLOCKED_DOOR:_('Unlocked'),
     LOCKED_DOOR:_('Locked'),
-    'p':_('Puzzle'),
-    'b':_('Locked Puzzle'),
-    'e':_('Entrance'),
-    'x':_('Exit')
+    PUZZLE_DOOR:_('Puzzle'),
+    LOCKED_PUZZLE_DOOR:_('Locked Puzzle'),
+    ENTRANCE_DOOR:_('Entrance'),
+    EXIT_DOOR:_('Exit')
     }
 
 SPEC_FLAGS = {
