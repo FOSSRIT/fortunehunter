@@ -5,6 +5,7 @@ from gettext import gettext as _
 from GameEngine import GameEngineElement
 
 from Room import Room
+from Items import get_item
 from constants import (
         MAP_PATH, ENV_PATH, RIGHT, LEFT, NORTH, SOUTH, EAST,
         WEST, UNLOCKED_DOOR, LOCKED_DOOR, PUZZLE_DOOR, LOCKED_PUZZLE_DOOR,
@@ -165,6 +166,33 @@ class Dungeon(GameEngineElement):
     def draw(self, screen):
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
-        door_cfg = self.rooms[profile.position].door_str( dir )
+        current_room = self.rooms[profile.position]
 
+        # Draw background
+        door_cfg = current_room.door_str( dir )
         screen.blit(self.__images[door_cfg],(0,0,1200,700))
+
+        # Draw Items
+        img_list = []
+
+        for i in range( dir, (dir + 4) ):
+
+            #imod for room rotation
+            imod = i % 4
+
+            item_key = current_room.get_item( imod )
+
+            if item_key[0] == '0':
+                path = "noItem.gif"
+            else:
+                path = get_item( item_key[0] ).path
+
+            if not self.__images.has_key( path ):
+                self.__images[path] = pygame.image.load(ENV_PATH + path)
+
+            img_list.append( self.__images[path] )
+
+        screen.blit(img_list[0],(270,330,50,50))
+        screen.blit(img_list[1],(100,600,50,50))
+        screen.blit(img_list[2],(1100,600,50,50))
+        screen.blit(img_list[3],(900,330,50,50))
