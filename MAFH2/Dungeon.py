@@ -143,6 +143,22 @@ class Dungeon(GameEngineElement):
                     # TODO: Next Dungeon
                     pass
 
+    def item_pickup(self):
+        profile = self.game_engine.get_object('profile')
+        current_room = self.rooms[profile.position]
+
+        for i in range( 0, 4 ):
+            item_key = current_room.get_item( i )
+
+            # If visible, remove from room and place in players inventory
+            if item_key[0] != '0' and item_key[1] == 'v':
+                item = get_item( item_key[0] )
+                profile.give_item( item )
+                current_room.remove_item( i )
+                self.game_engine.get_object('mesg').add_line(_("%s discovered!")% item.name)
+                return
+        self.game_engine.get_object('mesg').add_line(_("No items found."))
+
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
             newKey=pygame.key.name(event.key)
@@ -161,6 +177,10 @@ class Dungeon(GameEngineElement):
 
             elif newKey=='[8]' or newKey=='up':
                 self.move_forward()
+                return True
+
+            elif newKey=='[1]' or newKey=='e':
+                self.item_pickup()
                 return True
 
     def draw(self, screen):
@@ -182,7 +202,7 @@ class Dungeon(GameEngineElement):
 
             item_key = current_room.get_item( imod )
 
-            if item_key[0] == '0':
+            if item_key[0] == '0' or item_key[1] != 'v':
                 path = "noItem.gif"
             else:
                 path = get_item( item_key[0] ).path

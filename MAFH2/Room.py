@@ -116,6 +116,9 @@ class Room(object):
                 return self.set_item(index, item, flag)
         return False
 
+    def remove_item( self, pos ):
+        self.set_item( pos, '0', '0' )
+
     def set_item(self, pos, id, flag):
         if pos >= 0 and pos <=3 and id in ITEM_INDEX and flag in ITEM_FLAGS:
             self.item[ pos ] = [id, flag]

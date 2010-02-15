@@ -61,6 +61,9 @@ class Profile(GameEngineElement):
         elif dir == LEFT:
             self.playerFacing = (self.playerFacing + 1) % 4
 
+    def give_item(self, item):
+        self.inventory.append(item)
+
     def event_handler(self, event):
         """
         Handles user input (used only for name entry)
