@@ -29,10 +29,10 @@ class Menu:
             sprite=pygame.sprite.Sprite()
 
             if self.name=="Glyph Menu":
-              if player.geomDifficulty==2:
+              if player.battlePlayer.AL > 10 and player.battlePlayer.AL < 30:
                 rotate=90*randint(0,3)
                 sprite.image=pygame.transform.rotate(pygame.image.load(name),rotate)
-              elif player.geomDifficulty==3:
+              elif player.battlePlayer.AL > 30:
                 rotate=90*randint(0,3)
                 flip=randint(0,2)
                 sprite.image=pygame.transform.flip(pygame.transform.rotate(pygame.image.load(name),rotate),flip==1,flip==2)
