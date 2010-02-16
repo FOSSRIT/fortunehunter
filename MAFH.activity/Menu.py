@@ -552,6 +552,11 @@ class Menu:
             seed()
             crit=randint(0,2)
             if crit==1:
+              if not player.atkTutorial:
+                player.popUp=PopUp(10,10,["Sometimes when you attack,","you get a critical hit!","If you answer correctly","you will deal normal damage","plus the answer to the question"])
+                player.atkTutorial=True
+              else:
+                player.popUp=None
               player.curBattle.critical(player)
             else:
               player.curBattle.attack(player.battlePlayer,"basic")
@@ -580,7 +585,12 @@ class Menu:
             self.player.multiplicationStats[self.player.critDifficulty-1]=tup
             player.curBattle.attack(player.battlePlayer,"basic")
         
-        elif name=="Special": 
+        elif name=="Special":
+          if not player.speTutorial:
+            player.popUp=PopUp(10,10,["To hit with a special attack","Power up your sword to exactly 1","by adding together the fractions"])
+            player.speTutorial=True
+          else:
+            player.popUp=None
           player.curBattle.divisionAttack()
         
         elif name[1:2]=="/":
@@ -588,9 +598,17 @@ class Menu:
 	      player.curBattle.checkFraction()
         
         elif name=="Magic":
+          if not player.magTutorial:
+            player.popUp=PopUp(10,10,["Different spells have different effects.","Try casting them on different enemies"])
+          else:
+            player.popUp=None
           player.curBattle.magic(player)
         
         elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
+          if not player.magTutorial:
+            player.popUp=PopUp(10,10,["To cast magic, match the","the sections on your iStone","to the glyph on screen","When the glyph is complete,","you can cast a magic spell!"])
+          else:
+            player.popUp=None
           player.battlePlayer.currentProb1=""
           player.battlePlayer.currentProb2=""
           player.battlePlayer.currentInput=""
@@ -600,6 +618,7 @@ class Menu:
 	      player.curBattle.checkGlyph(name)
         
         elif name=="Scan":
+          player.scanTutorial=True
           player.curBattle.scanEnemy()
         
         elif name=="Weapon" or name=="Armor" or name=="Accessory":

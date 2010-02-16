@@ -70,6 +70,11 @@ class Player:
     self.hpTutorial=False
     self.hiddenTutorial=False
     self.battleTutorial=False
+    self.atkTutorial=False
+    self.speTutorial=False
+    self.magTutorial=False
+    self.scanTutorial=False
+    self.shopTutorial=False
     self.puzzleTutorial=False
     self.invTutorial=False
     self.statTutorial=False
@@ -382,13 +387,13 @@ class Player:
           self.geomDifficulty=0
  
    
-      self.battlePlayer.MHP+=2
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
       if reload:
           self.dgn=Dungeon(self.dgn.fileName)
       elif self.dgn:
+          self.battlePlayer.MHP+=2
           self.dgn=Dungeon(self.dgn.next)
       else:
           self.dgn=Dungeon('al1.txt')
@@ -548,6 +553,11 @@ class BattleEngine:
             enemy.place=i
           i+=1
 	self.player.msg5= "Enemies are present, prepare to fight."
+        
+        if isinstance(player,Player) and not player.atkTutorial:
+          self.player.popUp=PopUp(10,10,["Enemies lurk within these halls","Attack them before they attack you!"])
+        elif isinstance(player,Player):
+          self.player.popUp=None
 
   def initializeMenus(self,player):
     battleOptions=["Attack"]
@@ -686,7 +696,11 @@ class BattleEngine:
       tup=self.player.multiplicationStats[self.player.critDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.multiplicationStats[self.player.critDifficulty-1]=tup
-      player.migrateMessages("Crit"+repr(attacker.attackPower("critical")))
+      if not player.scanTutorial:
+        player.popUp=PopUp(10,10,["To discover an enemy's weakness","select scan"])
+        player.scanTutorial=True
+      else:
+        player.popUp=None
     elif attackName=="Fire":
       attacker.setBonusAP(int(self.timeBonus*20)+10)
       if isinstance(defender,Enemy) and defender.weakness=='fire':
@@ -698,6 +712,8 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
+      self.player.geomTutorial=True
+      self.player.popUp=None
 
     elif attackName=="Heal":
       attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
@@ -707,6 +723,8 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
+      self.player.geomTutorial=True
+      self.player.popUp=None
 
     elif attackName=="Lightning":
       attacker.setBonusAP(int(self.timeBonus)+10)
@@ -719,6 +737,9 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
+      self.player.geomTutorial=True
+      self.player.popUp=None
+ 
     elif attackName=="Missile":
       attacker.setBonusAP(int(self.timeBonus)+10)
       if isinstance(defender,Enemy) and defender.weakness=='missile':
@@ -730,7 +751,9 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
-      print("Missile")
+      self.player.geomTutorial=True
+      self.player.popUp=None
+
     elif attackName=="Division":
       if isinstance(defender,Enemy) and defender.weakness=='special':
         attacker.setBonusAP(attacker.BAE+4)
@@ -741,8 +764,15 @@ class BattleEngine:
       tup=self.player.divisionStats[self.player.divDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.divisionStats[self.player.divDifficulty-1]=tup
-
+      self.player.speTutorial=True
+      self.player.popUp=None
     else:
+      self.atkTutorial=True
+      if not player.scanTutorial:
+        player.popUp=PopUp(10,10,["To discover an enemy's weakness","select scan"])
+        player.scanTutorial=True
+      else:
+        player.popUp=None
       self.player.basicAtk.play()
     pygame.time.set_timer(USEREVENT+1,0)
     self.timeBonus=1
@@ -1074,7 +1104,7 @@ class BattleEngine:
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
-    self.player.AL++
+    self.player.battlePlayer.AL+=1
     victoryMenu=Menu(["Continue"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif"],"Victory")
     self.player.battle=False
     self.player.mainMenu=True
@@ -1645,6 +1675,10 @@ def startPuzzle(player):
   player.puzzle.randomize()
   player.inPuzzle=True
   player.traversal=False
+  if not player.puzzleTutorial:
+    player.popUp=PopUp(10,10,["This door has a special kind of lock","To unlock it, you have to","Re-arrange the tiles so they make an image"])
+  else:
+    player.popUp=None
 def stopPuzzle(player,solved):
   NORTH=1
   SOUTH=3
@@ -1661,9 +1695,10 @@ def stopPuzzle(player,solved):
   SHOP=6
   PUZZLEROOM=7
   HIDDEN=8
-
+  
   if solved:
     player.puzzleTutorial=True
+    player.popUp=None
     if player.playerFacing==NORTH:
       if player.currentRoom.doorNFlag==PUZZLE:
         player.currentRoom.doorNFlag=UNLOCKED
@@ -1858,6 +1893,8 @@ def updateTraversal(event,player,screen):
       elif newKey=='[7]' or newKey=='m':
         player.macroMap=True
         player.traversal=False
+        player.movTutorial3=True
+        player.popUp=None
         player.dgnMap.drawMacro(player,screen)
 
       elif newKey=='[8]' or newKey=='up':
@@ -2063,6 +2100,7 @@ while pippy.pygame.next_frame():
         player.currentRoom.shop.draw(screen,player)
       if not player.shop and not player.battle:
         player.traversal=True
+      setImage(player)
     if event.type==QUIT:
       sys.exit()
     elif player.nameEntry:
