@@ -69,14 +69,14 @@ class Hero(Actor):
       self.inv_Ar.remove(item)
       self.BHP=item.power
     elif item.type=="Usable":
-        #for i in range(len(self.eqItem)-1,3):
-        #  self.eqItem.append(None)
-        #if not self.eqItem[int(target[8])-1]==None:
-        #  self.inv_Ar.append(self.eqItem[int(target[8])-1])
-        self.HP+=int(self.MHP*item.power)
-        self.player.migrateMessages("You heal for "+repr(int(self.MHP*item.power)))
-        self.inv_Ar.remove(item)
-        #self.eqItem[int(target[8])-1]=item
+        if self.HP < self.MHP:
+          self.HP+=int(self.MHP*item.power)
+          self.player.migrateMessages("You heal for "+repr(int(self.MHP*item.power)))
+          self.inv_Ar.remove(item)
+        else:
+          self.player.migrateMessages("You are already at full health")
+        if self.HP>self.MHP:
+          self.HP=self.MHP
 
 
   #remove item from equipment

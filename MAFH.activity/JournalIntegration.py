@@ -1,4 +1,9 @@
-from sugar.datastore import datastore
+try:
+    from sugar.datastore import datastore
+except:
+    print "**Warning**: Not running in sugar env"
+    print "\t* Sugar datastore required for custom map functionality"
+    print "\t* Trying to load custom map or export will cause crash"
 import os
 import re
 class BadInputException(Exception):pass
