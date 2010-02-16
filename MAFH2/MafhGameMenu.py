@@ -80,14 +80,15 @@ class GameMenuHolder( GameEngineElement ):
             ]
 
         elif id == "options":
-        	menu_options = [
-        				["Controls", lambda: self.menu_called("controls"), "NOT AVAILABLE-Change control scheme"],
+            menu_options = [
+                       ["Controls", lambda: self.menu_called("controls"), "NOT AVAILABLE-Change control scheme"],
                        ["Language", lambda: self.menu_called("language"), "NOT AVAILABLE-Change language setting"],
                        ["Audio", lambda: self.menu_called("audiu"), "NOT AVAILABLE-Toggle audio on or off"],
                        ["Subtitles", lambda: self.menu_called("subtitles"), "NOT AVAILABLE-Toggle subtitles on or off"],
                        ["FMCs", lambda: self.menu_called("fmcs"), "NOT AVAILABLE-Toggle FMCs on or off"],
                        ["Cooperative Play", lambda: self.menu_called("coop"), "NOT AVAILABLE-Toggle coop mode on or off"],
-                       ["Merchant", lambda: self.menu_called("merchant"), "NOT AVAILABLE-Change the merchant difficulty setting"],
+                       ["Game Difficulty", lambda: self.menu_called("difficulty"), "NOT AVAILABLE-Change the game difficulty setting"],
+                       ["Merchant Difficulty", lambda: self.menu_called("merchant"), "NOT AVAILABLE-Change the merchant difficulty setting"],
                        ["Credits", lambda: self.menu_called("credits"), "NOT AVAILABLE-Watch the credits reel"],
                        ["About", lambda: self.menu_called("about"), "NOT AVAILABLE-Information on game and version"],
                        ["Return to Title", lambda: self.show_menu("title"), "Return to the title menu"]
