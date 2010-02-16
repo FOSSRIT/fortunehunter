@@ -220,7 +220,7 @@ class Shop:
     bgSprite=pygame.sprite.Sprite()
     bgSprite.image=pygame.image.load(MENU_PATH+"ShopBG.gif")
     bgSprite.rect=(0,0,600,900)
-    merchantSprite.image=pygame.transform.scale(pygame.image.load(CHAR_PATH+"Merchant.gif"),(550,550))
+    merchantSprite.image=pygame.transform.scale(pygame.image.load(CHAR_PATH+"merchant.gif"),(550,550))
     merchantSprite.rect=pygame.Rect(640,160,200,200)
     merchantGroup=pygame.sprite.Group(merchantSprite)
     bgGroup=pygame.sprite.Group(bgSprite)

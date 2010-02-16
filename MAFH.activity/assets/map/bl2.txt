@@ -1,6 +1,6 @@
 Dungeon 6
-al7.txt
+bl2.txt
 1x1
-0
+1
 0
 00Se00000000000000000
