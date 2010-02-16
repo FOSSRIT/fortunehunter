@@ -1074,7 +1074,7 @@ class BattleEngine:
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
-    self.player.battlePlater.AL = self.player.battlePlater.AL + 1
+    self.player.battlePlayer.AL = self.player.battlePlayer.AL + 1
     victoryMenu=Menu(["Continue"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif"],"Victory")
     self.player.battle=False
     self.player.mainMenu=True
