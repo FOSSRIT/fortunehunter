@@ -123,7 +123,7 @@ class Player:
   def toString(self):
     dataList=[]
     dataList.append(self.name)
-    dataList.append(self.dgnIndex)
+    dataList.append(self.dgn.fileName)
     dataList.append(self.critDifficulty)
     dataList.append(self.divDifficulty)
     dataList.append(self.geomDifficulty)
@@ -271,9 +271,7 @@ class Player:
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
   def fromData(self,data):
     self.name=data[0]
-    self.dgnIndex=data[1]-1
-    ##FIXME: nextDungeon now uses file name not by id
-    self.nextDungeon()
+    self.dgn=Dungeon(data[1])
     self.critDifficulty=data[2]
     self.divDifficulty=data[3]
     self.geomDifficulty=data[4]
@@ -334,7 +332,7 @@ class Player:
     else:
       self.traversal=True
     if self.traversal:
-      self.nextDungeon()
+      self.nextDungeon(True)
       self.loadImages(self.dgn.theme)
       self.dgnMap.updateMacro(self)
       self.battlePlayer=Hero(self)
@@ -1858,8 +1856,14 @@ def updateMenu(event,player):
         menu.select("up")
 
       elif newKey=='[9]' or newKey=='backspace':
-        player.mainMenu=False
-        player.traversal=True
+        if player.currentMenu.name=="Save Files":
+          file=player.currentMenu.options[player.currentMenu.currentOption]
+          if not file=="":
+            os.remove(os.path.join(activity.get_activity_root(),"data/")+file[5:len(file)])
+            player.currentMenu.tm_ap_loadGame(player)
+        else:
+          player.mainMenu=False
+          player.traversal=True
         
 
 def updateTraversal(event,player,screen):
