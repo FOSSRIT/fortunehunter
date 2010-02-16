@@ -19,6 +19,8 @@ class GameEngine(object):
 
         self.debug = False
 
+        self.clock = pygame.time.Clock()
+
     def start_event_timer(self, id, time):
         pygame.time.set_timer(pygame.USEREVENT + id, time)
 
@@ -32,43 +34,42 @@ class GameEngine(object):
         self.__run = True
         pygame.event.set_blocked(pygame.MOUSEMOTION)
         while self.__run:
-            event = pygame.event.wait()
+            self.clock.tick(15)
+            update_draw = False
+            for event in pygame.event.get():
 
-            if event.type == pygame.QUIT:
-                self.__run = False
+                if event.type == pygame.QUIT:
+                    self.__run = False
 
-            else:
-                # Send event to all event listeners
-                # Make a copy first so that adding events don't get fired right away
-                list_cp = self.__event_cb[:]
+                else:
+                    # Send event to all event listeners
+                    # Make a copy first so that adding events don't get fired right away
+                    list_cp = self.__event_cb[:]
 
-                # Reverse list so that newest stuff is on top
-                list_cp.reverse()
+                    # Reverse list so that newest stuff is on top
+                    list_cp.reverse()
 
-                for cb in list_cp:
-                    # Fire the event for all in cb and stop if return True
-                    if cb(event) == True:
-                        break
+                    for cb in list_cp:
+                        # Fire the event for all in cb and stop if return True
+                        if cb(event) == True:
+                            update_draw = True
+                            break
+
+            if update_draw:
                 self.draw()
-
-
-                if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == '`':
-                    self.debug = not self.debug
-                    print "Debug set:",self.debug
-
-            if self.debug:
-                print "\n\n",event
-                print "Event Listeners:", self.__event_cb
-                for eventlst in self.__event_cb:
-                    print "\t",eventlst
-
-                print "\nDraw Callbacks:", self.__draw_lst
-                for eventlst in self.__draw_lst:
-                    print "\t",eventlst
-
-                print "\nObjects Registered:"
-                for eventlst in self.__object_hold:
-                    print "\t",eventlst
+            #~ if self.debug:
+                #~ print "\n\n",event
+                #~ print "Event Listeners:", self.__event_cb
+                #~ for eventlst in self.__event_cb:
+                    #~ print "\t",eventlst
+#~
+                #~ print "\nDraw Callbacks:", self.__draw_lst
+                #~ for eventlst in self.__draw_lst:
+                    #~ print "\t",eventlst
+#~
+                #~ print "\nObjects Registered:"
+                #~ for eventlst in self.__object_hold:
+                    #~ print "\t",eventlst
 
     def stop_event_loop(self):
         """

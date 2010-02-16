@@ -64,6 +64,14 @@ class Profile(GameEngineElement):
     def give_item(self, item):
         self.inventory.append(item)
 
+    def add_to_engine(self):
+        super( Profile, self).add_to_engine()
+        self.background_img = pygame.image.load(MENU_PATH+"mafh_splash.gif")
+
+    def remove_from_engine(self):
+        super( Profile, self).remove_from_engine()
+        del self.background_img
+
     def event_handler(self, event):
         """
         Handles user input (used only for name entry)
@@ -71,11 +79,14 @@ class Profile(GameEngineElement):
         if event.type == pygame.KEYDOWN:
             if pygame.key.name(event.key)=='backspace':
                 self.name = self.name[0:-1]
+                return True
             elif pygame.key.name(event.key)=='return':
                 self.remove_from_engine()
                 self.name_cb()
+                return True
             else:
                 self.name+=event.unicode
+                return True
 
     def draw(self, screen):
         """
@@ -84,7 +95,7 @@ class Profile(GameEngineElement):
         font = pygame.font.Font(None, 32)
         text=font.render(self.name,True,(0,0,0))
         textRect=(400,400,400,400)
-        screen.blit(pygame.image.load(MENU_PATH+"mafh_splash.gif"),(0,0,1200,900))
+        screen.blit(self.background_img,(0,0,1200,900))
         screen.fill((150,150,255),(250,250,600,400))
         screen.blit(font.render(_("Enter name:"),True,(0,0,0)),(300,300,20,20))
         screen.blit(font.render(_("Return to continue"),True,(0,0,0)),(500,500,20,20))

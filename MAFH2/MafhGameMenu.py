@@ -6,7 +6,7 @@ class GameMenuHolder( GameEngineElement ):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        self.background = background
+        self.background = pygame.image.load(background)
         self.width = width
         self.height = height
 
@@ -16,7 +16,7 @@ class GameMenuHolder( GameEngineElement ):
 
     def draw(self, screen):
         if self.background:
-            screen.blit(pygame.image.load(self.background),(0,0,self.width,self.height))
+            screen.blit(self.background,(0,0,self.width,self.height))
         else:
             screen.fill((0, 0, 255))
 
@@ -51,7 +51,7 @@ class GameMenuHolder( GameEngineElement ):
                         ["Level Select",  lambda: self.menu_called("level"), "Play completed levels from loaded game"],
                         ["Load Game", lambda: self.menu_called("load"), "Load player profile game data"],
                         ["New Game",  lambda: self.menu_called("new"), "Play story mode from the beginning"],
-						["New Player Profile",  lambda: self.menu_called("newpro"), "Create a new player profile"],
+                        ["New Player Profile",  lambda: self.menu_called("newpro"), "Create a new player profile"],
                         ["Return to Title", lambda: self.show_menu("title"), "Return to the title menu"]
             ]
 
@@ -92,7 +92,7 @@ class GameMenuHolder( GameEngineElement ):
                        ["Credits", lambda: self.menu_called("credits"), "NOT AVAILABLE-Watch the credits reel"],
                        ["About", lambda: self.menu_called("about"), "NOT AVAILABLE-Information on game and version"],
                        ["Return to Title", lambda: self.show_menu("title"), "Return to the title menu"]
-        	]
+            ]
 
         else:
             print "Invalid Menu", id
@@ -111,7 +111,7 @@ class GameMenu(GameEngineElement):
         self.add_to_engine()
 
     def event_handler(self, event):
-        self.menu.update([event])
+        return self.menu.update(event)
 
     def draw(self, screen):
         self.menu.draw( screen )

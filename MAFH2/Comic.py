@@ -56,8 +56,11 @@ class Comic(GameEngineElement):
             if newKey=='[1]' or newKey=='right':
                 if self.has_next():
                     self.next()
+                    return True
                 else:
                     self.end()
+                    return True
 
             elif newKey=='[3]' or newKey=='left':
                 self.previous()
+                return True
