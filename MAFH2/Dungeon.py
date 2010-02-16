@@ -268,5 +268,5 @@ class Dungeon(GameEngineElement):
                 color_a = 255
                 self.game_engine.stop_event_timer( 0 )
             surf1 = pygame.Surface((1200,700), pygame.SRCALPHA)
-            pygame.draw.rect(surf1, pygame.Color(255, 255, 255, color_a), (0, 0, 1200, 700))
+            pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, 1200, 700))
             screen.blit( surf1, (0, 0) )

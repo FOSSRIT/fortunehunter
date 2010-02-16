@@ -55,7 +55,7 @@ class EzMenu:
 
         surf1 = pygame.Surface((1050,self.font.get_height()+20), pygame.SRCALPHA)
 
-        pygame.draw.rect(surf1, pygame.Color(255, 255, 255, 70), (0, 0, 1050, self.font.get_height()+20))
+        pygame.draw.rect(surf1, (255, 255, 255, 70), (0, 0, 1050, self.font.get_height()+20))
 
         surface.blit( surf1, (50, 690) )
         surface.blit( ren, (55, 700) )
