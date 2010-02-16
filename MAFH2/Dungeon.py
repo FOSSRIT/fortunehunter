@@ -5,6 +5,7 @@ from gettext import gettext as _
 
 from GameEngine import GameEngineElement
 
+from Map import Map
 from Room import Room
 from Items import get_item
 from constants import (
@@ -21,7 +22,6 @@ COLOR_DELTA = 255/SEARCH_TIME
 class Dungeon(GameEngineElement):
     def __init__(self, id):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
-        self.add_to_engine()
 
         self.id = id
         self.rooms={}
@@ -33,6 +33,17 @@ class Dungeon(GameEngineElement):
         if profile.position == (-1, -1):
             x,y = self.start
             profile.move_to( x, y )
+
+        self.add_to_engine()
+
+    def add_to_engine(self):
+        super(Dungeon, self).add_to_engine()
+        self.game_engine.add_object('map', Map( self ) )
+
+    def remove_from_engine(self):
+        super(Dungeon, self).remove_from_engine()
+        self.game_engine.get_object('map').remove_from_engine()
+        self.game_engine.remove_object('map')
 
     def __load_dungeon(self):
         currentX=0
@@ -140,6 +151,7 @@ class Dungeon(GameEngineElement):
             if self.move_permissions( door_flag ):
                 self.game_engine.get_object('mesg').add_line(_("You enter room at %i,%i")%(dX, dY))
                 profile.move_to( dX, dY )
+                self.game_engine.get_object('map').update_macro()
         else:
             #Entrance or exit may be on a boarder of the grid
             door_flag = self.rooms[profile.position].get_door( dc )
@@ -185,11 +197,7 @@ class Dungeon(GameEngineElement):
         if event.type == pygame.KEYDOWN:
             newKey=pygame.key.name(event.key)
 
-            if newKey=='m' or newKey=='[7]':
-                print "SHOW Macro Map"
-                return True
-
-            elif newKey=='[4]' or newKey=='left':
+            if newKey=='[4]' or newKey=='left':
                 self.game_engine.get_object('profile').turn( LEFT )
                 return True
 
