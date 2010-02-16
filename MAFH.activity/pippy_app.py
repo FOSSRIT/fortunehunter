@@ -123,7 +123,7 @@ class Player:
   def toString(self):
     dataList=[]
     dataList.append(self.name)
-    dataList.append(self.dgnIndex)
+    dataList.append(self.dgn.fileName)
     dataList.append(self.critDifficulty)
     dataList.append(self.divDifficulty)
     dataList.append(self.geomDifficulty)
@@ -271,9 +271,7 @@ class Player:
     self.currentRoomGroup=pygame.sprite.Group(self.currentRoomSprite)
   def fromData(self,data):
     self.name=data[0]
-    self.dgnIndex=data[1]-1
-    ##FIXME: nextDungeon now uses file name not by id
-    self.nextDungeon()
+    self.dgn=Dungeon(data[1])
     self.critDifficulty=data[2]
     self.divDifficulty=data[3]
     self.geomDifficulty=data[4]
@@ -334,7 +332,7 @@ class Player:
     else:
       self.traversal=True
     if self.traversal:
-      self.nextDungeon()
+      self.nextDungeon(True)
       self.loadImages(self.dgn.theme)
       self.dgnMap.updateMacro(self)
       self.battlePlayer=Hero(self)
@@ -390,13 +388,13 @@ class Player:
       for item in self.battlePlayer.inv_Ar:
         if item.type=="key":
           self.battlePlayer.inv_Ar.remove(item)
+      if self.dgn==None:
+        self.dgn=Dungeon('al1.txt')
       if reload:
           self.dgn=Dungeon(self.dgn.fileName)
       elif self.dgn:
           self.battlePlayer.MHP+=2
           self.dgn=Dungeon(self.dgn.next)
-      else:
-          self.dgn=Dungeon('al1.txt')
       if self.dgn.theme != self.theme:
         self.loadImages(self.dgn.theme)
         self.theme=self.dgn.theme
@@ -672,7 +670,7 @@ class BattleEngine:
           screen.blit(inputText,pygame.Rect(250,400,200,30))
       
       
-      if self.timeBonus<1:
+      if self.timeBonus<1 and self.timeBonus>=0:
         screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
     pygame.display.flip()
 
@@ -689,6 +687,7 @@ class BattleEngine:
   def attack(self,attacker,attackName):
     defender=self.enemies[self.selEnemyIndex]
     if attackName=="critical":
+      self.player.atkTutorial=True
       attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
       if isinstance(defender,Enemy) and defender.weakness=='normal':
         attacker.setBonusAP(attacker.BAB*2)
@@ -697,10 +696,10 @@ class BattleEngine:
       tup=(tup[0]+1,tup[1])
       self.player.multiplicationStats[self.player.critDifficulty-1]=tup
       if not player.scanTutorial:
-        player.popUp=PopUp(10,10,["To discover an enemy's weakness","select scan"])
-        player.scanTutorial=True
+        self.player.popUp=PopUp(10,10,["To discover an enemy's weakness","select scan"])
+        self.player.scanTutorial=True
       else:
-        player.popUp=None
+        self.player.popUp=None
     elif attackName=="Fire":
       attacker.setBonusAP(int(self.timeBonus*20)+10)
       if isinstance(defender,Enemy) and defender.weakness=='fire':
@@ -712,7 +711,7 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
-      self.player.geomTutorial=True
+      self.player.magTutorial=True
       self.player.popUp=None
 
     elif attackName=="Heal":
@@ -723,7 +722,7 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
-      self.player.geomTutorial=True
+      self.player.magTutorial=True
       self.player.popUp=None
 
     elif attackName=="Lightning":
@@ -737,7 +736,7 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
-      self.player.geomTutorial=True
+      self.player.magTutorial=True
       self.player.popUp=None
  
     elif attackName=="Missile":
@@ -751,7 +750,7 @@ class BattleEngine:
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.geometryStats[self.player.geomDifficulty-1]=tup
-      self.player.geomTutorial=True
+      self.player.magTutorial=True
       self.player.popUp=None
 
     elif attackName=="Division":
@@ -1677,7 +1676,7 @@ def startPuzzle(player):
   player.inPuzzle=True
   player.traversal=False
   if not player.puzzleTutorial:
-    player.popUp=PopUp(10,10,["This door has a special kind of lock","To unlock it, you have to","Re-arrange the tiles so they make an image"])
+    player.popUp=PopUp(10,10,["This door has a special kind of lock","To unlock it, you have to","Re-arrange the tiles","using the arrow keys","to make the image whole"])
   else:
     player.popUp=None
 def stopPuzzle(player,solved):
@@ -1858,8 +1857,14 @@ def updateMenu(event,player):
         menu.select("up")
 
       elif newKey=='[9]' or newKey=='backspace':
-        player.mainMenu=False
-        player.traversal=True
+        if player.currentMenu.name=="Save Files":
+          file=player.currentMenu.options[player.currentMenu.currentOption]
+          if not file=="":
+            os.remove(os.path.join(activity.get_activity_root(),"data/")+file[5:len(file)])
+            player.currentMenu.tm_ap_loadGame(player)
+        else:
+          player.mainMenu=False
+          player.traversal=True
         
 
 def updateTraversal(event,player,screen):
@@ -2025,15 +2030,6 @@ def drawPuzzle(player,screen):
   #draw background and completed image
   screen.fill((0,0,0),(0,0,1200,900))
   screen.blit(player.puzzle.puzBG,(75,-750,1200,900))
-  if player.puzzleTutorial==False:
-    font=pygame.font.SysFont("cmr10",35,False,False)
-    y=0
-    screen.fill((255,255,255),(0,2,1200,200))
-    lines=["This door is locked with a special lock.  In order to unlock it, you must"," re-arrange the tiles and make the image whole.  Use the arrow keys ","to slide the tiles.  You can view the completed image by pressing","any other button.  To give up, press  or backspace."]
-    screen.blit(pygame.image.load(TOUR_PATH+"button/"+"buttonX.gif"),(570,150,40,40))
-    for message in lines:
-      screen.blit(font.render(message,True,(75,0,0)),(0,20+y,200,300))
-      y+=40
   if player.puzzle.showFull:
     screen.blit(player.puzzle.completedPuzzle,(300,100,600,400))
   else:

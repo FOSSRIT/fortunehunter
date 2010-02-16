@@ -29,10 +29,10 @@ class Menu:
             sprite=pygame.sprite.Sprite()
 
             if self.name=="Glyph Menu":
-              if player.battlePlayer.AL > 10 and player.battlePlayer.AL < 30:
+              if player.geomDifficulty==2:
                 rotate=90*randint(0,3)
                 sprite.image=pygame.transform.rotate(pygame.image.load(name),rotate)
-              elif player.battlePlayer.AL > 30:
+              elif player.geomDifficulty==3:
                 rotate=90*randint(0,3)
                 flip=randint(0,2)
                 sprite.image=pygame.transform.flip(pygame.transform.rotate(pygame.image.load(name),rotate),flip==1,flip==2)
@@ -132,7 +132,6 @@ class Menu:
     #when 'New Game' is selected
     def tm_ap_newGame(self,player):
         #creates a new game file to work with, runs new game
-        player.dgnIndex=-1
         player.playerFacing=1
         player.traversal=False
         player.mainMenu=False
@@ -661,8 +660,8 @@ class Menu:
           player.currentMenu=player.curBattle.battleMenu
         
         elif name=="LoseContinue":
-           # player.currentX=player.dgn
-           # player.currentY=player.dgn
+            player.currentX=player.dgn.start[0]
+            player.currentY=player.dgn.start[1]
             player.playerFacing=1
             player.nextDungeon(True)
             player.dgnMap.updateMacro(player)
@@ -689,8 +688,7 @@ class Menu:
     def createInventory(self,player):
       invOptions=[]
       invImages=[]
-      ##Create a 10X2 menu of all items in player's inventory
-      ##TODO: make scrollable
+      ##Create a menu of all items in player's inventory
       x=0
       y=0
       i=0
@@ -702,5 +700,5 @@ class Menu:
      
       player.inventoryMenu.sX=485
       player.inventoryMenu.sY=11
-     # self.inventoryMenu.bgSurface=self.bgSurface
+     
       player.currentMenu=player.inventoryMenu
