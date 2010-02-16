@@ -586,10 +586,6 @@ class BattleEngine:
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
       elif player.divDifficulty==2:
-        denom1=randint(2,9)
-        denom2=randint(2,9)
-        denom3=randint(2,9)
-        denom4=randint(2,9)
         denom1=randint(2,3)
         denom2=randint(4,5)
         denom3=randint(6,7)
@@ -1002,6 +998,8 @@ class BattleEngine:
   def scanEnemy(self):
     player.migrateMessages("Remaining HP: "+repr(self.enemies[self.selEnemyIndex].HP))
     player.migrateMessages("Enemy Weakness: "+repr(self.enemies[self.selEnemyIndex].weakness))
+    #Add Enemies to Beastiary.
+    
   ###
   # Tracks how long the bonus timer has been running
   ###
@@ -1023,24 +1021,26 @@ class BattleEngine:
     seed()
     temp = randint(1,100)
     defender=self.player.battlePlayer
+    #Make the attacks stronger the more enemies you defeat
+    temp2 = (player.battlePlayer.ATT + player.battlePlayer.MHP + player.battlePlayer.AL) / (player.battlePlayer.ATT + player.battlePlayer.MHP)
 
     if temp > 90:
-      defender.defendAttack(enemy.attackPower("special"))
+      defender.defendAttack(enemy.attackPower("special") + (temp2 * 1.5))
       player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" special attacks for "+repr(enemy.attackPower("special"))+" damage")
     #print special message differently depending on name
     elif temp < 6 and enemy.name == "Wizard":
-      defender.defendAttack(enemy.attackPower("critical"))
+      defender.defendAttack(enemy.attackPower("critical") + (temp2 * 2))
       player.migrateMessages("Wizard "+repr(enemy.place)+" casts Divide By Zero, and blasts you for "+repr(enemy.attackPower("critical"))+" damage")
     elif temp < 6 and (enemy.name == "Goblin" or enemy.name == "Orc"):
-      defender.defendAttack(enemy.attackPower("critical"))
+      defender.defendAttack(enemy.attackPower("critical") + (temp2 * 2))
       player.migrateMessages(enemy.name + repr(enemy.place)+ " head bonks you for " +repr(enemy.attackPower("critical"))+" damage. Ouch!")
     elif temp < 6:
-      defender.defendAttack(enemy.attackPower("critical"))
+      defender.defendAttack(enemy.attackPower("critical") + (temp2 * 2))
       player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" critical attacks for "+repr(enemy.attackPower("critical"))+" damage")
     #TODO: add enemy types here as levels are added
     else:
       player.migrateMessages(repr(enemy.name)+" "+repr(enemy.place)+" attacks for "+repr(enemy.attackPower("basic"))+" damage")
-      defender.defendAttack(enemy.attackPower("basic"))
+      defender.defendAttack(enemy.attackPower("basic") + temp2)
     self.playerTurn=True
 
   ###
@@ -1074,6 +1074,7 @@ class BattleEngine:
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
+    self.player.AL++
     victoryMenu=Menu(["Continue"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif"],"Victory")
     self.player.battle=False
     self.player.mainMenu=True

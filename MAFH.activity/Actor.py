@@ -1,24 +1,28 @@
 class Actor:
     def __init__(self):
-        self.MHP    = 40        #maximum health points (base HP)
-        self.HP     = 40        #current health points
+        self.MHP    = 40    #maximum health points (base HP)
+        self.HP     = 40    #current health points
         self.BHP    = 0     #bonus health points (from equipment)
-        self.ATT    = 10        #base attack power
+        self.ATT    = 10    #base attack power
         self.BAB    = 0     #bonus attack power (from battle timer)
         self.BAE    = 0     #bonus attack power (from equipment)
         self.DEF    = 1     #base defense power
         self.BDE    = 0     #bonus defense  power(from equipment)
-
+        self.AL     = 0     #Attack Level (0-?)
 
     #returns actor's current attack power
     def attackPower(self):
         return (self.ATT+self.BAE)
-
-    #returns actors's maximum health
+    
+    #returns actor's current attack level
+    def attackLevel(self):
+        return (self.AL)
+        
+    #returns actor's maximum health
     def maxHealthPoints(self):
         return (self.HP + self.BHP)
 
-    #returns actors's current health
+    #returns actor's current health
     def healthPoints(self):
         return (self.HP)
 
@@ -30,7 +34,7 @@ class Actor:
     def equipment(self):
         return self.eqItems_Ar
 
-    #returns actors's current inventory
+    #returns actor's current inventory
     def inventory(self):
         return self.inv_Ar
 
