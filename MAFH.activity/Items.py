@@ -44,7 +44,7 @@ KEYS = {
 }
 
 SPECIAL = {
-    's':{'name':_("Calculator")}
+    's':{'name':_("Calculator"),'path':'noItem.gif'}
 }
 
 class Item:
