@@ -19,6 +19,12 @@ class GameEngine(object):
 
         self.debug = False
 
+    def start_event_timer(self, id, time):
+        pygame.time.set_timer(pygame.USEREVENT + id, time)
+
+    def stop_event_timer(self, id):
+        pygame.time.set_timer(pygame.USEREVENT + id, 0)
+
     def start_event_loop(self):
         """
         Starts the pygame event loop.
@@ -46,9 +52,9 @@ class GameEngine(object):
                 self.draw()
 
 
-            if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == '`':
-                self.debug = not self.debug
-                print "Debug set:",self.debug
+                if event.type == pygame.KEYDOWN and pygame.key.name(event.key) == '`':
+                    self.debug = not self.debug
+                    print "Debug set:",self.debug
 
             if self.debug:
                 print "\n\n",event
