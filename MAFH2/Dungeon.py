@@ -222,8 +222,8 @@ class Dungeon(GameEngineElement):
                     self.item_pickup()
                 else:
                     self.amulet_search()
-                    self.game_engine.stop_event_timer( 0 )
 
+                self.game_engine.stop_event_timer( 0 )
                 del self.pickup_time
 
     def draw(self, screen):
