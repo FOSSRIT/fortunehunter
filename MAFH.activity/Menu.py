@@ -29,10 +29,10 @@ class Menu:
             sprite=pygame.sprite.Sprite()
 
             if self.name=="Glyph Menu":
-              if player.battlePlayer.AL > 10 and player.battlePlayer.AL < 30:
+              if player.geomDifficulty==2:
                 rotate=90*randint(0,3)
                 sprite.image=pygame.transform.rotate(pygame.image.load(name),rotate)
-              elif player.battlePlayer.AL > 30:
+              elif player.geomDifficulty==3:
                 rotate=90*randint(0,3)
                 flip=randint(0,2)
                 sprite.image=pygame.transform.flip(pygame.transform.rotate(pygame.image.load(name),rotate),flip==1,flip==2)
@@ -132,7 +132,6 @@ class Menu:
     #when 'New Game' is selected
     def tm_ap_newGame(self,player):
         #creates a new game file to work with, runs new game
-        player.dgnIndex=-1
         player.playerFacing=1
         player.traversal=False
         player.mainMenu=False
@@ -552,6 +551,11 @@ class Menu:
             seed()
             crit=randint(0,2)
             if crit==1:
+              if not player.atkTutorial:
+                player.popUp=PopUp(10,10,["Sometimes when you attack,","you get a critical hit!","If you answer correctly","you will deal normal damage","plus the answer to the question"])
+                player.atkTutorial=True
+              else:
+                player.popUp=None
               player.curBattle.critical(player)
             else:
               player.curBattle.attack(player.battlePlayer,"basic")
@@ -580,7 +584,12 @@ class Menu:
             self.player.multiplicationStats[self.player.critDifficulty-1]=tup
             player.curBattle.attack(player.battlePlayer,"basic")
         
-        elif name=="Special": 
+        elif name=="Special":
+          if not player.speTutorial:
+            player.popUp=PopUp(10,10,["To hit with a special attack","Power up your sword to exactly 1","by adding together the fractions"])
+            player.speTutorial=True
+          else:
+            player.popUp=None
           player.curBattle.divisionAttack()
         
         elif name[1:2]=="/":
@@ -588,9 +597,17 @@ class Menu:
 	      player.curBattle.checkFraction()
         
         elif name=="Magic":
+          if not player.magTutorial:
+            player.popUp=PopUp(10,10,["Different spells have different effects.","Try casting them on different enemies"])
+          else:
+            player.popUp=None
           player.curBattle.magic(player)
         
         elif name=="Fire" or name=="Lightning" or name=="Heal" or name=="Missile":
+          if not player.magTutorial:
+            player.popUp=PopUp(10,10,["To cast magic, match the","the sections on your iStone","to the glyph on screen","When the glyph is complete,","you can cast a magic spell!"])
+          else:
+            player.popUp=None
           player.battlePlayer.currentProb1=""
           player.battlePlayer.currentProb2=""
           player.battlePlayer.currentInput=""
@@ -600,6 +617,7 @@ class Menu:
 	      player.curBattle.checkGlyph(name)
         
         elif name=="Scan":
+          player.scanTutorial=True
           player.curBattle.scanEnemy()
         
         elif name=="Weapon" or name=="Armor" or name=="Accessory":
@@ -642,8 +660,8 @@ class Menu:
           player.currentMenu=player.curBattle.battleMenu
         
         elif name=="LoseContinue":
-           # player.currentX=player.dgn
-           # player.currentY=player.dgn
+            player.currentX=player.dgn.start[0]
+            player.currentY=player.dgn.start[1]
             player.playerFacing=1
             player.nextDungeon(True)
             player.dgnMap.updateMacro(player)
@@ -670,8 +688,7 @@ class Menu:
     def createInventory(self,player):
       invOptions=[]
       invImages=[]
-      ##Create a 10X2 menu of all items in player's inventory
-      ##TODO: make scrollable
+      ##Create a menu of all items in player's inventory
       x=0
       y=0
       i=0
@@ -683,5 +700,5 @@ class Menu:
      
       player.inventoryMenu.sX=485
       player.inventoryMenu.sY=11
-     # self.inventoryMenu.bgSurface=self.bgSurface
+     
       player.currentMenu=player.inventoryMenu
