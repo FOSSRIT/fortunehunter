@@ -84,6 +84,10 @@ class Dungeon(GameEngineElement):
         for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
             self.__images[img_key] = pygame.image.load(LVL_PATH+img_key.lower()+".gif")
 
+    def get_current_room(self):
+        profile = self.game_engine.get_object('profile')
+        return self.rooms[profile.position]
+
     def move_permissions(self, door_type):
         if door_type == UNLOCKED_DOOR:
             return True
@@ -177,8 +181,7 @@ class Dungeon(GameEngineElement):
         self.game_engine.get_object('mesg').add_line(_("No items found."))
 
     def amulet_search(self):
-        profile = self.game_engine.get_object('profile')
-        current_room = self.rooms[profile.position]
+        current_room = self.get_current_room()
 
         found = False
         for i in range( 0, 4 ):
@@ -191,7 +194,7 @@ class Dungeon(GameEngineElement):
         if found:
             self.game_engine.get_object('mesg').add_line(_("Amulet Search has revealed new items."))
         else:
-            self.game_engine.get_object('mesg').add_line(_("No items found."))
+            self.game_engine.get_object('mesg').add_line(_("Amulet search found nothing."))
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -220,11 +223,16 @@ class Dungeon(GameEngineElement):
             if newKey=='[1]' or newKey=='e':
                 if time() - self.pickup_time < SEARCH_TIME:
                     self.item_pickup()
+
                 else:
                     self.amulet_search()
 
                 self.game_engine.stop_event_timer( 0 )
                 del self.pickup_time
+                return True
+        elif event.type == pygame.USEREVENT:
+            #ANIMATION
+            return True
 
     def draw(self, screen):
         profile = self.game_engine.get_object('profile')
@@ -268,5 +276,5 @@ class Dungeon(GameEngineElement):
                 color_a = 255
                 self.game_engine.stop_event_timer( 0 )
             surf1 = pygame.Surface((1200,700), pygame.SRCALPHA)
-            pygame.draw.rect(surf1, pygame.Color(255, 255, 255, color_a), (0, 0, 1200, 700))
+            pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, 1200, 700))
             screen.blit( surf1, (0, 0) )
