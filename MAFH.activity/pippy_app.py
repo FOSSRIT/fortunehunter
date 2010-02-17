@@ -6,7 +6,7 @@ import os.path
 from random import *
 
 from PopUp import PopUp
-from Items import get_item, Item
+from Items import get_item, Item, InvalidItemException
 from Enemy import get_enemy, Enemy
 from Hero import Hero
 from Dungeon import Dungeon
@@ -285,11 +285,15 @@ class Player:
     self.battlePlayer.HP=data[12]
     i=13
     self.battlePlayer.inv_Ar=[]
-    while data[i]!= 'End Inventory':
-      self.battlePlayer.inv_Ar.append(get_item(data[i]))
-      i+=1
+    while not data[i]== 'End Inventory':
+      try:
+        self.battlePlayer.inv_Ar.append(get_item(data[i]))
+        i+=1
+        print(data[i])
+        print(get_item(data[i]).name)
+      except InvalidItemException:
+        break
     i+=1
-    line=data[i]
     j=0
     while data[i]!='End Equip':
       if data[i]==None:
@@ -393,6 +397,7 @@ class Player:
       if reload:
           self.dgn=Dungeon(self.dgn.fileName)
       elif self.dgn:
+          self.currentMenu.updateByName("Save",player,screen)
           self.battlePlayer.MHP+=2
           self.dgn=Dungeon(self.dgn.next)
       if self.dgn.theme != self.theme:

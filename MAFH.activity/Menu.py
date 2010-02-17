@@ -499,7 +499,7 @@ class Menu:
             self.tm_em_viewStatistics()
 
 #########Pause Menu Buttons######################################
-        elif name=="Save":
+        elif name=="Save" and self.name !="Pause Menu":
           dataList=player.toString()
           FILE=open(os.path.join(activity.get_activity_root(),"data/"+player.name+".txt"),"w")
           FILE.write(simplejson.dumps(dataList))
