@@ -13,14 +13,14 @@ class Actor:
     #returns actor's current attack power
     def attackPower(self):
         return (self.ATT+self.BAE)
-    
+
     #returns actor's current attack level
     def attackLevel(self):
         return (self.AL)
-        
+
     #returns actor's maximum health
     def maxHealthPoints(self):
-        return (self.HP + self.BHP)
+        return (self.MHP + self.BHP)
 
     #returns actor's current health
     def healthPoints(self):
@@ -29,6 +29,9 @@ class Actor:
     #returns actor's current defense power
     def defensePower(self):
         return (self.DEF + self.BDE)
+
+    def healthLevel(self):
+        return int((self.healthPoints()/float(self.maxHealthPoints()))*10)
 
     #returns actor's equipped items
     def equipment(self):

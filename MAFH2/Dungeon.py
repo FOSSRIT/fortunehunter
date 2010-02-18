@@ -266,10 +266,10 @@ class Dungeon(GameEngineElement):
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
 
-
-
+        # Draw Room Background
         screen.blit(self.__images['room'],(0,0,1200,700))
 
+        # Draw Room Doors
         left, front, right = self.normalize_dir()
         if current_room.get_door( left ) != '0':
             screen.blit(self.__images['side'],(2,15,192, 559))
@@ -280,14 +280,10 @@ class Dungeon(GameEngineElement):
         if current_room.get_door( right ) != '0':
             screen.blit(pygame.transform.flip(self.__images['side'], True, False),(1010,10,192, 559))
 
-
-        # Draw background
-
         # Draw Items
         img_list = []
 
         for i in range( dir, (dir + 4) ):
-
             #imod for room rotation
             imod = i % 4
 
