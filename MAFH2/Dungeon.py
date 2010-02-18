@@ -229,16 +229,19 @@ class Dungeon(GameEngineElement):
             newKey=pygame.key.name(event.key)
 
             if newKey=='[1]' or newKey=='e':
-                if time() - self.pickup_time < SEARCH_TIME:
-                    self.item_pickup()
+                if hasattr( self, 'pickup_time' ):
+                    if time() - self.pickup_time < SEARCH_TIME:
+                        self.item_pickup()
 
-                else:
-                    self.amulet_search()
+                    self.game_engine.stop_event_timer( 0 )
+                    del self.pickup_time
+                return True
 
+        elif event.type == pygame.USEREVENT:
+            if time() - self.pickup_time > SEARCH_TIME:
                 self.game_engine.stop_event_timer( 0 )
                 del self.pickup_time
-                return True
-        elif event.type == pygame.USEREVENT:
+                self.amulet_search()
             #ANIMATION
             return True
 
