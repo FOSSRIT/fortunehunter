@@ -115,9 +115,16 @@ class Map:
         self.totalSurface.fill((0,0,0),(player.currentX*40,player.currentY*40+5,5,30))
 
   def display(self,player,screen):
-    mapView=pygame.transform.chop(self.totalSurface,(0,0,0,0))
-    mapView.fill((255,0,0),(player.currentX*40,player.currentY*40,38,38))
-
+    #pad the total surface with 100x100 pix
+    totalPadded=pygame.Surface((self.totalSurface.get_width()+100,self.totalSurface.get_height()+100))
+    totalPadded.blit(self.totalSurface,(100,100,self.totalSurface.get_width(),self.totalSurface.get_height()))
+    #blit a player-centered map on a new square surface
+    mapView=pygame.Surface((200,200))
+    sectRect=((self.sizeX-player.currentX+(2-self.sizeX))*40-100,(self.sizeY-player.currentY+(2-self.sizeY))*40-100,300,300)
+    mapView.blit(totalPadded,sectRect)
+    mapView.fill((250,0,0),(82,82,34,34))
+ 
+    
     NORTH=1
     SOUTH=3
     EAST=0
@@ -140,18 +147,5 @@ class Map:
       angle=270
       mapView=pygame.transform.rotate(mapView,angle)
       angle=180
-
-
-    sideDifference=self.sizeX-self.sizeY
-    angle=angle*(math.pi/180)
-    curSect=pygame.Rect(0,700,200,200)
-    curSect.top+=((player.currentX*40-81)*math.cos(angle))-((player.currentY*40-81)*math.sin(angle))
-    curSect.left-=((player.currentX*40-81)*math.sin(angle))+((player.currentY*40-81)*math.cos(angle))
-    if player.playerFacing==EAST:
-      curSect.top+=sideDifference*(40-81)
-    elif player.playerFacing==SOUTH:
-      curSect.left+=sideDifference*(40-81)
-    screen.fill(0,(0,700,200,300),0)
-    screen.blit(mapView,curSect)
-    screen.fill(0,(200,700,1200,300),0)
-        
+    screen.fill((0,0,0),(0,700,300,1000))
+    screen.blit(mapView,(0,700,200,200))      
