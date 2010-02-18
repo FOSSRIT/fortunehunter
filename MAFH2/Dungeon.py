@@ -5,11 +5,12 @@ from gettext import gettext as _
 
 from GameEngine import GameEngineElement
 
+from BattleEngine import BattleEngine
 from Map import Map
 from Room import Room
 from Items import get_item
 from constants import (
-        MAP_PATH, ENV_PATH, RIGHT, LEFT, NORTH, SOUTH, EAST,
+        MAP_PATH, ENV_PATH, ITEM_PATH, RIGHT, LEFT, NORTH, SOUTH, EAST,
         WEST, UNLOCKED_DOOR, LOCKED_DOOR, PUZZLE_DOOR, LOCKED_PUZZLE_DOOR,
         ENTRANCE_DOOR, EXIT_DOOR
         )
@@ -79,9 +80,10 @@ class Dungeon(GameEngineElement):
 
 
     def __load_images(self):
-        LVL_PATH = ENV_PATH
+        LVL_PATH = ENV_PATH + "ice/"
 
-        for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
+        #for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
+        for img_key in ['room','side','front']:
             self.__images[img_key] = pygame.image.load(LVL_PATH+img_key.lower()+".gif")
 
     def get_current_room(self):
@@ -156,6 +158,7 @@ class Dungeon(GameEngineElement):
                 self.game_engine.get_object('mesg').add_line(_("You enter room at %i,%i")%(dX, dY))
                 profile.move_to( dX, dY )
                 self.game_engine.get_object('map').update_macro()
+                self.check_for_enemies()
         else:
             #Entrance or exit may be on a boarder of the grid
             door_flag = self.rooms[profile.position].get_door( dc )
@@ -163,6 +166,11 @@ class Dungeon(GameEngineElement):
                 if self.move_permissions( door_flag ):
                     # TODO: Next Dungeon
                     pass
+
+    def check_for_enemies(self):
+        current_room = self.get_current_room()
+        if current_room.has_enemy:
+            self.game_engine.add_object('battle', BattleEngine( self ) )
 
     def item_pickup(self):
         profile = self.game_engine.get_object('profile')
@@ -234,14 +242,43 @@ class Dungeon(GameEngineElement):
             #ANIMATION
             return True
 
+    def normalize_dir( self ):
+        profile = self.game_engine.get_object('profile')
+        dir = profile.playerFacing
+
+        if dir == NORTH:
+            return 'W', 'N', 'E'
+
+        elif dir == SOUTH:
+            return 'E', 'S', 'W'
+
+        elif dir == EAST:
+            return 'N', 'E', 'S'
+
+        elif dir == WEST:
+            return 'S', 'W', 'N'
+
     def draw(self, screen):
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
 
+
+
+        screen.blit(self.__images['room'],(0,0,1200,700))
+
+        left, front, right = self.normalize_dir()
+        if current_room.get_door( left ) != '0':
+            screen.blit(self.__images['side'],(2,15,192, 559))
+
+        if current_room.get_door( front ) != '0':
+            screen.blit(self.__images['front'],(453,0,192, 559))
+
+        if current_room.get_door( right ) != '0':
+            screen.blit(pygame.transform.flip(self.__images['side'], True, False),(1010,10,192, 559))
+
+
         # Draw background
-        door_cfg = current_room.door_str( dir )
-        screen.blit(self.__images[door_cfg],(0,0,1200,700))
 
         # Draw Items
         img_list = []
@@ -259,7 +296,7 @@ class Dungeon(GameEngineElement):
                 path = get_item( item_key[0] ).path
 
             if not self.__images.has_key( path ):
-                self.__images[path] = pygame.image.load(ENV_PATH + path)
+                self.__images[path] = pygame.image.load(ITEM_PATH + path)
 
             img_list.append( self.__images[path] )
 

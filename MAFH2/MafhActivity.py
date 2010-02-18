@@ -24,7 +24,8 @@ def menu_called(id, menu):
 
         if not ge.has_object('profile'):
             ge.add_object( 'profile',
-                Profile( name_entry_cb=lambda: ge.add_object('comic', Comic(FMC_PATH+"FMC1/",None,start_game)) ) )
+                #Profile( name_entry_cb=lambda: ge.add_object('comic', Comic(FMC_PATH+"FMC1/",None,start_game)) ) )
+                Profile( name_entry_cb=start_game  ))
 
     elif id == 'controls':
         menu.remove_from_engine()

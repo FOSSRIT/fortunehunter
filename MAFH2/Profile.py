@@ -2,6 +2,7 @@ import pygame
 
 from GameEngine import GameEngineElement
 from constants import MENU_PATH, NORTH, SOUTH, EAST, WEST, RIGHT, LEFT
+from Hero import Hero
 
 from gettext import gettext as _
 
@@ -12,6 +13,7 @@ class Profile(GameEngineElement):
         self.dungeon_id = "al1.txt"
         self.position = (-1, -1)
         self.playerFacing=NORTH
+        self.hero = Hero()
 
         # 4 types of stats and difficulties
         self.problem_stats = {}
