@@ -8,10 +8,11 @@ MAP_PATH = BASE_PATH + "map/"
 MENU_PATH = BASE_PATH + "image/menu/"
 HUD_PATH = BASE_PATH + "image/hud/"
 ENV_PATH = BASE_PATH + "image/environment/"
+ITEM_PATH = BASE_PATH + "image/item/"
 PUZZLE_PATH = BASE_PATH + "image/puzzle/"
 FMC_PATH = BASE_PATH + "fmc/"
-TOUR_PATH = BASE_PATH + "/image/tutorial/"
-CHAR_PATH = BASE_PATH + "/image/character/"
+TOUR_PATH = BASE_PATH + "image/tutorial/"
+CHAR_PATH = BASE_PATH + "image/character/"
 
 DOOR_ORDER = ['N','S','E','W']
 DOOR_INDEX = {
