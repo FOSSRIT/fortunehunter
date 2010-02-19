@@ -659,7 +659,7 @@ class Menu:
             player.currentX=player.dgn.start[0]
             player.currentY=player.dgn.start[1]
             player.playerFacing=1
-            player.nextDungeon(True)
+            self.tm_ap_loadGame(player)
             player.dgnMap.updateMacro(player)
             player.traversal=True
             player.mainMenu=False
