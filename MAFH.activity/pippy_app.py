@@ -56,10 +56,9 @@ class Player:
     self.name=""  #player name: to be set in options menu or upon new game (character select screen?)
     self.multiplicationStats=[(0,0),(0,0),(0,0)]   #[easy problems,medium problems,hard problems]
     self.divisionStats=[(0,0),(0,0),(0,0)]        #[easy problems,medium problems,hard problems]
-    self.geometryStats=[(0,0),(0,0),(0,0)]        #[easy,medium, hard]
+    self.geometryStats=[(0,0),(0,0),(0,0)]            #[easy,medium, hard]
     self.shopStats=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
     self.puzzlesSolved=0
-    self.bestiary=list()                          #Blank Bestiary
 
     self.curBattle=BattleEngine(self.battlePlayer,[None])
 
@@ -139,12 +138,7 @@ class Player:
     for item in self.battlePlayer.inv_Ar:
       dataList.append(item.id)
     dataList.append('End Inventory')
-    for item in self.battlePlayer.eqItem:
-      if item==None:
-        dataList.append(item)
-      else:
-        dataList.append(item.id)
-    dataList.append('End Equip')
+    
     if self.battlePlayer.weapon==None:
       dataList.append(None)
     else:
@@ -164,34 +158,34 @@ class Player:
     mafh_splashBG=MENU_PATH+"mafh_splash.gif"
     menuElementBG=[MENU_PATH+"TitleButton.gif"]
 
-    adventureMenuOptions=["Continue","Level Select","Load Game","New Game","Return to Title"]
-    adventureMenu=Menu(adventureMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Adventure Play")
+    adventureMenuOptions=["New Game","Load Game","Continue","Return to Title"]
+    adventureMenu=Menu(adventureMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Adventure Play")
 
-    creativeMenuOptions=["Play Custom Map","New Custom Map","Share Map","Return to Title"]
-    creativeMenu=Menu(creativeMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Creative Play")
+    #creativeMenuOptions=["Play Custom Map","New Custom Map","Share Map","Return to Title"]
+    #creativeMenu=Menu(creativeMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Creative Play")
 
-    networkMenuOptions=["Local Treasure Trekkers Play","View Scoreboards","Return to Title"]
-    networkMenu=Menu(networkMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Network")
+    #networkMenuOptions=["Local Treasure Trekkers Play","View Scoreboards","Return to Title"]
+    #networkMenu=Menu(networkMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Network")
 
-    extrasMenuOptions=["View Bestiary","View Awards","View Statistics","Return to Title"]
-    extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
+    #extrasMenuOptions=["View Bestiary","View Awards","View Statistics","Return to Title"]
+    #extrasMenu=Menu(extrasMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Extras")
 
     multiplicationDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Multiplication")
     divisionDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Division")
     geometryDifficulty=Menu(["ON","OFF"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Geometry")
 
-    optionsMenuOptions=["Controls","Language","Audio","FMCs","Subtitles","Cooperative Play","Merchant","Credits","About",multiplicationDifficulty,divisionDifficulty,geometryDifficulty,"Return to Title"]
-    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options")
+    optionsMenuOptions=["Controls","Credits",multiplicationDifficulty,divisionDifficulty,geometryDifficulty,"Return to Title"]
+    optionsMenu=Menu(optionsMenuOptions,self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Options")
 
-    self.MainMenu=Menu([adventureMenu,creativeMenu,networkMenu,extrasMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
+    self.MainMenu=Menu([adventureMenu,optionsMenu,"Exit Game"],self,mafh_splashBG,[MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif",MENU_PATH+"TitleButton.gif"],"Title Menu")
 
     statMenuOptions=["Weapon","Armor","Accessory"]
     statMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
     self.statsMenu=Menu(statMenuOptions,self,MENU_PATH+"PauseMenuBackground.gif",statMenuImages,"Stats")
     self.statsMenu.background.rect.top=10
 
-    pauseMenuOptions=["Save","Close","Main Menu","Return to Game"]
-    pauseMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
+    pauseMenuOptions=["Save","Main Menu","Return to Game"]
+    pauseMenuImages=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
     self.pauseMenu=Menu(pauseMenuOptions,self,MENU_PATH+"VictoryScreen.gif",pauseMenuImages,"Pause Menu")
     self.pauseMenu.background.rect.top=11
 
@@ -290,19 +284,8 @@ class Player:
       try:
         self.battlePlayer.inv_Ar.append(get_item(data[i]))
         i+=1
-        print(data[i])
-        print(get_item(data[i]).name)
       except InvalidItemException:
         break
-    i+=1
-    j=0
-    while data[i]!='End Equip':
-      if data[i]==None:
-        self.battlePlayer.eqItem[j]=None
-      else:
-        self.battlePlayer.eqItem[j]=get_item(data[i])
-      i+=1
-      j+=1
 
     i+=1
     if data[i]==None:
@@ -340,7 +323,7 @@ class Player:
       self.nextDungeon(True)
       self.loadImages(self.dgn.theme)
       self.dgnMap.updateMacro(self)
-      self.battlePlayer=Hero(self)
+      #self.battlePlayer=Hero(self)
       setImage(player)
       self.initMovTutorial()
       pygame.display.flip()
@@ -397,10 +380,11 @@ class Player:
         self.dgn=Dungeon('al1.txt')
       if reload:
           self.dgn=Dungeon(self.dgn.fileName)
-      elif self.dgn:
-          self.currentMenu.updateByName("Save",player,screen)
+      elif self.dgn:          
           self.battlePlayer.MHP+=2
           self.dgn=Dungeon(self.dgn.next)
+          self.currentMenu.updateByName("Save",player,screen)
+
       if self.dgn.theme != self.theme:
         self.loadImages(self.dgn.theme)
         self.theme=self.dgn.theme
@@ -790,8 +774,7 @@ class BattleEngine:
         player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
     else:
       player.migrateMessages("You attack for "+repr(int(attacker.attackPower(attackName)))+" damage")
-      #player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
-      #migrates at the wrong time, replace with scan for now!
+      player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
 
     defender.defendAttack(attacker.attackPower(attackName))
     self.playerTurn=False
@@ -1035,8 +1018,6 @@ class BattleEngine:
     player.migrateMessages("Remaining HP: "+repr(self.enemies[self.selEnemyIndex].HP))
     player.migrateMessages("Enemy Weakness: "+repr(self.enemies[self.selEnemyIndex].weakness))
     #Add Enemies to Beastiary.
-    player.bestiary.append(self.enemies[self.selEnemyIndex])
-    #bestiary2 = set(player.bestiary)
     
   ###
   # Tracks how long the bonus timer has been running
