@@ -790,7 +790,8 @@ class BattleEngine:
         player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
     else:
       player.migrateMessages("You attack for "+repr(int(attacker.attackPower(attackName)))+" damage")
-      player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
+      #player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
+      #migrates at the wrong time, replace with scan for now!
 
     defender.defendAttack(attacker.attackPower(attackName))
     self.playerTurn=False
