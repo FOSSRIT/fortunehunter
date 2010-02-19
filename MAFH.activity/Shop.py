@@ -79,7 +79,7 @@ class Shop:
       if player.shopTutorial==False:
         self.message=[]
         self.message.append("If you want to leave")
-        self.message.append("press    or backspace")
+        self.message.append("press x or backspace")
       if newKey=='escape':
         sys.exit()
       elif newKey=='[6]' or newKey=='right':
@@ -221,13 +221,13 @@ class Shop:
     bgSprite.image=pygame.image.load(MENU_PATH+"ShopBG.gif")
     bgSprite.rect=(0,0,600,900)
     merchantSprite.image=pygame.transform.scale(pygame.image.load(CHAR_PATH+"merchant.gif"),(550,550))
-    merchantSprite.rect=pygame.Rect(640,160,200,200)
+    merchantSprite.rect=pygame.Rect(750,160,200,200)
     merchantGroup=pygame.sprite.Group(merchantSprite)
     bgGroup=pygame.sprite.Group(bgSprite)
     bgGroup.draw(screen)
     screen.blit(font.render("Buy              Sell",True,(0,0,0)),(190,30,50,50))
     merchantGroup.draw(screen)
-    screen.blit(pygame.image.load(MENU_PATH+"Speech.gif"),(550,0,400,400))
+    screen.blit(pygame.image.load(MENU_PATH+"Speech.gif"),(560,0,400,400))
     if self.buyMode:
 
       i=0

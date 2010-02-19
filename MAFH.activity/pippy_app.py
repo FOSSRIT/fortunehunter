@@ -588,20 +588,20 @@ class BattleEngine:
         denom2=randint(4,5)
         denom3=randint(6,7)
         denom4=randint(8,9)
-        divisionOptions=["1/"+repr(denom1)+"Power","1/"+repr(denom2)+"Power","1/"+repr(denom3)+"Power","1/"+repr(denom4)+"Power"]
+        divisionOptions=["1/"+repr(denom1)+"Power","2/"+repr(denom2)+"Power","4/"+repr(denom3)+"Power","1/"+repr(denom4)+"Power"]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
         self.divisionMenu=Menu(divisionOptions,player,divisionBackground,divisionOptImg,"Division Menu")
         self.divisionMenu.background.rect=(0,300,200,200) 
       elif player.divDifficulty==3:
-        denom1=randint(2,3)
-        denom2=randint(4,5)
-        denom3=randint(6,7)
-        denom4=randint(8,9)
+        denom1=randint(2,9)
+        denom2=randint(2,9)
+        denom3=randint(2,9)
+        denom4=randint(2,9)
         num1=randint(1,2)
         num2=randint(3,4)
-        num3=randint(1,2)
-        num4=randint(3,4)
+        num3=randint(5,6)
+        num4=randint(7,9)
         divisionOptions=[repr(num1)+"/"+repr(denom1)+"Power",repr(num2)+"/"+repr(denom2)+"Power",repr(num3)+"/"+repr(denom3)+"Power",repr(num4)+"/"+repr(denom4)+"Power"]
         divisionBackground=MENU_PATH+"battleMenubackground.gif"
         divisionOptImg=[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"]
@@ -1796,8 +1796,6 @@ def updateMenu(event,player):
           for i in range(10):
             menu.select("down")
  
-      elif newKey=='[5]':
-        print('check')
 
       elif newKey=='[6]' or newKey=='right':
         if menu.name=="Defeat":
@@ -2039,7 +2037,8 @@ def drawPuzzle(player,screen):
         if not piece.isHole:
           totalGroup.add(spt)
     totalGroup.draw(screen)
-  pygame.display.flip()
+  if player.popUp==None:
+    pygame.display.flip()
 def drawWaiting(player,screen):
   screen.fill(0,(0,0,1290,700),0)
 def drawMacroMap(player,screen):

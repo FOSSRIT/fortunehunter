@@ -339,11 +339,7 @@ class Menu:
             screen.blit(font.render(message,True,(0,15,0)),(520,350+k,200,300))
             k+=40
       elif self.name=="Defeat":
-          if not self.alphaDrawn:
-            alphaLayer=pygame.image.load(ENV_PATH+"Black.gif")
-            alphaLayer.set_alpha(70)
-            screen.blit(alphaLayer,(0,0,1200,900))
-          self.alphaDrawn=True
+          screen.blit(pygame.image.load(ENV_PATH+"Black.gif"),(0,0,0,0))
           font=pygame.font.SysFont("cmr10",40,False,False)
           screen.blit(font.render("You have been defeated",True,(150,0,0)),(450,400,0,0))
           font=pygame.font.SysFont("cmr10",24,False,False)
