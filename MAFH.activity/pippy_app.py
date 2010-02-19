@@ -56,9 +56,10 @@ class Player:
     self.name=""  #player name: to be set in options menu or upon new game (character select screen?)
     self.multiplicationStats=[(0,0),(0,0),(0,0)]   #[easy problems,medium problems,hard problems]
     self.divisionStats=[(0,0),(0,0),(0,0)]        #[easy problems,medium problems,hard problems]
-    self.geometryStats=[(0,0),(0,0),(0,0)]            #[easy,medium, hard]
+    self.geometryStats=[(0,0),(0,0),(0,0)]        #[easy,medium, hard]
     self.shopStats=[(0,0),(0,0),(0,0)]            #[spent too much money,didn't give enough money, game exact amount]
     self.puzzlesSolved=0
+    self.bestiary=list()                          #Blank Bestiary
 
     self.curBattle=BattleEngine(self.battlePlayer,[None])
 
@@ -789,7 +790,8 @@ class BattleEngine:
         player.migrateMessages("You heal "+repr(-1*int(attacker.attackPower(attackName)))+" HP")
     else:
       player.migrateMessages("You attack for "+repr(int(attacker.attackPower(attackName)))+" damage")
-      player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
+      #player.migrateMessages("Enemy HP is "+repr(int(defender.HP)))
+      #migrates at the wrong time, replace with scan for now!
 
     defender.defendAttack(attacker.attackPower(attackName))
     self.playerTurn=False
@@ -1033,6 +1035,8 @@ class BattleEngine:
     player.migrateMessages("Remaining HP: "+repr(self.enemies[self.selEnemyIndex].HP))
     player.migrateMessages("Enemy Weakness: "+repr(self.enemies[self.selEnemyIndex].weakness))
     #Add Enemies to Beastiary.
+    player.bestiary.append(self.enemies[self.selEnemyIndex])
+    #bestiary2 = set(player.bestiary)
     
   ###
   # Tracks how long the bonus timer has been running

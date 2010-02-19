@@ -8,6 +8,9 @@ from constants import CHAR_PATH, HUD_PATH
 
 from gettext import gettext as _
 
+PLAYER_WAIT = 1
+PLAYER_MULT = 2
+
 class BattleEngine(GameEngineElement):
     def __init__(self, dgn):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
@@ -15,8 +18,12 @@ class BattleEngine(GameEngineElement):
         self.dgn = dgn
         self.current_room = dgn.get_current_room()
 
+        self.font = pygame.font.SysFont("cmr10",18,False,False)
+
         self.enemy_list = []
 
+        self.state = PLAYER_WAIT
+        self.player_input = '0'
         self.active_target = 1
 
         for i in range(0,4):
@@ -41,7 +48,34 @@ class BattleEngine(GameEngineElement):
         self.game_engine.get_object('mesg').add_line( _('Enemies present, prepare to fight!') )
 
     def menu_callback(self, selection, menu):
-        print selection
+        if selection == 'attack_show':
+
+            if( True ):
+                #Show problem
+                menu.show_menu('attack')
+                menu.set_disp('10 x 4')
+                self.state = PLAYER_MULT
+            else:
+                #Do Attack
+                print "DO ATTACK"
+                menu.show_menu('selection')
+
+        elif self.state == PLAYER_MULT:
+            if selection == 'enter':
+                pass
+
+            elif selection == 'clear':
+                self.player_input = '0'
+
+            else:
+                #MUST BE A NUMBER
+                if self.player_input == '0':
+                    self.player_input = selection
+
+                else:
+                    self.player_input = self.player_input + selection
+
+            menu.set_sec_disp( self.player_input )
 
     def __attack_phase(self):
         # Enemy Attack

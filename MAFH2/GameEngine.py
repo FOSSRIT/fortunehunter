@@ -17,8 +17,6 @@ class GameEngine(object):
         self.__draw_lst = []
         self.__object_hold = {}
 
-        self.debug = False
-
         self.clock = pygame.time.Clock()
 
     def start_event_timer(self, id, time):
@@ -57,19 +55,18 @@ class GameEngine(object):
 
             if update_draw:
                 self.draw()
-            #~ if self.debug:
-                #~ print "\n\n",event
-                #~ print "Event Listeners:", self.__event_cb
-                #~ for eventlst in self.__event_cb:
-                    #~ print "\t",eventlst
-#~
-                #~ print "\nDraw Callbacks:", self.__draw_lst
-                #~ for eventlst in self.__draw_lst:
-                    #~ print "\t",eventlst
-#~
-                #~ print "\nObjects Registered:"
-                #~ for eventlst in self.__object_hold:
-                    #~ print "\t",eventlst
+            #~ print "\n\n"
+            #~ print "Event Listeners:"
+            #~ for eventlst in self.__event_cb:
+                #~ print "\t",eventlst
+
+            #~ print "\nDraw Callbacks:"
+            #~ for eventlst in self.__draw_lst:
+                #~ print "\t",eventlst
+
+            #~ print "\nObjects Registered:"
+            #~ for eventlst in self.__object_hold:
+                #~ print "\t",eventlst
 
     def stop_event_loop(self):
         """
