@@ -9,8 +9,10 @@ ENEMY = {
     '2':{'name':_('Goblin'),'img':"concept_goblin.gif",'hp':40,'att':3,'weak':'fire'},
     '3':{'name':_('Orc'),'img':"concept_orc.gif",'hp':50,'att':5,'weak':'lightning'},
     '4':{'name':_('Stone Golem'),'img':"concept_orc.gif",'hp':10,'att':6,'weak':'missile'},
-    #'5':{'name':_('Serratula')},
-    #'6':{'name':_('Feren')},
+    '5':{'name':_('Serratula'),'img':"Crab.png",'hp':125,'att':12,'weak':'crit'},
+    '6':{'name':_('Feren'),'img':"merchant.gif",'hp':1500,'att':10,'weak':'special'},
+    '7':{'name':_('Cave Crab'),'img':"Crab.png",'hp':50,'att':7,'weak':'missile'},
+    '8':{'name':_('Frost Giant'),'img':"frost_giant.gif",'hp':45,'att':9,'weak':'fire'}
 }
 
 class Enemy(Actor):
@@ -30,6 +32,7 @@ class Enemy(Actor):
         self.name=ENEMY[id]['name']
         self.sprite.image=pygame.image.load(CHAR_PATH + ENEMY[id]['img'])
         self.HP = ENEMY[id]['hp']
+        self.MHP=ENEMY[id]['hp']
         self.ATT = ENEMY[id]['att']
         self.weakness=ENEMY[id]['weak']
         self.sprite.rect=(200,200,50,300)

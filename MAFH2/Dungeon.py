@@ -5,11 +5,12 @@ from gettext import gettext as _
 
 from GameEngine import GameEngineElement
 
+from BattleEngine import BattleEngine
 from Map import Map
 from Room import Room
 from Items import get_item
 from constants import (
-        MAP_PATH, ENV_PATH, RIGHT, LEFT, NORTH, SOUTH, EAST,
+        MAP_PATH, ENV_PATH, ITEM_PATH, RIGHT, LEFT, NORTH, SOUTH, EAST,
         WEST, UNLOCKED_DOOR, LOCKED_DOOR, PUZZLE_DOOR, LOCKED_PUZZLE_DOOR,
         ENTRANCE_DOOR, EXIT_DOOR
         )
@@ -79,10 +80,15 @@ class Dungeon(GameEngineElement):
 
 
     def __load_images(self):
-        LVL_PATH = ENV_PATH
+        LVL_PATH = ENV_PATH + "ice/"
 
-        for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
+        #for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
+        for img_key in ['room','side','front']:
             self.__images[img_key] = pygame.image.load(LVL_PATH+img_key.lower()+".gif")
+
+    def get_current_room(self):
+        profile = self.game_engine.get_object('profile')
+        return self.rooms[profile.position]
 
     def move_permissions(self, door_type):
         if door_type == UNLOCKED_DOOR:
@@ -152,6 +158,7 @@ class Dungeon(GameEngineElement):
                 self.game_engine.get_object('mesg').add_line(_("You enter room at %i,%i")%(dX, dY))
                 profile.move_to( dX, dY )
                 self.game_engine.get_object('map').update_macro()
+                self.check_for_enemies()
         else:
             #Entrance or exit may be on a boarder of the grid
             door_flag = self.rooms[profile.position].get_door( dc )
@@ -159,6 +166,11 @@ class Dungeon(GameEngineElement):
                 if self.move_permissions( door_flag ):
                     # TODO: Next Dungeon
                     pass
+
+    def check_for_enemies(self):
+        current_room = self.get_current_room()
+        if current_room.has_enemy:
+            self.game_engine.add_object('battle', BattleEngine( self ) )
 
     def item_pickup(self):
         profile = self.game_engine.get_object('profile')
@@ -177,8 +189,7 @@ class Dungeon(GameEngineElement):
         self.game_engine.get_object('mesg').add_line(_("No items found."))
 
     def amulet_search(self):
-        profile = self.game_engine.get_object('profile')
-        current_room = self.rooms[profile.position]
+        current_room = self.get_current_room()
 
         found = False
         for i in range( 0, 4 ):
@@ -191,7 +202,7 @@ class Dungeon(GameEngineElement):
         if found:
             self.game_engine.get_object('mesg').add_line(_("Amulet Search has revealed new items."))
         else:
-            self.game_engine.get_object('mesg').add_line(_("No items found."))
+            self.game_engine.get_object('mesg').add_line(_("Amulet search found nothing."))
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -218,28 +229,61 @@ class Dungeon(GameEngineElement):
             newKey=pygame.key.name(event.key)
 
             if newKey=='[1]' or newKey=='e':
-                if time() - self.pickup_time < SEARCH_TIME:
-                    self.item_pickup()
-                else:
-                    self.amulet_search()
+                if hasattr( self, 'pickup_time' ):
+                    if time() - self.pickup_time < SEARCH_TIME:
+                        self.item_pickup()
 
+                    self.game_engine.stop_event_timer( 0 )
+                    del self.pickup_time
+                return True
+
+        elif event.type == pygame.USEREVENT:
+            if time() - self.pickup_time > SEARCH_TIME:
                 self.game_engine.stop_event_timer( 0 )
                 del self.pickup_time
+                self.amulet_search()
+            #ANIMATION
+            return True
+
+    def normalize_dir( self ):
+        profile = self.game_engine.get_object('profile')
+        dir = profile.playerFacing
+
+        if dir == NORTH:
+            return 'W', 'N', 'E'
+
+        elif dir == SOUTH:
+            return 'E', 'S', 'W'
+
+        elif dir == EAST:
+            return 'N', 'E', 'S'
+
+        elif dir == WEST:
+            return 'S', 'W', 'N'
 
     def draw(self, screen):
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
 
-        # Draw background
-        door_cfg = current_room.door_str( dir )
-        screen.blit(self.__images[door_cfg],(0,0,1200,700))
+        # Draw Room Background
+        screen.blit(self.__images['room'],(0,0,1200,700))
+
+        # Draw Room Doors
+        left, front, right = self.normalize_dir()
+        if current_room.get_door( left ) != '0':
+            screen.blit(self.__images['side'],(2,15,192, 559))
+
+        if current_room.get_door( front ) != '0':
+            screen.blit(self.__images['front'],(453,0,192, 559))
+
+        if current_room.get_door( right ) != '0':
+            screen.blit(pygame.transform.flip(self.__images['side'], True, False),(1010,10,192, 559))
 
         # Draw Items
         img_list = []
 
         for i in range( dir, (dir + 4) ):
-
             #imod for room rotation
             imod = i % 4
 
@@ -251,7 +295,7 @@ class Dungeon(GameEngineElement):
                 path = get_item( item_key[0] ).path
 
             if not self.__images.has_key( path ):
-                self.__images[path] = pygame.image.load(ENV_PATH + path)
+                self.__images[path] = pygame.image.load(ITEM_PATH + path)
 
             img_list.append( self.__images[path] )
 
@@ -268,5 +312,5 @@ class Dungeon(GameEngineElement):
                 color_a = 255
                 self.game_engine.stop_event_timer( 0 )
             surf1 = pygame.Surface((1200,700), pygame.SRCALPHA)
-            pygame.draw.rect(surf1, pygame.Color(255, 255, 255, color_a), (0, 0, 1200, 700))
+            pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, 1200, 700))
             screen.blit( surf1, (0, 0) )

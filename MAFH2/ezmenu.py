@@ -55,25 +55,31 @@ class EzMenu:
 
         surf1 = pygame.Surface((1050,self.font.get_height()+20), pygame.SRCALPHA)
 
-        pygame.draw.rect(surf1, pygame.Color(255, 255, 255, 70), (0, 0, 1050, self.font.get_height()+20))
+        pygame.draw.rect(surf1, (255, 255, 255, 70), (0, 0, 1050, self.font.get_height()+20))
 
         surface.blit( surf1, (50, 690) )
         surface.blit( ren, (55, 700) )
 
-    def update(self, events):
+    def update(self, event):
         """Update the menu and get input for the menu."""
-        for e in events:
-            if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_DOWN:
-                    self.option += 1
-                if e.key == pygame.K_UP:
-                    self.option -= 1
-                if e.key == pygame.K_RETURN:
-                    self.options[self.option][1]()
+        return_val = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                self.option += 1
+                return_val = True
+            elif event.key == pygame.K_UP:
+                self.option -= 1
+                return_val = True
+            elif event.key == pygame.K_RETURN:
+                self.options[self.option][1]()
+                return_val = True
+
         if self.option > len(self.options)-1:
             self.option = 0
-        if self.option < 0:
+        elif self.option < 0:
             self.option = len(self.options)-1
+
+        return return_val
 
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""
