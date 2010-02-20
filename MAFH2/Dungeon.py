@@ -80,11 +80,12 @@ class Dungeon(GameEngineElement):
 
 
     def __load_images(self):
-        LVL_PATH = ENV_PATH + "ice/"
+        #LVL_PATH = ENV_PATH + "ice/"
+        #LVL_PATH = ENV_PATH + "celestial/"
+        LVL_PATH = ENV_PATH + "pyramid/"
 
-        #for img_key in ['FLR', 'FR', 'FL', 'F', 'LR', 'L', 'R', '_']:
-        for img_key in ['room','side','front']:
-            self.__images[img_key] = pygame.image.load(LVL_PATH+img_key.lower()+".gif")
+        for img_key in ['Room','F','L']:
+            self.__images[img_key] = pygame.image.load(LVL_PATH+img_key+".png")
 
     def get_current_room(self):
         profile = self.game_engine.get_object('profile')
@@ -267,18 +268,18 @@ class Dungeon(GameEngineElement):
         current_room = self.rooms[profile.position]
 
         # Draw Room Background
-        screen.blit(self.__images['room'],(0,0,1200,700))
+        screen.blit(self.__images['Room'],(0,0,1200,700))
 
         # Draw Room Doors
         left, front, right = self.normalize_dir()
         if current_room.get_door( left ) != '0':
-            screen.blit(self.__images['side'],(2,15,192, 559))
+            screen.blit(self.__images['L'],(0,0))
 
         if current_room.get_door( front ) != '0':
-            screen.blit(self.__images['front'],(453,0,192, 559))
+            screen.blit(self.__images['F'],(360,0))
 
         if current_room.get_door( right ) != '0':
-            screen.blit(pygame.transform.flip(self.__images['side'], True, False),(1010,10,192, 559))
+            screen.blit(pygame.transform.flip(self.__images['L'], True, False),(990,0))
 
         # Draw Items
         img_list = []
