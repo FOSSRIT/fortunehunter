@@ -70,9 +70,9 @@ class Menu:
             xMod=0
           screen.blit(self.optionsImages[i],(x+xMod,y,200,height))
           if isinstance(self.options[i],Menu):
-            screen.blit(font.render(self.options[i].name,True,(50,50,100)),(x+xMod+10,y+10,200,height))
+            screen.blit(font.render(self.options[i].name,True,(10,10,100)),(x+xMod+10,y+10,200,height))
           else:
-            screen.blit(font.render(self.options[i],True,(50,50,150)),(x+xMod+10,y+10,200,height))
+            screen.blit(font.render(self.options[i],True,(10,10,100)),(x+xMod+10,y+10,200,height))
           y+=height
           i+=1
         pygame.display.flip()
@@ -659,7 +659,7 @@ class Menu:
             player.currentX=player.dgn.start[0]
             player.currentY=player.dgn.start[1]
             player.playerFacing=1
-            player.nextDungeon(True)
+            self.tm_ap_loadGame(player)
             player.dgnMap.updateMacro(player)
             player.traversal=True
             player.mainMenu=False
