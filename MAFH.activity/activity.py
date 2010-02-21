@@ -20,7 +20,7 @@
 from sugar.activity import activity
 
 # Set to false to hide terminal and auto quit on exit
-DEBUG_TERMINAL = True
+DEBUG_TERMINAL = False
 
 class VteActivity(activity.Activity):
     """Activity subclass built around the Vte terminal widget."""
