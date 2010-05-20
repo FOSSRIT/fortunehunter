@@ -105,11 +105,13 @@ class Player:
     #sound
     self.comic=None
     pygame.mixer.init()
-    self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"door.wav")
+    self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"closedoor.ogg")
     self.doorEffect.set_volume(.25)
     self.basicAtk=pygame.mixer.Sound(SOUND_PATH+"basicAtk.ogg")
     self.basicAtk.set_volume(.5)
-    self.magicAtk=pygame.mixer.Sound(SOUND_PATH+"fireAtk.ogg")
+    self.basicAtk2=pygame.mixer.Sound(SOUND_PATH+"attack2.ogg")
+    self.basicAtk2.set_volume(.5)
+    self.magicAtk=pygame.mixer.Sound(SOUND_PATH+"fireball.ogg")
     self.magicAtk.set_volume(.5)
     self.specialAtk=pygame.mixer.Sound(SOUND_PATH+"specialAtk.ogg")
     self.specialAtk.set_volume(.5)
@@ -119,6 +121,27 @@ class Player:
     self.itemPickup.set_volume(.4)
     self.buySell=pygame.mixer.Sound(SOUND_PATH+"buySell.ogg")
     self.buySell.set_volume(.5)
+    self.coins=pygame.mixer.Sound(SOUND_PATH+"coins.ogg")
+    self.coins.set_volume(.5)
+    self.fizzle=pygame.mixer.Sound(SOUND_PATH+"fizzle.ogg")
+    self.grunt1=pygame.mixer.Sound(SOUND_PATH+"grunt1.ogg")
+    self.grunt2=pygame.mixer.Sound(SOUND_PATH+"grunt2.ogg")
+    self.grunt3=pygame.mixer.Sound(SOUND_PATH+"grunt3.ogg")
+    self.grunt4=pygame.mixer.Sound(SOUND_PATH+"grunt4.ogg")
+    self.hammer=pygame.mixer.Sound(SOUND_PATH+"hammer.ogg")
+    self.heal=pygame.mixer.Sound(SOUND_PATH+"heal.ogg")
+    self.locked=pygame.mixer.Sound(SOUND_PATH+"locked.ogg")
+    self.lightning=pygame.mixer.Sound(SOUND_PATH+"lightning.ogg")
+    self.missile=pygame.mixer.Sound(SOUND_PATH+"missile.ogg")
+    self.oof=pygame.mixer.Sound(SOUND_PATH+"oof.ogg")
+    self.scan=pygame.mixer.Sound(SOUND_PATH+"scan.ogg")
+    self.unlock=pygame.mixer.Sound(SOUND_PATH+"unlock2.ogg")
+    self.unsheath=pygame.mixer.Sound(SOUND_PATH+"unsheath.ogg")
+
+
+    
+
+
 
   def toString(self):
     dataList=[]
@@ -681,7 +704,7 @@ class BattleEngine:
       attacker.setBonusAP(attacker.currentAnswer+int(self.timeBonus*10))
       if isinstance(defender,Enemy) and defender.weakness=='normal':
         attacker.setBonusAP(attacker.BAB*2)
-      self.player.basicAtk.play()
+      self.player.basicAtk2.play()
       tup=self.player.multiplicationStats[self.player.critDifficulty-1]
       tup=(tup[0]+1,tup[1])
       self.player.multiplicationStats[self.player.critDifficulty-1]=tup
@@ -708,6 +731,7 @@ class BattleEngine:
       attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
+      self.player.heal.play()
       self.player.currentMenu=self.battleMenu
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
@@ -721,7 +745,7 @@ class BattleEngine:
         attacker.setBonusAP(attacker.BAB+60)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
-      self.player.magicAtk.play()
+      self.player.lightning.play()
       self.player.currentMenu=self.battleMenu
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
@@ -735,7 +759,7 @@ class BattleEngine:
         attacker.setBonusAP(attacker.BAB+55)
       self.glyphGroup.empty()
       self.glyphOverlayGroup.empty()
-      self.player.magicAtk.play()
+      self.player.missile.play()
       self.player.currentMenu=self.battleMenu
       tup=self.player.geometryStats[self.player.geomDifficulty-1]
       tup=(tup[0]+1,tup[1])
