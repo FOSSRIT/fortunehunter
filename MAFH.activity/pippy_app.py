@@ -106,7 +106,7 @@ class Player:
     self.comic=None
     pygame.mixer.init()
     self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"closedoor.ogg")
-    self.doorEffect.set_volume(1)
+    self.doorEffect.set_volume(.9)
     self.basicAtk=pygame.mixer.Sound(SOUND_PATH+"basicAtk.ogg")
     self.basicAtk.set_volume(.5)
     self.basicAtk2=pygame.mixer.Sound(SOUND_PATH+"attack2.ogg")
@@ -124,7 +124,7 @@ class Player:
     self.coins=pygame.mixer.Sound(SOUND_PATH+"coins.ogg")
     self.coins.set_volume(.5)
     self.fizzle=pygame.mixer.Sound(SOUND_PATH+"fizzle.ogg")
-    aelf.fizzle.set_volume(1)
+    self.fizzle.set_volume(1)
     self.grunt1=pygame.mixer.Sound(SOUND_PATH+"grunt1.ogg")
     self.grunt1.set_volume(1)
     self.grunt2=pygame.mixer.Sound(SOUND_PATH+"grunt2.ogg")
@@ -1555,7 +1555,7 @@ def checkDoor(direction,player,screen):
                 if currentRoom.doorNFlag==EXIT:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Big Key":
-                      #player.unlock2.play()
+                      player.unlock2.play()
                       player.battlePlayer.inv_Ar.remove(item)
                       player.nextDungeon()
                       return("You use the BIG KEY, and the door slams behind you")
@@ -1565,9 +1565,9 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorNFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      #player.unlock1.play()
+                      player.unlock1.play()
                       return("You use a SMALL KEY, "+enterRoom('north',player,screen))
-                  #player.locked.play()
+                  player.locked.play()
                   return("This door is locked, you need a SMALL KEY")
                 elif currentRoom.doorNFlag==PUZZLE or currentRoom.doorNFlag==BOTH:
                   startPuzzle(player)
@@ -1583,7 +1583,7 @@ def checkDoor(direction,player,screen):
                 if currentRoom.doorSFlag==EXIT:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Big Key":
-                      #player.unlock2.play()
+                      player.unlock2.play()
                       player.battlePlayer.inv_Ar.remove(item)
                       player.nextDungeon()
                       return("You use the BIG KEY, and the door slams behind you")
@@ -1593,9 +1593,9 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorSFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      #player.unlock1.play()
+                      player.unlock1.play()
                       return("You use a SMALL KEY, "+enterRoom('south',player,screen))
-                  #player.locked.play()
+                  player.locked.play()
                   return("This door is locked, you need a SMALL KEY")
                 elif currentRoom.doorSFlag==PUZZLE or currentRoom.doorSFlag==BOTH:
                   startPuzzle(player)
@@ -1611,7 +1611,7 @@ def checkDoor(direction,player,screen):
                 if currentRoom.doorEFlag==EXIT:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Big Key":
-                      #player.unlock2.play()
+                      player.unlock2.play()
                       player.battlePlayer.inv_Ar.remove(item)
                       player.nextDungeon()
                       return("You use the BIG KEY, and the door slams behind you")
@@ -1621,9 +1621,9 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorEFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      #player.unlock1.play()
+                      player.unlock1.play()
                       return("You use a SMALL KEY, "+enterRoom('east',player,screen))
-                  #player.locked.play()
+                  player.locked.play()
                   return("This door is locked, you need a SMALL KEY")
                 elif currentRoom.doorEFlag==PUZZLE or currentRoom.doorEFlag==BOTH:
                   startPuzzle(player)
@@ -1639,7 +1639,7 @@ def checkDoor(direction,player,screen):
                 if currentRoom.doorWFlag==EXIT:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Big Key":
-                      #player.unlock2.play()
+                      player.unlock2.play()
                       player.battlePlayer.inv_Ar.remove(item)
                       player.nextDungeon()
                       return("You use the BIG KEY, and the door slams behind you")
@@ -1649,9 +1649,9 @@ def checkDoor(direction,player,screen):
                 elif currentRoom.doorWFlag==LOCKED:
                   for item in player.battlePlayer.inv_Ar:
                     if item.name=="Small Key":
-                      #player.unlock1.play()
+                      player.unlock1.play()
                       return("You use a SMALL KEY, "+enterRoom('west',player,screen))
-                  #player.locked.play()
+                  player.locked.play()
                   return("This door is locked, you need a SMALL KEY")
                 elif currentRoom.doorWFlag==PUZZLE or currentRoom.doorWFlag==BOTH:
                   startPuzzle(player)
