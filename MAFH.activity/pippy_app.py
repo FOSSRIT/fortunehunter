@@ -106,7 +106,7 @@ class Player:
     self.comic=None
     pygame.mixer.init()
     self.doorEffect=pygame.mixer.Sound(SOUND_PATH+"closedoor.ogg")
-    self.doorEffect.set_volume(1.3)
+    self.doorEffect.set_volume(1)
     self.basicAtk=pygame.mixer.Sound(SOUND_PATH+"basicAtk.ogg")
     self.basicAtk.set_volume(.5)
     self.basicAtk2=pygame.mixer.Sound(SOUND_PATH+"attack2.ogg")
