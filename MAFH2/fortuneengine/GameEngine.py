@@ -14,6 +14,7 @@
 #    Author: Justin Lewis  <jlew.blackout@gmail.com>
 
 import pygame
+import fortuneengine.pyconsole.pyconsole as pyconsole
 
 class GameEngine(object):
     instance = None
@@ -32,13 +33,53 @@ class GameEngine(object):
         self.__draw_lst = []
         self.__object_hold = {}
 
+        self.__active_event_timers = {}
+
         self.clock = pygame.time.Clock()
+
+        # functions exposed to the console
+        function_list = {
+            "ge_stop":self.stop_event_loop,
+
+            "ge_list_objects":self.list_objects,
+            "ge_list_drawcb":self.list_draw_callbacks,
+            "ge_list_eventcb":self.list_event_callbacks,
+            "ge_list_timers":self.list_event_timers,
+        }
+
+        # Ctrl + key mappings
+        key_calls = {
+            "d":self.stop_event_loop,
+            "m":self.console_mode,
+        }
+
+        # Initalize Py Console
+        self.console = pyconsole.Console(
+            self.screen, (0,0,width,height/2),
+            functions=function_list, key_calls=key_calls,
+            vars={}, syntax={}
+        )
+    def console_mode(self):
+        # Deactivate Console if showing
+        if self.console.active:
+            self.console.set_active()
+        self.console.setvar("python_mode", not self.console.getvar("python_mode"))
+        self.console.set_interpreter()
+        self.console.set_active()
 
     def start_event_timer(self, id, time):
         pygame.time.set_timer(pygame.USEREVENT + id, time)
+        self.__active_event_timers[id] = time
 
     def stop_event_timer(self, id):
         pygame.time.set_timer(pygame.USEREVENT + id, 0)
+        self.__active_event_timers[id] = 0
+
+    def list_event_timers(self):
+        timer_list = "Event Timers:\n"
+        for timer_key in self.__active_event_timers.keys():
+            timer_list += "\t%d: %d\n" % (timer_key, self.__active_event_timers[timer_key])
+        return timer_list
 
     def start_event_loop(self):
         """
@@ -49,10 +90,25 @@ class GameEngine(object):
         while self.__run:
             self.clock.tick(15)
             update_draw = False
+            console_active = self.console.active
+
+            self.console.process_input()
+
+            # Force to re-draw if removing console
+            # This is nessasary as queue will be empty at this time
+            # and not update
+            if console_active and not self.console.active:
+                self.draw()
+
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
                     self.__run = False
+
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
+                     and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                        self.console.set_active()
+                        update_draw = True
 
                 else:
                     # Send event to all event listeners
@@ -68,20 +124,14 @@ class GameEngine(object):
                             update_draw = True
                             break
 
-            if update_draw:
+            # If console is active, we want to draw console, pausing
+            # game drawing (events are still being fired, just no
+            # draw updates.
+            if console_active:
+                self.console.draw()
+                pygame.display.flip()
+            elif update_draw:
                 self.draw()
-            #~ print "\n\n"
-            #~ print "Event Listeners:"
-            #~ for eventlst in self.__event_cb:
-                #~ print "\t",eventlst
-
-            #~ print "\nDraw Callbacks:"
-            #~ for eventlst in self.__draw_lst:
-                #~ print "\t",eventlst
-
-            #~ print "\nObjects Registered:"
-            #~ for eventlst in self.__object_hold:
-                #~ print "\t",eventlst
 
     def stop_event_loop(self):
         """
@@ -95,6 +145,8 @@ class GameEngine(object):
         """
         for fnc in self.__draw_lst:
             fnc(self.screen)
+
+        self.console.draw()
         pygame.display.flip()
 
     def add_event_callback(self, cb):
@@ -117,6 +169,13 @@ class GameEngine(object):
             return True
         except:
             return False
+
+    def list_event_callbacks( self ):
+        event_callbacks = "Event Listeners:\n"
+        for eventlst in self.__event_cb:
+            event_callbacks = "\t%s\n"%str(eventlst)
+        return event_callbacks
+
 
     def add_draw_callback(self, fnc):
         """
@@ -153,6 +212,12 @@ class GameEngine(object):
         except:
             return False
 
+    def list_draw_callbacks(self):
+        callbacks = "Draw Callbacks:\n"
+        for eventlst in self.__draw_lst:
+            callbacks += "\t%s\n" % str(eventlst)
+        return callbacks
+
     def has_object(self, name):
         """
         Returns true if object is stored in game engine
@@ -187,3 +252,12 @@ class GameEngine(object):
         @param name     The name of the object to remove
         """
         del self.__object_hold[name]
+
+    def list_objects(self):
+        """
+        Returns a sting of registered objects
+        """
+        objlist = "Objects Registered:\n"
+        for eventlst in self.__object_hold:
+            objlist += "\t%s\n" % str(eventlst)
+        return objlist
