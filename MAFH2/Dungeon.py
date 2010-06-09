@@ -3,7 +3,7 @@ import os.path
 from time import time
 from gettext import gettext as _
 
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 
 from BattleEngine import BattleEngine
 from Map import Map

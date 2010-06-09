@@ -1,4 +1,4 @@
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 from Enemy import get_enemy
 from BattleMenu import BattleMenuHolder
 from AnimatedSprite import Spritesheet

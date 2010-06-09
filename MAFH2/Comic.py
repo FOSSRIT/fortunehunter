@@ -1,6 +1,6 @@
 import pygame
 import os
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 ######################################################################
 #Comic Class: stores an image list and possible BGM, traverses through list and tries to play BGM
 ######################################################################

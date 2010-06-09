@@ -1,5 +1,5 @@
 import pygame
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 class TermBox(GameEngineElement):
     def __init__(self, x,y,width,height,lines):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)

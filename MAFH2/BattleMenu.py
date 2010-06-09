@@ -1,5 +1,5 @@
 import pygame
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 
 from constants import MENU_PATH
 from gettext import gettext as _

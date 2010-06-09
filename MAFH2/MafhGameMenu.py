@@ -1,5 +1,5 @@
 import pygame, ezmenu
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 
 class GameMenuHolder( GameEngineElement ):
     def __init__(self, callback, background=None, width=1200, height=900):

@@ -1,6 +1,6 @@
 import pygame
 
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 
 from TermBox import TermBox
 from Dungeon import Dungeon

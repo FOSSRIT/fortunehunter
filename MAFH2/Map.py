@@ -5,7 +5,7 @@ from constants import (
     NORTH, EAST, WEST, SOUTH,UNLOCKED_DOOR, LOCKED_DOOR, PUZZLE_DOOR,
     LOCKED_PUZZLE_DOOR, ENTRANCE_DOOR, EXIT_DOOR
 )
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 
 from gettext import gettext as _
 

@@ -1,6 +1,6 @@
 import pygame
 
-from GameEngine import GameEngineElement
+from fortuneengine.GameEngineElement import GameEngineElement
 from constants import MENU_PATH, NORTH, SOUTH, EAST, WEST, RIGHT, LEFT
 from Hero import Hero
 
