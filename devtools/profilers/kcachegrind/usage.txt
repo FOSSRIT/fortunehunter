@@ -1,0 +1,4 @@
+To use this module, run your python code with lsprofcalltree.py and then
+run kcachegrind on the output log generated.
+
+kcachegrind may be installed with the kdesk package
