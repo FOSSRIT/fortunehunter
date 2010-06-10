@@ -17,15 +17,29 @@ from fortuneengine.GameEngine import GameEngine
 
 class GameEngineElement(object):
     def __init__(self, has_draw=True, has_event=True):
+        """
+        Default constructor for GameEngineElement
+        
+        @param  has_draw:    boolean to signify if element should be drawn
+        @param  has_event:   boolean to signify whether the element should be
+                             given events from the queue
+        """
         self.__has_draw = has_draw
         self.__has_event = has_event
         self.__in_engine = False
         self.game_engine = GameEngine.instance
 
     def is_in_engine(self):
+        """
+        Returns true if object has been registered with the game engine.
+        """
         return self.__in_engine
 
     def add_to_engine(self):
+        """
+        Registers the object with the game engine. Registers draw and event call
+        backs seperately if they were set to true in the constructor.
+        """
         if not self.__in_engine:
             self.__in_engine = True
 
@@ -36,6 +50,9 @@ class GameEngineElement(object):
                 self.game_engine.add_event_callback( self.event_handler )
 
     def remove_from_engine(self):
+        """
+        Removes the object from the correct queues in the engine
+        """
         if self.__in_engine:
             self.__in_engine = False
 
@@ -46,7 +63,20 @@ class GameEngineElement(object):
                 self.game_engine.remove_event_callback( self.event_handler )
 
     def event_handler(self, event):
+        """
+        This method should be overridden by the user-specified class that extends
+        this GameEngineElement class. This method specifies how that class will
+        handle events given to it by the engine.
+
+        @return:    true if the user wants to prevent the event from continuing
+                    down the queue
+        """
         pass
 
     def draw(self, screen):
+        """
+        This method should be overridden by the user-specified class that extends
+        this GameEngineElement class. This method specifies how the class will 
+        be drawn.
+        """
         pass

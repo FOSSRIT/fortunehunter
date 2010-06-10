@@ -60,6 +60,9 @@ class GameEngine(object):
             vars={}, syntax={}
         )
     def console_mode(self):
+        """
+        Swiched console between console and python interpreter
+        """
         # Deactivate Console if showing
         if self.console.active:
             self.console.set_active()
@@ -68,14 +71,25 @@ class GameEngine(object):
         self.console.set_active()
 
     def start_event_timer(self, id, time):
+        """
+        Starts a timer that fires a user event into the queue every "time" 
+        milliseconds
+        """
         pygame.time.set_timer(pygame.USEREVENT + id, time)
         self.__active_event_timers[id] = time
 
     def stop_event_timer(self, id):
+        """
+        Stops the timer that has id from firing
+        """
         pygame.time.set_timer(pygame.USEREVENT + id, 0)
         self.__active_event_timers[id] = 0
 
     def list_event_timers(self):
+        """
+        returns a list of configured timers, if the timers has a time of 0 the 
+        timer is disabled
+        """
         timer_list = "Event Timers:\n"
         for timer_key in self.__active_event_timers.keys():
             timer_list += "\t%d: %d\n" % (timer_key, self.__active_event_timers[timer_key])
@@ -153,7 +167,7 @@ class GameEngine(object):
         """
         Adds event callback to the event callback stack
 
-        @param cb       Callback to be added to the stack when events are fired
+        @param cb:       Callback to be added to the stack when events are fired
         """
         self.__event_cb.append( cb )
 
@@ -161,8 +175,8 @@ class GameEngine(object):
         """
         Removes an event from the event callback stack
 
-        @param cb       The callback to remove from the event callback stack
-        @return         Returns true if sucessful in removing callback
+        @param cb:       The callback to remove from the event callback stack
+        @return:         Returns true if sucessful in removing callback
         """
         try:
             self.__event_cb.remove( cb )
@@ -171,6 +185,10 @@ class GameEngine(object):
             return False
 
     def list_event_callbacks( self ):
+        """
+        Returns a string representation of all events registered with the game
+        engine
+        """
         event_callbacks = "Event Listeners:\n"
         for eventlst in self.__event_cb:
             event_callbacks = "\t%s\n"%str(eventlst)
@@ -181,7 +199,7 @@ class GameEngine(object):
         """
         Adds a callback to the draw list.  Function will be passed the game screen
 
-        @param fnc      The funciton to call when system is drawing
+        @param	fnc:	The function to call when system is drawing
         """
         self.__draw_lst.append( fnc )
 
@@ -189,7 +207,7 @@ class GameEngine(object):
         """
         Removes top of draw stack and returns it
 
-        @return         Returns the top callback function that was removed
+        @return:         Returns the top callback function that was removed
         """
         return self.__draw_lst.pop()
 
@@ -203,8 +221,8 @@ class GameEngine(object):
         """
         Removes a draw callback from the game engine draw function
 
-        @param fnc      The callback function to remove
-        @return         Returns true if sucessful removal of the function
+        @param fnc:      The callback function to remove
+        @return:         Returns true if sucessful removal of the function
         """
         try:
             self.__draw_lst.remove(fnc)
@@ -213,6 +231,10 @@ class GameEngine(object):
             return False
 
     def list_draw_callbacks(self):
+        """
+        Lists all the drawing callbacks currently registered with the game engine
+        """
+
         callbacks = "Draw Callbacks:\n"
         for eventlst in self.__draw_lst:
             callbacks += "\t%s\n" % str(eventlst)
@@ -222,8 +244,8 @@ class GameEngine(object):
         """
         Returns true if object is stored in game engine
 
-        @param name     Name of the object to check if exists
-        @return         Returns true if object found
+        @param name:     Name of the object to check if exists
+        @return:         Returns true if object found
         """
         return self.__object_hold.has_key( name )
 
@@ -231,8 +253,8 @@ class GameEngine(object):
         """
         Adds an object to the game engine datastore
 
-        @param name     The name used to store the object
-        @param obj      The object to store
+        @param name:     The name used to store the object
+        @param obj:      The object to store
         """
         self.__object_hold[name] = obj
 
@@ -240,8 +262,8 @@ class GameEngine(object):
         """
         Returns an object from the game engine datastore
 
-        @param name     The name of object to return
-        @return         Returns the object
+        @param name:     The name of object to return
+        @return:         Returns the object
         """
         return self.__object_hold[name]
 
@@ -249,7 +271,7 @@ class GameEngine(object):
         """
         Removes an object from the game engine datastore
 
-        @param name     The name of the object to remove
+        @param name:     The name of the object to remove
         """
         del self.__object_hold[name]
 
