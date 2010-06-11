@@ -387,7 +387,6 @@ class Console:
             # A variable alone on a line
             if (len(tokens) is 1) and re_is_var.match(text) and not assign:
                 out = tokens[0]
-                print "HRE"
             # Statement in the form $name = value
             elif (len(tokens) is 1) and assign:
                 self.setvar(assign.group('name'), tokens[0])
