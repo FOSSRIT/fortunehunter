@@ -45,6 +45,7 @@ class GameEngine(object):
             "ge_list_drawcb":self.list_draw_callbacks,
             "ge_list_eventcb":self.list_event_callbacks,
             "ge_list_timers":self.list_event_timers,
+            "inspect":self.inspect_object,
         }
 
         # Ctrl + key mappings
@@ -53,7 +54,7 @@ class GameEngine(object):
             "m":self.console_mode,
         }
 
-        # Initalize Py Console
+        # Initialize Py Console
         self.console = pyconsole.Console(
             self.screen, (0,0,width,height/2),
             functions=function_list, key_calls=key_calls,
@@ -61,7 +62,7 @@ class GameEngine(object):
         )
     def console_mode(self):
         """
-        Swiched console between console and python interpreter
+        Switches console between console and python interpreter
         """
         # Deactivate Console if showing
         if self.console.active:
@@ -109,7 +110,7 @@ class GameEngine(object):
             self.console.process_input()
 
             # Force to re-draw if removing console
-            # This is nessasary as queue will be empty at this time
+            # This is necessary as queue will be empty at this time
             # and not update
             if console_active and not self.console.active:
                 self.draw()
@@ -176,7 +177,7 @@ class GameEngine(object):
         Removes an event from the event callback stack
 
         @param cb:       The callback to remove from the event callback stack
-        @return:         Returns true if sucessful in removing callback
+        @return:         Returns true if successful in removing callback
         """
         try:
             self.__event_cb.remove( cb )
@@ -222,7 +223,7 @@ class GameEngine(object):
         Removes a draw callback from the game engine draw function
 
         @param fnc:      The callback function to remove
-        @return:         Returns true if sucessful removal of the function
+        @return:         Returns true if successful removal of the function
         """
         try:
             self.__draw_lst.remove(fnc)
@@ -283,3 +284,19 @@ class GameEngine(object):
         for eventlst in self.__object_hold:
             objlist += "\t%s\n" % str(eventlst)
         return objlist
+
+    def inspect_object(self, objectname):
+        if self.__object_hold.has_key( objectname ):
+            obj = self.__object_hold[objectname]
+
+            classname = obj.__class__.__name__
+
+            attribute_list = "Attributes:"
+            attributes = obj.__dict__
+
+            for attribute_key in attributes.keys():
+                attribute_list = "%s\n\t%s:%s" % (attribute_list,attribute_key,str(attributes[attribute_key]))
+            
+            return "Class: %s\n%s"   % (classname, attribute_list)
+        else:
+            return "Error, %d is not an object registered with the game engine" % objectname
