@@ -299,4 +299,4 @@ class GameEngine(object):
             
             return "Class: %s\n%s"   % (classname, attribute_list)
         else:
-            return "Error, %d is not an object registered with the game engine" % objectname
+            return "Error, %s is not an object registered with the game engine" % objectname
