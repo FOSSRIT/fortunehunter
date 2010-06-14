@@ -121,7 +121,7 @@ class BattleMenu(GameEngineElement):
 
 class Menu(object):
     def __init__(self, options, cols):
-        """Initialise the EzMenu! options should be a sequence of lists in the
+        """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
 
         self.options = options

@@ -7,6 +7,7 @@ import pygame
 from constants import CHAR_PATH, HUD_PATH
 
 from gettext import gettext as _
+import random
 
 PLAYER_WAIT = 1
 PLAYER_MULT = 2
@@ -49,38 +50,69 @@ class BattleEngine(GameEngineElement):
 
     def menu_callback(self, selection, menu):
         if selection == 'attack_show':
-
-            if( True ):
+            
+            random.seed()
+            isCrit = random.randint(0,100)
+            tempR1 = random.randint(0,10)
+            tempR2 = random.randint(0,10)
+            self.critAns = tempR1 * tempR2
+                
+            if( isCrit > 90 ):
                 #Show problem
                 menu.show_menu('attack')
-                menu.set_disp('10 x 4')
+                menu.set_disp('%d x %d' %(tempR1, tempR2))
                 self.state = PLAYER_MULT
             else:
                 #Do Attack
-                print "DO ATTACK"
+                print "Non Crit"
                 menu.show_menu('selection')
+                self.__attack_phase(menu)
 
         elif self.state == PLAYER_MULT:
-            if selection == 'enter':
-                pass
+			if selection == 'enter':
+                #figure out damage for crit attack
+				menu.show_menu('selection')
+				if int(self.player_input) == (self.critAns):
+					menu.set_disp('Correct!')
+				else:
+					menu.set_disp('Incorrect')
+				self.__attack_phase(menu)
 
-            elif selection == 'clear':
-                self.player_input = '0'
 
-            else:
+			elif selection == 'clear':
+				self.player_input = '0'
+			
+			elif selection == 'fire':
+				menu.set_disp('Fire Cast!')
+				self.__attack_phase(menu)
+				
+			elif selection == 'heal':
+				menu.set_disp('Heal Cast!')
+				self.__attack_phase(menu)
+				
+			elif selection == 'lightning':
+				menu.set_disp('Lightning Cast!')
+				self.__attack_phase(menu)
+				
+			elif selection == 'missile':
+				menu.set_disp('Missile Cast!')
+				self.__attack_phase(menu)
+			
+			else:
                 #MUST BE A NUMBER
-                if self.player_input == '0':
-                    self.player_input = selection
+				if self.player_input == '0':
+					self.player_input = selection
+				else:
+					self.player_input = self.player_input + selection
 
-                else:
-                    self.player_input = self.player_input + selection
+			menu.set_sec_disp( self.player_input )
 
-            menu.set_sec_disp( self.player_input )
-
-    def __attack_phase(self):
+    def __attack_phase(self,menu):
         # Enemy Attack
         # Check player health
-        pass
+        print("in __attack_phase")
+        menu.set_sec_disp('')
+        self.__end_battle()
 
     def __end_battle(self):
         #Give items if any
@@ -106,9 +138,14 @@ class BattleEngine(GameEngineElement):
                 if self.active_target > len(self.enemy_list):
                     self.active_target = 1
                 return True
+            
+            elif newKey=='return':
+                self.enemy = self.active_target
+                #do damage calculations
+                return True
 
 
-        # We don't want to allow other things to run durning battle
+        # We don't want to allow other things to run during battle
         return True
 
     def draw(self, screen):
