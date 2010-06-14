@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from fortuneengine.GameEngine import GameEngine
 from MafhGameMenu import GameMenuHolder
 
