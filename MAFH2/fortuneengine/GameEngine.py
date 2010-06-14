@@ -286,8 +286,13 @@ class GameEngine(object):
         return objlist
 
     def inspect_object(self, objectname):
-        if self.__object_hold.has_key( objectname ):
-            obj = self.__object_hold[objectname]
+        object_tokens = objectname.split(".")
+
+        try:
+            obj = self.__object_hold[ object_tokens[0]]
+
+            for token in object_tokens[1:]:
+                obj = getattr( obj, token )
 
             classname = obj.__class__.__name__
 
@@ -298,5 +303,5 @@ class GameEngine(object):
                 attribute_list = "%s\n\t%s:%s" % (attribute_list,attribute_key,str(attributes[attribute_key]))
             
             return "Class: %s\n%s"   % (classname, attribute_list)
-        else:
+        except:
             return "Error, %s is not an object registered with the game engine" % objectname
