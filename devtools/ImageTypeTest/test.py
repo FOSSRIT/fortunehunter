@@ -19,7 +19,7 @@ t=0 #trial number n
 ftArr=[ ["bmp","BMPs 16-Bits/"] , ["bmp","BMPs 24-Bits/"] , ["bmp","BMPs 32-Bits/"] , ["gif","GIFs/"] , ["gif","GIFs Transparent/"] , ["jpg","JPGs 1Low/"] , ["jpg","JPGs 2Medium/"] , ["jpg","JPGs 3High/"] , ["jpg","JPGs 4Max/"] , ["png","PNGs Indexed/"] , ["png","PNGs Transparent/"] ]
 
 screen = pygame.display.set_mode(size) #Screen Set 600x400
-background = 0, 0, 0 #Black
+background = 152, 251, 152 # pale green
 
 #The switch function
 #-------------------------------------------------------------
@@ -63,45 +63,46 @@ while 1:
  cnt=make
  ft=ftArr[t]
  print "Testing "+ft[1]+"N Button."+ft[0]
- while cnt>0:
-  img[cnt,0]= pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])) #image.load
-  img[cnt,1]=  img[cnt,0].get_rect()
-  img[cnt,2]= [2,2] #speed
-  m=cnt*40 # named m cause i wanted some m&ms
-  img[cnt,1]=img[cnt,1].move(m,m) #see? it wasn't as tastey though
-  cnt=cnt-1
- r=0
- start=time.time()
-#----------------------------------------------------------------- 
- while 1:
-  chngImg()
-  i=i+1
-  if i>9: i=1
+ trial=5
+ while trial>0:
+  while cnt>0:
+   img[cnt,0]= pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])) #image.load
+   img[cnt,1]=  img[cnt,0].get_rect()
+   img[cnt,2]= [2,2] #speed
+   m=cnt*40 # named m cause i wanted some m&ms
+   img[cnt,1]=img[cnt,1].move(m,m) #see? it wasn't as tastey though
+   cnt=cnt-1
+  r=0
+  start=time.time()
+# ----------------------------------------------------------------- 
+  while 1:
+   chngImg()
+   i=i+1
+   if i>9: i=1
+   
+   for event in pygame.event.get():
+    if event.type == pygame.QUIT: sys.exit()
+   
+#   speed1=collision(ballrect1,speed1)
+#   ballrect1 = ballrect1.move(speed1)
+   
+   collision()
+   screen.fill(background)
+   
+#   cnt=make
+#   while cnt>0:
+#   screen.blit(ball1, ballrect1)
+#    screen.blit(img[cnt,0],img[cnt,1])
+#    cnt=cnt-1
+#   
+#   pygame.display.flip()
+   
+   r=r+1
+   if r>500: break
+   
+# -----------------------------------------------------------------
+# -----------------------------------------------------------------
   
-  for event in pygame.event.get():
-   if event.type == pygame.QUIT: sys.exit()
-  
-#  speed1=collision(ballrect1,speed1)
-#  ballrect1 = ballrect1.move(speed1)
-  
-  collision()
-  screen.fill(background)
-  
-#  cnt=make
-#  while cnt>0:
-#  screen.blit(ball1, ballrect1)
-#   screen.blit(img[cnt,0],img[cnt,1])
-#   cnt=cnt-1
-#  
-#  pygame.display.flip()
-  
-  r=r+1
-  if r>500: break
-  
-#-----------------------------------------------------------------
-#-----------------------------------------------------------------
- print 1/((time.time()-start)/r)
- if ftArr[t+1] is None:
-  print "Exiting..."
-  sys.exit()
+  print 1/((time.time()-start)/r)
+  trial=trial-1
  t=t+1
