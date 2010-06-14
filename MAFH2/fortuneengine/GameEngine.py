@@ -297,7 +297,12 @@ class GameEngine(object):
         for token in object_tokens[1:]:
 
             dict_token = token.split('[')
-            obj = getattr( obj, dict_token[0] )
+            
+            try:
+                obj = getattr( obj, dict_token[0] )
+            except:
+                return "Error finding member element: %s" % token
+
 
             # Handles dictionaries
             for d_token in dict_token[1:]:
