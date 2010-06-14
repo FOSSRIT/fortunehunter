@@ -15,6 +15,7 @@ r=0 #frame refreshes
 i=1 #cycles images
 size = width, height = 600,400 #screen sizes
 t=0 #trial number n
+colorkey=(255, 152, 0)
 
 ftArr=[ ["bmp","BMPs 16-Bits/"] , ["bmp","BMPs 24-Bits/"] , ["bmp","BMPs 32-Bits/"] , ["gif","GIFs/"] , ["gif","GIFs Transparent/"] , ["jpg","JPGs 1Low/"] , ["jpg","JPGs 2Medium/"] , ["jpg","JPGs 3High/"] , ["jpg","JPGs 4Max/"] , ["png","PNGs Indexed/"] , ["png","PNGs Transparent/"] ]
 
@@ -31,8 +32,6 @@ def chngImg():
    2: pygame.image.load("%s3 Button.%s"%(ft[1],ft[0])),
    3: pygame.image.load("%s4 Button.%s"%(ft[1],ft[0])),
    4: pygame.image.load("%s5 Button.%s"%(ft[1],ft[0])),
-   3: pygame.image.load("%s4 Button.%s"%(ft[1],ft[0])),
-   3: pygame.image.load("%s4 Button.%s"%(ft[1],ft[0])),
    5: pygame.image.load("%s6 Button.%s"%(ft[1],ft[0])),
    6: pygame.image.load("%s7 Button.%s"%(ft[1],ft[0])),
    7: pygame.image.load("%s8 Button.%s"%(ft[1],ft[0])),
@@ -40,6 +39,7 @@ def chngImg():
    9: pygame.image.load("%s1 Button.%s"%(ft[1],ft[0]))
   }
   img[cnt,0]=switcher.get(i,pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])))
+  img[cnt,0].set_colorkey(colorkey, pygame.RLEACCEL)
   cnt=cnt-1
 #-----------------------------------------------------------------
 #Collision detection
