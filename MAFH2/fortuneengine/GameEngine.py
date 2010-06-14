@@ -289,19 +289,50 @@ class GameEngine(object):
         object_tokens = objectname.split(".")
 
         try:
-            obj = self.__object_hold[ object_tokens[0]]
+            obj = self.__object_hold[ object_tokens[0] ]
+        except KeyError:
+            return "Error, %s is not an object registered with the game engine" % object_tokens[0]
 
-            for token in object_tokens[1:]:
-                obj = getattr( obj, token )
+        # Handles dot notation for sub modules
+        for token in object_tokens[1:]:
 
-            classname = obj.__class__.__name__
+            dict_token = token.split('[')
+            obj = getattr( obj, dict_token[0] )
 
+            # Handles dictionaries
+            for d_token in dict_token[1:]:
+                if d_token[-1] == "]":
+                    if hasattr(obj, "has_key") and obj.has_key( d_token[:-1] ):
+                        obj.get( d_token[:-1] )
+                    else:
+                        return "Not a dictionary object"
+
+                else:
+                    return "Invalid Syntax, expected ] at end of %d" % d_token
+
+        classname = obj.__class__.__name__
+
+        if hasattr( obj, "__dict__" ):
             attribute_list = "Attributes:"
             attributes = obj.__dict__
-
+   
             for attribute_key in attributes.keys():
                 attribute_list = "%s\n\t%s:%s" % (attribute_list,attribute_key,str(attributes[attribute_key]))
-            
-            return "Class: %s\n%s"   % (classname, attribute_list)
-        except:
-            return "Error, %s is not an object registered with the game engine" % objectname
+
+        # If dictionary, show keys
+        elif hasattr( obj, "keys" ):
+            attribute_list = "Dictionary Items:"
+
+            for d_obj in obj.keys():
+                attribute_list = "%s\n\t%s:%s" % (attribute_list,d_obj,str(obj[d_obj]))
+                
+        elif type( obj ).__name__ == 'list':
+            i = 0
+            attribute_list = "List Items:"
+            for item in obj:
+                attribute_list = "%s\n\t%d:%s" % (attribute_list,i,str(item))
+        else:
+            attribute_list = str( obj )
+
+        return "Class: %s\n%s"   % (classname, attribute_list)
+
