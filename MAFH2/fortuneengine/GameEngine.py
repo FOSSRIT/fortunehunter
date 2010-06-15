@@ -307,10 +307,17 @@ class GameEngine(object):
             # Handles dictionaries
             for d_token in dict_token[1:]:
                 if d_token[-1] == "]":
-                    if hasattr(obj, "has_key") and obj.has_key( d_token[:-1] ):
-                        obj.get( d_token[:-1] )
-                    else:
-                        return "Not a dictionary object"
+                    d_token = d_token[:-1]
+                   
+                    try:
+                       key = int( d_token )
+                    except:
+                       key = d_token
+
+                    try:
+                        obj = obj[ key ]
+                    except:
+                        return "Unable to find %s" % key
 
                 else:
                     return "Invalid Syntax, expected ] at end of %d" % d_token
@@ -336,6 +343,7 @@ class GameEngine(object):
             attribute_list = "List Items:"
             for item in obj:
                 attribute_list = "%s\n\t%d:%s" % (attribute_list,i,str(item))
+                i = i + 1
         else:
             attribute_list = str( obj )
 
