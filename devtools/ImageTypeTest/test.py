@@ -39,7 +39,7 @@ def chngImg():
    9: pygame.image.load("%s1 Button.%s"%(ft[1],ft[0]))
   }
   img[cnt,0]=switcher.get(i,pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])))
-  img[cnt,0].set_colorkey(colorkey, pygame.RLEACCEL)
+  #img[cnt,0].set_colorkey(colorkey, pygame.RLEACCEL)
   cnt=cnt-1
 #-----------------------------------------------------------------
 #Collision detection
