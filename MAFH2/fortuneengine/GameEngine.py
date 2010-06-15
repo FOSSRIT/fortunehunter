@@ -16,8 +16,10 @@
 import pygame
 import fortuneengine.pyconsole.pyconsole as pyconsole
 
+
 class GameEngine(object):
     instance = None
+
     def __init__(self, width=1200, height=900):
         GameEngine.instance = self
         pygame.init()
@@ -39,27 +41,27 @@ class GameEngine(object):
 
         # functions exposed to the console
         function_list = {
-            "ge_stop":self.stop_event_loop,
+            "ge_stop": self.stop_event_loop,
 
-            "ge_list_objects":self.list_objects,
-            "ge_list_drawcb":self.list_draw_callbacks,
-            "ge_list_eventcb":self.list_event_callbacks,
-            "ge_list_timers":self.list_event_timers,
-            "inspect":self.inspect_object,
+            "ge_list_objects": self.list_objects,
+            "ge_list_drawcb": self.list_draw_callbacks,
+            "ge_list_eventcb": self.list_event_callbacks,
+            "ge_list_timers": self.list_event_timers,
+            "inspect": self.inspect_object,
         }
 
         # Ctrl + key mappings
         key_calls = {
-            "d":self.stop_event_loop,
-            "m":self.console_mode,
+            "d": self.stop_event_loop,
+            "m": self.console_mode,
         }
 
         # Initialize Py Console
         self.console = pyconsole.Console(
-            self.screen, (0,0,width,height/2),
+            self.screen, (0, 0, width, height / 2),
             functions=function_list, key_calls=key_calls,
-            vars={}, syntax={}
-        )
+            vars={}, syntax={})
+
     def console_mode(self):
         """
         Switches console between console and python interpreter
@@ -67,13 +69,15 @@ class GameEngine(object):
         # Deactivate Console if showing
         if self.console.active:
             self.console.set_active()
-        self.console.setvar("python_mode", not self.console.getvar("python_mode"))
+        self.console.setvar("python_mode",
+                            not self.console.getvar("python_mode"))
+
         self.console.set_interpreter()
         self.console.set_active()
 
     def start_event_timer(self, id, time):
         """
-        Starts a timer that fires a user event into the queue every "time" 
+        Starts a timer that fires a user event into the queue every "time"
         milliseconds
         """
         pygame.time.set_timer(pygame.USEREVENT + id, time)
@@ -88,12 +92,14 @@ class GameEngine(object):
 
     def list_event_timers(self):
         """
-        returns a list of configured timers, if the timers has a time of 0 the 
+        returns a list of configured timers, if the timers has a time of 0 the
         timer is disabled
         """
         timer_list = "Event Timers:\n"
         for timer_key in self.__active_event_timers.keys():
-            timer_list += "\t%d: %d\n" % (timer_key, self.__active_event_timers[timer_key])
+            timer_list += "\t%d: %d\n" % (timer_key,
+                          self.__active_event_timers[timer_key])
+
         return timer_list
 
     def start_event_loop(self):
@@ -127,7 +133,8 @@ class GameEngine(object):
 
                 else:
                     # Send event to all event listeners
-                    # Make a copy first so that adding events don't get fired right away
+                    # Make a copy first so that adding events don't get fired
+                    # right away
                     list_cp = self.__event_cb[:]
 
                     # Reverse list so that newest stuff is on top
@@ -150,13 +157,15 @@ class GameEngine(object):
 
     def stop_event_loop(self):
         """
-        Sends a pygame.QUIT event into the event queue which exits the event loop
+        Sends a pygame.QUIT event into the event queue which
+        exits the event loop
         """
         pygame.event.post(pygame.event.Event(pygame.QUIT))
 
     def draw(self):
         """
-        Calls draw on the draw callback stack then calls the pygame flip command
+        Calls draw on the draw callback stack then calls the pygame display
+        flip command to send it to the screen.
         """
         for fnc in self.__draw_lst:
             fnc(self.screen)
@@ -168,9 +177,9 @@ class GameEngine(object):
         """
         Adds event callback to the event callback stack
 
-        @param cb:       Callback to be added to the stack when events are fired
+        @param cb:  Callback to be added to the stack when events are fired.
         """
-        self.__event_cb.append( cb )
+        self.__event_cb.append(cb)
 
     def remove_event_callback(self, cb):
         """
@@ -180,29 +189,29 @@ class GameEngine(object):
         @return:         Returns true if successful in removing callback
         """
         try:
-            self.__event_cb.remove( cb )
+            self.__event_cb.remove(cb)
             return True
         except:
             return False
 
-    def list_event_callbacks( self ):
+    def list_event_callbacks(self):
         """
         Returns a string representation of all events registered with the game
         engine
         """
         event_callbacks = "Event Listeners:\n"
         for eventlst in self.__event_cb:
-            event_callbacks = "\t%s\n"%str(eventlst)
+            event_callbacks = "\t%s\n" % str(eventlst)
         return event_callbacks
-
 
     def add_draw_callback(self, fnc):
         """
-        Adds a callback to the draw list.  Function will be passed the game screen
+        Adds a callback to the draw list.  Function will be passed the
+        game screen it should draw too.
 
         @param	fnc:	The function to call when system is drawing
         """
-        self.__draw_lst.append( fnc )
+        self.__draw_lst.append(fnc)
 
     def pop_draw_callback(self):
         """
@@ -233,7 +242,7 @@ class GameEngine(object):
 
     def list_draw_callbacks(self):
         """
-        Lists all the drawing callbacks currently registered with the game engine
+        Lists all the draw callbacks currently registered with the game engine
         """
 
         callbacks = "Draw Callbacks:\n"
@@ -248,7 +257,7 @@ class GameEngine(object):
         @param name:     Name of the object to check if exists
         @return:         Returns true if object found
         """
-        return self.__object_hold.has_key( name )
+        return name in self.__object_hold
 
     def add_object(self, name, obj):
         """
@@ -297,82 +306,78 @@ class GameEngine(object):
         @raise Exception:   Throws an Exception with the string being the
                             path error.
         """
-        
         object_tokens = objectname.split(".")
 
         try:
-            obj = self.__object_hold[ object_tokens[0] ]
+            obj = self.__object_hold[object_tokens[0]]
 
         except KeyError:
-            raise Exception( "Error, %s is not an object registered with the game engine" % object_tokens[0] )
+            raise Exception("%s is not registered with the game engine" %
+                   object_tokens[0])
 
         # Handles dot notation for sub modules
         for token in object_tokens[1:]:
 
             dict_token = token.split('[')
-            
             try:
-                obj = getattr( obj, dict_token[0] )
+                obj = getattr(obj, dict_token[0])
 
             except:
-                raise Exception( "Error finding member element: %s" % token )
-
+                raise Exception("Error finding member element: %s" % token)
 
             # Handles dictionaries
             for d_token in dict_token[1:]:
                 if d_token[-1] == "]":
                     d_token = d_token[:-1]
-                   
                     try:
-                       key = int( d_token )
+                        key = int(d_token)
                     except:
-                       key = d_token
+                        key = d_token
 
                     try:
-                        obj = obj[ key ]
+                        obj = obj[key]
                     except:
-                        raise Exception( "Unable to find %s" % key )
+                        raise Exception("Unable to find %s" % key)
 
                 else:
-                    raise Exception( "Invalid Syntax, expected ] at end of %s" % d_token )
+                    raise Exception("Invalid Syntax, expected ] at end of %s" %
+                                    d_token)
 
         return obj
-
 
     def inspect_object(self, objectname):
         """
         Displays information about the object path it is passed
         """
         try:
-            obj = self.__drilldown_object( objectname )
+            obj = self.__drilldown_object(objectname)
 
         except Exception as detail:
-            return str( detail )
+            return str(detail)
 
         classname = obj.__class__.__name__
 
-        if hasattr( obj, "__dict__" ):
+        if hasattr(obj, "__dict__"):
             attribute_list = "Attributes:"
             attributes = obj.__dict__
-   
             for attribute_key in attributes.keys():
-                attribute_list = "%s\n\t%s:%s" % (attribute_list,attribute_key,str(attributes[attribute_key]))
+                attribute_list = "%s\n\t%s:%s" % (attribute_list,
+                                 attribute_key, str(attributes[attribute_key]))
 
         # If dictionary, show keys
-        elif hasattr( obj, "keys" ):
+        elif hasattr(obj, "keys"):
             attribute_list = "Dictionary Items:"
 
             for d_obj in obj.keys():
-                attribute_list = "%s\n\t%s:%s" % (attribute_list,d_obj,str(obj[d_obj]))
-                
-        elif type( obj ).__name__ == 'list':
+                attribute_list = "%s\n\t%s:%s" % (attribute_list, d_obj,
+                                                  str(obj[d_obj]))
+        elif type(obj).__name__ == 'list':
             i = 0
             attribute_list = "List Items:"
             for item in obj:
-                attribute_list = "%s\n\t%d:%s" % (attribute_list,i,str(item))
+                attribute_list = "%s\n\t%d:%s" % (attribute_list, i, str(item))
                 i = i + 1
         else:
-            attribute_list = str( obj )
+            attribute_list = str(obj)
 
-        return "Class: %s\n%s"   % (classname, attribute_list)
-
+        return "Class: %s\n%s" % (classname, attribute_list)
