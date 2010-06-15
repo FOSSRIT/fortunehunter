@@ -46,7 +46,6 @@ class GameEngine(object):
             "ge_list_eventcb":self.list_event_callbacks,
             "ge_list_timers":self.list_event_timers,
             "inspect":self.inspect_object,
-            "set_int":self.set_object_int,
         }
 
         # Ctrl + key mappings
@@ -286,26 +285,13 @@ class GameEngine(object):
             objlist += "\t%s\n" % str(eventlst)
         return objlist
 
-    def __drilldown_object(self, objectname):
-        """
-        Takes the objectname string and tries to find the object that it is
-        representing and returns that object.
-
-        Example: battle.enemy_list[1].sprite._images[1]
-
-        @param objectname:  The string that represents the object's path.
-        @return:            Returns the object requested
-        @raise Exception:   Throws an Exception with the string being the
-                            path error.
-        """
-        
+    def inspect_object(self, objectname):
         object_tokens = objectname.split(".")
 
         try:
             obj = self.__object_hold[ object_tokens[0] ]
-
         except KeyError:
-            raise Exception( "Error, %s is not an object registered with the game engine" % object_tokens[0] )
+            return "Error, %s is not an object registered with the game engine" % object_tokens[0]
 
         # Handles dot notation for sub modules
         for token in object_tokens[1:]:
@@ -314,9 +300,8 @@ class GameEngine(object):
             
             try:
                 obj = getattr( obj, dict_token[0] )
-
             except:
-                raise Exception( "Error finding member element: %s" % token )
+                return "Error finding member element: %s" % token
 
 
             # Handles dictionaries
@@ -332,23 +317,10 @@ class GameEngine(object):
                     try:
                         obj = obj[ key ]
                     except:
-                        raise Exception( "Unable to find %s" % key )
+                        return "Unable to find %s" % key
 
                 else:
-                    raise Exception( "Invalid Syntax, expected ] at end of %d" % d_token )
-
-        return obj
-
-
-    def inspect_object(self, objectname):
-        """
-        Displays information about the object path it is passed
-        """
-        try:
-            obj = self.__drilldown_object( objectname )
-
-        except Exception as detail:
-            return str( detail )
+                    return "Invalid Syntax, expected ] at end of %d" % d_token
 
         classname = obj.__class__.__name__
 
@@ -377,16 +349,3 @@ class GameEngine(object):
 
         return "Class: %s\n%s"   % (classname, attribute_list)
 
-    def set_object_int(self, objectname, val):
-        try:
-            obj = self.__drilldown_object( objectname )
-        except Exception as detail:
-            return str( detail )
-
-        try:
-            print "Trying to set %s, to %s" % ( str(obj), val )
-            obj = int( val )
-        except:
-            return "Error %s is not an int"
-
-        
