@@ -2,8 +2,7 @@
 import pygame, time
 pygame.init()
 
-print "\n-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --\n"
-print "Sprite Test - Authors Dave Silverman and Scott Mengel"
+print "Scale Test - Authors Dave Silverman and Scott Mengel"
 print "Set size to 600 x 400 px"
 print "Running..."
 
@@ -14,7 +13,7 @@ print "Running..."
 
 make=input("How many images would you like to load? ")
 trial=input("How many runs per trial? ")
-sprite={}
+img={}
 ft="" #filetype
 r=0 #frame refreshes
 i=1 #cycles images
@@ -22,7 +21,7 @@ size = width, height = 600,400 #screen sizes
 t=0 #trial number n
 colorkey=(255, 152, 0)
 
-ftArr=[ ["bmp","BMPs 16-Bits/"] , ["bmp","BMPs 24-Bits/"] , ["bmp","BMPs 32-Bits/"] , ["gif","GIFs/"] , ["gif","GIFs Transparent/"] , ["jpg","JPGs 1Low/"] , ["jpg","JPGs 2Medium/"] , ["jpg","JPGs 3High/"] , ["jpg","JPGs 4Max/"] , ["png","PNGs Indexed/"] , ["png","PNGs Transparent/"] ]
+ftArr=[ ["bmp","BMPs 16-Bits/"] , ["bmp","BMPs 24-Bits/"] , ["gif","GIFs/"] , ["gif","GIFs Transparent/"] , ["png","PNGs Indexed/"] , ["png","PNGs Transparent/"] ]
 
 screen = pygame.display.set_mode(size) #Screen Set 600x400
 background = 152, 251, 152 # pale green
@@ -31,24 +30,23 @@ background = 152, 251, 152 # pale green
 #-------------------------------------------------------------
 #The switch function
 
-def chngSprite():
+def chngImg():
     cnt=make
     while cnt>0:
         switcher = {
-            1: pygame.image.load("%s2 Button.%s"%(ft[1],ft[0])),
-            2: pygame.image.load("%s3 Button.%s"%(ft[1],ft[0])),
-            3: pygame.image.load("%s4 Button.%s"%(ft[1],ft[0])),
-            4: pygame.image.load("%s5 Button.%s"%(ft[1],ft[0])),
-            5: pygame.image.load("%s6 Button.%s"%(ft[1],ft[0])),
-            6: pygame.image.load("%s7 Button.%s"%(ft[1],ft[0])),
-            7: pygame.image.load("%s8 Button.%s"%(ft[1],ft[0])),
-            8: pygame.image.load("%s9 Button.%s"%(ft[1],ft[0])),
-            9: pygame.image.load("%s1 Button.%s"%(ft[1],ft[0]))
+            1: pygame.image.load("%s2.%s"%(ft[1],ft[0])),
+            2: pygame.image.load("%s3.%s"%(ft[1],ft[0])),
+            3: pygame.image.load("%s4.%s"%(ft[1],ft[0])),
+            4: pygame.image.load("%s5.%s"%(ft[1],ft[0])),
+            5: pygame.image.load("%s6.%s"%(ft[1],ft[0])),
+            6: pygame.image.load("%s7.%s"%(ft[1],ft[0])),
+            7: pygame.image.load("%s8.%s"%(ft[1],ft[0])),
+            8: pygame.image.load("%s9.%s"%(ft[1],ft[0])),
+            9: pygame.image.load("%s1.%s"%(ft[1],ft[0]))
         }
-        sprite[cnt,0]=switcher.get(i,pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])))
-        sprite[cnt,0] = pygame.transform.scale(sprite[cnt,0],(20, 20))
+        img[cnt,0]=switcher.get(i,pygame.image.load("%s1.%s"%(ft[1],ft[0])))
+        img[cnt,0] = pygame.transform.scale(img[cnt,0],(20, 20))
         cnt=cnt-1
-
 
 #-----------------------------------------------------------------
 #- Collision detection -------------------------------------------
@@ -56,12 +54,12 @@ def chngSprite():
 def collision():
     cnt=make
     while cnt>0:
-        if sprite[cnt,1].left < 0 or sprite[cnt,1].right > width:
-            sprite[cnt,2]=[ -sprite[cnt,2][0], sprite[cnt,2][1] ]
-        if sprite[cnt,1].top < 0 or sprite[cnt,1].bottom > height:
-            sprite[cnt,2]=[ sprite[cnt,2][0], -sprite[cnt,2][1] ]
-        sprite[cnt,1] = sprite[cnt,1].move(sprite[cnt,2])
-        screen.blit(sprite[cnt,0],sprite[cnt,1])
+        if img[cnt,1].left < 0 or img[cnt,1].right > width:
+            img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
+        if img[cnt,1].top < 0 or img[cnt,1].bottom > height:
+            img[cnt,2]=[ img[cnt,2][0], -img[cnt,2][1] ]
+        img[cnt,1] = img[cnt,1].move(img[cnt,2])
+        screen.blit(img[cnt,0],img[cnt,1])
         cnt=cnt-1
     pygame.display.flip()
 
@@ -72,7 +70,7 @@ def collision():
 while 1:
     cnt=make
     ft=ftArr[t]
-    print "Testing "+ft[1]+"N Button."+ft[0]
+    print "Testing: "+ft[1]+" extension "+ft[0]
     trialthis=trial
     
 #-----------------------------------------------------------------
@@ -80,12 +78,12 @@ while 1:
 
     #-------------------------------------------------------------
         while cnt>0:
-            sprite[cnt,0]= pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])) #image.load
-            sprite[cnt,0] = pygame.transform.scale(sprite[cnt,0],(20, 20)) 
-            sprite[cnt,1]=  sprite[cnt,0].get_rect()
-            sprite[cnt,2]= [2,2] #speed
+            img[cnt,0]= pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])) #image.load
+            img[cnt,0] = pygame.transform.scale(img[cnt,0],(20, 20)) 
+            img[cnt,1]=  img[cnt,0].get_rect()
+            img[cnt,2]= [2,2] #speed
             m=cnt*40 # named m cause i wanted some m&ms
-            sprite[cnt,1]=sprite[cnt,1].move(m,m) #see? it wasn't as tastey though
+            img[cnt,1]=img[cnt,1].move(m,m) #see? it wasn't as tastey though
             cnt=cnt-1
 
     #-------------------------------------------------------------
@@ -94,7 +92,7 @@ while 1:
 
     #-------------------------------------------------------------
         while 1:
-            chngSprite()
+            chngImg()
             i=i+1
             if i>9: i=1
             
@@ -110,6 +108,7 @@ while 1:
 
 #-----------------------------------------------------------------
     t=t+1
+    print ""
 
 #-----------------------------------------------------------------
 #-----------------------------------------------------------------

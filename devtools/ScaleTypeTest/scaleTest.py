@@ -1,7 +1,7 @@
 import sys, pygame, time
 pygame.init()
 
-print "Full Test - Authors Dave Silverman and Scott Mengel"
+print "Depreciated Scale Test - Authors Dave Silverman and Scott Mengel"
 print "Set size to 600 x 400 px"
 print "Running..."
 
@@ -39,9 +39,6 @@ def chngImg():
    9: pygame.image.load("%s1 Button.%s"%(ft[1],ft[0]))
   }
   img[cnt,0]=switcher.get(i,pygame.image.load("%s1 Button.%s"%(ft[1],ft[0])))
-  #img[cnt,0].set_colorkey(colorkey, pygame.RLEACCEL)
-  #img[cnt,0].resize(200,200) this is for resizing an image
-  #pygame.transform.scale(img[cnt,0],(200, 200))
   img[cnt,0] = pygame.transform.scale(img[cnt,0],(20, 20))
   cnt=cnt-1
 #-----------------------------------------------------------------
