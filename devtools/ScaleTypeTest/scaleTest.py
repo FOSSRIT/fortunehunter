@@ -3,7 +3,7 @@ import pygame, time
 pygame.init()
 
 print "Scale Test - Authors Dave Silverman and Scott Mengel"
-print "Set size to 600 x 400 px"
+print "Set size window to 600 x 400 px"
 print "Running..."
 
 
@@ -11,8 +11,10 @@ print "Running..."
 #--------------------------------------------------------------
 #CONSTANTS AND VARIABLES
 
-make=input("How many images would you like to load? ")
-trial=input("How many runs per trial? ")
+make=input("How many images would you like to load?\n>")
+trial=input("How many runs per trial?\n>")
+sizeTo=input("What would you like to resize to? Seperate with a comma, eg: x,y\n>" )
+
 img={}
 ft="" #filetype
 r=0 #frame refreshes
@@ -21,7 +23,7 @@ size = width, height = 600,400 #screen sizes
 t=0 #trial number n
 colorkey=(255, 152, 0)
 
-ftArr=[ ["bmp","BMP16100/","100%"] , ["bmp","BMP16173/","57.8%"] , ["bmp","BMP16200/","50%"] , ["bmp","BMP16400/","25%"] ,["bmp","BMP24100/","100%"] , ["bmp","BMP24173/","57.8%"] , ["bmp","BMP24200/","50%"] , ["bmp","BMP24400/","25%"] , ["gif","GIF100/","100%"] , ["gif","GIF173/","57.8%"] ,  ["gif","GIF200/","50%"] ,  ["gif","GIF400/","25%"] , ["gif","GIFT100/","100%"] , ["gif","GIFT173/","57.8%"] ,  ["gif","GIFT200/","50%"] ,  ["gif","GIFT400/","25%"] , ["png","PNG100/","100%"] , ["png","PNG173/","57.8%"] , ["png","PNG200/","50%"] , ["png","PNG400/","25%"] , ["png","PNGT100/","100%"] , ["png","PNGT173/","57.8%"] , ["png","PNGT200/","50%"] , ["png","PNGT400/","25%"] ]
+ftArr=[ ["bmp","BMP16100/"] , ["bmp","BMP16173/"] , ["bmp","BMP16200/"] , ["bmp","BMP16400/"] ,["bmp","BMP24100/"] , ["bmp","BMP24173/"] , ["bmp","BMP24200/"] , ["bmp","BMP24400/"] , ["gif","GIF100/"] , ["gif","GIF173/"] ,  ["gif","GIF200/"] ,  ["gif","GIF400/"] , ["gif","GIFT100/"] , ["gif","GIFT173/"] ,  ["gif","GIFT200/"] ,  ["gif","GIFT400/"] , ["png","PNG100/"] , ["png","PNG173/"] , ["png","PNG200/"] , ["png","PNG400/"] , ["png","PNGT100/"] , ["png","PNGT173/"] , ["png","PNGT200/"] , ["png","PNGT400/"] ]
 
 screen = pygame.display.set_mode(size) #Screen Set 600x400
 background = 152, 251, 152 # pale green
@@ -45,7 +47,7 @@ def chngImg():
             9: pygame.image.load("%s1.%s"%(ft[1],ft[0]))
         }
         img[cnt,0]=switcher.get(i,pygame.image.load("%s1.%s"%(ft[1],ft[0])))
-        img[cnt,0] = pygame.transform.scale(img[cnt,0],(40, 40))
+        img[cnt,0] = pygame.transform.scale(img[cnt,0],(sizeTo[0], sizeTo[1]))
         cnt=cnt-1
 
 #-----------------------------------------------------------------
@@ -79,7 +81,7 @@ while 1:
     #-------------------------------------------------------------
         while cnt>0:
             img[cnt,0]= pygame.image.load("%s1.%s"%(ft[1],ft[0])) #image.load
-            img[cnt,0] = pygame.transform.scale(img[cnt,0],(20, 20)) 
+            img[cnt,0] = pygame.transform.scale(img[cnt,0],(sizeTo[0], sizeTo[1])) 
             img[cnt,1]=  img[cnt,0].get_rect()
             img[cnt,2]= [2,2] #speed
             m=cnt*40 # named m cause i wanted some m&ms
