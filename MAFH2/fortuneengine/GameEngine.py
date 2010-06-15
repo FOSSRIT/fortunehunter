@@ -334,7 +334,7 @@ class GameEngine(object):
                         raise Exception( "Unable to find %s" % key )
 
                 else:
-                    raise Exception( "Invalid Syntax, expected ] at end of %d" % d_token )
+                    raise Exception( "Invalid Syntax, expected ] at end of %s" % d_token )
 
         return obj
 
