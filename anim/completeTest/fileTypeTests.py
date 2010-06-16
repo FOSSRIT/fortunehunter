@@ -38,15 +38,18 @@ print "1. Simple File Type Variety Test, as images (NOTE: not working yet)"
 print "2. Simple File Type variety Test, as sprites (NOTE: not working yet)"
 print "3. Selected Scalability Test (NOTE: not working yet)"
 file=open('./testresult.csv','a')
-list=[]
+list=[imgSetup, spriteSetup, scaleSetup]
 keyIn="temp val"
-val=0
-while keyIn is not None:
-    keyIn=raw_input(">")
-    list[val]=int(keyIn)
-    val=val+1
 
-print list+" and switching now..."
+while True:
+	keyIn=raw_input(">")
+	try:
+		temp = int(keyIn)
+		list[temp - 1]()
+	except:
+		break
+
+#print list+" and switching now..."
 #
 #for i in list:
 #        call what's in list[i] somehow
