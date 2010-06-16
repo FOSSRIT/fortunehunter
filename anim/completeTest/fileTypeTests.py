@@ -39,13 +39,23 @@ print "2. Simple File Type variety Test, as sprites (NOTE: not working yet)"
 print "3. Selected Scalability Test (NOTE: not working yet)"
 i=int(1)
 file=open('./testresult.csv','a')
+list=[imgSetup, spriteSetup, scaleSetup]
+keyIn="temp val"
 
-testOrder
-keyIn
+while True:
+	keyIn=raw_input(">")
+	try:
+		temp = int(keyIn)
+		list[temp - 1]()
+	except:
+		break
 
-while 1:
-    keyIn=int(raw_input(i+">"))
-    if keyIn is not "done":
-        testOrder[i]=keyIn
-        int=int(int+1)
-    else: break
+#print list+" and switching now..."
+#
+#for i in list:
+#        call what's in list[i] somehow
+#    print i
+#    if i == keyInt 
+#    list[int(i)]
+#    switch.get( i , sys.exit("Goodbye!") )
+#    print 'looped through'
