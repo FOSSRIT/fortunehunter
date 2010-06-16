@@ -83,7 +83,6 @@ class BattleMenuHolder( GameEngineElement ):
         elif id == "special":
             menu_type = NORMAL_MENU
             menu_options = [
-                        ["__TODO__",  lambda: self.menu_called("TODO"),140,1],
                         [_("Back"), lambda: self.show_menu("selection"),140,1]
             ]
 
