@@ -37,21 +37,15 @@ print "Enter 'Exit' into the prompt to close the program. (NOTE: not working yet
 print "1. Simple File Type Variety Test, as images (NOTE: not working yet)"
 print "2. Simple File Type variety Test, as sprites (NOTE: not working yet)"
 print "3. Selected Scalability Test (NOTE: not working yet)"
+i=int(1)
 file=open('./testresult.csv','a')
-list=[]
-keyIn="temp val"
-val=0
-while keyIn is not None:
-    keyIn=raw_input(">")
-    list[val]=int(keyIn)
-    val=val+1
 
-print list+" and switching now..."
-#
-#for i in list:
-#        call what's in list[i] somehow
-#    print i
-#    if i == keyInt 
-#    list[int(i)]
-#    switch.get( i , sys.exit("Goodbye!") )
-#    print 'looped through'
+testOrder
+keyIn
+
+while 1:
+    keyIn=int(raw_input(i+">"))
+    if keyIn is not "done":
+        testOrder[i]=keyIn
+        int=int(int+1)
+    else: break
