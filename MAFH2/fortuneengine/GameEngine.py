@@ -48,6 +48,9 @@ class GameEngine(object):
             "ge_list_eventcb": self.list_event_callbacks,
             "ge_list_timers": self.list_event_timers,
             "inspect": self.inspect_object,
+
+            "set_str": self.set_str,
+            "set_int": self.set_int,
         }
 
         # Ctrl + key mappings
@@ -127,9 +130,9 @@ class GameEngine(object):
                     self.__run = False
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
-                     and pygame.key.get_mods() & pygame.KMOD_CTRL:
-                        self.console.set_active()
-                        update_draw = True
+                        and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    self.console.set_active()
+                    update_draw = True
 
                 else:
                     # Send event to all event listeners
@@ -306,10 +309,16 @@ class GameEngine(object):
         @raise Exception:   Throws an Exception with the string being the
                             path error.
         """
+        last = "empt"
+        obj = "empt"
+        last_token = ""
+
         object_tokens = objectname.split(".")
 
         try:
             obj = self.__object_hold[object_tokens[0]]
+            last = obj
+            last_token = object_tokens[0]
 
         except KeyError:
             raise Exception("%s is not registered with the game engine" %
@@ -320,7 +329,9 @@ class GameEngine(object):
 
             dict_token = token.split('[')
             try:
+                last = obj
                 obj = getattr(obj, dict_token[0])
+                last_token = dict_token[0]
 
             except:
                 raise Exception("Error finding member element: %s" % token)
@@ -335,7 +346,9 @@ class GameEngine(object):
                         key = d_token
 
                     try:
+                        last = obj
                         obj = obj[key]
+                        last_token = key
                     except:
                         raise Exception("Unable to find %s" % key)
 
@@ -343,14 +356,33 @@ class GameEngine(object):
                     raise Exception("Invalid Syntax, expected ] at end of %s" %
                                     d_token)
 
-        return obj
+        return obj, last, last_token
+
+    def set_str(self, objectname, val):
+        try:
+            obj, last, last_token = self.__drilldown_object(objectname)
+        except Exception as detail:
+            return str(detail)
+
+        setattr( last, last_token, val )
+
+    def set_int(self, objectname, val):
+        try:
+            obj, last, last_token = self.__drilldown_object(objectname)
+        except Exception as detail:
+            return str(detail)
+
+        try:
+            setattr( last, last_token, int( val ) )
+        except:
+            return str(detail)
 
     def inspect_object(self, objectname):
         """
         Displays information about the object path it is passed
         """
         try:
-            obj = self.__drilldown_object(objectname)
+            obj, last, last_token = self.__drilldown_object(objectname)
 
         except Exception as detail:
             return str(detail)
