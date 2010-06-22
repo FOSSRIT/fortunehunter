@@ -360,6 +360,15 @@ class GameEngine(object):
         return obj, last, last_token
 
     def set_eval(self, objectname, statement):
+        """
+        Sets the object referenced by objectname to a value returned by
+        passing the string stored in the val parameter to an eval statement.
+
+        @param objectname:  A string representation of the location
+                            of the object being inspected in relation
+                            to the game engine registered object.
+        @param val:         A string to be evaluated and set to the object.
+        """
         try:
             obj, last, last_token = self.__drilldown_object(objectname)
         except Exception as detail:
@@ -371,6 +380,15 @@ class GameEngine(object):
             return str(detail)
 
     def set_str(self, objectname, val):
+        """
+        Sets the object referenced by objectname to a string passed into the
+        val parameter.
+
+        @param objectname:  A string representation of the location
+                            of the object being inspected in relation
+                            to the game engine registered object.
+        @param val:         A string to be set as the value of the object.
+        """
         try:
             obj, last, last_token = self.__drilldown_object(objectname)
         except Exception as detail:
@@ -379,6 +397,17 @@ class GameEngine(object):
         setattr(last, last_token, val)
 
     def set_int(self, objectname, val):
+        """
+        Sets the object referenced by objectname to an integer passed into the
+        val parameter. It may be a string that holds the int as it will be
+        type casted.
+
+        @param objectname:  A string representation of the location
+                            of the object being inspected in relation
+                            to the game engine registered object.
+        @param val:         An int/string containing an int to be set as
+                            the value of the object.
+        """
         try:
             obj, last, last_token = self.__drilldown_object(objectname)
         except Exception as detail:
@@ -392,6 +421,10 @@ class GameEngine(object):
     def inspect_object(self, objectname):
         """
         Displays information about the object path it is passed
+
+        @param objectname:  A string representation of the location
+                            of the object being inspected in relation
+                            to the game engine registered object.
         """
         try:
             obj, last, last_token = self.__drilldown_object(objectname)
