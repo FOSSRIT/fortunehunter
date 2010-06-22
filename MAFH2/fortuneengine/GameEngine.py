@@ -51,6 +51,7 @@ class GameEngine(object):
 
             "set_str": self.set_str,
             "set_int": self.set_int,
+            "set_eval": self.set_eval,
         }
 
         # Ctrl + key mappings
@@ -357,6 +358,17 @@ class GameEngine(object):
                                     d_token)
 
         return obj, last, last_token
+
+    def set_eval(self, objectname, statement):
+        try:
+            obj, last, last_token = self.__drilldown_object(objectname)
+        except Exception as detail:
+            return str(detail)
+
+        try:
+            setattr(last, last_token, eval(str(statement)))
+        except Exception as detail:
+            return str(detail)
 
     def set_str(self, objectname, val):
         try:
