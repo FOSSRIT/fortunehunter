@@ -376,7 +376,7 @@ class GameEngine(object):
         except Exception as detail:
             return str(detail)
 
-        setattr( last, last_token, val )
+        setattr(last, last_token, val)
 
     def set_int(self, objectname, val):
         try:
@@ -385,7 +385,7 @@ class GameEngine(object):
             return str(detail)
 
         try:
-            setattr( last, last_token, int( val ) )
+            setattr(last, last_token, int(val))
         except:
             return str(detail)
 

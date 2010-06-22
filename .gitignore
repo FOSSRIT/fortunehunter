@@ -1,4 +1,3 @@
 *.pyc
 .hidden
-
-/MAFH.activity/assets/image/character/merchant.gif
+*.swp
