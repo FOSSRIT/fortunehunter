@@ -84,20 +84,20 @@ class BattleEngine(GameEngineElement):
                 self.__attack_phase(menu)
 
             elif selection == 'clear':
-				self.player_input = '0'
-			
+                self.player_input = '0'
+            
             elif selection == 'fire':
                 menu.set_disp('Fire Cast!')
                 self.__attack_phase(menu)
-				
+                
             elif selection == 'heal':
                 menu.set_disp('Heal Cast!')
                 self.__attack_phase(menu)
-				
+                
             elif selection == 'lightning':
                 menu.set_disp('Lightning Cast!')
                 self.__attack_phase(menu)
-				
+                
             elif selection == 'missile':
                 menu.set_disp('Missile Cast!')
                 self.__attack_phase(menu)
@@ -114,6 +114,7 @@ class BattleEngine(GameEngineElement):
             menu.set_sec_disp( self.player_input )
 
     def __attack_phase(self, menu):
+        # Check to see how much hp enemy has left.
         # Enemy Attack
         # Check player health
         print("in __attack_phase")

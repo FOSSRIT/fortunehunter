@@ -150,7 +150,7 @@ class Menu(object):
                 self.width = ren.get_width()
 
             newX = self.x + 45 * j
-            newY = self.y + i * 45
+            newY = self.y + i * 45            
             pygame.draw.rect(surface, (0, 74, 94), ( newX, newY, o[2], 44))
             pygame.draw.rect(surface, (4, 119, 152), ( newX + 2, newY + 2, o[2]-4, 40))
             surface.blit(ren, (newX + 15, newY + 12))
