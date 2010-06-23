@@ -14,6 +14,7 @@
 #    Author: Justin Lewis  <jlew.blackout@gmail.com>
 
 import pygame
+import inspect
 import fortuneengine.pyconsole.pyconsole as pyconsole
 
 
@@ -446,6 +447,33 @@ class GameEngine(object):
             for attribute_key in attributes.keys():
                 attribute_list = "%s\n\t%s:%s" % (attribute_list,
                                  attribute_key, str(attributes[attribute_key]))
+
+            # Inspect the object for all its methods
+            method_list = inspect.getmembers(obj, inspect.ismethod)
+            if method_list != []:
+
+                # Loop through the methods in the object and print them
+                # to the console
+                attribute_list = "%s\n\nMethods:" % attribute_list
+                for method in method_list:
+                    attribute_list = "%s\n\t%s" % (attribute_list, method[0])
+
+                    # Inspect the arguments to the current method
+                    args, vargs, kwargs, local = inspect.getargspec(method[1])
+
+                    # Display function arguments
+                    attribute_list = "%s\n\t\tArgs: %s" % \
+                        (attribute_list, ",".join(args))
+
+                    # Display * and ** arguments if they were found
+                    if vargs:
+                        attribute_list = "%s\n\t\tVArgs: %s" % \
+                            (attribute_list, ",".join(vargs))
+
+                    # Display KW Arguments if they were found
+                    if kwargs:
+                        attribute_list = "%s\n\t\tKWArgs: %s" % \
+                            (attribute_list, ",".join(kwargs))
 
         # If dictionary, show keys
         elif hasattr(obj, "keys"):
