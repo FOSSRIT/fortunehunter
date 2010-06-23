@@ -1,6 +1,7 @@
 from fortuneengine.GameEngineElement import GameEngineElement
 from Enemy import get_enemy
 from BattleMenu import BattleMenuHolder
+from MagicMenu import MagicMenuHolder
 from AnimatedSprite import Spritesheet
 import pygame
 
