@@ -14,6 +14,7 @@
 #    Author: Justin Lewis  <jlew.blackout@gmail.com>
 
 import pygame
+import inspect
 import fortuneengine.pyconsole.pyconsole as pyconsole
 
 
@@ -314,8 +315,11 @@ class GameEngine(object):
         obj = "empt"
         last_token = ""
 
+        # Objects are separated by the period (".") symbol
         object_tokens = objectname.split(".")
 
+        # Check if the first part of the name is registered with the
+        # game engine as that is our starting point
         try:
             obj = self.__object_hold[object_tokens[0]]
             last = obj
@@ -325,9 +329,10 @@ class GameEngine(object):
             raise Exception("%s is not registered with the game engine" %
                    object_tokens[0])
 
-        # Handles dot notation for sub modules
+        # Handles dot notation for sub modules by looping through the tokens
         for token in object_tokens[1:]:
 
+            # Splits the dictionary/list token ("[")
             dict_token = token.split('[')
             try:
                 last = obj
@@ -341,6 +346,7 @@ class GameEngine(object):
             for d_token in dict_token[1:]:
                 if d_token[-1] == "]":
                     d_token = d_token[:-1]
+                    # Try list notation first then try dictionary notation
                     try:
                         key = int(d_token)
                     except:
@@ -434,12 +440,40 @@ class GameEngine(object):
 
         classname = obj.__class__.__name__
 
+        # If it has the __dict__ attribute, it is an object we can inspect
         if hasattr(obj, "__dict__"):
             attribute_list = "Attributes:"
             attributes = obj.__dict__
             for attribute_key in attributes.keys():
                 attribute_list = "%s\n\t%s:%s" % (attribute_list,
                                  attribute_key, str(attributes[attribute_key]))
+
+            # Inspect the object for all its methods
+            method_list = inspect.getmembers(obj, inspect.ismethod)
+            if method_list != []:
+
+                # Loop through the methods in the object and print them
+                # to the console
+                attribute_list = "%s\n\nMethods:" % attribute_list
+                for method in method_list:
+                    attribute_list = "%s\n\t%s" % (attribute_list, method[0])
+
+                    # Inspect the arguments to the current method
+                    args, vargs, kwargs, local = inspect.getargspec(method[1])
+
+                    # Display function arguments
+                    attribute_list = "%s\n\t\tArgs: %s" % \
+                        (attribute_list, ",".join(args))
+
+                    # Display * and ** arguments if they were found
+                    if vargs:
+                        attribute_list = "%s\n\t\tVArgs: %s" % \
+                            (attribute_list, ",".join(vargs))
+
+                    # Display KW Arguments if they were found
+                    if kwargs:
+                        attribute_list = "%s\n\t\tKWArgs: %s" % \
+                            (attribute_list, ",".join(kwargs))
 
         # If dictionary, show keys
         elif hasattr(obj, "keys"):
@@ -448,12 +482,17 @@ class GameEngine(object):
             for d_obj in obj.keys():
                 attribute_list = "%s\n\t%s:%s" % (attribute_list, d_obj,
                                                   str(obj[d_obj]))
+
+        # If list, iterate over the list and show its values
         elif type(obj).__name__ == 'list':
             i = 0
             attribute_list = "List Items:"
             for item in obj:
                 attribute_list = "%s\n\t%d:%s" % (attribute_list, i, str(item))
                 i = i + 1
+
+        # We don't know what it is, so just display string representation
+        # of the object in question
         else:
             attribute_list = str(obj)
 
