@@ -314,8 +314,11 @@ class GameEngine(object):
         obj = "empt"
         last_token = ""
 
+        # Objects are separated by the period (".") symbol
         object_tokens = objectname.split(".")
 
+        # Check if the first part of the name is registered with the
+        # game engine as that is our starting point
         try:
             obj = self.__object_hold[object_tokens[0]]
             last = obj
@@ -325,9 +328,10 @@ class GameEngine(object):
             raise Exception("%s is not registered with the game engine" %
                    object_tokens[0])
 
-        # Handles dot notation for sub modules
+        # Handles dot notation for sub modules by looping through the tokens
         for token in object_tokens[1:]:
 
+            # Splits the dictionary/list token ("[")
             dict_token = token.split('[')
             try:
                 last = obj
@@ -341,6 +345,7 @@ class GameEngine(object):
             for d_token in dict_token[1:]:
                 if d_token[-1] == "]":
                     d_token = d_token[:-1]
+                    # Try list notation first then try dictionary notation
                     try:
                         key = int(d_token)
                     except:
@@ -434,6 +439,7 @@ class GameEngine(object):
 
         classname = obj.__class__.__name__
 
+        # If it has the __dict__ attribute, it is an object we can inspect
         if hasattr(obj, "__dict__"):
             attribute_list = "Attributes:"
             attributes = obj.__dict__
@@ -448,12 +454,17 @@ class GameEngine(object):
             for d_obj in obj.keys():
                 attribute_list = "%s\n\t%s:%s" % (attribute_list, d_obj,
                                                   str(obj[d_obj]))
+
+        # If list, iterate over the list and show its values
         elif type(obj).__name__ == 'list':
             i = 0
             attribute_list = "List Items:"
             for item in obj:
                 attribute_list = "%s\n\t%d:%s" % (attribute_list, i, str(item))
                 i = i + 1
+
+        # We don't know what it is, so just display string representation
+        # of the object in question
         else:
             attribute_list = str(obj)
 
