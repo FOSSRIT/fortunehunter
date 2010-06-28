@@ -15,7 +15,7 @@
 
 import pygame
 import inspect
-from threading import Thread
+from threading import Thread, Lock
 from GameEngineConsole import GameEngineConsole
 
 
@@ -54,6 +54,8 @@ class GameEngine(object):
         # Disable Mouse Usage
         # TODO Allow mouse motion on request
         pygame.event.set_blocked(pygame.MOUSEMOTION)
+
+        self.event_lock = Lock()
 
     def start_event_timer(self, id, time):
         """
@@ -125,10 +127,11 @@ class GameEngine(object):
                 pygame.display.flip()
 
             else:
+                self.event_lock.acquire()
                 for fnc in self.__draw_lst:
                     fnc(self.screen)
 
-                self.console.draw()
+                self.event_lock.release()
                 pygame.display.flip()
 
     def _event_loop(self):
@@ -154,10 +157,12 @@ class GameEngine(object):
                     # Reverse list so that newest stuff is on top
                     list_cp.reverse()
 
+                    self.event_lock.acquire()
                     for cb in list_cp:
                         # Fire the event for all in cb and stop if return True
                         if cb(event) == True:
                             break
+                    self.event_lock.release()
 
     def stop_event_loop(self):
         """
