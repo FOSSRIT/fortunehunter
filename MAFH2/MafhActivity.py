@@ -38,6 +38,5 @@ def menu_called(id, menu):
 # Build menu and add to engine.  Then show menu
 menu_screen()
 
-# Draw and start event loop
-ge.draw()
-ge.start_event_loop()
+# Start event loop
+ge.start_main_loop()

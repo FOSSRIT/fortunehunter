@@ -17,6 +17,11 @@ from fortuneengine.GameEngine import GameEngine
 
 
 class GameEngineElement(object):
+    """
+    The GameEngineElement is a helper object that can be extended by
+    other classes. When the class is extended, it will automatically
+    register its self for the event and draw loops with the game engine.
+    """
 
     def __init__(self, has_draw=True, has_event=True):
         """
