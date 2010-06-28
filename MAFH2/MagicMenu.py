@@ -91,13 +91,13 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('7'), lambda: self.menu_called("heal7"), 140],
                         [_('8'), lambda: self.menu_called("heal8"), 140]
             ]
-        self.menu = MagicMenu(menu_options, 237, 375, menu_type)
+        self.menu = MagicMenu(menu_options, 237, 375, menu_type, spell_type)
 
 class MagicMenu(GameEngineElement):
-    def __init__(self, magic_menu, x, y, type):
+    def __init__(self, magic_menu, x, y, type, spell_type):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
 
-        self.menu = Menu(magic_menu, type )
+        self.menu = Menu(magic_menu, spell_type)
 
         self.menu.set_pos(x, y)
         self.add_to_engine()
@@ -108,7 +108,6 @@ class MagicMenu(GameEngineElement):
     def draw(self, screen):
         self.menu.draw( screen )
 
-#not finished
 class Menu(object):
     def __init__(self, options, spelltype):
         """Initialize the EzMenu! options should be a sequence of lists in the
@@ -135,17 +134,17 @@ class Menu(object):
             self.btn4 = pygame.image.load(PUZZLE_PATH + "FireGlyph4btn.gif")
             
             #filler buttons
-            self.btn5 = pygame.image.load(PUZZLE_PATH + "LigGlyph1btn.gif")
+            self.btn5 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
             self.btn6 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
             self.btn7 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
-            self.btn8 = pygame.image.load(PUZZLE_PATH + "LigGlyph2btn.gif")
+            self.btn8 = pygame.image.load(PUZZLE_PATH + "LightningGlyph2btn.gif")
             
         elif(spelltype == 1):
             #lightning attack
-            self.btn1 = pygame.image.load(PUZZLE_PATH + "LigGlyph1btn.gif")
-            self.btn2 = pygame.image.load(PUZZLE_PATH + "LigGlyph2btn.gif")
-            self.btn3 = pygame.image.load(PUZZLE_PATH + "LigGlyph3btn.gif")
-            self.btn4 = pygame.image.load(PUZZLE_PATH + "LigGlyph4btn.gif")
+            self.btn1 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
+            self.btn2 = pygame.image.load(PUZZLE_PATH + "LightningGlyph2btn.gif")
+            self.btn3 = pygame.image.load(PUZZLE_PATH + "LightningGlyph3btn.gif")
+            self.btn4 = pygame.image.load(PUZZLE_PATH + "LightningGlyph4btn.gif")
             
             self.btn5 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
             self.btn6 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
@@ -160,7 +159,7 @@ class Menu(object):
             self.btn4 = pygame.image.load(PUZZLE_PATH + "MissileGlyph4btn.gif")
     
             self.btn5 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
-            self.btn6 = pygame.image.load(PUZZLE_PATH + "LigGlyph1btn.gif")
+            self.btn6 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
             self.btn7 = pygame.image.load(PUZZLE_PATH + "FireGlyph1btn.gif")
             self.btn8 = pygame.image.load(PUZZLE_PATH + "FireGlyph2btn.gif")
         elif(spelltype == 3):
@@ -170,7 +169,7 @@ class Menu(object):
             self.btn3 = pygame.image.load(PUZZLE_PATH + "HealGlyph3btn.gif")
             self.btn4 = pygame.image.load(PUZZLE_PATH + "HealGlyph4btn.gif")
             
-            self.btn5 = pygame.image.load(PUZZLE_PATH + "LigGlyph1btn.gif")
+            self.btn5 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
             self.btn6 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
             self.btn7 = pygame.image.load(PUZZLE_PATH + "FireGlyph1btn.gif")
             self.btn8 = pygame.image.load(PUZZLE_PATH + "FireGlyph2btn.gif")
@@ -220,11 +219,12 @@ class Menu(object):
             if j >= self.cols:
                 i+=1
                 j=0
-
+            
+        print("out of for")
 
     def update(self, event):
         """Update the menu and get input for the menu."""
-        return_val = False
+        return_val = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 if self.cols != 1:

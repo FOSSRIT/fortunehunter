@@ -90,6 +90,7 @@ class BattleEngine(GameEngineElement):
             menu.set_disp('Fire Cast!')
             self.game_engine.add_object('firemenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('firemenu').show_menu('fire')
+            print("got here")
             #self.__attack_phase(menu)
                 
         elif selection == 'heal':
