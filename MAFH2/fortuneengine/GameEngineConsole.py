@@ -17,9 +17,18 @@ from pyconsole.pyconsole import Console
 
 
 class GameEngineConsole(Console):
-
+    """
+    GameEngineConsole is a class that extends the pyconsole adding
+    in game engine specific functions.
+    """
     def __init__(self, gei, pos):
+        """
+        Init function of the GameEngineConsole
 
+        @param gei:     Passing in the Game Engine Instance.
+        @param pos:     The position tuple to place the pyconsole
+                        (startx, starty, width, height)
+        """
         # functions exposed to the console
         function_list = {
             "quit": gei.stop_event_loop,
@@ -41,6 +50,8 @@ class GameEngineConsole(Console):
             "m": self.console_mode,
         }
 
+        # Call parent class's init function passing in the
+        # function and key mapping dictionaries
         Console.__init__(self, gei.screen, pos,
                            functions=function_list, key_calls=key_calls,
                            vars={}, syntax={})
