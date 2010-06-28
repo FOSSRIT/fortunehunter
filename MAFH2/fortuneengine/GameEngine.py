@@ -19,6 +19,11 @@ from GameEngineConsole import GameEngineConsole
 
 
 class GameEngine(object):
+    """
+    The Fortune Engine GameEngine is a main loop wrapper around pygame.
+    It manages the event and drawing loops allowing the user to just
+    register for user events and drawing time in the draw loop.
+    """
     instance = None
 
     def __init__(self, width=1200, height=900):
@@ -41,7 +46,7 @@ class GameEngine(object):
         self.clock = pygame.time.Clock()
 
         # Initialize Py Console
-        self.console = GameEngineConsole(self, (0,0,width,height / 2))
+        self.console = GameEngineConsole(self, (0, 0, width, height / 2))
 
     def start_event_timer(self, id, time):
         """
