@@ -15,7 +15,7 @@
 
 import pygame
 import inspect
-import fortuneengine.pyconsole.pyconsole as pyconsole
+from GameEngineConsole import GameEngineConsole
 
 
 class GameEngine(object):
@@ -40,45 +40,8 @@ class GameEngine(object):
 
         self.clock = pygame.time.Clock()
 
-        # functions exposed to the console
-        function_list = {
-            "ge_stop": self.stop_event_loop,
-
-            "ge_list_objects": self.list_objects,
-            "ge_list_drawcb": self.list_draw_callbacks,
-            "ge_list_eventcb": self.list_event_callbacks,
-            "ge_list_timers": self.list_event_timers,
-            "inspect": self.inspect_object,
-
-            "set_str": self.set_str,
-            "set_int": self.set_int,
-            "set_eval": self.set_eval,
-        }
-
-        # Ctrl + key mappings
-        key_calls = {
-            "d": self.stop_event_loop,
-            "m": self.console_mode,
-        }
-
         # Initialize Py Console
-        self.console = pyconsole.Console(
-            self.screen, (0, 0, width, height / 2),
-            functions=function_list, key_calls=key_calls,
-            vars={}, syntax={})
-
-    def console_mode(self):
-        """
-        Switches console between console and python interpreter
-        """
-        # Deactivate Console if showing
-        if self.console.active:
-            self.console.set_active()
-        self.console.setvar("python_mode",
-                            not self.console.getvar("python_mode"))
-
-        self.console.set_interpreter()
-        self.console.set_active()
+        self.console = GameEngineConsole(self, (0,0,width,height / 2))
 
     def start_event_timer(self, id, time):
         """
@@ -214,7 +177,7 @@ class GameEngine(object):
         Adds a callback to the draw list.  Function will be passed the
         game screen it should draw too.
 
-        @param	fnc:	The function to call when system is drawing
+        @param fnc:    The function to call when system is drawing
         """
         self.__draw_lst.append(fnc)
 
