@@ -1,7 +1,7 @@
 import pygame
 
 from fortuneengine.GameEngineElement import GameEngineElement
-from constants import MENU_PATH, NORTH, SOUTH, EAST, WEST, RIGHT, LEFT
+from constants import MENU_PATH, NORTH, RIGHT, LEFT
 from Hero import Hero
 
 from gettext import gettext as _
@@ -67,8 +67,8 @@ class Profile(GameEngineElement):
         self.inventory.append(item)
 
     def add_to_engine(self):
-        super( Profile, self).add_to_engine()
         self.background_img = pygame.image.load(MENU_PATH+"mafh_splash.gif")
+        super( Profile, self).add_to_engine()
 
     def remove_from_engine(self):
         super( Profile, self).remove_from_engine()

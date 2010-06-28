@@ -15,6 +15,7 @@
 
 import pygame
 import inspect
+from threading import Thread
 from GameEngineConsole import GameEngineConsole
 
 
@@ -37,6 +38,8 @@ class GameEngine(object):
 
         self.screen = pygame.display.set_mode(size)
 
+        self.__run_event = False
+        self.__run_draw = False
         self.__event_cb = []
         self.__draw_lst = []
         self.__object_hold = {}
@@ -47,6 +50,10 @@ class GameEngine(object):
 
         # Initialize Py Console
         self.console = GameEngineConsole(self, (0, 0, width, height / 2))
+
+        # Disable Mouse Usage
+        # TODO Allow mouse motion on request
+        pygame.event.set_blocked(pygame.MOUSEMOTION)
 
     def start_event_timer(self, id, time):
         """
@@ -75,34 +82,68 @@ class GameEngine(object):
 
         return timer_list
 
+    def start_main_loop(self):
+        e_loop = self.start_event_loop()
+        d_loop = self.start_draw_loop()
+
+        e_loop.join()
+        d_loop.join()
+
     def start_event_loop(self):
         """
         Starts the pygame event loop.
         """
-        self.__run = True
-        pygame.event.set_blocked(pygame.MOUSEMOTION)
-        while self.__run:
+        if self.__run_event:
+            return
+        else:
+            self.__run_event = True
+            t = Thread(target=self._event_loop, args=())
+            t.start()
+            return t
+
+    def start_draw_loop(self):
+        """
+        Starts the drawing thread
+        """
+        if self.__run_draw:
+            return
+        else:
+            self.__run_draw = True
+            t = Thread(target=self._draw_loop, args=())
+            t.start()
+            return t
+
+    def _draw_loop(self):
+        while self.__run_draw:
             self.clock.tick(15)
-            update_draw = False
-            console_active = self.console.active
 
+            # If console is active, we want to draw console, pausing
+            # game drawing (events are still being fired, just no
+            # draw updates.
+            if self.console.active:
+                self.console.draw()
+                pygame.display.flip()
+
+            else:
+                for fnc in self.__draw_lst:
+                    fnc(self.screen)
+
+                self.console.draw()
+                pygame.display.flip()
+
+    def _event_loop(self):
+        while self.__run_event:
             self.console.process_input()
-
-            # Force to re-draw if removing console
-            # This is necessary as queue will be empty at this time
-            # and not update
-            if console_active and not self.console.active:
-                self.draw()
 
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
-                    self.__run = False
+                    self.__run_event = False
+                    self.__run_draw = False
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
                         and pygame.key.get_mods() & pygame.KMOD_CTRL:
                     self.console.set_active()
-                    update_draw = True
 
                 else:
                     # Send event to all event listeners
@@ -116,17 +157,7 @@ class GameEngine(object):
                     for cb in list_cp:
                         # Fire the event for all in cb and stop if return True
                         if cb(event) == True:
-                            update_draw = True
                             break
-
-            # If console is active, we want to draw console, pausing
-            # game drawing (events are still being fired, just no
-            # draw updates.
-            if console_active:
-                self.console.draw()
-                pygame.display.flip()
-            elif update_draw:
-                self.draw()
 
     def stop_event_loop(self):
         """
@@ -134,17 +165,6 @@ class GameEngine(object):
         exits the event loop
         """
         pygame.event.post(pygame.event.Event(pygame.QUIT))
-
-    def draw(self):
-        """
-        Calls draw on the draw callback stack then calls the pygame display
-        flip command to send it to the screen.
-        """
-        for fnc in self.__draw_lst:
-            fnc(self.screen)
-
-        self.console.draw()
-        pygame.display.flip()
 
     def add_event_callback(self, cb):
         """
