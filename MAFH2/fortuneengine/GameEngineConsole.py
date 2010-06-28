@@ -61,10 +61,10 @@ class GameEngineConsole(Console):
         Switches console between console and python interpreter
         """
         # Deactivate Console if showing
-        if self.console.active:
-            self.console.set_active()
-        self.console.setvar("python_mode",
-                            not self.console.getvar("python_mode"))
+        if self.active:
+            self.set_active()
+        self.setvar("python_mode",
+                            not self.getvar("python_mode"))
 
-        self.console.set_interpreter()
-        self.console.set_active()
+        self.set_interpreter()
+        self.set_active()
