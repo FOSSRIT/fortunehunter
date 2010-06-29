@@ -145,8 +145,13 @@ class GameEngine(object):
 
             else:
                 self.event_lock.acquire()
-                for fnc in self.__draw_lst:
-                    fnc(self.screen)
+                try:
+                    for fnc in self.__draw_lst:
+                        fnc(self.screen)
+                except Exception as Detail:
+                    import traceback
+                    traceback.print_exc()
+                    self.stop_event_loop()
 
                 self.event_lock.release()
                 pygame.display.flip()
@@ -167,9 +172,18 @@ class GameEngine(object):
                      event.type < pygame.NUMEVENTS:
 
                     timer_id = event.type - pygame.USEREVENT
-                    self.event_lock.acquire()
-                    functioncall = self.__active_event_timers[timer_id]
-                    functioncall()
+                    try:
+                        self.event_lock.acquire()
+                        functioncall = self.__active_event_timers[timer_id]
+                        functioncall()
+
+                    except Exception as Detail:
+                        import traceback
+                        traceback.print_exc()
+                        self.stop_event_loop()
+
+                    finally:
+                        self.event_lock.release()
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
                         and pygame.key.get_mods() & pygame.KMOD_CTRL:
@@ -185,10 +199,17 @@ class GameEngine(object):
                     list_cp.reverse()
 
                     self.event_lock.acquire()
-                    for cb in list_cp:
-                        # Fire the event for all in cb and stop if return True
-                        if cb(event) == True:
-                            break
+                    try:
+                        for cb in list_cp:
+                            # Fire the event for all in cb and stop
+                            # if the callback returns True
+                            if cb(event) == True:
+                                break
+                    except Exception as Detail:
+                        import traceback
+                        traceback.print_exc()
+                        self.stop_event_loop()
+
                     self.event_lock.release()
 
     def stop_event_loop(self):
