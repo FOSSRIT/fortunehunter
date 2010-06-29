@@ -121,7 +121,7 @@ class Console:
 
         self.set_interpreter()
 
-        pygame.key.set_repeat(*self.repeat_rate)
+        #pygame.key.set_repeat(*self.repeat_rate)
 
         self.bg_layer = pygame.Surface(self.size)
         self.bg_layer.set_alpha(self.bg_alpha)
