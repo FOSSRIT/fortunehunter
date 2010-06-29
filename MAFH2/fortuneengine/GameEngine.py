@@ -247,7 +247,7 @@ class GameEngine(object):
         """
         event_callbacks = "Event Listeners:\n"
         for eventlst in self.__event_cb:
-            event_callbacks = "\t%s\n" % str(eventlst)
+            event_callbacks = "%s\t%s\n" % (event_callbacks, str(eventlst))
         return event_callbacks
 
     def add_draw_callback(self, fnc):
