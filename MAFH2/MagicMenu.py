@@ -47,10 +47,10 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('2'), lambda: self.menu_called("fire2"), 140],
                         [_('3'), lambda: self.menu_called("fire3"), 140],
                         [_('4'), lambda: self.menu_called("fire4"), 140],
-                        [_('5'), lambda: self.menu_called("fire5"), 140],
-                        [_('6'), lambda: self.menu_called("fire6"), 140],
-                        [_('7'), lambda: self.menu_called("fire7"), 140],
-                        [_('8'), lambda: self.menu_called("fire8"), 140]
+                        [_('5'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('6'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('7'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         elif id == "lightning":
             menu_type = GRID_MENU
@@ -60,10 +60,10 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('2'), lambda: self.menu_called("lig2"), 140],
                         [_('3'), lambda: self.menu_called("lig3"), 140],
                         [_('4'), lambda: self.menu_called("lig4"), 140],
-                        [_('5'), lambda: self.menu_called("lig5"), 140],
-                        [_('6'), lambda: self.menu_called("lig6"), 140],
-                        [_('7'), lambda: self.menu_called("lig7"), 140],
-                        [_('8'), lambda: self.menu_called("lig8"), 140]
+                        [_('5'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('6'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('7'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         elif id == "missile":
             menu_type = GRID_MENU
@@ -73,10 +73,10 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('2'), lambda: self.menu_called("miss2"), 140],
                         [_('3'), lambda: self.menu_called("miss3"), 140],
                         [_('4'), lambda: self.menu_called("miss4"), 140],
-                        [_('5'), lambda: self.menu_called("miss5"), 140],
-                        [_('6'), lambda: self.menu_called("miss6"), 140],
-                        [_('7'), lambda: self.menu_called("miss7"), 140],
-                        [_('8'), lambda: self.menu_called("miss8"), 140]
+                        [_('5'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('6'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('7'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         elif id == "heal":
             menu_type = GRID_MENU
@@ -86,10 +86,10 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('2'), lambda: self.menu_called("heal2"), 140],
                         [_('3'), lambda: self.menu_called("heal3"), 140],
                         [_('4'), lambda: self.menu_called("heal4"), 140],
-                        [_('5'), lambda: self.menu_called("heal5"), 140],
-                        [_('6'), lambda: self.menu_called("heal6"), 140],
-                        [_('7'), lambda: self.menu_called("heal7"), 140],
-                        [_('8'), lambda: self.menu_called("heal8"), 140]
+                        [_('5'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('6'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('7'), lambda: self.menu_called("wrongchoice"), 140],
+                        [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         self.menu = MagicMenu(menu_options, 237, 375, menu_type, spell_type)
 
@@ -113,7 +113,6 @@ class Menu(object):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
 
-        self.randoms = []
         self.buttons = []
         self.options = options
         self.x = 0
@@ -183,6 +182,8 @@ class Menu(object):
         self.buttons.append(self.btn6)
         self.buttons.append(self.btn7)
         self.buttons.append(self.btn8)
+        random.seed()
+        random.shuffle(self.buttons)
                             
         self.height = (len(self.options)*self.btn1.get_height()) / self.cols
 
@@ -191,6 +192,7 @@ class Menu(object):
         i=0 # Row Spacing
         h=0 # Selection Spacing
         j=0 # Col Spacing
+        index=0 #current spot in buttons list
         height = self.btn1.get_height()
         width = self.btn1.get_width()
         
@@ -206,22 +208,15 @@ class Menu(object):
             
             #get number b/w 1&8 that hasn't been used
             #add it to "btn" and blit it
-            random.seed()
-            temp = random.randint(1,8)
-            while(temp in self.randoms):
-                temp = random.randint(1,8)
-            
-            self.randoms.append(temp)
-            surface.blit(self.buttons[temp-1], (newX, newY) )
+            surface.blit(self.buttons[index], (newX, newY) )
 
             j+=1
             h+=1
+            index+=1
             if j >= self.cols:
                 i+=1
                 j=0
             
-        print("out of for")
-
     def update(self, event):
         """Update the menu and get input for the menu."""
         return_val = True
