@@ -205,6 +205,17 @@ class Dungeon(GameEngineElement):
         else:
             self.game_engine.get_object('mesg').add_line(_("Amulet search found nothing."))
 
+    def search_timer_handler(self):
+        # Ensure we haven't deleted the pickup time yet
+        # Can happen if deleted but still in event queue
+        if hasattr( self, 'pickup_time' ):
+            if time() - self.pickup_time > SEARCH_TIME:
+                self.game_engine.stop_event_timer( \
+                    self.search_timer_handler )
+                del self.pickup_time
+                self.amulet_search()
+
+
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
             newKey=pygame.key.name(event.key)
@@ -223,7 +234,8 @@ class Dungeon(GameEngineElement):
 
             elif newKey=='[1]' or newKey=='e':
                 self.pickup_time = time()
-                self.game_engine.start_event_timer( 0, FADE_SPEED )
+                self.game_engine.start_event_timer( \
+                    self.search_timer_handler, FADE_SPEED )
                 return True
 
         elif event.type == pygame.KEYUP:
@@ -234,17 +246,10 @@ class Dungeon(GameEngineElement):
                     if time() - self.pickup_time < SEARCH_TIME:
                         self.item_pickup()
 
-                    self.game_engine.stop_event_timer( 0 )
+                    self.game_engine.stop_event_timer( \
+                        self.search_timer_handler )
                     del self.pickup_time
                 return True
-
-        elif event.type == pygame.USEREVENT:
-            if time() - self.pickup_time > SEARCH_TIME:
-                self.game_engine.stop_event_timer( 0 )
-                del self.pickup_time
-                self.amulet_search()
-            #ANIMATION
-            return True
 
     def normalize_dir( self ):
         profile = self.game_engine.get_object('profile')
@@ -311,7 +316,7 @@ class Dungeon(GameEngineElement):
             color_a = int(elp*COLOR_DELTA)
             if color_a > 255:
                 color_a = 255
-                self.game_engine.stop_event_timer( 0 )
+                self.game_engine.stop_event_timer(self.search_timer_handler)
             surf1 = pygame.Surface((1200,700), pygame.SRCALPHA)
             pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, 1200, 700))
             screen.blit( surf1, (0, 0) )

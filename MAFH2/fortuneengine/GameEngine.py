@@ -44,7 +44,8 @@ class GameEngine(object):
         self.__draw_lst = []
         self.__object_hold = {}
 
-        self.__active_event_timers = {}
+        self.__active_event_timers = []
+        self.__active_event_timers_tick = []
 
         self.clock = pygame.time.Clock()
 
@@ -57,20 +58,34 @@ class GameEngine(object):
 
         self.event_lock = Lock()
 
-    def start_event_timer(self, id, time):
+    def start_event_timer(self, function_cb, time):
         """
         Starts a timer that fires a user event into the queue every "time"
         milliseconds
         """
-        pygame.time.set_timer(pygame.USEREVENT + id, time)
-        self.__active_event_timers[id] = time
+        avail_timer = len(self.__active_event_timers)
 
-    def stop_event_timer(self, id):
+        if avail_timer + pygame.USEREVENT < pygame.NUMEVENTS:
+            self.__active_event_timers.append(function_cb)
+            self.__active_event_timers_tick.append(time)
+            pygame.time.set_timer(pygame.USEREVENT + avail_timer, time)
+        else:
+            print "Ran out of timers :("
+            self.stop_event_loop()
+
+    def stop_event_timer(self, function_cb):
         """
         Stops the timer that has id from firing
         """
-        pygame.time.set_timer(pygame.USEREVENT + id, 0)
-        self.__active_event_timers[id] = 0
+        try:
+            timer_id = self.__active_event_timers.index(function_cb)
+        except ValueError:
+            print "ERROR HAPPENED"
+            return
+
+        pygame.time.set_timer(pygame.USEREVENT + timer_id, 0)
+        del self.__active_event_timers[timer_id]
+        del self.__active_event_timers_tick[timer_id]
 
     def list_event_timers(self):
         """
@@ -78,9 +93,11 @@ class GameEngine(object):
         timer is disabled
         """
         timer_list = "Event Timers:\n"
-        for timer_key in self.__active_event_timers.keys():
-            timer_list += "\t%d: %d\n" % (timer_key,
-                          self.__active_event_timers[timer_key])
+        i = 0
+        for timer_item in self.__active_event_timers:
+            timer_list += "\t%d: %d\n" % (timer_item,
+                          self.__active_event_timers_tick[i])
+            i = i + 1
 
         return timer_list
 
@@ -138,11 +155,21 @@ class GameEngine(object):
         while self.__run_event:
             self.console.process_input()
 
+            # Handle Game Quit Message
             for event in pygame.event.get():
 
                 if event.type == pygame.QUIT:
                     self.__run_event = False
                     self.__run_draw = False
+
+                # Handle User event Timers
+                elif event.type >= pygame.USEREVENT and \
+                     event.type < pygame.NUMEVENTS:
+
+                    timer_id = event.type - pygame.USEREVENT
+                    self.event_lock.acquire()
+                    functioncall = self.__active_event_timers[timer_id]
+                    functioncall()
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
                         and pygame.key.get_mods() & pygame.KMOD_CTRL:
