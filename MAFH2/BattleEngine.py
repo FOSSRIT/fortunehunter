@@ -44,8 +44,6 @@ class BattleEngine(GameEngineElement):
         self.__images['hp'] = Spritesheet( HUD_PATH + "hp.png" ).img_extract(11,1,100,100)
         self.__images['bt'] = Spritesheet( HUD_PATH + "bt.png" ).img_extract(1,11,100,25)
 
-        self.game_engine.start_event_timer(1, 150)
-
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )
         self.game_engine.get_object('battlemenu').show_menu('selection')
@@ -286,10 +284,7 @@ class BattleEngine(GameEngineElement):
             self.game_engine.get_object('magicmenu').remove_from_engine()
 
     def event_handler(self, event):
-        if event.type == pygame.USEREVENT+1:
-            return True
-
-        elif event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:
 
             newKey=pygame.key.name(event.key)
 
