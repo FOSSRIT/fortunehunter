@@ -475,74 +475,68 @@ class Console:
         self.set_pos(self.c_pos + len(strn))
         return foo
 
-    def process_input(self):
+    def process_input(self, event):
         '''\
         Loop through pygame events and evaluate them
         '''
         if not self.active:
-            return;
+            return False;
 
-        if self.preserve_events:
-            eventlist = pygame.event.get(KEYDOWN)
-        else:
-            eventlist = pygame.event.get()
-
-        for event in eventlist:
-            if event.type == KEYDOWN:
-                self.changed = True
-                ## Special Character Manipulation
-                if event.key == K_TAB:
-                    self.c_in = self.str_insert(self.c_in, "    ")
-                elif event.key == K_BACKSPACE:
-                    if self.c_pos > 0:
-                        self.c_in = self.c_in[:self.c_pos-1] + self.c_in[self.c_pos:]
-                        self.set_pos(self.c_pos-1)
-                elif event.key == K_DELETE:
-                    if self.c_pos < len(self.c_in):
-                        self.c_in = self.c_in[:self.c_pos] + self.c_in[self.c_pos+1:]
-                elif event.key == K_RETURN or event.key == 271:
-                    self.submit_input(self.c_in)
-                ## Changing Cursor Position
-                elif event.key == K_LEFT:
-                    if self.c_pos > 0:
-                        self.set_pos(self.c_pos-1)
-                elif event.key == K_RIGHT:
-                    if self.c_pos < len(self.c_in):
-                        self.set_pos(self.c_pos+1)
-                elif event.key == K_HOME:
-                    self.set_pos(0)
-                elif event.key == K_END:
+        if event.type == KEYDOWN:
+            self.changed = True
+            ## Special Character Manipulation
+            if event.key == K_TAB:
+                self.c_in = self.str_insert(self.c_in, "    ")
+            elif event.key == K_BACKSPACE:
+                if self.c_pos > 0:
+                    self.c_in = self.c_in[:self.c_pos-1] + self.c_in[self.c_pos:]
+                    self.set_pos(self.c_pos-1)
+            elif event.key == K_DELETE:
+                if self.c_pos < len(self.c_in):
+                    self.c_in = self.c_in[:self.c_pos] + self.c_in[self.c_pos+1:]
+            elif event.key == K_RETURN or event.key == 271:
+                self.submit_input(self.c_in)
+            ## Changing Cursor Position
+            elif event.key == K_LEFT:
+                if self.c_pos > 0:
+                    self.set_pos(self.c_pos-1)
+            elif event.key == K_RIGHT:
+                if self.c_pos < len(self.c_in):
+                    self.set_pos(self.c_pos+1)
+            elif event.key == K_HOME:
+                self.set_pos(0)
+            elif event.key == K_END:
+                self.set_pos(len(self.c_in))
+            ## History Navigation
+            elif event.key == K_UP:
+                if len(self.c_out):
+                    if self.c_hist_pos > 0:
+                        self.c_hist_pos -= 1
+                    self.c_in = self.c_hist[self.c_hist_pos]
                     self.set_pos(len(self.c_in))
-                ## History Navigation
-                elif event.key == K_UP:
-                    if len(self.c_out):
-                        if self.c_hist_pos > 0:
-                            self.c_hist_pos -= 1
-                        self.c_in = self.c_hist[self.c_hist_pos]
-                        self.set_pos(len(self.c_in))
-                elif event.key == K_DOWN:
-                    if len(self.c_out):
-                        if self.c_hist_pos < len(self.c_hist)-1:
-                            self.c_hist_pos += 1
-                        self.c_in = self.c_hist[self.c_hist_pos]
-                        self.set_pos(len(self.c_in))
-                ## Scrolling
-                elif event.key == K_PAGEUP:
-                    if self.c_scroll < len(self.c_out)-1:
-                        self.c_scroll += 1
-                elif event.key == K_PAGEDOWN:
-                    if self.c_scroll > 0:
-                        self.c_scroll -= 1
-                ## Normal character printing
-                elif event.key >= 32:
-                    mods = pygame.key.get_mods()
-                    if mods & KMOD_CTRL:
-                        if event.key in range(256) and chr(event.key) in self.key_calls:
-                            self.key_calls[chr(event.key)]()
-                    else:
-                        char = str(event.unicode)
-                        self.c_in = self.str_insert(self.c_in, char)
-
+            elif event.key == K_DOWN:
+                if len(self.c_out):
+                    if self.c_hist_pos < len(self.c_hist)-1:
+                        self.c_hist_pos += 1
+                    self.c_in = self.c_hist[self.c_hist_pos]
+                    self.set_pos(len(self.c_in))
+            ## Scrolling
+            elif event.key == K_PAGEUP:
+                if self.c_scroll < len(self.c_out)-1:
+                    self.c_scroll += 1
+            elif event.key == K_PAGEDOWN:
+                if self.c_scroll > 0:
+                    self.c_scroll -= 1
+            ## Normal character printing
+            elif event.key >= 32:
+                mods = pygame.key.get_mods()
+                if mods & KMOD_CTRL:
+                    if event.key in range(256) and chr(event.key) in self.key_calls:
+                        self.key_calls[chr(event.key)]()
+                else:
+                    char = str(event.unicode)
+                    self.c_in = self.str_insert(self.c_in, char)
+        return True
 
     def convert_token(self, tok):
         '''\

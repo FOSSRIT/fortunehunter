@@ -158,8 +158,6 @@ class GameEngine(object):
 
     def _event_loop(self):
         while self.__run_event:
-            self.console.process_input()
-
             # Handle Game Quit Message
             for event in pygame.event.get():
 
@@ -189,7 +187,7 @@ class GameEngine(object):
                         and pygame.key.get_mods() & pygame.KMOD_CTRL:
                     self.console.set_active()
 
-                else:
+                elif not self.console.process_input( event ):
                     # Send event to all event listeners
                     # Make a copy first so that adding events don't get fired
                     # right away
