@@ -46,7 +46,7 @@ class Comic(GameEngineElement):
         else:
             return False
 
-    def draw(self,screen):
+    def draw(self,screen,time_delta):
         screen.blit(self.images[self.currentIndex].image,(0,0,1200,900))
 
     def event_handler(self,event):

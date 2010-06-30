@@ -14,7 +14,7 @@ class GameMenuHolder( GameEngineElement ):
         super( GameMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         if self.background:
             screen.blit(self.background,(0,0,self.width,self.height))
         else:
@@ -113,5 +113,5 @@ class GameMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         self.menu.draw( screen )

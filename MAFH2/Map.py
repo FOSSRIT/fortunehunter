@@ -56,7 +56,7 @@ class Map(GameEngineElement):
         if self.draw_macro_set:
             return True
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         profile = self.game_engine.get_object('profile')
         x, y = profile.position
         playerFacing = profile.playerFacing

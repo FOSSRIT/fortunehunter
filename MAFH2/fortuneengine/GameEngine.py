@@ -134,7 +134,7 @@ class GameEngine(object):
 
     def _draw_loop(self):
         while self.__run_draw:
-            self.clock.tick(15)
+            tick_time = self.clock.tick(15)
 
             # If console is active, we want to draw console, pausing
             # game drawing (events are still being fired, just no
@@ -147,7 +147,7 @@ class GameEngine(object):
                 self.event_lock.acquire()
                 try:
                     for fnc in self.__draw_lst:
-                        fnc(self.screen)
+                        fnc(self.screen, tick_time)
                 except Exception as Detail:
                     import traceback
                     traceback.print_exc()
