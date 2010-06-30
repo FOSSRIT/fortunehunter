@@ -38,6 +38,9 @@ class GameEngine(object):
 
         self.screen = pygame.display.set_mode(size)
 
+        self.__showfps = False
+        self.__font = pygame.font.Font(None, 17)
+
         self.__run_event = False
         self.__run_draw = False
         self.__event_cb = []
@@ -135,6 +138,7 @@ class GameEngine(object):
     def _draw_loop(self):
         while self.__run_draw:
             tick_time = self.clock.tick(15)
+            screen = self.screen
 
             # If console is active, we want to draw console, pausing
             # game drawing (events are still being fired, just no
@@ -147,13 +151,20 @@ class GameEngine(object):
                 self.event_lock.acquire()
                 try:
                     for fnc in self.__draw_lst:
-                        fnc(self.screen, tick_time)
+                        fnc(screen, tick_time)
                 except Exception as Detail:
                     import traceback
                     traceback.print_exc()
                     self.stop_event_loop()
 
                 self.event_lock.release()
+
+                # Print Frame Rate
+                if self.__showfps:
+                    text = self.__font.render('FPS: %d' % self.clock.get_fps(),
+                        False, (255, 255, 255), (159, 182, 205))
+                    screen.blit(text, (0, 0))
+
                 pygame.display.flip()
 
     def _event_loop(self):
@@ -187,7 +198,7 @@ class GameEngine(object):
                         and pygame.key.get_mods() & pygame.KMOD_CTRL:
                     self.console.set_active()
 
-                elif not self.console.process_input( event ):
+                elif not self.console.process_input(event):
                     # Send event to all event listeners
                     # Make a copy first so that adding events don't get fired
                     # right away
@@ -337,6 +348,12 @@ class GameEngine(object):
         for eventlst in self.__object_hold:
             objlist += "\t%s\n" % str(eventlst)
         return objlist
+
+    def toggle_fps(self):
+        """
+        Toggles fps display
+        """
+        self.__showfps = not self.__showfps
 
     def __drilldown_object(self, objectname):
         """

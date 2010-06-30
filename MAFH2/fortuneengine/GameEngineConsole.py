@@ -42,6 +42,8 @@ class GameEngineConsole(Console):
             "set_str": gei.set_str,
             "set_int": gei.set_int,
             "set_eval": gei.set_eval,
+
+            "fps": gei.toggle_fps,
         }
 
         # Ctrl + key mappings
