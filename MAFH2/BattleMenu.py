@@ -27,7 +27,7 @@ class BattleMenuHolder( GameEngineElement ):
         super( GameMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         screen.blit(self.background,(0,286,452,414))
         ren = self.font.render(self.disp, 1, (0,0,0))
         screen.blit(ren, (250, 340))
@@ -115,7 +115,7 @@ class BattleMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         self.menu.draw( screen )
 
 class Menu(object):

@@ -312,7 +312,7 @@ class BattleEngine(GameEngineElement):
         # We don't want to allow other things to run during battle
         return True
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         x=250
         y=150
         i = 1

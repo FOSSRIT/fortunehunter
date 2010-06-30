@@ -19,7 +19,7 @@ class TermBox(GameEngineElement):
         if len( self.__lines ) > self.max_lines:
             self.__lines.pop(0)
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         pygame.draw.rect(screen, [0, 0, 0], (self.x, self.y, self.width, self.height))
         i=0
         for line in self.__lines:

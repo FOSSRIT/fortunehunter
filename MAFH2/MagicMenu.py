@@ -19,7 +19,7 @@ class MagicMenuHolder( GameEngineElement ):
         super( MagicMenuHolder, self ).remove_from_engine()
         self.clear_menu()
         
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         screen.blit(self.background,(0,286,452,414))
         #draw the boxes with the specific magic icons randomly
         
@@ -105,7 +105,7 @@ class MagicMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         self.menu.draw( screen )
 
 class Menu(object):

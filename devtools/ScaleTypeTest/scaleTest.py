@@ -35,19 +35,20 @@ background = 152, 251, 152 # pale green
 def chngImg():
     cnt=make
     while cnt>0:
-        switcher = {
-            1: pygame.image.load("%s2.%s"%(ft[1],ft[0])),
-            2: pygame.image.load("%s3.%s"%(ft[1],ft[0])),
-            3: pygame.image.load("%s4.%s"%(ft[1],ft[0])),
-            4: pygame.image.load("%s5.%s"%(ft[1],ft[0])),
-            5: pygame.image.load("%s6.%s"%(ft[1],ft[0])),
-            6: pygame.image.load("%s7.%s"%(ft[1],ft[0])),
-            7: pygame.image.load("%s8.%s"%(ft[1],ft[0])),
-            8: pygame.image.load("%s9.%s"%(ft[1],ft[0])),
-            9: pygame.image.load("%s1.%s"%(ft[1],ft[0]))
+        """switcher = {
+            1: pygame.transform.scale( pygame.image.load( "%s2.%s"%( ft[1],ft[0] ) ) ,(sizeTo[0],sizeTo[1] ),
+            2: pygame.transform.scale( pygame.image.load("%s3.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            3: pygame.transform.scale( pygame.image.load("%s4.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            4: pygame.transform.scale( pygame.image.load("%s5.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            5: pygame.transform.scale( pygame.image.load("%s6.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            6: pygame.transform.scale( pygame.image.load("%s7.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            7: pygame.transform.scale( pygame.image.load("%s8.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            8: pygame.transform.scale( pygame.image.load("%s9.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ),
+            9: pygame.transform.scale( pygame.image.load("%s1.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )
         }
+        """
         img[cnt,0]=switcher.get(i,pygame.image.load("%s1.%s"%(ft[1],ft[0])))
-        img[cnt,0] = pygame.transform.scale(img[cnt,0],(sizeTo[0], sizeTo[1]))
+#        img[cnt,0] = pygame.transform.scale(img[cnt,0],(sizeTo[0], sizeTo[1]))
         cnt=cnt-1
 
 #-----------------------------------------------------------------
@@ -74,6 +75,22 @@ while 1:
     ft=ftArr[t]
     print "Testing: "+ft[1]+" extension "+ft[0]
     trialthis=trial
+    start=time.time()
+    switcher = {
+        1: pygame.transform.scale( pygame.image.load( "%s2.%s"%( ft[1],ft[0] ) ),(sizeTo[0],sizeTo[1] )),
+        2: pygame.transform.scale( pygame.image.load("%s3.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        3: pygame.transform.scale( pygame.image.load("%s4.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        4: pygame.transform.scale( pygame.image.load("%s5.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        5: pygame.transform.scale( pygame.image.load("%s6.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        6: pygame.transform.scale( pygame.image.load("%s7.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        7: pygame.transform.scale( pygame.image.load("%s8.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        8: pygame.transform.scale( pygame.image.load("%s9.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
+        9: pygame.transform.scale( pygame.image.load("%s1.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ))
+    }
+    print "Time taken to load this test at ",
+    print sizeTo
+    print " pixels was "
+    print time.time()-start
     
 #-----------------------------------------------------------------
     while trialthis>0:

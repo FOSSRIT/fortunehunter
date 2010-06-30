@@ -267,7 +267,7 @@ class Dungeon(GameEngineElement):
         elif dir == WEST:
             return 'S', 'W', 'N'
 
-    def draw(self, screen):
+    def draw(self,screen,time_delta):
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
