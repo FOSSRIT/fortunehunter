@@ -51,8 +51,8 @@ class BattleEngine(GameEngineElement):
 
     def menu_callback(self, selection, menu):
         if selection == 'attack_show':
-            menu.set_sec_disp('0')
-            self.player_input = '0'
+            menu.set_sec_disp('')
+            self.player_input = ''
             self.isMagic = False
             random.seed()
             isCrit = random.randint(0,100)
@@ -71,6 +71,7 @@ class BattleEngine(GameEngineElement):
                 menu.show_menu('selection')
                 menu.set_sec_disp('')
                 self.__attack_phase(menu)
+            
         
         elif self.state == PLAYER_MULT:
             if selection == 'enter':
@@ -80,13 +81,13 @@ class BattleEngine(GameEngineElement):
                 else:
                     menu.set_disp('Incorrect')
                 
-                menu.set_sec_disp('0')
-                self.player_input = '0'
+                menu.set_sec_disp('')
+                self.player_input = ''
                 self.__attack_phase(menu)
 
             elif selection == 'clear':
-                self.player_input = '0'
-                menu.set_sec_disp('0')
+                self.player_input = ''
+                menu.set_sec_disp('')
                                
             else:
                 self.player_input = self.player_input + selection
@@ -272,6 +273,7 @@ class BattleEngine(GameEngineElement):
         # Check to see how much hp enemy has left.
         # Enemy Attack
         # Check player health
+        self.state = PLAYER_WAIT
         print("in __attack_phase")
         self.__end_battle(menu)
 
