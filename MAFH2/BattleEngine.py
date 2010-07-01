@@ -74,6 +74,7 @@ class BattleEngine(GameEngineElement):
             
         
         elif self.state == PLAYER_MULT:
+            self.isMagic = False
             if selection == 'enter':
                 #figure out damage for crit attack               
                 if int(self.player_input) == (self.critAns):
@@ -97,29 +98,33 @@ class BattleEngine(GameEngineElement):
             menu.set_disp('Fire Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('fire')
-            self.isMagic = True 
-            #self.__attack_phase(menu)
+            self.isMagic = True
+            self.magicWin = False
                 
         elif selection == 'heal':
             menu.set_disp('Heal Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('heal')
             self.isMagic = True
+            self.magicWin = False
                 
         elif selection == 'lightning':
             menu.set_disp('Lightning Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('lightning')
             self.isMagic = True
+            self.magicWin = False
                 
         elif selection == 'missile':
             menu.set_disp('Missile Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('missile')
             self.isMagic = True
+            self.magicWin = False
             
         elif selection == 'scan':
                 menu.set_disp('Enemy Scanned!')
+                self.isMagic = False
                 self.__attack_phase(menu)
                 
         elif selection == 'fire1':
@@ -127,145 +132,141 @@ class BattleEngine(GameEngineElement):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(1)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'fire2':
-            if(1 in self.magic_list):
+            if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(2)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
         elif selection == 'fire3':
-            if(1 in self.magic_list):
+            if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(3)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'fire4':
-            if(1 in self.magic_list):
+            if(4 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(4)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'lig1':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(1)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
         elif selection == 'lig2':
-            if(1 in self.magic_list):
+            if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(2)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
         elif selection == 'lig3':
-            if(1 in self.magic_list):
+            if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(3)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
         elif selection == 'lig4':
-            if(1 in self.magic_list):
+            if(4 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(4)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'miss1':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(1)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'miss2':
-            if(1 in self.magic_list):
+            if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(2)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'miss3':
-            if(1 in self.magic_list):
+            if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(3)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'miss4':
-            if(1 in self.magic_list):
+            if(4 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(4)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'heal1':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(1)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'heal2':
-            if(1 in self.magic_list):
+            if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(2)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'heal3':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(3)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'heal4':
-            if(1 in self.magic_list):
+            if(4 in self.magic_list):
                 self.__attack_phase(menu)
             else:
                 self.magic_list.append(4)
-                #draw overlay
                 if(len(self.magic_list) > 3):
-                    #reset variables
+                    self.magicWin = True
                     self.__attack_phase(menu)
+                    
         elif selection == 'wrongchoice':
             self.__attack_phase(menu)
 
@@ -274,16 +275,18 @@ class BattleEngine(GameEngineElement):
         # Enemy Attack
         # Check player health
         self.state = PLAYER_WAIT
+        self.magic_list = []
         print("in __attack_phase")
         self.__end_battle(menu)
 
     def __end_battle(self, menu):
         #Give items if any
         #self terminate
-        if (not self.isMagic):
-            menu.show_menu('selection')
-        else:
+        if (self.isMagic):
             self.game_engine.get_object('magicmenu').remove_from_engine()
+            self.game_engine.remove_object('magicmenu')
+        else:
+            menu.show_menu('selection')
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:

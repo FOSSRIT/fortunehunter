@@ -120,72 +120,73 @@ class Menu(object):
         self.cols = 2
         self.option = 0
         self.width = 1
-        self.color = [0, 0, 0]
-        self.hcolor = [255, 0, 0]
         
+        lightning = []
+        fire = []
+        missile = []
+        heal = []
         
-        #btn1-4 will be correct buttons and btn5-8 will be incorrect
+        for i in range(1,5):
+            fire.append(PUZZLE_PATH + "FireGlyph%dbtn.gif" %i)
+            lightning.append(PUZZLE_PATH + "LightningGlyph%dbtn.gif" %i)
+            missile.append(PUZZLE_PATH + "MissileGlyph%dbtn.gif" %i)
+            heal.append(PUZZLE_PATH + "HealGlyph%dbtn.gif" %i)
         
         if(spelltype == 0):
-            self.btn1 = pygame.image.load(PUZZLE_PATH + "FireGlyph1btn.gif")
-            self.btn2 = pygame.image.load(PUZZLE_PATH + "FireGlyph2btn.gif")
-            self.btn3 = pygame.image.load(PUZZLE_PATH + "FireGlyph3btn.gif")
-            self.btn4 = pygame.image.load(PUZZLE_PATH + "FireGlyph4btn.gif")
-            
+            #fire attack
+            for i in range(4):
+                self.buttons.append(pygame.image.load(fire[i]).convert())
             #filler buttons
-            self.btn5 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
-            self.btn6 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
-            self.btn7 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
-            self.btn8 = pygame.image.load(PUZZLE_PATH + "LightningGlyph2btn.gif")
+            for i in range(0,2):
+                self.buttons.append(pygame.image.load(lightning[i]).convert())
+            random.seed()
+            self.buttons.append(pygame.image.load(heal[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.image.load(missile[random.randint(0,3)]).convert())
+            
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert()
             
         elif(spelltype == 1):
             #lightning attack
-            self.btn1 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
-            self.btn2 = pygame.image.load(PUZZLE_PATH + "LightningGlyph2btn.gif")
-            self.btn3 = pygame.image.load(PUZZLE_PATH + "LightningGlyph3btn.gif")
-            self.btn4 = pygame.image.load(PUZZLE_PATH + "LightningGlyph4btn.gif")
+            for i in range(4):
+                self.buttons.append(pygame.image.load(lightning[i]).convert())
+            #filler buttons
+            for i in range(0,2):
+                self.buttons.append(pygame.image.load(fire[i]).convert())
+            random.seed()
+            self.buttons.append(pygame.image.load(heal[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.image.load(missile[random.randint(0,3)]).convert())
             
-            self.btn5 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
-            self.btn6 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
-            self.btn7 = pygame.image.load(PUZZLE_PATH + "FireGlyph1btn.gif")
-            self.btn8 = pygame.image.load(PUZZLE_PATH + "FireGlyph2btn.gif")
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert()
             
         elif(spelltype == 2):
             #missile attack
-            self.btn1 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
-            self.btn2 = pygame.image.load(PUZZLE_PATH + "MissileGlyph2btn.gif")
-            self.btn3 = pygame.image.load(PUZZLE_PATH + "MissileGlyph3btn.gif")
-            self.btn4 = pygame.image.load(PUZZLE_PATH + "MissileGlyph4btn.gif")
-    
-            self.btn5 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
-            self.btn6 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
-            self.btn7 = pygame.image.load(PUZZLE_PATH + "FireGlyph1btn.gif")
-            self.btn8 = pygame.image.load(PUZZLE_PATH + "FireGlyph2btn.gif")
+            for i in range(4):
+                self.buttons.append(pygame.image.load(missile[i]).convert())
+            #filler buttons
+            for i in range(0,2):
+                self.buttons.append(pygame.image.load(lightning[i]).convert())
+            random.seed()
+            self.buttons.append(pygame.image.load(heal[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.image.load(fire[random.randint(0,3)]).convert())
+            
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert()
         elif(spelltype == 3):
             #heal
-            self.btn1 = pygame.image.load(PUZZLE_PATH + "HealGlyph1btn.gif")
-            self.btn2 = pygame.image.load(PUZZLE_PATH + "HealGlyph2btn.gif")
-            self.btn3 = pygame.image.load(PUZZLE_PATH + "HealGlyph3btn.gif")
-            self.btn4 = pygame.image.load(PUZZLE_PATH + "HealGlyph4btn.gif")
+            for i in range(4):
+                self.buttons.append(pygame.image.load(heal[i]).convert())
+            #filler buttons
+            for i in range(0,2):
+                self.buttons.append(pygame.image.load(lightning[i]).convert())
+            random.seed()
+            self.buttons.append(pygame.image.load(missile[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.image.load(fire[random.randint(0,3)]).convert())
             
-            self.btn5 = pygame.image.load(PUZZLE_PATH + "LightningGlyph1btn.gif")
-            self.btn6 = pygame.image.load(PUZZLE_PATH + "MissileGlyph1btn.gif")
-            self.btn7 = pygame.image.load(PUZZLE_PATH + "FireGlyph1btn.gif")
-            self.btn8 = pygame.image.load(PUZZLE_PATH + "FireGlyph2btn.gif")
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()
         
-        
-        self.buttons.append(self.btn1)
-        self.buttons.append(self.btn2)
-        self.buttons.append(self.btn3)
-        self.buttons.append(self.btn4)
-        self.buttons.append(self.btn5)
-        self.buttons.append(self.btn6)
-        self.buttons.append(self.btn7)
-        self.buttons.append(self.btn8)
         random.seed()
         random.shuffle(self.buttons)
                             
-        self.height = (len(self.options)*self.btn1.get_height()) / self.cols
+        self.height = (len(self.options)*self.buttons[1].get_height()) / self.cols
 
     def draw(self, surface):
         """Draw the menu to the surface."""
@@ -193,21 +194,16 @@ class Menu(object):
         h=0 # Selection Spacing
         j=0 # Col Spacing
         index=0 #current spot in buttons list
-        height = self.btn1.get_height()
-        width = self.btn1.get_width()
+        height = self.buttons[0].get_height()
+        width = self.buttons[0].get_width()
         
-        for o in self.options:
-            if h==self.option:
-                clr = self.hcolor
-            else:
-                clr = self.color
-            text = o[0]
+        for o in self.buttons:
 
             newX = self.x + width * j
             newY = self.y + i * height
             
-            #get number b/w 1&8 that hasn't been used
-            #add it to "btn" and blit it
+            if h==self.option:
+                pygame.draw.rect(surface, (4, 119, 152), ( newX, newY, height, width))
             surface.blit(self.buttons[index], (newX, newY) )
 
             j+=1
@@ -216,7 +212,8 @@ class Menu(object):
             if j >= self.cols:
                 i+=1
                 j=0
-            
+                
+        surface.blit(self.mainGlyph, (500,350))
     def update(self, event):
         """Update the menu and get input for the menu."""
         return_val = True
