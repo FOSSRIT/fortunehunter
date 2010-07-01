@@ -25,12 +25,12 @@ class Spritesheet:
             imgs.append(self.imgat(rect, colorkey))
         return imgs
 
-    def img_extract( self, cols, rows, width, height ):
+    def img_extract( self, cols, rows, width, height, colorkey = -1 ):
         rect_list = []
         for y in range(0, rows):
             for x in range(0, cols):
                 rect_list.append( (width*x, height*y, width, height) )
-        return self.imgsat( rect_list, -1 )
+        return self.imgsat( rect_list, colorkey )
 
 
 class AnimatedSprite(pygame.sprite.Sprite):
