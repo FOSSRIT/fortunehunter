@@ -1,6 +1,7 @@
 import pygame
 import random
 from fortuneengine.GameEngineElement import GameEngineElement
+from AnimatedSprite import Spritesheet
 
 from constants import MENU_PATH, PUZZLE_PATH
 from gettext import gettext as _
@@ -96,8 +97,9 @@ class MagicMenuHolder( GameEngineElement ):
 class MagicMenu(GameEngineElement):
     def __init__(self, magic_menu, x, y, type, spell_type):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
-
-        self.menu = Menu(magic_menu, spell_type)
+        magic_list = self.game_engine.get_object('battle').magic_list
+        self.menu = Menu(magic_menu, spell_type, magic_list)
+        
 
         self.menu.set_pos(x, y)
         self.add_to_engine()
@@ -109,7 +111,7 @@ class MagicMenu(GameEngineElement):
         self.menu.draw( screen )
 
 class Menu(object):
-    def __init__(self, options, spelltype):
+    def __init__(self, options, spelltype, magic_list):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
 
@@ -119,67 +121,69 @@ class Menu(object):
         self.y = 0
         self.cols = 2
         self.option = 0
-        self.width = 1
+        self.width = 2
+        self.spelltype = spelltype
+        self.magic_list = magic_list
         
         lightning = []
         fire = []
         missile = []
         heal = []
         
-        for i in range(1,5):
-            fire.append(PUZZLE_PATH + "FireGlyph%dbtn.gif" %i)
-            lightning.append(PUZZLE_PATH + "LightningGlyph%dbtn.gif" %i)
-            missile.append(PUZZLE_PATH + "MissileGlyph%dbtn.gif" %i)
-            heal.append(PUZZLE_PATH + "HealGlyph%dbtn.gif" %i)
-        
+
+        fire = Spritesheet(PUZZLE_PATH + "FireGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
+        lightning = Spritesheet(PUZZLE_PATH + "LightningGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
+        missile = Spritesheet(PUZZLE_PATH + "MissileGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
+        heal = Spritesheet(PUZZLE_PATH + "HealGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
+
         if(spelltype == 0):
             #fire attack
             for i in range(4):
-                self.buttons.append(pygame.image.load(fire[i]).convert())
+                self.buttons.append(pygame.transform.scale(fire[i] , (60,60)))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.image.load(lightning[i]).convert())
+                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
             random.seed()
-            self.buttons.append(pygame.image.load(heal[random.randint(0,3)]).convert())
-            self.buttons.append(pygame.image.load(missile[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.transform.scale(heal[random.randint(0,3)] , (60,60)))
+            self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert()
             
         elif(spelltype == 1):
             #lightning attack
             for i in range(4):
-                self.buttons.append(pygame.image.load(lightning[i]).convert())
+                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.image.load(fire[i]).convert())
+                self.buttons.append(pygame.transform.scale(fire[i] , (60,60)))
             random.seed()
-            self.buttons.append(pygame.image.load(heal[random.randint(0,3)]).convert())
-            self.buttons.append(pygame.image.load(missile[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.transform.scale(heal[random.randint(0,3)] , (60,60)))
+            self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert()
             
         elif(spelltype == 2):
             #missile attack
             for i in range(4):
-                self.buttons.append(pygame.image.load(missile[i]).convert())
+                self.buttons.append(pygame.transform.scale(missile[i] , (60,60)))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.image.load(lightning[i]).convert())
+                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
             random.seed()
-            self.buttons.append(pygame.image.load(heal[random.randint(0,3)]).convert())
-            self.buttons.append(pygame.image.load(fire[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.transform.scale(heal[random.randint(0,3)] , (60,60)))
+            self.buttons.append(pygame.transform.scale(fire[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert()
         elif(spelltype == 3):
             #heal
             for i in range(4):
-                self.buttons.append(pygame.image.load(heal[i]).convert())
+                self.buttons.append(pygame.transform.scale(heal[i] , (60,60)))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.image.load(lightning[i]).convert())
+                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
             random.seed()
-            self.buttons.append(pygame.image.load(missile[random.randint(0,3)]).convert())
-            self.buttons.append(pygame.image.load(fire[random.randint(0,3)]).convert())
+            self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
+            self.buttons.append(pygame.transform.scale(fire[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()
         
@@ -213,7 +217,22 @@ class Menu(object):
                 i+=1
                 j=0
                 
+        self.mainGlyph.set_colorkey(pygame.Color(255,0,255), pygame.RLEACCEL)
         surface.blit(self.mainGlyph, (500,350))
+        
+        '''
+        # Draw reference glyphs
+        for i in range(4):
+            if i in self.magic_list:
+                if self.spelltype == 0:
+                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "FireGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500+((i%2) * 137), 350+(i/2 * 147)))
+                elif self.spelltype == 1:
+                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "LightningGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500+((i%2) * 137), 350+(i/2 * 147)))
+                elif self.spelltype == 2:
+                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "MissileGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500 + ((i%2) * 137), 350+(i/2 * 147)))
+                elif self.spelltype == 3:
+                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "HealGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500 + ((i%2) * 137), 350+(i/2 * 147)))
+        '''
     def update(self, event):
         """Update the menu and get input for the menu."""
         return_val = True

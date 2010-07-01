@@ -25,6 +25,7 @@ class BattleEngine(GameEngineElement):
         self.enemy_list = []
         self.magic_list = []
 
+        self.spellType = 0  #0 = non, 1-4 are spells in order
         self.isMagic = False
         self.state = PLAYER_WAIT
         self.player_input = '0'
