@@ -16,7 +16,6 @@ from constants import (
         )
 from JournalIntegration import do_load, load_dungeon_by_id
 
-FADE_SPEED = 150
 SEARCH_TIME = 2
 COLOR_DELTA = 255/SEARCH_TIME
 
@@ -206,15 +205,13 @@ class Dungeon(GameEngineElement):
             self.game_engine.get_object('mesg').add_line(_("Amulet search found nothing."))
 
     def search_timer_handler(self):
-        # Ensure we haven't deleted the pickup time yet
-        # Can happen if deleted but still in event queue
-        if hasattr( self, 'pickup_time' ):
-            if time() - self.pickup_time > SEARCH_TIME:
-                self.game_engine.stop_event_timer( \
-                    self.search_timer_handler )
-                del self.pickup_time
-                self.amulet_search()
-
+        """
+        Called when the timer has expired, fires off the amulet search
+        """
+        self.game_engine.stop_event_timer( \
+            self.search_timer_handler )
+        del self.pickup_time
+        self.amulet_search()
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -235,7 +232,7 @@ class Dungeon(GameEngineElement):
             elif newKey=='[1]' or newKey=='e':
                 self.pickup_time = time()
                 self.game_engine.start_event_timer( \
-                    self.search_timer_handler, FADE_SPEED )
+                    self.search_timer_handler, SEARCH_TIME * 1000 )
                 return True
 
         elif event.type == pygame.KEYUP:
