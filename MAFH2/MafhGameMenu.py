@@ -37,21 +37,21 @@ class GameMenuHolder( GameEngineElement ):
         if id == "title":
             menu_options = [
                         ["Adventure Play", lambda: self.show_menu("adventure"), "Begin a new game, create a new profile, or continue from a saved profile game"],
-                        ['Creative Play', lambda: self.show_menu("creative"), "Play custom maps and learn how to create them"],
-                        ['Network', lambda: self.show_menu("network"), "Play games with special rules or see the scoreboard"],
-                        ['Extras', lambda: self.show_menu("extras"), "View special information for the loaded player profile"],
+                        #['Creative Play', lambda: self.show_menu("creative"), "Play custom maps and learn how to create them"],
+                        #['Network', lambda: self.show_menu("network"), "Play games with special rules or see the scoreboard"],
+                        #['Extras', lambda: self.show_menu("extras"), "View special information for the loaded player profile"],
                         #['Options', lambda: self.menu_called("options"), "Change controls, language, difficulty, and other game settings"],
-                        ['Options', lambda: self.show_menu("options"), "Change controls, language, difficulty, and other game settings"],
+                        #['Options', lambda: self.show_menu("options"), "Change controls, language, difficulty, and other game settings"],
                         ['Exit Game', lambda: self.game_engine.stop_event_loop(), "Exit the game"]
             ]
 
         elif id == "adventure":
             menu_options = [
-                        ["Continue",  lambda: self.menu_called("continue"), "Continue loaded game from the latest save"],
-                        ["Level Select",  lambda: self.menu_called("level"), "Play completed levels from loaded game"],
-                        ["Load Game", lambda: self.menu_called("load"), "Load player profile game data"],
+                        #["Continue",  lambda: self.menu_called("continue"), "Continue loaded game from the latest save"],
+                        #["Level Select",  lambda: self.menu_called("level"), "Play completed levels from loaded game"],
+                        #["Load Game", lambda: self.menu_called("load"), "Load player profile game data"],
                         ["New Game",  lambda: self.menu_called("new"), "Play story mode from the beginning"],
-                        ["New Player Profile",  lambda: self.menu_called("newpro"), "Create a new player profile"],
+                        #["New Player Profile",  lambda: self.menu_called("newpro"), "Create a new player profile"],
                         ["Return to Title", lambda: self.show_menu("title"), "Return to the title menu"]
             ]
 
