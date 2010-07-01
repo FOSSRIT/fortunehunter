@@ -69,9 +69,12 @@ class GameEngine(object):
         avail_timer = len(self.__active_event_timers)
 
         if avail_timer + pygame.USEREVENT < pygame.NUMEVENTS:
-            self.__active_event_timers.append(function_cb)
-            self.__active_event_timers_tick.append(time)
-            pygame.time.set_timer(pygame.USEREVENT + avail_timer, time)
+            if function_cb not in self.__active_event_timers:
+                self.__active_event_timers.append(function_cb)
+                self.__active_event_timers_tick.append(time)
+                pygame.time.set_timer(pygame.USEREVENT + avail_timer, time)
+            else:
+                print "ERROR TIMER IN LIST"
         else:
             print "Ran out of timers :("
             self.stop_event_loop()
@@ -83,12 +86,15 @@ class GameEngine(object):
         try:
             timer_id = self.__active_event_timers.index(function_cb)
         except ValueError:
-            print "ERROR HAPPENED"
             return
 
         pygame.time.set_timer(pygame.USEREVENT + timer_id, 0)
         del self.__active_event_timers[timer_id]
         del self.__active_event_timers_tick[timer_id]
+
+        # Timers have been removed, now need to clear any events
+        # already fired and in the queue
+        pygame.event.clear(pygame.USEREVENT + timer_id)
 
     def list_event_timers(self):
         """
@@ -181,18 +187,24 @@ class GameEngine(object):
                      event.type < pygame.NUMEVENTS:
 
                     timer_id = event.type - pygame.USEREVENT
+                    self.event_lock.acquire()
+
                     try:
-                        self.event_lock.acquire()
                         functioncall = self.__active_event_timers[timer_id]
-                        functioncall()
+                    except IndexError:
+                        pass
 
-                    except Exception as Detail:
-                        import traceback
-                        traceback.print_exc()
-                        self.stop_event_loop()
+                    else:
 
-                    finally:
-                        self.event_lock.release()
+                        try:
+                            functioncall()
+
+                        except Exception as Detail:
+                            import traceback
+                            traceback.print_exc()
+                            self.stop_event_loop()
+
+                    self.event_lock.release()
 
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
                         and pygame.key.get_mods() & pygame.KMOD_CTRL:
