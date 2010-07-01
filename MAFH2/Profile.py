@@ -67,7 +67,8 @@ class Profile(GameEngineElement):
         self.inventory.append(item)
 
     def add_to_engine(self):
-        self.background_img = pygame.image.load(MENU_PATH+"mafh_splash.gif")
+        bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
+        self.background_img = pygame.transform.scale(bg, (self.game_engine.width, self.game_engine.height))
         super( Profile, self).add_to_engine()
 
     def remove_from_engine(self):
@@ -94,12 +95,18 @@ class Profile(GameEngineElement):
         """
         Draws user input for name to the screen
         """
-        font = pygame.font.Font(None, 32)
+        width = self.game_engine.width
+        height = self.game_engine.height
+
+        draw_width = width/4
+        draw_height = height/4
+
+        font = pygame.font.Font(None, 16)
         text=font.render(self.name,True,(0,0,0))
-        textRect=(400,400,400,400)
-        screen.blit(self.background_img,(0,0,1200,900))
-        screen.fill((150,150,255),(250,250,600,400))
-        screen.blit(font.render(_("Enter name:"),True,(0,0,0)),(300,300,20,20))
-        screen.blit(font.render(_("Return to continue"),True,(0,0,0)),(500,500,20,20))
+        textRect=(draw_width+60,draw_height+60,text.get_width(),text.get_height())
+        screen.blit(self.background_img,(0,0,width,height))
+        screen.fill((150,150,255),(draw_width,draw_height,2*draw_width,2*draw_height))
+        screen.blit(font.render(_("Enter name:"),True,(0,0,0)),(draw_width,draw_height))
+        screen.blit(font.render(_("Return to continue"),True,(0,0,0)),(draw_width+20,draw_height+20,20,20))
         screen.blit(text, textRect)
 

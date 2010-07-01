@@ -84,7 +84,13 @@ class Dungeon(GameEngineElement):
         LVL_PATH = ENV_PATH + "pyramid/"
 
         for img_key in ['Room','F','L']:
-            self.__images[img_key] = pygame.image.load(LVL_PATH+img_key+".png")
+            img = pygame.image.load(LVL_PATH+img_key+".png").convert()
+            img.set_colorkey(pygame.Color(255,0,255))
+            width,height = img.get_size()
+
+            img = pygame.transform.scale(img, (self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False)))
+
+            self.__images[img_key] = img
 
     def get_current_room(self):
         profile = self.game_engine.get_object('profile')
@@ -270,7 +276,7 @@ class Dungeon(GameEngineElement):
         current_room = self.rooms[profile.position]
 
         # Draw Room Background
-        screen.blit(self.__images['Room'],(0,0,1200,700))
+        screen.blit(self.__images['Room'],(0,0))
 
         # Draw Room Doors
         left, front, right = self.normalize_dir()
@@ -278,10 +284,10 @@ class Dungeon(GameEngineElement):
             screen.blit(self.__images['L'],(0,0))
 
         if current_room.get_door( front ) != '0':
-            screen.blit(self.__images['F'],(360,0))
+            screen.blit(self.__images['F'],( self.game_engine.art_scale(360, 1200, True),0))
 
         if current_room.get_door( right ) != '0':
-            screen.blit(pygame.transform.flip(self.__images['L'], True, False),(990,0))
+            screen.blit(pygame.transform.flip(self.__images['L'], True, False),(self.game_engine.art_scale(990, 1200, True),0))
 
         # Draw Items
         img_list = []
@@ -298,14 +304,17 @@ class Dungeon(GameEngineElement):
                 path = get_item( item_key[0] ).path
 
             if not self.__images.has_key( path ):
-                self.__images[path] = pygame.image.load(ITEM_PATH + path)
+                img = pygame.image.load(ITEM_PATH + path).convert()
+                width,height = img.get_size()
+                img = pygame.transform.scale(img, (self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False)))
+                self.__images[path] = img
 
             img_list.append( self.__images[path] )
 
-        screen.blit(img_list[0],(270,330,50,50))
-        screen.blit(img_list[1],(100,600,50,50))
-        screen.blit(img_list[2],(1100,600,50,50))
-        screen.blit(img_list[3],(900,330,50,50))
+        screen.blit(img_list[0],(self.game_engine.art_scale(270, 1200, True),self.game_engine.art_scale(330, 900, False)))
+        screen.blit(img_list[1],(self.game_engine.art_scale(100, 1200, True),self.game_engine.art_scale(600, 900, False)))
+        screen.blit(img_list[2],(self.game_engine.art_scale(1100, 1200, True),self.game_engine.art_scale(600, 900, False)))
+        screen.blit(img_list[3],(self.game_engine.art_scale(900, 1200, True),self.game_engine.art_scale(330, 900, False)))
 
         #Amulet Search Function
         if hasattr(self, 'pickup_time'):
@@ -314,6 +323,6 @@ class Dungeon(GameEngineElement):
             if color_a > 255:
                 color_a = 255
                 self.game_engine.stop_event_timer(self.search_timer_handler)
-            surf1 = pygame.Surface((1200,700), pygame.SRCALPHA)
-            pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, 1200, 700))
+            surf1 = pygame.Surface((self.game_engine.width,self.game_engine.height), pygame.SRCALPHA)
+            pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, self.game_engine.width, self.game_engine.height))
             screen.blit( surf1, (0, 0) )

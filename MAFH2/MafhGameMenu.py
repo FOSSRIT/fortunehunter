@@ -6,7 +6,8 @@ class GameMenuHolder( GameEngineElement ):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        self.background = pygame.image.load(background)
+        bg = pygame.image.load(background).convert()
+        self.background = pygame.transform.scale(bg, (width, height))
         self.width = width
         self.height = height
 
@@ -16,7 +17,7 @@ class GameMenuHolder( GameEngineElement ):
 
     def draw(self,screen,time_delta):
         if self.background:
-            screen.blit(self.background,(0,0,self.width,self.height))
+            screen.blit(self.background,(0,0))
         else:
             screen.fill((0, 0, 255))
 
@@ -98,14 +99,15 @@ class GameMenuHolder( GameEngineElement ):
             print "Invalid Menu", id
             return
 
-        self.menu = GameMenu(menu_options)
+        self.menu = GameMenu(menu_options, self.width, self.height)
 
 class GameMenu(GameEngineElement):
-    def __init__(self, game_menu, center_x=800, center_y=400):
+    def __init__(self, game_menu, width=800, height=400):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
         self.menu = ezmenu.EzMenu(game_menu)
-        self.menu.center_at(center_x, center_y)
-        self.menu.set_font(pygame.font.SysFont("Arial", 32))
+        self.menu.center_at(width - (width/3), height/2)
+        self.menu.help_text_at( 0, height-(height/10))
+        self.menu.set_font(pygame.font.SysFont("Arial", 20))
         self.menu.set_highlight_color((0, 255, 0))
         self.menu.set_normal_color((255, 255, 255))
         self.add_to_engine()

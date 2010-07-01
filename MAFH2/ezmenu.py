@@ -19,16 +19,20 @@ class EzMenu:
         self.options = options
         self.x = 0
         self.y = 0
-        self.font = pygame.font.Font(None, 32)
+        self.hx = 0
+        self.hy = 0
+        self.centerx = 0
+        self.centery = 0
+        self.font = pygame.font.Font(None, 18)
         self.option = 0
         self.width = 1
         self.color = [0, 0, 0]
         self.hcolor = [255, 0, 0]
         self.height = len(self.options)*self.font.get_height()
+
         for o in self.options:
-            text = o[0]
-            ren = self.font.render(text, 1, (0, 0, 0))
-            if ren.get_width() > self.width:
+            ren = self.font.render( o[0], 1, self.color)
+            if self.width < ren.get_width():
                 self.width = ren.get_width()
 
     def draw(self, surface):
@@ -42,9 +46,8 @@ class EzMenu:
             else:
                 clr = self.color
             text = o[0]
-            ren = self.font.render(text, 1, clr)
-            if ren.get_width() > self.width:
-                self.width = ren.get_width()
+            ren = self.font.render(text, True, clr)
+
             surface.blit(ren, (self.x, self.y + i*self.font.get_height()))
             i+=1
 
@@ -53,12 +56,11 @@ class EzMenu:
         ren = self.font.render( help_txt, 1, self.color )
         self.font.set_italic( False )
 
-        surf1 = pygame.Surface((1050,self.font.get_height()+20), pygame.SRCALPHA)
+        #surf1 = pygame.Surface((self.width+20,self.font.get_height()+20), pygame.SRCALPHA)
+        #pygame.draw.rect(surf1, (255, 255, 255, 70), (0, 0, self.width + 20, self.font.get_height()))
 
-        pygame.draw.rect(surf1, (255, 255, 255, 70), (0, 0, 1050, self.font.get_height()+20))
-
-        surface.blit( surf1, (50, 690) )
-        surface.blit( ren, (55, 700) )
+        #surface.blit( surf1, (self.hx, self.hy) )
+        surface.blit( ren, (self.hx+5, self.hy) )
 
     def update(self, event):
         """Update the menu and get input for the menu."""
@@ -102,3 +104,9 @@ class EzMenu:
         """Center the center of the menu at x,y"""
         self.x = x-(self.width/2)
         self.y = y-(self.height/2)
+        self.centerx = x
+        self.centery = y
+
+    def help_text_at(self, x, y):
+        self.hx = x
+        self.hy = y

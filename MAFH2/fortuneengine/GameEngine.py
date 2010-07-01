@@ -565,3 +565,10 @@ class GameEngine(object):
             attribute_list = str(obj)
 
         return "Class: %s\n%s" % (classname, attribute_list)
+
+    def art_scale(self, original, expected, width=True):
+        if width:
+            return int(self.width / float(expected) * float(original))
+        else:
+
+            return int(self.height / float(expected) * float(original))

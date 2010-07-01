@@ -10,7 +10,22 @@ class MafhGameManager(GameEngineElement):
         GameEngineElement.__init__(self, has_draw=False, has_event=True)
         self.add_to_engine()
 
-        self.game_engine.add_object('mesg', TermBox(200,700,1000,200,5) )
+        game_size_ratio_x = self.game_engine.width/1200.0
+        game_size_ratio_y = self.game_engine.height/900.0
+
+        term_width_offset = game_size_ratio_x * 200
+        term_height = game_size_ratio_y * 200
+        term_height_offset = game_size_ratio_y * 700
+        term_width = game_size_ratio_x * 1000
+
+        """
+        term_width_offset = self.game_engine.width/4
+        term_height = self.game_engine.height/6
+        term_height_offset = self.game_engine.height - term_height
+        term_width = self.game_engine.width - term_width_offset
+        """
+
+        self.game_engine.add_object('mesg', TermBox(term_width_offset, term_height_offset,term_width,term_height,5) )
         self.game_engine.get_object('mesg').add_line("Welcome to Fortune Hunter")
 
         self.game_engine.add_object('dungeon', Dungeon( self.game_engine.get_object('profile').dungeon_id))

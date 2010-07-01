@@ -9,7 +9,7 @@ class TermBox(GameEngineElement):
         self.y = y
         self.width = width
         self.height = height
-        self.font = pygame.font.Font(None, 32)
+        self.font = pygame.font.Font(None, 20)
         self.__lines = []
 
         self.add_to_engine()

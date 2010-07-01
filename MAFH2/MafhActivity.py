@@ -8,13 +8,13 @@ from Comic import Comic
 from Profile import Profile
 from MafhGameManager import MafhGameManager
 
-ge = GameEngine()
+ge = GameEngine(width=1200, height=900)
 
 def start_game():
     ge.add_object('manager', MafhGameManager() )
 
 def menu_screen():
-    ge.add_object('menu', GameMenuHolder( menu_called, MENU_PATH + "mafh_splash.gif"))
+    ge.add_object('menu', GameMenuHolder( menu_called, MENU_PATH + "mafh_splash.gif", width=ge.width, height=ge.height))
     ge.get_object('menu').show_menu('title')
 
 def menu_called(id, menu):
