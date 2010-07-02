@@ -148,6 +148,7 @@ class Menu(object):
             self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert()
+            self.glyphs = fire
             
         elif(spelltype == 1):
             #lightning attack
@@ -161,6 +162,7 @@ class Menu(object):
             self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert()
+            self.glyphs = lightning
             
         elif(spelltype == 2):
             #missile attack
@@ -174,6 +176,7 @@ class Menu(object):
             self.buttons.append(pygame.transform.scale(fire[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert()
+            self.glyphs = missile
         elif(spelltype == 3):
             #heal
             for i in range(4):
@@ -186,6 +189,7 @@ class Menu(object):
             self.buttons.append(pygame.transform.scale(fire[random.randint(0,3)] , (60,60)))
             
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()
+            self.glyphs = heal
         
         random.seed()
         random.shuffle(self.buttons)
@@ -220,22 +224,16 @@ class Menu(object):
         self.mainGlyph.set_colorkey(pygame.Color(255,0,255), pygame.RLEACCEL)
         surface.blit(self.mainGlyph, (500,350))
         
-        '''
+        
         # Draw reference glyphs
         for i in range(4):
             if i in self.magic_list:
-                if self.spelltype == 0:
-                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "FireGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500+((i%2) * 137), 350+(i/2 * 147)))
-                elif self.spelltype == 1:
-                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "LightningGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500+((i%2) * 137), 350+(i/2 * 147)))
-                elif self.spelltype == 2:
-                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "MissileGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500 + ((i%2) * 137), 350+(i/2 * 147)))
-                elif self.spelltype == 3:
-                    surface.blit(pygame.transform.scale(pygame.image.load(PUZZLE_PATH + "HealGlyph%dbtn.gif" %(i+1)).convert(), (137,147)), (500 + ((i%2) * 137), 350+(i/2 * 147)))
-        '''
+                surface.blit(self.glyphs[i], (800+((i%2) * 137), 350+(i/2 * 147)))
+                
     def update(self, event):
         """Update the menu and get input for the menu."""
         return_val = True
+        print self.magic_list, self.option
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 if self.cols != 1:
