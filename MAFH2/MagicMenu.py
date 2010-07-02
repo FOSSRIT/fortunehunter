@@ -95,10 +95,10 @@ class MagicMenuHolder( GameEngineElement ):
         self.menu = MagicMenu(menu_options, 237, 375, menu_type, spell_type)
 
 class MagicMenu(GameEngineElement):
-    def __init__(self, magic_menu, x, y, type, spell_type):
+    def __init__(self, menu_options, x, y, type, spell_type):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
         magic_list = self.game_engine.get_object('battle').magic_list
-        self.menu = Menu(magic_menu, spell_type, magic_list)
+        self.menu = Menu(menu_options, spell_type, magic_list)
         
 
         self.menu.set_pos(x, y)
@@ -114,7 +114,7 @@ class Menu(object):
     def __init__(self, options, spelltype, magic_list):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
-
+        
         self.buttons = []
         self.options = options
         self.x = 0
@@ -191,9 +191,18 @@ class Menu(object):
             self.mainGlyph = pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()
             self.glyphs = heal
         
+        deck = [0,1,2,3,4,5,6,7]
         random.seed()
-        random.shuffle(self.buttons)
-                            
+        random.shuffle(deck)
+        tOptions = []
+        tButtons = []
+        for i in range(8):
+            tOptions.append(self.options[deck[i]])
+            tButtons.append(self.buttons[deck[i]])
+            
+        self.buttons = tButtons
+        self.options = tOptions
+        
         self.height = (len(self.options)*self.buttons[1].get_height()) / self.cols
 
     def draw(self, surface):
@@ -205,7 +214,7 @@ class Menu(object):
         height = self.buttons[0].get_height()
         width = self.buttons[0].get_width()
         
-        for o in self.buttons:
+        for o in self.options:
 
             newX = self.x + width * j
             newY = self.y + i * height
@@ -222,18 +231,17 @@ class Menu(object):
                 j=0
                 
         self.mainGlyph.set_colorkey(pygame.Color(255,0,255), pygame.RLEACCEL)
-        surface.blit(self.mainGlyph, (500,350))
+        surface.blit(self.mainGlyph, (485,350))
         
         
         # Draw reference glyphs
         for i in range(4):
             if i in self.magic_list:
-                surface.blit(self.glyphs[i], (800+((i%2) * 137), 350+(i/2 * 147)))
+                surface.blit(self.glyphs[i], (785+((i%2) * 137), 350+(i/2 * 147)))
                 
     def update(self, event):
         """Update the menu and get input for the menu."""
         return_val = True
-        print self.magic_list, self.option
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 if self.cols != 1:
