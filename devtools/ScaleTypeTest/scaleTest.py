@@ -77,15 +77,15 @@ while 1:
     trialthis=trial
     start=time.time()
     switcher = {
-        1: pygame.transform.scale( pygame.image.load( "%s2.%s"%( ft[1],ft[0] ) ),(sizeTo[0],sizeTo[1] )),
-        2: pygame.transform.scale( pygame.image.load("%s3.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        3: pygame.transform.scale( pygame.image.load("%s4.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        4: pygame.transform.scale( pygame.image.load("%s5.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        5: pygame.transform.scale( pygame.image.load("%s6.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        6: pygame.transform.scale( pygame.image.load("%s7.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        7: pygame.transform.scale( pygame.image.load("%s8.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        8: pygame.transform.scale( pygame.image.load("%s9.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] )),
-        9: pygame.transform.scale( pygame.image.load("%s1.%s"%(ft[1],ft[0])),(sizeTo[0],sizeTo[1] ))
+        1: pygame.transform.scale( pygame.image.load("%s2.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        2: pygame.transform.scale( pygame.image.load("%s3.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        3: pygame.transform.scale( pygame.image.load("%s4.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        4: pygame.transform.scale( pygame.image.load("%s5.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        5: pygame.transform.scale( pygame.image.load("%s6.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        6: pygame.transform.scale( pygame.image.load("%s7.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        7: pygame.transform.scale( pygame.image.load("%s8.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        8: pygame.transform.scale( pygame.image.load("%s9.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] )),
+        9: pygame.transform.scale( pygame.image.load("%s1.%s"%(ft[1],ft[0])).convert(),(sizeTo[0],sizeTo[1] ))
     }
     print "Time taken to load this test at ",
     print sizeTo
@@ -98,7 +98,7 @@ while 1:
     #-------------------------------------------------------------
         while cnt>0:
             img[cnt,0]= pygame.image.load("%s1.%s"%(ft[1],ft[0])) #image.load
-            img[cnt,0] = pygame.transform.scale(img[cnt,0],(sizeTo[0], sizeTo[1])) 
+            img[cnt,0]= pygame.transform.scale(img[cnt,0],(sizeTo[0], sizeTo[1])) 
             img[cnt,1]=  img[cnt,0].get_rect()
             img[cnt,2]= [2,2] #speed
             m=cnt*40 # named m cause i wanted some m&ms
