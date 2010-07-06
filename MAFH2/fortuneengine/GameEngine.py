@@ -112,8 +112,14 @@ class GameEngine(object):
         self.__run_event = True
         self._event_loop()
 
-    def _draw(self):
-        tick_time = self.clock.tick(15)
+    def _draw(self, tick_time):
+        """
+        Draws all elements in draw callback to the screen
+
+        @param tick_time:       The amount of time passed since last
+                                draw cycle. (should be produced by
+                                pygamme.clock.tick method)
+        """
         screen = self.screen
 
         # If console is active, we want to draw console, pausing
@@ -147,9 +153,14 @@ class GameEngine(object):
 
             # No-Op sent, draw if set to always draw
             elif event.type == pygame.NOEVENT:
+                # Tick even if not drawing
+                # We want to pause the cpu from getting into a
+                # 100% usage looping on the poll until something
+                # becomes dirty
+                tick_time = self.clock.tick(15)
                 if self.__always_draw or self.__dirty == True:
                     self.__dirty = False
-                    self._draw()
+                    self._draw(tick_time)
 
 
             # Handle User event Timers
