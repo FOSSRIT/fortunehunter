@@ -25,7 +25,7 @@ class BattleEngine(GameEngineElement):
         self.enemy_list = []
         self.magic_list = []
 
-        self.spellType = 0  #0 = non, 1-4 are spells in order
+        self.spellType = 0  #0 = non, 1-4 are spells in order, 5 is special
         self.isMagic = False
         self.state = PLAYER_WAIT
         self.player_input = '0'
@@ -136,7 +136,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'fire2':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
@@ -153,7 +152,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'fire4':
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
@@ -162,7 +160,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'lig1':
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
@@ -195,7 +192,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'miss1':
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
@@ -204,7 +200,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'miss2':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
@@ -213,7 +208,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'miss3':
             if(2 in self.magic_list):
                 self.__attack_phase(menu)
@@ -222,7 +216,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'miss4':
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
@@ -231,7 +224,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'heal1':
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
@@ -240,7 +232,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'heal2':
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
@@ -249,7 +240,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'heal3':
             if(2 in self.magic_list):
                 self.__attack_phase(menu)
@@ -258,7 +248,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'heal4':
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
@@ -267,7 +256,6 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-                    
         elif selection == 'wrongchoice':
             self.__attack_phase(menu)
 
@@ -275,6 +263,18 @@ class BattleEngine(GameEngineElement):
         # Check to see how much hp enemy has left.
         # Enemy Attack
         # Check player health
+        hero = self.game_engine.get_object('profile').hero
+        weakness = self.enemy_list[self.active_target]
+        spellTypes = ['none', 'fire', 'lightning', 'missile', 'heal', 'special']
+        bonus = 0
+        if spellTypes[self.spellType] == weakness:
+            bonus = 60
+        
+        
+        
+        
+        
+        
         self.state = PLAYER_WAIT
         self.magic_list = []
         print("in __attack_phase")

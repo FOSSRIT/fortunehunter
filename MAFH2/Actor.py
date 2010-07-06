@@ -7,7 +7,7 @@ class Actor:
         self.BAB    = 0     #bonus attack power (from battle timer)
         self.BAE    = 0     #bonus attack power (from equipment)
         self.DEF    = 1     #base defense power
-        self.BDE    = 0     #bonus defense  power(from equipment)
+        self.BDE    = 0     #bonus defense power(from equipment)
         self.AL     = 0     #Attack Level (0-?)
 
     #returns actor's current attack power

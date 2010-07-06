@@ -131,10 +131,10 @@ class Menu(object):
         heal = []
         
 
-        fire = Spritesheet(PUZZLE_PATH + "FireGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
-        lightning = Spritesheet(PUZZLE_PATH + "LightningGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
-        missile = Spritesheet(PUZZLE_PATH + "MissileGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
-        heal = Spritesheet(PUZZLE_PATH + "HealGlyph.gif").img_extract(2,2,137,147,pygame.Color(255,0,255))
+        fire = Spritesheet(PUZZLE_PATH + "FireGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
+        lightning = Spritesheet(PUZZLE_PATH + "LightningGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
+        missile = Spritesheet(PUZZLE_PATH + "MissileGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
+        heal = Spritesheet(PUZZLE_PATH + "HealGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
 
         if(spelltype == 0):
             #fire attack
@@ -237,7 +237,7 @@ class Menu(object):
         # Draw reference glyphs
         for i in range(4):
             if i in self.magic_list:
-                surface.blit(self.glyphs[i], (785+((i%2) * 137), 350+(i/2 * 147)))
+                surface.blit(self.glyphs[i], (800+((i%2) * 150), 350+(i/2 * 150)))
                 
     def update(self, event):
         """Update the menu and get input for the menu."""
