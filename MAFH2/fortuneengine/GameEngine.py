@@ -15,7 +15,6 @@
 
 import pygame
 import inspect
-from threading import Thread, Lock
 from GameEngineConsole import GameEngineConsole
 
 
@@ -39,10 +38,11 @@ class GameEngine(object):
         self.screen = pygame.display.set_mode(size)
 
         self.__showfps = False
+        self.__dirty = True
+        self.__always_draw = True
         self.__font = pygame.font.Font(None, 17)
 
         self.__run_event = False
-        self.__run_draw = False
         self.__event_cb = []
         self.__draw_lst = []
         self.__object_hold = {}
@@ -58,8 +58,6 @@ class GameEngine(object):
         # Disable Mouse Usage
         # TODO Allow mouse motion on request
         pygame.event.set_blocked(pygame.MOUSEMOTION)
-
-        self.event_lock = Lock()
 
     def start_event_timer(self, function_cb, time):
         """
@@ -111,127 +109,80 @@ class GameEngine(object):
         return timer_list
 
     def start_main_loop(self):
-        e_loop = self.start_event_loop()
-        d_loop = self.start_draw_loop()
+        self.__run_event = True
+        self._event_loop()
 
-        e_loop.join()
-        d_loop.join()
+    def _draw(self):
+        tick_time = self.clock.tick(15)
+        screen = self.screen
 
-    def start_event_loop(self):
-        """
-        Starts the pygame event loop.
-        """
-        if self.__run_event:
-            return
+        # If console is active, we want to draw console, pausing
+        # game drawing (events are still being fired, just no
+        # draw updates.
+        if self.console.active:
+            self.console.draw()
+            pygame.display.flip()
+
         else:
-            self.__run_event = True
-            t = Thread(target=self._event_loop, args=())
-            t.start()
-            return t
+            for fnc in self.__draw_lst:
+                fnc(screen, tick_time)
 
-    def start_draw_loop(self):
-        """
-        Starts the drawing thread
-        """
-        if self.__run_draw:
-            return
-        else:
-            self.__run_draw = True
-            t = Thread(target=self._draw_loop, args=())
-            t.start()
-            return t
+            # Print Frame Rate
+            if self.__showfps:
+                text = self.__font.render('FPS: %d' % self.clock.get_fps(),
+                       False, (255, 255, 255), (159, 182, 205))
+                screen.blit(text, (0, 0))
 
-    def _draw_loop(self):
-        while self.__run_draw:
-            tick_time = self.clock.tick(15)
-            screen = self.screen
-
-            # If console is active, we want to draw console, pausing
-            # game drawing (events are still being fired, just no
-            # draw updates.
-            if self.console.active:
-                self.console.draw()
-                pygame.display.flip()
-
-            else:
-                self.event_lock.acquire()
-                try:
-                    for fnc in self.__draw_lst:
-                        fnc(screen, tick_time)
-                except Exception as Detail:
-                    import traceback
-                    traceback.print_exc()
-                    self.stop_event_loop()
-
-                self.event_lock.release()
-
-                # Print Frame Rate
-                if self.__showfps:
-                    text = self.__font.render('FPS: %d' % self.clock.get_fps(),
-                        False, (255, 255, 255), (159, 182, 205))
-                    screen.blit(text, (0, 0))
-
-                pygame.display.flip()
+            pygame.display.flip()
 
     def _event_loop(self):
         while self.__run_event:
+
+            event = pygame.event.poll()
+
             # Handle Game Quit Message
-            for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.__run_event = False
+                self.__run_draw = False
 
-                if event.type == pygame.QUIT:
-                    self.__run_event = False
-                    self.__run_draw = False
+            # No-Op sent, draw if set to always draw
+            elif event.type == pygame.NOEVENT:
+                if self.__always_draw or self.__dirty == True:
+                    self.__dirty = False
+                    self._draw()
 
-                # Handle User event Timers
-                elif event.type >= pygame.USEREVENT and \
-                     event.type < pygame.NUMEVENTS:
 
-                    timer_id = event.type - pygame.USEREVENT
-                    self.event_lock.acquire()
+            # Handle User event Timers
+            elif event.type >= pygame.USEREVENT and \
+                event.type < pygame.NUMEVENTS:
 
-                    try:
-                        functioncall = self.__active_event_timers[timer_id]
-                    except IndexError:
-                        pass
+                timer_id = event.type - pygame.USEREVENT
 
-                    else:
+                # Call timer
+                self.__active_event_timers[timer_id]()
 
-                        try:
-                            functioncall()
+            # Check if we should activate the console
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
+                    and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                self.console.set_active()
 
-                        except Exception as Detail:
-                            import traceback
-                            traceback.print_exc()
-                            self.stop_event_loop()
+            # Pass event to console
+            # console will return false if not used. If it is not used
+            # Then pass them to all
+            elif not self.console.process_input(event):
+                # Make a copy first so that adding events don't get fired
+                # right away
+                list_cp = self.__event_cb[:]
 
-                    self.event_lock.release()
+                # Reverse list so that newest stuff is on top
+                # TODO: cache this list
+                list_cp.reverse()
 
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
-                        and pygame.key.get_mods() & pygame.KMOD_CTRL:
-                    self.console.set_active()
-
-                elif not self.console.process_input(event):
-                    # Send event to all event listeners
-                    # Make a copy first so that adding events don't get fired
-                    # right away
-                    list_cp = self.__event_cb[:]
-
-                    # Reverse list so that newest stuff is on top
-                    list_cp.reverse()
-
-                    self.event_lock.acquire()
-                    try:
-                        for cb in list_cp:
-                            # Fire the event for all in cb and stop
-                            # if the callback returns True
-                            if cb(event) == True:
-                                break
-                    except Exception as Detail:
-                        import traceback
-                        traceback.print_exc()
-                        self.stop_event_loop()
-
-                    self.event_lock.release()
+                for cb in list_cp:
+                    # Fire the event for all in cb and stop
+                    # if the callback returns True
+                    if cb(event) == True:
+                        break
 
     def stop_event_loop(self):
         """
