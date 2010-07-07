@@ -2,9 +2,7 @@ from AnimatedSprite import Spritesheet, AnimatedSprite
 import sys, pygame, time
 pygame.init()
 
-print "Full Test - Authors Dave Silverman and Scott Mengel"
-print "Set size to 600 x 400 px"
-print "Running..."
+print "Animated Sprite Test - Authors Dave Silverman and Scott Mengel"
 
 #--------------------------------------------------------------
 #CONSTANTS AND VARIABLES

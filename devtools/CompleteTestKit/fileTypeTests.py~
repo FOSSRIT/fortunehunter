@@ -6,23 +6,64 @@ pygame.init()
 
 # Scroll below the def () for the initial code for this program
 
-
 '''
 The file type array will be iterated through as the test progresses to tell the program what extension and path to use for the images
 '''
 
-ftArr=[ [".bmp","./art/BMP16/"] , [".bmp","./art/BMP24/"] , [".bmp","./art/BMP32/"] , [".gif","./art/GIF/"] , [".gif","./art/GIFT/"] , [".jpg","./art/JPG1/"] , [".jpg","./art/JPG2/"] , [".jpg","./art/JPG3/"] , [".jpg","./art/JPG4/"] , [".png","./art/PNGI/"] , [".png","./art/PNGT/"] ]
+screenWidth=screenHeight=screenSize=numImages=maxTrial=''
+trialSize=[]
+ftArr=[
+    [".bmp","./art/BMP16/"], [".bmp","./art/BMP24/"] , [".bmp","./art/BMP32/"],
+    [".gif","./art/GIF/" ] , [".gif","./art/GIFT/" ] , [ ".jpg","./art/JPG1/"],
+    [".jpg","./art/JPG2/"] , [".jpg","./art/JPG3/" ] , [ ".jpg","./art/JPG4/"],
+    [".png","./art/PNGI/"] , [".png","./art/PNGT/" ]
+]
         
+def getValues(keyIn):
+#trialSize=None
+    print "\nTest Details\nFor default values, please leave the field blank"
+    try:
+        print "\nSet size, formatted as '>width,height':"
+        print "Default value is '600,400'."
+        screenSize  = str(raw_input('>'))
+        screenSize  = screenSize.split(',')
+        screenWidth = int(screenSize[0])
+        screenHeight=  int(screenSize[1])
 
-'''
-Image() Animation Test 
+    except:
+        print "Value was erroneous/blank, Default set..."
+        screenWidth=600
+        screenHeight=400
+    try:
+        print "\nHow many images would you like to draw?"
+        print "Default value is 5 images."
+        numImages=int(raw_input('>'))
+    except:
+        print "Value was erroneous/blank, Default set..."
+        numImages=5
+    try:
+        print "\nHow many trials would you like to run?"
+        print "Default value is 5 trials."
+        maxTrial=int(raw_input('>'))
+    except:
+        print "Value was erroneous/blank, Default set..."
+        maxTrial=5
+    if '3' in keyIn:
+        try:
+            print maxTrial
+        except: pass
+
+    print "END OF INFO GATHERING"
+
+'''Image() Animation Test 
+
+This test will simply load the image(s) to screen, and move them around
 '''
 def imgTest():
-    screenSize=numImages=maxTrial=''
     def change():
         cnt=numImages
         while cnt>0:
-            img[cnt,0]=imgSwitch.get(i,pygame.image.load("%s1%s"%(ft[1],ft[0])))
+            img[cnt,0]=imgSwitch.get(cnt,'This will crash...')
             cnt=cnt-1
     def collision():
         cnt=numImages
@@ -35,33 +76,8 @@ def imgTest():
             screen.blit(img[cnt,0],img[cnt,1])
             cnt=cnt-1
         pygame.display.flip()
-
-    while 1:
-        print "\nImage Load Test Details\nFor default values, please leave the field blank"
-        try:        
-            print "\nSet size, formatted as '>width,height':"
-            screenSize=str(raw_input('>'))
-            screenSize.split(',')
-            screenWidth=int(screenSize[0])
-            screenHeight=int(screenSize[1])
-
-        except:
-            screenWidth=600
-            screenHeight=400
-        try:
-            print "How many images would you like to draw?"
-            numImages=int(raw_input('>'))
-        except:
-            numImages=5
-        try:
-            print "How many trials would you like to run?"
-            maxTrial=int(raw_input('>'))
-            break
-        except:
-            maxTrial=5
-            break
             
-    f=open('./logs/Test Result - Image Test - %s.csv'%str(datetime.now()),'a')
+    f=open('./logs/Test Result - Image Test with convert() - %s.csv'%str(datetime.now()),'a')
     f.write("Width (pixels)"+','+"Height (pixels)"+','+"Trial Runs"+','+"Image Objects Drawn")
     f.write("\n"+str(screenWidth)+','+str(screenHeight)+','+str(maxTrial)+','+str(numImages))
     f.write("\nFile Type"+','+"Time taken to load images to memory"+','+"Trials")
@@ -71,13 +87,15 @@ def imgTest():
     i=1 #cycles images
     t=0 #trial number n
 
-    screen = pygame.display.set_mode(screenWidth, screenHeight) #Screen Set 600x400
+    screen = pygame.display.set_mode( [int(screenWidth),int(screenHeight)] ) #Screen Set 600x400
     background = 152, 251, 152 # pale green
 
     while 1:
         cnt=numImages
         try:ft=ftArr[t]
-        except:sys.exit("Test Complete")
+        except: 
+            print "\nTest Complete\n"
+            break
         f.seek(0,2)
         f.write(str('\n'+ft[1]+' Test'))
         f.seek(0,2)
@@ -92,8 +110,77 @@ def imgTest():
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])),
             8: pygame.image.load("%s9%s"%(ft[1],ft[0])),
         }
-        f.write(','+str(time.time()-start))
+        f.write(',')
+        f.write(time.time()-start)
+        #print time.time()-start()
+        print "Testing "+ft[1]
+        trial=maxTrial
         
+        while trial>0:
+            while cnt>0:
+                img[cnt,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
+                img[cnt,1]=  img[cnt,0].get_rect()
+                img[cnt,2]= [2,2] #speed
+                m=cnt*40 # named m cause i wanted some m&ms
+                img[cnt,1]=img[cnt,1].move(m,m) #see? (it wasn't as tasty though)
+                cnt=cnt-1
+            
+            r=0
+            start=time.time()
+            while 1:
+                change()
+                i=i+1
+                if i>9: i=1
+                collision()
+                screen.fill(background)
+                r=r+1
+                if r>500: break
+                
+            print 1/((time.time()-start)/r)
+            f.seek(0,2)
+            f.write(','+str(1/((time.time()-start)/r)))
+            trial=trial-1
+        
+        t=t+1
+
+    ft="" #filetype
+    img={}
+    r=0 #frame refreshes
+    i=1 #cycles images
+    t=0 #trial number n    
+    
+    f.write("\nNow using .convert()")
+    f.write("\nFile Type"+','+"Time taken to load images to memory"+','+"Trials")
+    ft="" #filetype
+    img={}
+    r=0 #frame refreshes
+    i=1 #cycles images
+    t=0 #trial number n
+
+    screen = pygame.display.set_mode( [screenWidth,screenHeight] ) #Screen Set 600x400
+    background = 152, 251, 152 # pale green
+
+    while 1:
+        cnt=numImages
+        try:ft=ftArr[t]
+        except:sys.exit("Test Complete")
+        f.seek(0,2)
+        f.write(str('\n'+ft[1]+' Test'))
+        f.seek(0,2)
+        start=time.time()
+        imgSwitch={
+            1: pygame.image.load("%s2%s"%(ft[1],ft[0])).convert(),
+            2: pygame.image.load("%s3%s"%(ft[1],ft[0])).convert(),
+            3: pygame.image.load("%s4%s"%(ft[1],ft[0])).convert(),
+            4: pygame.image.load("%s5%s"%(ft[1],ft[0])).convert(),
+            5: pygame.image.load("%s6%s"%(ft[1],ft[0])).convert(),
+            6: pygame.image.load("%s7%s"%(ft[1],ft[0])).convert(),
+            7: pygame.image.load("%s8%s"%(ft[1],ft[0])).convert(),
+            8: pygame.image.load("%s9%s"%(ft[1],ft[0])).convert(),
+        }
+        f.write(',')
+        f.write( time.time()-start )
+        #print time.time()-start()
         print "Testing "+ft[1]
         trial=maxTrial
         
@@ -130,36 +217,62 @@ def spriteTest():
     print "spriteTest called"
     dateTime=str(datetime.now())
     file=open('./logs/testresult - %s.csv'%dateTime,'a')
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
 
 '''
     Scalability Test 
 '''
 def scaleTest():
-    screenSize=maxTrial=''
-    trialSize=[]
+    pass
+
+while 1:
+    print "\n\nWelcome to the master File Type Tester Interface"
+    print "Authors: Scott 'JT' Mengel and Dave Silverman"
+    print "\nPlease select the test(s) you want to run in the order you want to run them (Do not seperate them with any characters)."
+    print "Please Note: The logs for the tests you are running will automatically be placed in the logs/ directory in the test folder as a .csv file. \n"
+    print "1. Simple File Type Variety Test, as images (NOTE: In development)"
+    print "2. Simple File Type variety Test, as sprites (NOTE: not working yet)"
+    print "3. Selected Scalability Test (NOTE: In development)"
+
+    acceptible='^[1-3]$'
+    list={ 1:imgTest,
+        2:spriteTest,
+        3:scaleTest }
+    keyIn="temp val"
+
+    while 1:
+        keyIn=str(raw_input(">"))
+        for i in keyIn:
+#            try: 
+            if not re.search(acceptible,i): break
+            else:
+                getValues(keyIn)
+                for i in keyIn:
+                    list.get(int(i))()
+#            except BaseException: print sys.exc_info()[0]
+        break
+
+#ILY GEOFF A
+
+"""From line 57
+    t=1
+            while t<=maxTrial:
+                try:
+                    sizeIn=raw_input('Please enter the size of the image for trial '+str(t)+' as \'>width,height\'\n>')
+                    sizeIn=sizeIn.split(',')
+                    print sizeIn[0]
+                    print sizeIn[1]
+                    if isInstance(sizeIn[0],int) and isInstance(sizeIn[1],int):
+                        trialSize.append(sizeIn)
+                        print trialSize[t]
+                        t=t+1
+                    else:
+                        print "Error, please reenter..."
+                except: pass
+            break
+"""
+
+"""230 scalability test
     def collision():
         cnt=numImages
         while cnt>0:
@@ -266,55 +379,4 @@ def scaleTest():
 
         t=t+1
     f.close()    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-while 1:
-    print "\n\nWelcome to the master File Type Tester Interface"
-    print "Authors: Scott 'JT' Mengel and Dave Silverman"
-    print "\nPlease select the test(s) you want to run in the order you want to run them (Do not seperate them with any characters)."
-    print "Please Note: The logs for the tests you are running will automatically be placed in the logs/ directory in the test folder as a .csv file. \n"
-    print "1. Simple File Type Variety Test, as images (NOTE: In development)"
-    print "2. Simple File Type variety Test, as sprites (NOTE: not working yet)"
-    print "3. Selected Scalability Test (NOTE: not working yet)"
-
-    acceptible='^[1-3]$'
-    list={ 1:imgTest,
-        2:spriteTest,
-        3:scaleTest }
-    keyIn="temp val"
-
-    while 1:
-        keyIn=str(raw_input(">"))
-        for i in keyIn:
-            try: 
-                if re.search(acceptible,i): list.get(int(i))()
-            except BaseException: print sys.exc_info()[0]
-        break
-
-#ILY GEOFF A
-
+"""
