@@ -26,7 +26,7 @@ class GameEngine(object):
     """
     instance = None
 
-    def __init__(self, width=1200, height=900):
+    def __init__(self, width=1200, height=900, always_draw=False):
         GameEngine.instance = self
         pygame.init()
         pygame.mouse.set_visible(False)
@@ -39,7 +39,7 @@ class GameEngine(object):
 
         self.__showfps = False
         self.__dirty = True
-        self.__always_draw = True
+        self.__always_draw = always_draw
         self.__font = pygame.font.Font(None, 17)
 
         self.__run_event = False
@@ -58,6 +58,13 @@ class GameEngine(object):
         # Disable Mouse Usage
         # TODO Allow mouse motion on request
         pygame.event.set_blocked(pygame.MOUSEMOTION)
+
+    def set_dirty(self):
+        """
+        Sets the dirty flag to force the engine to draw the next time
+        it enters the draw flag.
+        """
+        self.__dirty = True
 
     def start_event_timer(self, function_cb, time):
         """
