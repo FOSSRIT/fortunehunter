@@ -156,7 +156,8 @@ def imgTest(preferences):
             while 1:
                 cnt=numImages
                 while cnt>0:
-                    img[cnt,0]=imgSwitch.get(cnt,None)
+                    print cnt
+                    img[cnt,0]=imgSwitch.get(i,None)
                     if img[cnt,1].left < 0 or img[cnt,1].right > screenWidth:
                         img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
                     if img[cnt,1].top < 0 or img[cnt,1].bottom > screenHeight:
@@ -166,7 +167,7 @@ def imgTest(preferences):
                     cnt=cnt-1
                 pygame.display.flip()
                 i=i+1
-                if i>9: i=1
+                if i>8: i=1
                 screen.fill(background)
                 r=r+1
                 if r>500: break
@@ -233,7 +234,7 @@ def imgTest(preferences):
             while 1:
                 cnt=numImages
                 while cnt>0:
-                    img[cnt,0]=imgSwitch.get(cnt,None)
+                    img[cnt,0]=imgSwitch.get(i,None)
                     if img[cnt,1].left < 0 or img[cnt,1].right > screenWidth:
                         img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
                     if img[cnt,1].top < 0 or img[cnt,1].bottom > screenHeight:
@@ -243,7 +244,7 @@ def imgTest(preferences):
                     cnt=cnt-1
                 pygame.display.flip()
                 i=i+1
-                if i>9: i=1
+                if i>8: i=1
                 screen.fill(background)
                 r=r+1
                 if r>500: break
@@ -396,7 +397,7 @@ def scaleTest(preferences):
                 pygame.display.flip()
     # "Make it so, number two," on those changes above
                 i=i+1
-                if i>9: i=1
+                if i>8: i=1
                 screen.fill(background)
                 r=r+1
                 if r>500: break
