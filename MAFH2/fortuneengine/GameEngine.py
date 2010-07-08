@@ -26,7 +26,7 @@ class GameEngine(object):
     """
     instance = None
 
-    def __init__(self, width=1200, height=900, always_draw=False):
+    def __init__(self, width=1200, height=900, always_draw=False, fps_cap=15):
         GameEngine.instance = self
         pygame.init()
         pygame.mouse.set_visible(False)
@@ -37,6 +37,7 @@ class GameEngine(object):
 
         self.screen = pygame.display.set_mode(size)
 
+        self.__fps_cap = fps_cap
         self.__showfps = False
         self.__dirty = True
         self.__always_draw = always_draw
@@ -164,7 +165,7 @@ class GameEngine(object):
                 # We want to pause the cpu from getting into a
                 # 100% usage looping on the poll until something
                 # becomes dirty
-                tick_time = self.clock.tick(15)
+                tick_time = self.clock.tick(self.__fps_cap)
                 if self.__always_draw or self.__dirty == True:
                     self.__dirty = False
                     self._draw(tick_time)
