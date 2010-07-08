@@ -6,8 +6,6 @@ from AnimatedSprite import Spritesheet
 from constants import MENU_PATH, PUZZLE_PATH
 from gettext import gettext as _
 
-NORMAL_MENU = 1
-GRID_MENU = 2
 
 class MagicMenuHolder( GameEngineElement ):
     def __init__(self, callback):
@@ -41,7 +39,6 @@ class MagicMenuHolder( GameEngineElement ):
         
         #example of what will come  
         if id == "fire":
-            menu_type = GRID_MENU
             spell_type = 0
             menu_options = [
                         [_('1'), lambda: self.menu_called("fire1"), 140],
@@ -54,7 +51,6 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         elif id == "lightning":
-            menu_type = GRID_MENU
             spell_type = 1
             menu_options = [
                         [_('1'), lambda: self.menu_called("lig1"), 140],
@@ -67,7 +63,6 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         elif id == "missile":
-            menu_type = GRID_MENU
             spell_type = 2
             menu_options = [
                         [_('1'), lambda: self.menu_called("miss1"), 140],
@@ -80,7 +75,6 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
         elif id == "heal":
-            menu_type = GRID_MENU
             spell_type = 3
             menu_options = [
                         [_('1'), lambda: self.menu_called("heal1"), 140],
@@ -92,10 +86,10 @@ class MagicMenuHolder( GameEngineElement ):
                         [_('7'), lambda: self.menu_called("wrongchoice"), 140],
                         [_('8'), lambda: self.menu_called("wrongchoice"), 140]
             ]
-        self.menu = MagicMenu(menu_options, 237, 375, menu_type, spell_type)
+        self.menu = MagicMenu(menu_options, 237, 375, spell_type)
 
 class MagicMenu(GameEngineElement):
-    def __init__(self, menu_options, x, y, type, spell_type):
+    def __init__(self, menu_options, x, y, spell_type):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
         magic_list = self.game_engine.get_object('battle').magic_list
         self.menu = Menu(menu_options, spell_type, magic_list)

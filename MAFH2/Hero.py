@@ -33,15 +33,15 @@ class Hero(Actor):
       return self.ATT+self.BAE
     elif name=="critical":
       return self.ATT+self.BAE+self.BAB
-    elif name=="Fire":
+    elif name=="fire":
       return self.ATT+self.BAB
-    elif name=="Heal":
+    elif name=="heal":
       return self.BAB-10
-    elif name=="Lightning":
+    elif name=="lightning":
       return self.ATT+self.BAB
-    elif name=="Division":
+    elif name=="division":
       return (self.ATT+self.BAE+self.BAB)*1.5
-    elif name=="Missile":
+    elif name=="missile":
       return self.ATT+self.BAB
   def setBonusAP(self,BAP):
     self.BAB=BAP

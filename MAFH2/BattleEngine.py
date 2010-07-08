@@ -27,6 +27,7 @@ class BattleEngine(GameEngineElement):
 
         self.spellType = 0  #0 = non, 1-4 are spells in order, 5 is special
         self.isMagic = False
+        self.correct = False
         self.state = PLAYER_WAIT
         self.player_input = '0'
         self.active_target = 1
@@ -80,8 +81,10 @@ class BattleEngine(GameEngineElement):
                 #figure out damage for crit attack               
                 if int(self.player_input) == (self.critAns):
                     menu.set_disp('Correct!')
+                    self.correct = True
                 else:
                     menu.set_disp('Incorrect')
+                    self.correct = False
                 
                 menu.set_sec_disp('')
                 self.player_input = ''
@@ -96,30 +99,27 @@ class BattleEngine(GameEngineElement):
                 menu.set_sec_disp( self.player_input )
             
         elif selection == 'fire':
-            menu.set_disp('Fire Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('fire')
+            self.spellType = 1
             self.isMagic = True
             self.magicWin = False
-                
-        elif selection == 'heal':
-            menu.set_disp('Heal Cast!')
-            self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
-            self.game_engine.get_object('magicmenu').show_menu('heal')
-            self.isMagic = True
-            self.magicWin = False
-                
         elif selection == 'lightning':
-            menu.set_disp('Lightning Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('lightning')
+            self.spellType = 2
             self.isMagic = True
             self.magicWin = False
-                
         elif selection == 'missile':
-            menu.set_disp('Missile Cast!')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('missile')
+            self.spellType = 3
+            self.isMagic = True
+            self.magicWin = False
+        elif selection == 'heal':
+            self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
+            self.game_engine.get_object('magicmenu').show_menu('heal')
+            self.spellType = 4
             self.isMagic = True
             self.magicWin = False
             
@@ -260,24 +260,49 @@ class BattleEngine(GameEngineElement):
             self.__attack_phase(menu)
 
     def __attack_phase(self, menu):
-        # Check to see how much hp enemy has left.
-        # Enemy Attack
-        # Check player health
+        #do the correct damage to correct enemy
         hero = self.game_engine.get_object('profile').hero
-        weakness = self.enemy_list[self.active_target]
-        spellTypes = ['none', 'fire', 'lightning', 'missile', 'heal', 'special']
-        bonus = 0
-        if spellTypes[self.spellType] == weakness:
-            bonus = 60
+        damage = 0
+        if self.isMagic:
+            weakness = self.enemy_list[self.active_target]
+            spellTypes = ['none', 'fire', 'lightning', 'missile', 'heal', 'special']
+            bonus = 0
+            if spellTypes[self.spellType] == weakness:
+                bonus = 60
+                damage += bonus
+            if self.magicWin:
+                damage += hero.attackPower(spellTypes[self.spellType])
+                self.enemy_list[self.active_target].HP -= damage
+                self.player_input = spellTypes[self.spellType] + ' cast!'
+            else:
+                self.player_input = 'Spell fizzles'
+        elif self.state == PLAYER_MULT:
+            if self.correct:
+                damage = hero.attackPower("critical")
+                self.enemy_list[self.active_target].HP -= damage
+                self.player_input = "Your attack crits for " + str(damage) + " damage"
+        else:
+            damage = hero.attackPower('basic')
+            self.enemy_list[self.active_target].HP -= damage
+            self.player_input = "You attack for " + str(damage) + " damage"
+                
+        
+        #generate enemy attack
+        for enemy in self.enemy_list:
+            random.seed()
+            enemyAttack = random.randint(0,100)
+            if enemyAttack > 90:
+                hero.defendAttack(enemy.attackPower('special'))
+            elif enemyAttack < 6:
+                hero.defendAttack(enemy.attackPower('critical'))
+            else:
+                hero.defendAttack(enemy.attackPower('basic'))
+            
         
         
-        
-        
-        
-        
+        self.game_engine.get_object('profile').hero = hero
         self.state = PLAYER_WAIT
         self.magic_list = []
-        print("in __attack_phase")
         self.__end_battle(menu)
 
     def __end_battle(self, menu):
@@ -288,7 +313,11 @@ class BattleEngine(GameEngineElement):
             self.game_engine.remove_object('magicmenu')
         else:
             menu.show_menu('selection')
-
+            
+        self.game_engine.get_object('battlemenu').set_disp(self.player_input)
+        
+        #Are enemies dead?
+        
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
 

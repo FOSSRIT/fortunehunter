@@ -15,7 +15,7 @@ ENEMY = {
     '7':{'name':_('Cave Crab'),'img':"Crab.png",'hp':50,'att':7,'weak':'missile','sprite':(1,1,400,400)},
     '8':{'name':_('Frost Giant'),'img':"frost_giant.png",'hp':45,'att':9,'weak':'fire','sprite':(1,1,250,250)},
     #UPDATE BONESPROUT VALUES
-    '9':{'name':_('Bonesprout'),'img':"bonesprout.png",'hp':45,'att':9,'weak':'fire','sprite':(1,1,250,250)},
+    '9':{'name':_('Bonesprout'),'img':"bonesprout.png",'hp':45,'att':8,'weak':'fire','sprite':(1,1,250,250)},
     'a':{'name':_('anim_test'),'img':"anim_test.gif",'hp':45,'att':9,'weak':'fire','sprite':(3,2, 156,166)},
 }
 
