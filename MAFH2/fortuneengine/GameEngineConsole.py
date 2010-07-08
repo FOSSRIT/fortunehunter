@@ -21,6 +21,7 @@ class GameEngineConsole(Console):
     GameEngineConsole is a class that extends the pyconsole adding
     in game engine specific functions.
     """
+
     def __init__(self, gei, pos):
         """
         Init function of the GameEngineConsole
@@ -37,11 +38,11 @@ class GameEngineConsole(Console):
             "list_drawcb": gei.list_draw_callbacks,
             "list_eventcb": gei.list_event_callbacks,
             "list_timers": gei.list_event_timers,
-            "inspect": gei.inspect_object,
+            "inspect": gei._inspector.inspect_object,
 
-            "set_str": gei.set_str,
-            "set_int": gei.set_int,
-            "set_eval": gei.set_eval,
+            "set_str": gei._inspector.set_str,
+            "set_int": gei._inspector.set_int,
+            "set_eval": gei._inspector.set_eval,
 
             "fps": gei.toggle_fps,
         }
