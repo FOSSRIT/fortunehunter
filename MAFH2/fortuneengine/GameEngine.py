@@ -27,32 +27,48 @@ class GameEngine(object):
     instance = None
 
     def __init__(self, width=1200, height=900, always_draw=False, fps_cap=15):
+        """
+        Constructor for the game engine.
+
+        @param width:        Window width
+        @param height:       Window height
+        @param always_draw:  Boolean to set the animation mode to always
+                             draw vs draw when set_dirty is called
+        @param fps_cap:      Sets the framerate cap. Set to 0 to disable
+                             the cap. Warning: setting the cap to 0 when
+                             always draw = False will cause cpu 100% when
+                             not driving.
+        """
         GameEngine.instance = self
         pygame.init()
         pygame.mouse.set_visible(False)
 
+        # Window Settings
         self.width = width
         self.height = height
         size = width, height
-
         self.screen = pygame.display.set_mode(size)
 
+        # Engine Internal Variables
         self.__fps_cap = fps_cap
         self.__showfps = False
         self.__dirty = True
         self.__always_draw = always_draw
         self.__font = pygame.font.Font(None, 17)
-
         self.__run_event = False
+
+        # Variables to hold game engine elements and callbacks
         self.__event_cb = []
         self.__draw_lst = []
         self.__object_hold = {}
-        self.__tick_time = 0
 
+        # Game Timers
         self.__active_event_timers = []
         self.__active_event_timers_tick = []
 
+        # Game Clock
         self.clock = pygame.time.Clock()
+        self.__tick_time = 0
 
         # Inspector
         self._inspector = GameInspect(self.__object_hold)
@@ -75,6 +91,9 @@ class GameEngine(object):
         """
         Starts a timer that fires a user event into the queue every "time"
         milliseconds
+
+        @param function_cb:     The function to call when timer fires
+        @param time:            Milliseconds between fires
         """
         avail_timer = len(self.__active_event_timers)
 
@@ -92,6 +111,9 @@ class GameEngine(object):
     def stop_event_timer(self, function_cb):
         """
         Stops the timer that has id from firing
+
+        @param function_cb:     The function registered with the timer that
+                                should be canceled
         """
         try:
             timer_id = self.__active_event_timers.index(function_cb)
@@ -121,6 +143,11 @@ class GameEngine(object):
         return timer_list
 
     def start_main_loop(self):
+        """
+        Starts the game loop.
+
+        This function does not return until after the game loop exits
+        """
         self.__run_event = True
         self._event_loop()
 
@@ -154,6 +181,9 @@ class GameEngine(object):
             pygame.display.flip()
 
     def _event_loop(self):
+        """
+        The main event loop.
+        """
         while self.__run_event:
 
             event = pygame.event.poll()
