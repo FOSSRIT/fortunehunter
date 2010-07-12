@@ -148,7 +148,7 @@ def readIndivFrames(fileType, path):
 
 def readPerLine(fileType, path):
 
- spriteSheet1 = Spritesheet(("%sButtons.%s"%(path,fileType)))
+ spriteSheet1 = Spritesheet(("%sButtons%s"%(path,fileType)))
 
  instances= []
 
