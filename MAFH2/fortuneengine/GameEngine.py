@@ -47,6 +47,7 @@ class GameEngine(object):
         self.__event_cb = []
         self.__draw_lst = []
         self.__object_hold = {}
+        self.__tick_time = 0
 
         self.__active_event_timers = []
         self.__active_event_timers_tick = []
@@ -168,10 +169,11 @@ class GameEngine(object):
                 # We want to pause the cpu from getting into a
                 # 100% usage looping on the poll until something
                 # becomes dirty
-                tick_time = self.clock.tick(self.__fps_cap)
+                self.__tick_time += self.clock.tick(self.__fps_cap)
                 if self.__always_draw or self.__dirty == True:
                     self.__dirty = False
-                    self._draw(tick_time)
+                    self._draw(self.__tick_time)
+                    self.__tick_time = 0
 
 
             # Handle User event Timers
