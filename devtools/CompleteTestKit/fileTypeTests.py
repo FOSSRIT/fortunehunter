@@ -4,8 +4,6 @@ import sys,time,pygame,re
 print "\n\nLoading..."
 pygame.init()
 
-# Scroll below the def () for the initial code for this program
-
 '''
 The file type array will be iterated through as the test progresses to tell the program what extension and path to use for the images
 
@@ -22,12 +20,11 @@ preferences[0] - All Tests -
     [0][3] - trials
     [0][9] - file to write to...
 preferences[1] - speedTest Specific
-    space reserved
+    None currenlty inplimented
 preferences[2] - scaleTest Specific
     [2][0] - scale x
     [2][1] - scale y
 '''
-       
 def getValues(keyIn):
 #trialSize=None
     preferences={}
@@ -84,7 +81,6 @@ environment is measured in the average frame rate demonstrated in a sample of
 using surface.convert() to see if converting all of the different file types
 will consequentially even out the framerates between tests.
 '''
-
 def imgTest(preferences):
     ftArr=[
         [".bmp","./art/BMP16/"], [".bmp","./art/BMP24/"] , [".bmp","./art/BMP32/"],
@@ -435,141 +431,3 @@ while 1:
         break
 
 #ILY GEOFF A
-
-
-
-
-
-
-
-"""
-screenWidth=screenHeight=screenSize=numImages=maxTrial=''
-trialSize=[]
-sizeTo=None
-"""
-"""From line 57
-    t=1
-            while t<=maxTrial:
-                try:
-                    sizeIn=raw_input('Please enter the size of the image for trial '+str(t)+' as \'>width,height\'\n>')
-                    sizeIn=sizeIn.split(',')
-                    print sizeIn[0]
-                    print sizeIn[1]
-                    if isInstance(sizeIn[0],int) and isInstance(sizeIn[1],int):
-                        trialSize.append(sizeIn)
-                        print trialSize[t]
-                        t=t+1
-                    else:
-                        print "Error, please reenter..."
-                except: pass
-            break
-"""
-
-"""230 scalability test
-    def collision():
-        cnt=numImages
-        while cnt>0:
-            if img[cnt,1].left < 0 or img[cnt,1].right > screenWidth:
-                img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
-            if img[cnt,1].top < 0 or img[cnt,1].bottom > screenHeight:
-                img[cnt,2]=[ img[cnt,2][0], -img[cnt,2][1] ]
-            img[cnt,1] = img[cnt,1].move(img[cnt,2])
-            screen.blit(img[cnt,0],img[cnt,1])
-            cnt=cnt-1
-        pygame.display.flip()
-    while 1:
-        print "\nImage Load Test Details\nFor default values, please leave the field blank"
-        try:        
-            print "\nSet size, formatted as '>height,width':"
-            screenSize=str(raw_input('>'))
-            screenSize.split(',')
-            screenHeight=int(screenSize[0])
-            screenWidth=int(screenSize[1])
-            break
-        except:
-            screenWidth=600
-            screenHeight=400
-            break
-    while 1:
-        try:
-            maxTrial=input('How many trials would you like to run?\n>')
-            maxTrial=int(maxTrial)
-            print 'ok...'
-            t=1
-            while t<=maxTrial:
-                try:
-                    sizeIn=raw_input('Please enter the size of the image for trial '+str(t)+' as \'>width,height\'\n>')
-                    sizeIn=sizeIn.split(',')
-                    print sizeIn[0]
-                    print sizeIn[1]
-                    if isInstance(sizeIn[0],int) and isInstance(sizeIn[1],int):
-                        trialSize.append(sizeIn)
-                        print trialSize[t]
-                        t=t+1
-                    else:
-                        print "Error, please reenter..."
-                except: pass
-            break
-        except:
-            print "Error, please reenter..."
-            pass
-    print 'made it out'
-    f=open('./logs/Test Result - Image Test - %s.csv'%str(datetime.now()),'a')
-    f.write("Height (pixels)"+','+"Width (pixels)"+','+"Trial Runs"+','+"Image Objects Drawn")
-    f.write("\n"+str(screenHeight)+','+str(screenWidth)+','+str(maxTrial)+','+str(numImages))
-    f.write("\nFile Type"+','+"Time taken to load images to memory"+','+"Trials")
-    ft="" #filetype
-    img={}
-    r=0 #frame refreshes
-    i=1 #cycles images
-    size = screenWidth, screenHeight
-    t=0 #trial number n
-
-    screen = pygame.display.set_mode(size) #Screen Set 600x400
-    background = 152, 251, 152 # pale green
-
-    while 1:
-        try:ft=ftArr[t]
-        except:sys.exit("Test Complete")
-        f.seek(0,2)
-        f.write(str('\n'+ft[1]+' Test'))
-        f.seek(0,2)
-        start=time.time()
-        imgSwitch={
-            1: pygame.image.load("%s2%s"%(ft[1],ft[0])),
-            2: pygame.image.load("%s3%s"%(ft[1],ft[0])),
-            3: pygame.image.load("%s4%s"%(ft[1],ft[0])),
-            4: pygame.image.load("%s5%s"%(ft[1],ft[0])),
-            5: pygame.image.load("%s6%s"%(ft[1],ft[0])),
-            6: pygame.image.load("%s7%s"%(ft[1],ft[0])),
-            7: pygame.image.load("%s8%s"%(ft[1],ft[0])),
-            8: pygame.image.load("%s9%s"%(ft[1],ft[0])),
-        }
-        f.write(','+str(time.time()-start))
-        
-        print "Testing "+ft[1]
-        trial=maxTrial
-        
-        while trial>0:
-            img[1,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
-            img[1,1]=  img[1,0].get_rect()
-            img[1,2]= [2,2] #speed
-            r=0
-            start=time.time()
-            while 1:
-                change()
-                i=i+1
-                if i>9: i=1
-                img[cnt,0]=imgSwitch.get(i,pygame.image.load("%s1%s"%(ft[1],ft[0])))
-                screen.fill(background)
-                r=r+1
-                if r>500: break
-                
-            print 1/((time.time()-start)/r)
-            f.seek(0,2)
-            f.write(','+str(1/((time.time()-start)/r)))
-            trial=trial-1
-
-        t=t+1
-    f.close()    
-"""

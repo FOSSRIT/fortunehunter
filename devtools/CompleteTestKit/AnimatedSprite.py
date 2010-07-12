@@ -47,17 +47,17 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.animations = {}
         
         if textfileName != '':
-           f = open(textfileName, 'r')
-           currentLine = f.readline()
-           while currentLine != '':
-             animValues = currentLine.split(",")
-             #This is a list called animations that at each position contains a list of two values. the first value is the start position
-             #of the given animation and the second is the end position of the given animation
-             self.animations[animValues[0]] =  [int(animValues[1]), int(animValues[2])]
-             currentLine = f.readline()
+            f = open(textfileName, 'r')
+            currentLine = f.readline()
+            while currentLine != '':
+                animValues = currentLine.split(",")
+                #This is a list called animations that at each position contains a list of two values. the first value is the start position
+                #of the given animation and the second is the end position of the given animation
+                self.animations[animValues[0]] =  [int(animValues[1]), int(animValues[2])]
+                currentLine = f.readline()
 
-        # Call update to set our first image.
-        #self.update(pygame.time.get_ticks())
+               # Call update to set our first image.
+               #self.update(pygame.time.get_ticks())
 
     def addImages(self, images):
 
@@ -76,10 +76,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
             self._frame += frameChanges
             #checks if the current frame is past the final frame and continues to check over and over until it is not
             while self._frame >= len(self._images):
-              #since we are past the final frame it is now figuring out how many frames past the final frame we have actually gone
-              framesPast = self._frame - len(self._images)
-              #sets the current frame to the frame it should be at
-              self._frame = framesPast - 1
+                #since we are past the final frame it is now figuring out how many frames past the final frame we have actually gone
+                framesPast = self._frame - len(self._images)
+                #sets the current frame to the frame it should be at
+                self._frame = framesPast - 1
             #sets the current image to the image associated with the current frame
             self.image = self._images[self._frame]
             #sets the last update value to the current time so that at the next update the time change is accurate
@@ -92,25 +92,33 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
         #calculates the amount of time that has passed since the last update
         timePassed = t - self._last_update
+        
         #checks if enough time has passed that it would need to update the frame of the animation
         if timePassed > self._delay:
+            
             #Checks to make sure that the current frame is actually set to a position within the animation
             if self._frame < self.animations.get(animName)[0] or self._frame > self.animations.get(animName)[1]:
-              #corrects the position of the current frame
-              self._frame = self.animations.get(animName)[0]
+                #corrects the position of the current frame
+                self._frame = self.animations.get(animName)[0]
+            
             #since enough time has passed, it will determine how many times the frame was supposed to change since the last update
             frameChanges = int(timePassed/self._delay)
+            
             #goes to the frame that it should be at right now and skips any frames that would have already been over and done with
             self._frame += frameChanges
+            
             #checks if the current frame is past the final frame of the current animation and continues to check over and over
             #until it is not
             while self._frame >= self.animations.get(animName)[1]:
-              #Determines how many frames past the final frame of the animation it is
-              framesPast = self._frame - self.animations.get(animName)[1]
-              #Sets the current frame to the frame it should be at
-              self._frame = framesPast - 1 + self.animations.get(animName)[0]
+                #Determines how many frames past the final frame of the animation it is
+                framesPast = self._frame - self.animations.get(animName)[1]
+              
+                #Sets the current frame to the frame it should be at
+                self._frame = framesPast - 1 + self.animations.get(animName)[0]
+            
             #sets the current image to the image associated with the current frame
             self.image = self._images[self._frame]
+            
             #sets the last update value to the current time so that at the next update the time change is accurate
             self._last_update = t
 
@@ -138,4 +146,3 @@ class AnimatedSprite(pygame.sprite.Sprite):
             framesPast = self._frame - self.animations[animName][1]
             self._frame = framesPast - 1 + self.animations[animName][0]
         self.image = self._images[self._frame]
-        
