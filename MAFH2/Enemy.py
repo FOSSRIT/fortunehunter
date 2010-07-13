@@ -32,6 +32,7 @@ class Enemy(Actor):
         col,row,width,height = ENEMY[id]['sprite']
         self.sprite=AnimatedSprite(Spritesheet(CHAR_PATH + ENEMY[id]['img']).img_extract(col,row,width,height))
         self.place=0
+        self.alive = True
 
         #load image based on type later
         self.name=ENEMY[id]['name']

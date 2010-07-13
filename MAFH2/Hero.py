@@ -32,11 +32,11 @@ class Hero(Actor):
     if name=="basic":
       return self.ATT+self.BAE
     elif name=="critical":
-      return self.ATT+self.BAE+self.BAB
+      return (self.ATT+self.BAE+self.BAB) * 1.1
     elif name=="fire":
       return self.ATT+self.BAB
     elif name=="heal":
-      return self.BAB-10
+      return (self.BAB + 4) * 5
     elif name=="lightning":
       return self.ATT+self.BAB
     elif name=="division":

@@ -263,51 +263,51 @@ class BattleEngine(GameEngineElement):
         #do the correct damage to correct enemy
         hero = self.game_engine.get_object('profile').hero
         damage = 0
+        curTarget = self.active_target - 1
         if self.isMagic:
-            weakness = self.enemy_list[self.active_target]
+            weakness = self.enemy_list[curTarget]
             spellTypes = ['none', 'fire', 'lightning', 'missile', 'heal', 'special']
             bonus = 0
             if spellTypes[self.spellType] == weakness:
                 bonus = 60
                 damage += bonus
-            if self.magicWin:
+            if self.magicWin and not(self.spellType == 4):
                 damage += hero.attackPower(spellTypes[self.spellType])
-                self.enemy_list[self.active_target].HP -= damage
+                self.enemy_list[curTarget].HP -= damage
                 self.player_input = spellTypes[self.spellType] + ' cast!'
+            elif self.spellType == 4:
+                hero.giveHealth(hero.attackPower('heal'))
             else:
                 self.player_input = 'Spell fizzles'
         elif self.state == PLAYER_MULT:
             if self.correct:
                 damage = hero.attackPower("critical")
-                self.enemy_list[self.active_target].HP -= damage
+                self.enemy_list[curTarget].HP -= damage
                 self.player_input = "Your attack crits for " + str(damage) + " damage"
         else:
             damage = hero.attackPower('basic')
-            self.enemy_list[self.active_target].HP -= damage
+            self.enemy_list[curTarget].HP -= damage
             self.player_input = "You attack for " + str(damage) + " damage"
                 
         
         #generate enemy attack
-        for enemy in self.enemy_list:
-            random.seed()
-            enemyAttack = random.randint(0,100)
-            if enemyAttack > 90:
-                hero.defendAttack(enemy.attackPower('special'))
-            elif enemyAttack < 6:
-                hero.defendAttack(enemy.attackPower('critical'))
-            else:
-                hero.defendAttack(enemy.attackPower('basic'))
-            
-        
+        for enemy in self.enemy_list[:]:
+            if enemy.HP <= 0:
+                self.enemy_list.remove(enemy)
+            if enemy.alive:
+                random.seed()
+                enemyAttack = random.randint(0,100)
+                if enemyAttack > 90:
+                    hero.defendAttack(enemy.attackPower('special'))
+                elif enemyAttack < 6:
+                    hero.defendAttack(enemy.attackPower('critical'))
+                else:
+                    hero.defendAttack(enemy.attackPower('basic'))
+
         
         self.game_engine.get_object('profile').hero = hero
         self.state = PLAYER_WAIT
         self.magic_list = []
-        self.__end_battle(menu)
-
-    def __end_battle(self, menu):
-        #Give items if any
-        #self terminate
         if (self.isMagic):
             self.game_engine.get_object('magicmenu').remove_from_engine()
             self.game_engine.remove_object('magicmenu')
@@ -315,8 +315,19 @@ class BattleEngine(GameEngineElement):
             menu.show_menu('selection')
             
         self.game_engine.get_object('battlemenu').set_disp(self.player_input)
-        
+
         #Are enemies dead?
+        if not self.enemy_list:
+            self.__end_battle(menu)
+
+    def __end_battle(self, menu):
+        #Give items if any
+        #self terminate
+        print 'end battle called'
+        self.remove_from_engine()
+        #self.game_engine.remove_object('battlemenu')
+        self.game_engine.get_object('battlemenu').remove_from_engine()
+        self.game_engine.remove_object('battle')
         
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -328,7 +339,6 @@ class BattleEngine(GameEngineElement):
                 if self.active_target < 1:
                     self.active_target = len(self.enemy_list)
                 return True
-
             elif newKey=='[6]' or newKey=='right':
                 self.active_target += 1
                 if self.active_target > len(self.enemy_list):
@@ -337,8 +347,6 @@ class BattleEngine(GameEngineElement):
             
             elif newKey=='return':
                 self.enemy = self.active_target
-                
-                #do damage calculations
                 return True
 
 
@@ -354,11 +362,12 @@ class BattleEngine(GameEngineElement):
 
         # Draw Enemy and Item Selection
         for enemy in self.enemy_list:
-            if self.active_target == i:
-                screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))
-            enemy.sprite.update( tick_time )
-            screen.blit(enemy.sprite.image, (x+(i*200),y))
-            i = i+1
+            if enemy.alive:
+                if self.active_target == i:
+                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))
+                enemy.sprite.update( tick_time )
+                screen.blit(enemy.sprite.image, (x+(i*200),y))
+                i = i+1
 
         # Draw Hud
         profile = self.game_engine.get_object('profile')
