@@ -39,12 +39,14 @@ class DrawableObject(pygame.sprite.Sprite):
         
     def goToAnim(self, animName):
 
+        cnt = 0
         while cnt < len(animations):
            
            if animations[cnt] == animName:
              self._frame = self.animations[animName][0]
              self.image = self._images[self._frame]
              cnt = len(animations)
+           cnt += 1
     
     def move(self):
 
@@ -107,3 +109,12 @@ class DrawableObject(pygame.sprite.Sprite):
     def getYSpeed(self):
 
        return self.ySpeed
+       
+    def update(self, t):
+
+    def updateAnimation(self, t, animName):
+
+    def nextFrame(self):
+
+    def nextAnimFrame(self, animName):
+

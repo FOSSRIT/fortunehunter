@@ -28,22 +28,34 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def updateAnimation(self, t, animName):
 
-        timePassed = t - self._last_update
-        if timePassed > self._delay:
+        cnt = 0
+        while cnt < len(animations):
+           
+           if animations[cnt] == animName:
+        
+              timePassed = t - self._last_update
+              if timePassed > self._delay:
+      
+                  if self._frame < self.animations.get(animName)[0] or self._frame > self.animations.get(animName)[1]:
+      
+                    self._frame = self.animations.get(animName)[0]
+                  else:
 
-            if self._frame < self.animations.get(animName)[0] or self._frame > self.animations.get(animName)[1]:
+                    self._frame += 1
+      
+                  frameChanges = int(timePassed/self._delay)
+                  self._frame += frameChanges
+                  while self._frame >= self.animations.get(animName)[1]:
+      
+                    framesPast = self._frame - self.animations.get(animName)[1]
+                    self._frame = framesPast - 1 + self.animations.get(animName)[0]
+      
+                  self.image = self._images[self._frame]
+                  self._last_update = t
+                  
+              cnt = len(animations)
 
-              self._frame = self.animations.get(animName)[0]
-
-            frameChanges = int(timePassed/self._delay)
-            self._frame += frameChanges
-            while self._frame >= self.animations.get(animName)[1]:
-
-              framesPast = self._frame - self.animations.get(animName)[1]
-              self._frame = framesPast - 1 + self.animations.get(animName)[0]
-
-            self.image = self._images[self._frame]
-            self._last_update = t
+            cnt += 1
 
     def nextFrame(self):
 
@@ -57,14 +69,24 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def nextAnimFrame(self, animName):
 
-        if self._frame < self.animations[animName][0] or self._frame > self.animations[animName][1]:
-            
-            self._frame = self.animations[animName][0]
+        cnt = 0
+        while cnt < len(animations):
+           
+           if animations[cnt] == animName:
+              
+              if self._frame < self.animations[animName][0] or self._frame > self.animations[animName][1]:
+                  
+                  self._frame = self.animations[animName][0]
+              else:
+                  self._frame += 1
 
-        self._frame += 1
-        if self._frame > self.animations[animName][1]:
+              if self._frame > self.animations[animName][1]:
+      
+                  framesPast = self._frame - self.animations[animName][1]
+                  self._frame = framesPast - 1 + self.animations[animName][0]
+                  
+              self.image = self._images[self._frame]
+              
+              cnt = len(anmiations)
 
-            framesPast = self._frame - self.animations[animName][1]
-            self._frame = framesPast - 1 + self.animations[animName][0]
-            
-        self.image = self._images[self._frame]
+           cnt += 1
