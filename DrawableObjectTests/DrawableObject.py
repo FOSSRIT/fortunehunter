@@ -39,8 +39,12 @@ class DrawableObject(pygame.sprite.Sprite):
         
     def goToAnim(self, animName):
 
-        self._frame = self.animations[animName][0]
-        self.image = self._images[self._frame]
+        while cnt < len(animations):
+           
+           if animations[cnt] == animName:
+             self._frame = self.animations[animName][0]
+             self.image = self._images[self._frame]
+             cnt = len(animations)
     
     def move(self):
 
