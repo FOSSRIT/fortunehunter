@@ -200,7 +200,7 @@ class GameEngine(object):
                 # 100% usage looping on the poll until something
                 # becomes dirty
                 self.__tick_time += self.clock.tick(self.__fps_cap)
-                if self.__always_draw or self.__dirty == True:
+                if self.__always_draw or self.__dirty:
                     self.__dirty = False
                     self._draw(self.__tick_time)
                     self.__tick_time = 0
@@ -219,11 +219,14 @@ class GameEngine(object):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \
                     and pygame.key.get_mods() & pygame.KMOD_CTRL:
                 self.console.set_active()
+                self.set_dirty()
 
             # Pass event to console
-            # console will return false if not used. If it is not used
-            # Then pass them to all
-            elif not self.console.process_input(event):
+            elif self.console.process_input(event):
+                self.set_dirty()
+
+            # Pass events to all others
+            else:
                 # Make a copy first so that adding events don't get fired
                 # right away
                 list_cp = self.__event_cb[:]
