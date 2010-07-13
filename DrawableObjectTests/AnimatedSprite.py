@@ -4,7 +4,6 @@ class Spritesheet:
     """
     Class from http://www.scriptedfun.com/transcript-2-using-sprite-sheets-and-drawing-the-background/
 
-    This class can be used to seporate images from the sprite sheet
     """
     def __init__(self, filename):
         self.sheet = pygame.image.load(filename)#.convert()
