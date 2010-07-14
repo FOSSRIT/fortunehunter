@@ -29,6 +29,7 @@ class Scene:
        while cnt < len(self._my_Objects):
            if self._my_Objects[cnt][0].getXPos() < lowestX: lowestX = self._my_Objects[cnt][0].getXPos()
            if self._my_Objects[cnt][0].getYPos() < lowestY: lowestY = self._my_Objects[cnt][0].getYPos()
+           cnt == 1
 
        self.xPos = lowestX
        self.yPos = lowestY
@@ -84,6 +85,7 @@ class Scene:
        while cnt < len(self._my_Objects):
 
           self._my_Objects[cnt][0].move()
+          cnt += 1
 
        self.calcPosition()
        self.calcSize()
@@ -95,6 +97,7 @@ class Scene:
        while cnt < len(self._my_Objects):
 
           self._my_Objects[cnt][0].nudge(xNudge, yNudge)
+          cnt += 1
 
        self.calcPosition()
 
@@ -107,6 +110,7 @@ class Scene:
        while cnt < len(self._my_Objects):
 
           self._my_Objects[cnt][0].setPosition(self.xPos + self._my_Objects[cnt][1], self.yPos + self._my_Objects[cnt][2])
+          cnt += 1
 
     def getXPos(self):
        return xPos
@@ -125,6 +129,7 @@ class Scene:
        cnt = 0
        while cnt < len(self._my_Objects):
            self._my_Objects[cnt][0].scale(newXSize, newYSize)
+           cnt += 1
 
     def scaleScene(self, newXSize = None, newYSize = None):
 
@@ -139,6 +144,7 @@ class Scene:
            self._my_Objects[cnt][0].scale(xScale * self._my_Objects[cnt][0].getXSize(), yScale * self._my_Objects[cnt][0].getYSize())
            self._my_Objects[cnt][1] = xScale * self._my_Objects[cnt][1]
            self._my_Objects[cnt][2] = yScale * self._my_Objects[cnt][2]
+           cnt += 1
 
        self.setPosition()
 
@@ -148,3 +154,4 @@ class Scene:
        while cnt < len(self._my_Objects):
 
           self._my_Objects[cnt][0].updateCurrentAnimation(t)
+          cnt += 1
