@@ -128,10 +128,13 @@ class DrawableObject(pygame.sprite.Sprite):
        return self.ySpeed
        
     def update(self, t):
+       pass
 
     def updateCurrnetAnimation(self, t):
+       pass
 
     def nextFrame(self):
+       pass
 
     def nextCurrentAnimFrame(self):
-
+       pass

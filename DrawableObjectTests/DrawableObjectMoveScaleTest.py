@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from Spritesheet import Spritesheet
 from DynamicDrawableObject import DynamicDrawableObject
+from Scene import Scene
 import pygame
 import time
 pygame.init()

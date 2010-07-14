@@ -8,7 +8,7 @@ class Scene:
 
        cnt = 0
        while cnt < len(drawableObjects):
-           self._my_objects.append(drawableObjects[cnt],[drawableObjects[cnt].getXPos(),drawableObjects[cnt].getYPos()])
+           self._my_Objects.append(drawableObjects[cnt],[drawableObjects[cnt].getXPos(),drawableObjects[cnt].getYPos()])
            cnt += 1
            
        self.xPos = 0
@@ -26,7 +26,7 @@ class Scene:
        lowestY = 9000
        
        cnt = 0
-       while cnt < len(self._my_Objects)
+       while cnt < len(self._my_Objects):
            if self._my_Objects[cnt].getXPos() < lowestX: lowestX = self._my_Objects[cnt].getXPos()
            if self._my_Objects[cnt].getYPos() < lowestY: lowestY = self._my_Objects[cnt].getYPos()
 
@@ -39,7 +39,7 @@ class Scene:
        highestY = 0
        
        cnt = 0
-       while cnt < len(self._my_Objects)
+       while cnt < len(self._my_Objects):
            if self._my_Objects[cnt].getXPos() + self._my_Objects[cnt].getXSize() > highestX: highestX = self._my_Objects[cnt].getXPos() + self._my_Objects[cnt].getXSize()
            if self._my_Objects[cnt].getYPos() + self._my_Objects[cnt].getYSize() > highestY: highestY = self._my_Objects[cnt].getYPos() + self._my_Objects[cnt].getYSize()
            cnt += 1

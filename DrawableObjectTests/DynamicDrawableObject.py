@@ -52,7 +52,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
                   
               cnt = len(animations)
 
-            cnt += 1
+           cnt += 1
 
     def nextFrame(self):
 
