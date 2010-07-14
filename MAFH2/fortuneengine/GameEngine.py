@@ -14,6 +14,7 @@
 #    Author: Justin Lewis  <jlew.blackout@gmail.com>
 
 import pygame
+from time import time
 from GameEngineConsole import GameEngineConsole
 from GameInspect import GameInspect
 
@@ -72,6 +73,12 @@ class GameEngine(object):
 
         # Inspector
         self._inspector = GameInspect(self.__object_hold)
+
+        # Time Profiler Timers
+        self.__draw_time = {}
+        self.__draw_calls = {}
+        self.__event_time = {}
+        self.__event_calls = {}
 
         # Initialize Py Console
         self.console = GameEngineConsole(self, (0, 0, width, height / 2))
@@ -170,7 +177,10 @@ class GameEngine(object):
 
         else:
             for fnc in self.__draw_lst:
+                start = time()
                 fnc(screen, tick_time)
+                self.__draw_time[str(fnc)] += time() - start
+                self.__draw_calls[str(fnc)] += 1
 
             # Print Frame Rate
             if self.__showfps:
@@ -238,8 +248,14 @@ class GameEngine(object):
                 for cb in list_cp:
                     # Fire the event for all in cb and stop
                     # if the callback returns True
-                    if cb(event) == True:
+                    start = time()
+                    retur_val = cb(event)
+                    self.__event_time[str(cb)] += time() - start
+                    self.__event_calls[str(cb)] += 1
+
+                    if retur_val:
                         break
+
 
     def stop_event_loop(self):
         """
@@ -254,6 +270,8 @@ class GameEngine(object):
 
         @param cb:  Callback to be added to the stack when events are fired.
         """
+        self.__event_time[str(cb)] = 0
+        self.__event_calls[str(cb)] = 0
         self.__event_cb.append(cb)
 
     def remove_event_callback(self, cb):
@@ -279,6 +297,25 @@ class GameEngine(object):
             event_callbacks = "%s\t%s\n" % (event_callbacks, str(eventlst))
         return event_callbacks
 
+    def list_event_time(self):
+        """
+        Returns a string representation of the time the game spends
+        in each event callback.
+        """
+        mystr = "Event Times:\n\tName\tCalls\tTotal Time\tAvg"
+        for key in self.__event_time:
+            event_times = self.__event_time[key]
+            event_calls = self.__event_calls[key]
+            if event_calls == 0:
+                avg = 0
+            else:
+                avg = event_times / event_calls
+
+            mystr = "%s\n\t%s\n\t\t%d\t%f\t%f" % \
+                    (mystr, key, event_calls, event_times, avg)
+        return mystr
+
+
     def add_draw_callback(self, fnc):
         """
         Adds a callback to the draw list.  Function will be passed the
@@ -286,6 +323,9 @@ class GameEngine(object):
 
         @param fnc:    The function to call when system is drawing
         """
+
+        self.__draw_time[str(fnc)] = 0
+        self.__draw_calls[str(fnc)] = 0
         self.__draw_lst.append(fnc)
 
     def pop_draw_callback(self):
@@ -324,6 +364,24 @@ class GameEngine(object):
         for eventlst in self.__draw_lst:
             callbacks += "\t%s\n" % str(eventlst)
         return callbacks
+
+    def list_draw_time(self):
+        """
+        Returns a string representation of the time the game spends
+        in each drawing callback.
+        """
+        mystr = "Drawing Times:\n\tName\tCalls\tTotal Time\tAvg"
+        for key in self.__draw_time:
+            draw_times = self.__draw_time[key]
+            draw_calls = self.__draw_calls[key]
+            if draw_calls == 0:
+                avg = 0
+            else:
+                avg = draw_times / draw_calls
+
+            mystr = "%s\n\t%s\n\t\t%d\t%f\t%f" % \
+                    (mystr, key, draw_calls, draw_times, avg)
+        return mystr
 
     def has_object(self, name):
         """
