@@ -20,8 +20,7 @@ class MagicMenuHolder( GameEngineElement ):
         
     def draw(self,screen,time_delta):
         screen.blit(self.background,(0,286,452,414))
-        #draw the boxes with the specific magic icons randomly
-        
+
     def menu_called(self, id):
         self.callback(id, self)
 
@@ -35,9 +34,7 @@ class MagicMenuHolder( GameEngineElement ):
             self.clear_menu()
         else:
             self.add_to_engine()
-        
-        
-        #example of what will come  
+         
         if id == "fire":
             spell_type = 0
             menu_options = [

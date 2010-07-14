@@ -166,7 +166,7 @@ class Dungeon(GameEngineElement):
                 self.game_engine.get_object('map').update_macro()
                 self.check_for_enemies()
         else:
-            #Entrance or exit may be on a boarder of the grid
+            #Entrance or exit may be on a border of the grid
             door_flag = self.rooms[profile.position].get_door( dc )
             if door_flag == EXIT_DOOR or door_flag == ENTRANCE_DOOR:
                 if self.move_permissions( door_flag ):
