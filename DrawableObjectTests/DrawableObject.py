@@ -74,6 +74,14 @@ class DrawableObject(pygame.sprite.Sprite):
             
             self._images[cnt][0] = pygame.transform.scale(self._originals[cnt][0], (newXSize, newYSize))
             cnt += 1
+            
+    def getXSize(self):
+    
+       return self.xSize
+
+    def getYSize(self):
+
+       return self.ySize
 
     #def rotate(self,angle):
             
