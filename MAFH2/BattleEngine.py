@@ -322,10 +322,13 @@ class BattleEngine(GameEngineElement):
 
     def __end_battle(self, menu):
         #Give items if any
+        room = self.game_engine.get_object('dungeon').get_current_room()
+        for item in room.item:
+            self.game_engine.get_object('profile').hero.addInventory(item)
+        room.has_enemy = False
         #self terminate
-        print 'end battle called'
+        #print 'end battle called'
         self.remove_from_engine()
-        #self.game_engine.remove_object('battlemenu')
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battle')
         
