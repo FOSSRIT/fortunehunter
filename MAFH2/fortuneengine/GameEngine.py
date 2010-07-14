@@ -79,6 +79,8 @@ class GameEngine(object):
         self.__draw_calls = {}
         self.__event_time = {}
         self.__event_calls = {}
+        self.__timer_time = {}
+        self.__timer_calls = {}
 
         # Initialize Py Console
         self.console = GameEngineConsole(self, (0, 0, width, height / 2))
@@ -106,6 +108,9 @@ class GameEngine(object):
 
         if avail_timer + pygame.USEREVENT < pygame.NUMEVENTS:
             if function_cb not in self.__active_event_timers:
+                self.__timer_time[str(function_cb)] = 0
+                self.__timer_calls[str(function_cb)] = 0
+
                 self.__active_event_timers.append(function_cb)
                 self.__active_event_timers_tick.append(time)
                 pygame.time.set_timer(pygame.USEREVENT + avail_timer, time)
@@ -148,6 +153,25 @@ class GameEngine(object):
             i = i + 1
 
         return timer_list
+
+    def list_timer_time(self):
+        """
+        Returns a string representation of the time the game spends
+        in each timer callback.
+        """
+        mystr = "Timer Times:\n\tName\tCalls\tTotal Time\tAvg"
+        for key in self.__timer_time:
+            timer_times = self.__timer_time[key]
+            timer_calls = self.__timer_calls[key]
+            if timer_calls == 0:
+                avg = 0
+            else:
+                avg = timer_times / timer_calls
+
+            mystr = "%s\n\t%s\n\t\t%d\t%f\t%f" % \
+                    (mystr, key, timer_calls, timer_times, avg)
+        return mystr
+
 
     def start_main_loop(self):
         """
@@ -223,7 +247,11 @@ class GameEngine(object):
                 timer_id = event.type - pygame.USEREVENT
 
                 # Call timer
+                start = time()
                 self.__active_event_timers[timer_id]()
+                str_rep = str(self.__active_event_timers[timer_id])
+                self.__timer_time[str_rep] += time() - start
+                self.__timer_calls[str_rep] += 1
 
             # Check if we should activate the console
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_w \

@@ -42,6 +42,7 @@ class GameEngineConsole(Console):
 
             "profile_draw":gei.list_draw_time,
             "profile_event":gei.list_event_time,
+            "profile_timer":gei.list_timer_time,
 
             "set_str": gei._inspector.set_str,
             "set_int": gei._inspector.set_int,
