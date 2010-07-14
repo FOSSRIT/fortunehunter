@@ -55,3 +55,4 @@ secondaryList = [staticObj]
 
 myScene = Scene(initialList)
 myScene.addObjects(secondaryList)
+time.sleep(5)
