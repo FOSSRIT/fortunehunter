@@ -33,29 +33,24 @@ switch1 = [
   [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
 ]
 
+switch2 = [
+  [pygame.image.load("%sa2/1%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/2%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/3%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/4%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/5%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/6%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/7%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/8%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa2/9%s"%("IndividualFrames/bmp16/",".bmp"))]
+]
+
 dynamicObj = DynamicDrawableObject(switch1,'',1,0,0, 2, 2)
+secondDynamicObj = DynamicDrawableObject(switch1,'',1,0,100, 2, 2)
+staticObj = DynamicDrawableObject(switch2,'',1,40,40, 2, 2)
 
-cnt = 0
+initialList = [dynamicObj, secondDynamicObj]
+secondaryList = [staticObj]
 
-while cnt < 100:
-
-  dynamicObj.nextFrame()
-  screen.blit(dynamicObj.image[0], (dynamicObj.getXPos(), dynamicObj.getYPos()))
-  dynamicObj.move()
-  pygame.display.flip()
-  screen.fill((BACKGROUNDR,BACKGROUNDG,BACKGROUNDB))
-  cnt += 1
-  
-cnt = 0
-dynamicObj.setPosition(0,0)
-dynamicObj.scale(160, 160)
-
-while cnt < 100:
-  
-  dynamicObj.nextFrame()
-  screen.blit(dynamicObj.image[0], (dynamicObj.getXPos(), dynamicObj.getYPos()))
-  dynamicObj.move()
-  pygame.display.flip()
-  screen.fill((BACKGROUNDR,BACKGROUNDG,BACKGROUNDB))
-  cnt += 1
-
+myScene = Scene(initialList)
+myScene.addObjects(secondaryList)
