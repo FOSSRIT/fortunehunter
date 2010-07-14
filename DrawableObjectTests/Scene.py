@@ -8,7 +8,7 @@ class Scene:
 
        cnt = 0
        while cnt < len(drawableObjects):
-           self._my_Objects.append(drawableObjects[cnt],[drawableObjects[cnt].getXPos(),drawableObjects[cnt].getYPos()])
+           self._my_Objects.append([drawableObjects[cnt],drawableObjects[cnt].getXPos(),drawableObjects[cnt].getYPos()])
            cnt += 1
            
        self.xPos = 0
@@ -27,8 +27,8 @@ class Scene:
        
        cnt = 0
        while cnt < len(self._my_Objects):
-           if self._my_Objects[cnt].getXPos() < lowestX: lowestX = self._my_Objects[cnt].getXPos()
-           if self._my_Objects[cnt].getYPos() < lowestY: lowestY = self._my_Objects[cnt].getYPos()
+           if self._my_Objects[cnt][0].getXPos() < lowestX: lowestX = self._my_Objects[cnt][0].getXPos()
+           if self._my_Objects[cnt][0].getYPos() < lowestY: lowestY = self._my_Objects[cnt][0].getYPos()
 
        self.xPos = lowestX
        self.yPos = lowestY
@@ -40,8 +40,8 @@ class Scene:
        
        cnt = 0
        while cnt < len(self._my_Objects):
-           if self._my_Objects[cnt].getXPos() + self._my_Objects[cnt].getXSize() > highestX: highestX = self._my_Objects[cnt].getXPos() + self._my_Objects[cnt].getXSize()
-           if self._my_Objects[cnt].getYPos() + self._my_Objects[cnt].getYSize() > highestY: highestY = self._my_Objects[cnt].getYPos() + self._my_Objects[cnt].getYSize()
+           if self._my_Objects[cnt][0].getXPos() + self._my_Objects[cnt][0].getXSize() > highestX: highestX = self._my_Objects[cnt][0].getXPos() + self._my_Objects[cnt][0].getXSize()
+           if self._my_Objects[cnt][0].getYPos() + self._my_Objects[cnt][0].getYSize() > highestY: highestY = self._my_Objects[cnt][0].getYPos() + self._my_Objects[cnt][0].getYSize()
            cnt += 1
 
        self.xSize = highestX - self.xPos
@@ -51,7 +51,7 @@ class Scene:
 
        cnt = 0
        while cnt < len(newDrawableObjects):
-           self._my_Objects.append(newDrawableObjects[cnt],[newDrawableObjects[cnt].getXPos(),newDrawableObjects[cnt].getYPos()])
+           self._my_Objects.append(newDrawableObjects[cnt][0],[newDrawableObjects[cnt][0].getXPos(),newDrawableObjects[cnt][0].getYPos()])
            cnt += 1
        
        self.calcPosition()
@@ -62,8 +62,8 @@ class Scene:
 
        cnt = 0
        while cnt < len(self._my_Objects):
-           self._my_Objects[cnt][0] = self._my_Objects[cnt][0] - self.xPos
-           self._my_Objects[cnt][1] = self._my_Objects[cnt][1] - self.yPos
+           self._my_Objects[cnt][1] = self._my_Objects[cnt][1] - self.xPos
+           self._my_Objects[cnt][2] = self._my_Objects[cnt][2] - self.yPos
            cnt += 1
 
     def removeObject(self, index):
@@ -83,7 +83,7 @@ class Scene:
        cnt = 0
        while cnt < len(self._my_Objects):
 
-          self._my_Objects[cnt].move()
+          self._my_Objects[cnt][0].move()
 
        self.calcPosition()
        self.calcSize()
@@ -94,19 +94,19 @@ class Scene:
        cnt = 0
        while cnt < len(self._my_Objects):
 
-          self._my_Objects[cnt].nudge(xNudge, yNudge)
+          self._my_Objects[cnt][0].nudge(xNudge, yNudge)
 
        self.calcPosition()
 
     def setPosition(self, newXPos = None, newYPos = None):
-    
+
        if newXPos != None: self.xPos = newXPos
        if newYPos != None: self.yPos = newYPos
-       
+
        cnt = 0
        while cnt < len(self._my_Objects):
-       
-          self._my_Objects[cnt].setPosition(self.xPos + self._my_Objects[cnt][0], self.yPos + self._my_Objects[cnt][1])
+
+          self._my_Objects[cnt][0].setPosition(self.xPos + self._my_Objects[cnt][1], self.yPos + self._my_Objects[cnt][2])
 
     def getXPos(self):
        return xPos
@@ -124,27 +124,27 @@ class Scene:
 
        cnt = 0
        while cnt < len(self._my_Objects):
-           self._my_Objects[cnt].scale(newXSize, newYSize)
+           self._my_Objects[cnt][0].scale(newXSize, newYSize)
 
     def scaleScene(self, newXSize = None, newYSize = None):
-    
+
        xScale = 1
        yScale = 1
-       
+
        if newXSize != None: xScale = newXSize/xSize
        if newYSize != None: yScale = newYSize/ySize
-       
+
        cnt = 0
        while cnt < len(self._my_Objects):
-           self._my_Objects[cnt].scale(xScale * self._my_Objects[cnt].getXSize(), yScale * self._my_Objects[cnt].getYSize())
-           self._my_Objects[cnt][0] = xScale * self._my_Objects[cnt][0]
-           self._my_Objects[cnt][1] = yScale * self._my_Objects[cnt][1]
-           
-       self.setPosition()    
+           self._my_Objects[cnt][0].scale(xScale * self._my_Objects[cnt][0].getXSize(), yScale * self._my_Objects[cnt][0].getYSize())
+           self._my_Objects[cnt][1] = xScale * self._my_Objects[cnt][1]
+           self._my_Objects[cnt][2] = yScale * self._my_Objects[cnt][2]
+
+       self.setPosition()
 
     def updateAnimations(self, t):
 
        cnt = 0
        while cnt < len(self._my_Objects):
-       
-          self._my_Objects[cnt].updateCurrentAnimation(t)
+
+          self._my_Objects[cnt][0].updateCurrentAnimation(t)
