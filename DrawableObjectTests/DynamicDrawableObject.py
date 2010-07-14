@@ -1,5 +1,5 @@
 import pygame
-from DrawableObject import DrawableObject 
+from DrawableObject import DrawableObject
 
 class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
@@ -26,25 +26,25 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
             self._last_update = timePassed%self._delay
         self._last_update = timePassed
 
-    def updateAnimation(self, t, animName):
+    def updateCurrentAnimation(self, t):
 
         cnt = 0
         while cnt < len(animations):
            
-           if animations[cnt] == animName:
+           if animations[cnt] == self._current_anim:
         
               timePassed = t + self._last_update
               if timePassed > self._delay:
 
-                  if self._frame < self.animations.get(animName)[0] or self._frame > self.animations.get(animName)[1]: #checking if I am in the animation and putting me there if I am not
+                  if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
       
-                    self._frame = self.animations.get(animName)[0]
+                    self._frame = self.animations.get(self._current_anim)[0]
 
                   self._frame += timePassed/self._delay
-                  while self._frame >= self.animations.get(animName)[1]:
+                  while self._frame >= self.animations.get(self._current_anim)[1]:
       
-                    framesPast = self._frame - self.animations.get(animName)[1]
-                    self._frame = framesPast - 1 + self.animations.get(animName)[0]
+                    framesPast = self._frame - self.animations.get(self._current_anim)[1]
+                    self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
       
                   self.image = self._images[self._frame]
                   self._last_update = timePassed%self._delay
@@ -64,23 +64,23 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
         self.image = self._images[self._frame]
 
-    def nextAnimFrame(self, animName):
+    def nextCurrentAnimFrame(self):
 
         cnt = 0
         while cnt < len(animations):
            
-           if animations[cnt] == animName:
+           if animations[cnt] == self._current_anim:
               
-              if self._frame < self.animations[animName][0] or self._frame > self.animations[animName][1]:
+              if self._frame < self.animations[self._current_anim][0] or self._frame > self.animations[self._current_anim][1]:
                   
-                  self._frame = self.animations[animName][0]
+                  self._frame = self.animations[self._current_anim][0]
               else:
                   self._frame += 1
 
-              if self._frame > self.animations[animName][1]:
+              if self._frame > self.animations[self._current_anim][1]:
       
-                  framesPast = self._frame - self.animations[animName][1]
-                  self._frame = framesPast - 1 + self.animations[animName][0]
+                  framesPast = self._frame - self.animations[self._current_anim][1]
+                  self._frame = framesPast - 1 + self.animations[self._current_anim][0]
                   
               self.image = self._images[self._frame]
               

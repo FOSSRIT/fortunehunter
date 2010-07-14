@@ -13,6 +13,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self._last_update = 0
         self._frame = 0
         self.animations = {}
+        self._current_anim = ""
         self.xPos = x
         self.yPos = y
         self.xSpeed = xVelocity
@@ -43,6 +44,7 @@ class DrawableObject(pygame.sprite.Sprite):
         while cnt < len(animations):
            
            if animations[cnt] == animName:
+             self._current_anim = animName
              self._frame = self.animations[animName][0]
              self.image = self._images[self._frame]
              cnt = len(animations)
@@ -52,7 +54,14 @@ class DrawableObject(pygame.sprite.Sprite):
 
         self.xPos += self.xSpeed
         self.yPos += self.ySpeed
-        
+
+        self.image[0].get_rect().move(self.xPos,self.yPos)
+
+    def nudge(self, currentXSpeed = 0, currentYSpeed = 0):
+
+        self.xPos += self.currentXSpeed
+        self.yPos += self.currentYSpeed
+
         self.image[0].get_rect().move(self.xPos,self.yPos)
 
     def scale(self, newXSize, newYSize):
@@ -86,17 +95,17 @@ class DrawableObject(pygame.sprite.Sprite):
     
     def setPosition(self, x = None, y = None):
     
-       if x != None:  self.xPos = x
-       if y != None:  self.yPos = y
-    
+       if x != None and x >= 0:  self.xPos = x
+       if y != None and y >= 0:  self.yPos = y
+
     def getXPos(self):
-    
+
        return self.xPos
 
     def getYPos(self):
 
        return self.yPos
-       
+
     def setSpeed(self, xVelocity = None, yVelocity = None):
 
        if xVelocity != None:  self.xSpeed = xVelocity
@@ -112,9 +121,9 @@ class DrawableObject(pygame.sprite.Sprite):
        
     def update(self, t):
 
-    def updateAnimation(self, t, animName):
+    def updateCurrnetAnimation(self, t):
 
     def nextFrame(self):
 
-    def nextAnimFrame(self, animName):
+    def nextCurrentAnimFrame(self):
 
