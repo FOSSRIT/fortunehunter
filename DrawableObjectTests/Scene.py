@@ -52,7 +52,7 @@ class Scene:
 
        cnt = 0
        while cnt < len(newDrawableObjects):
-           self._my_Objects.append(newDrawableObjects[cnt][0],[newDrawableObjects[cnt][0].getXPos(),newDrawableObjects[cnt][0].getYPos()])
+           self._my_Objects.append([newDrawableObjects[cnt],newDrawableObjects[cnt].getXPos(),newDrawableObjects[cnt].getYPos()])
            cnt += 1
        
        self.calcPosition()
