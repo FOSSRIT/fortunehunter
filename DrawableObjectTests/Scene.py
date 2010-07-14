@@ -29,7 +29,7 @@ class Scene:
        while cnt < len(self._my_Objects):
            if self._my_Objects[cnt][0].getXPos() < lowestX: lowestX = self._my_Objects[cnt][0].getXPos()
            if self._my_Objects[cnt][0].getYPos() < lowestY: lowestY = self._my_Objects[cnt][0].getYPos()
-           cnt == 1
+           cnt += 1
 
        self.xPos = lowestX
        self.yPos = lowestY
