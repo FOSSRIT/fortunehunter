@@ -13,37 +13,46 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def update(self, t):
 
-        timePassed = t - self._last_update
+        timePassed = t + self._last_update
         if timePassed > self._delay:
 
-            frameChanges = int(timePassed/self._delay)
-            self._frame += frameChanges
+            self._frame += timePassed/self._delay
             while self._frame >= len(self._images):
 
               framesPast = self._frame - len(self._images)
               self._frame = framesPast - 1
 
             self.image = self._images[self._frame]
-            self._last_update = t
+            self._last_update = timePassed%self._delay
+        self._last_update = timePassed
 
     def updateAnimation(self, t, animName):
 
-        timePassed = t - self._last_update
-        if timePassed > self._delay:
+        cnt = 0
+        while cnt < len(animations):
+           
+           if animations[cnt] == animName:
+        
+              timePassed = t + self._last_update
+              if timePassed > self._delay:
 
-            if self._frame < self.animations.get(animName)[0] or self._frame > self.animations.get(animName)[1]:
+                  if self._frame < self.animations.get(animName)[0] or self._frame > self.animations.get(animName)[1]: #checking if I am in the animation and putting me there if I am not
+      
+                    self._frame = self.animations.get(animName)[0]
 
-              self._frame = self.animations.get(animName)[0]
+                  self._frame += timePassed/self._delay
+                  while self._frame >= self.animations.get(animName)[1]:
+      
+                    framesPast = self._frame - self.animations.get(animName)[1]
+                    self._frame = framesPast - 1 + self.animations.get(animName)[0]
+      
+                  self.image = self._images[self._frame]
+                  self._last_update = timePassed%self._delay
+              self._last_update = timePassed
+                  
+              cnt = len(animations)
 
-            frameChanges = int(timePassed/self._delay)
-            self._frame += frameChanges
-            while self._frame >= self.animations.get(animName)[1]:
-
-              framesPast = self._frame - self.animations.get(animName)[1]
-              self._frame = framesPast - 1 + self.animations.get(animName)[0]
-
-            self.image = self._images[self._frame]
-            self._last_update = t
+            cnt += 1
 
     def nextFrame(self):
 
@@ -57,14 +66,24 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def nextAnimFrame(self, animName):
 
-        if self._frame < self.animations[animName][0] or self._frame > self.animations[animName][1]:
-            
-            self._frame = self.animations[animName][0]
+        cnt = 0
+        while cnt < len(animations):
+           
+           if animations[cnt] == animName:
+              
+              if self._frame < self.animations[animName][0] or self._frame > self.animations[animName][1]:
+                  
+                  self._frame = self.animations[animName][0]
+              else:
+                  self._frame += 1
 
-        self._frame += 1
-        if self._frame > self.animations[animName][1]:
+              if self._frame > self.animations[animName][1]:
+      
+                  framesPast = self._frame - self.animations[animName][1]
+                  self._frame = framesPast - 1 + self.animations[animName][0]
+                  
+              self.image = self._images[self._frame]
+              
+              cnt = len(anmiations)
 
-            framesPast = self._frame - self.animations[animName][1]
-            self._frame = framesPast - 1 + self.animations[animName][0]
-            
-        self.image = self._images[self._frame]
+           cnt += 1

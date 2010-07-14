@@ -24,7 +24,7 @@ class BattleMenuHolder( GameEngineElement ):
         self.sec_des = msg
 
     def remove_from_engine(self):
-        super( GameMenuHolder, self ).remove_from_engine()
+        super( BattleMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
     def draw(self,screen,time_delta):
