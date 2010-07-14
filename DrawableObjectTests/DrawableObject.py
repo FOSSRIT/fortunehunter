@@ -57,17 +57,17 @@ class DrawableObject(pygame.sprite.Sprite):
 
         self.image[0].get_rect().move(self.xPos,self.yPos)
 
-    def nudge(self, currentXSpeed = 0, currentYSpeed = 0):
+    def nudge(self, xNudge = 0, yNudge = 0):
 
-        self.xPos += self.currentXSpeed
-        self.yPos += self.currentYSpeed
+        self.xPos += xNudge
+        self.yPos += yNudge
 
         self.image[0].get_rect().move(self.xPos,self.yPos)
 
-    def scale(self, newXSize, newYSize):
-        
-        self.xSize = newXSize
-        self.ySize = newYSize
+    def scale(self, newXSize = None, newYSize = None):
+
+        if newXSize != None: self.xSize = newXSize
+        if newYSize != None: self.ySize = newYSize
 
         cnt = 0
         while  cnt < len(self._images):
