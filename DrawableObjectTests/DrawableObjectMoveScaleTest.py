@@ -22,7 +22,7 @@ screen = pygame.display.set_mode(SIZE) #Screen Set 600x400
 
 screen.fill((BACKGROUNDR, BACKGROUNDG, BACKGROUNDB))
 
-def blitAndFlip(self):
+def blitAndFlip():
     screen.fill((BACKGROUNDR, BACKGROUNDG, BACKGROUNDB))
     cn = 0
     while cnt < myScene.getListSize():
