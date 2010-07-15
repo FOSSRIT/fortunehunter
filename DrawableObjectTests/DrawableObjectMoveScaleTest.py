@@ -76,9 +76,8 @@ cnt = 0
    #blitAndFlip()
    #cnt += 1
 blitAndFlip()
-time.sleep(3)
-myScene.removeObject(0)
-myScene.removeObject(0)
+time.sleep(2)
+myScene.scaleObjects(20,20)
 blitAndFlip()
 time.sleep(2)
 
