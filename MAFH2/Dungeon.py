@@ -85,7 +85,7 @@ class Dungeon(GameEngineElement):
 
         for img_key in ['Room','F','L']:
             img = pygame.image.load(LVL_PATH+img_key+".png").convert()
-            img.set_colorkey(pygame.Color(255,0,255))
+            img.set_colorkey((255,0,255))
             width,height = img.get_size()
 
             img = pygame.transform.scale(img, (self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False)))
