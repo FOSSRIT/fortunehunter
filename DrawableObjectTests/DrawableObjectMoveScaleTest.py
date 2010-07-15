@@ -77,6 +77,7 @@ cnt = 0
    #cnt += 1
 blitAndFlip()
 time.sleep(2)
+print(good)
 myScene.scaleScene(100,100)
 blitAndFlip()
 time.sleep(2)
