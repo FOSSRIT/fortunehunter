@@ -109,12 +109,12 @@ class GameInspect(object):
         """
         try:
             obj, last, last_token = self.drilldown_object(objectname)
-        except Exception as detail:
+        except Exception, detail:
             return str(detail)
 
         try:
             setattr(last, last_token, eval(str(statement)))
-        except Exception as detail:
+        except Exception, detail:
             return str(detail)
 
     def set_str(self, objectname, val):
@@ -129,7 +129,7 @@ class GameInspect(object):
         """
         try:
             obj, last, last_token = self.drilldown_object(objectname)
-        except Exception as detail:
+        except Exception, detail:
             return str(detail)
 
         setattr(last, last_token, val)
@@ -148,7 +148,7 @@ class GameInspect(object):
         """
         try:
             obj, last, last_token = self.drilldown_object(objectname)
-        except Exception as detail:
+        except Exception, detail:
             return str(detail)
 
         try:
@@ -167,7 +167,7 @@ class GameInspect(object):
         try:
             obj, last, last_token = self.drilldown_object(objectname)
 
-        except Exception as detail:
+        except Exception, detail:
             return str(detail)
 
         classname = obj.__class__.__name__
