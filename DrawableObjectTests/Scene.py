@@ -162,5 +162,4 @@ class Scene:
        while cnt < len(self._my_Objects):
 
           self._my_Objects[cnt][0].nextFrame()
-          pygame.display.blit(self._my_Objects[cnt][0], (self._my_Objects[cnt][0].xPos(), self._my_Objects[cnt][0].yPos()))
           cnt += 1
