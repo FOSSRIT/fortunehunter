@@ -77,8 +77,6 @@ cnt = 0
    #cnt += 1
 blitAndFlip()
 time.sleep(3)
-print myScene.getXSize()
-print myScene.getYSize()
-print myScene.getXPos()
-print myScene.getYPos()
+myScene.removeObject(2)
+time.sleep(2)
 
