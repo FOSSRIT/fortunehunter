@@ -60,7 +60,7 @@ myScene.nextFrame()
 cnt = 0
 while cnt < myScene.getListSize():
 
-    screen.blit(myScene.getObject(cnt), (myScene.getObject(cnt).xPos(),myScene.getObject(cnt).yPos()))
+    screen.blit(myScene.getObject(cnt), [myScene.getObject(cnt).xPos(),myScene.getObject(cnt).yPos()])
 
 pygame.display.flip()
 time.sleep(5)
