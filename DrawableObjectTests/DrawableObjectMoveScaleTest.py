@@ -55,4 +55,7 @@ secondaryList = [staticObj]
 
 myScene = Scene(initialList)
 myScene.addObjects(secondaryList)
+
+myScene.nextFrame()
+pygame.display.flip()
 time.sleep(5)
