@@ -75,7 +75,9 @@ cnt = 0
    #myScene.nextFrame()
    #blitAndFlip()
    #cnt += 1
+blitAndFlip()
 time.sleep(3)
 myScene.setPosition(100,0)
+blitAndFlip()
 time.sleep(3)
 
