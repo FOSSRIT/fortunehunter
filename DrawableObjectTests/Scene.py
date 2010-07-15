@@ -136,8 +136,8 @@ class Scene:
        xScale = 1
        yScale = 1
 
-       if newXSize != None: xScale = newXSize/xSize
-       if newYSize != None: yScale = newYSize/ySize
+       if newXSize != None: xScale = double(newXSize/self.xSize)
+       if newYSize != None: yScale = double(newYSize/self.ySize)
 
        cnt = 0
        while cnt < len(self._my_Objects):
