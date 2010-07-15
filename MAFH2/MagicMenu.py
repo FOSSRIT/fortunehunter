@@ -122,10 +122,10 @@ class Menu(object):
         heal = []
         
 
-        fire = Spritesheet(PUZZLE_PATH + "FireGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
-        lightning = Spritesheet(PUZZLE_PATH + "LightningGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
-        missile = Spritesheet(PUZZLE_PATH + "MissileGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
-        heal = Spritesheet(PUZZLE_PATH + "HealGlyph.gif").img_extract(2,2,150,150,pygame.Color(255,0,255))
+        fire = Spritesheet(PUZZLE_PATH + "FireGlyph.gif").img_extract(2,2,150,150,(255,0,255))
+        lightning = Spritesheet(PUZZLE_PATH + "LightningGlyph.gif").img_extract(2,2,150,150,(255,0,255))
+        missile = Spritesheet(PUZZLE_PATH + "MissileGlyph.gif").img_extract(2,2,150,150,(255,0,255))
+        heal = Spritesheet(PUZZLE_PATH + "HealGlyph.gif").img_extract(2,2,150,150,(255,0,255))
 
         if(spelltype == 0):
             #fire attack
@@ -221,7 +221,7 @@ class Menu(object):
                 i+=1
                 j=0
                 
-        self.mainGlyph.set_colorkey(pygame.Color(255,0,255), pygame.RLEACCEL)
+        self.mainGlyph.set_colorkey((255,0,255), pygame.RLEACCEL)
         surface.blit(self.mainGlyph, (485,350))
         
         
