@@ -78,7 +78,9 @@ class BattleEngine(GameEngineElement):
         elif self.state == PLAYER_MULT:
             self.isMagic = False
             if selection == 'enter':
-                #figure out damage for crit attack               
+                #figure out damage for crit attack
+                if self.player_input == '':
+                    self.player_input = '0'
                 if int(self.player_input) == (self.critAns):
                     menu.set_disp('Correct!')
                     self.correct = True
@@ -293,7 +295,9 @@ class BattleEngine(GameEngineElement):
         #generate enemy attack
         for enemy in self.enemy_list[:]:
             if enemy.HP <= 0:
+                enemy.alive = False
                 self.enemy_list.remove(enemy)
+                self.active_target = 1
             if enemy.alive:
                 random.seed()
                 enemyAttack = random.randint(0,100)
