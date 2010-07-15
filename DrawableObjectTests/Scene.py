@@ -75,7 +75,7 @@ class Scene:
 
        if index < len(self._my_Objects):
           return  self._my_Objects[index][0]
-          
+
     def getListSize(self):
        return len(self._my_Objects)
 
@@ -113,16 +113,16 @@ class Scene:
           cnt += 1
 
     def getXPos(self):
-       return xPos
+       return self.xPos
 
     def getYPos(self):
-       return yPos
+       return self.yPos
 
     def getXSize(self):
-       return xSize
+       return self.xSize
 
     def getYSize(self):
-       return ySize
+       return self.ySize
 
     def scaleObjects(self, newXSize = None, newYSize = None):
 
@@ -155,7 +155,7 @@ class Scene:
 
           self._my_Objects[cnt][0].updateCurrentAnimation(t)
           cnt += 1
-    
+
     def nextFrame(self):
 
        cnt = 0
