@@ -57,9 +57,9 @@ switch2 = [
   [pygame.image.load("%sa2/9%s"%("IndividualFrames/bmp16/",".bmp"))]
 ]
 
-dynamicObj = DynamicDrawableObject(switch1,'',1,0,0, 2, 2)
-secondDynamicObj = DynamicDrawableObject(switch1,'',1,0,100, 3, 3)
-staticObj = DynamicDrawableObject(switch2,'',1,40,40, 4, 4)
+dynamicObj = DynamicDrawableObject(switch1,'',1,39,3, 2, 2)
+secondDynamicObj = DynamicDrawableObject(switch1,'',1,39,100, 3, 3)
+staticObj = DynamicDrawableObject(switch2,'',1,40,43, 4, 4)
 
 initialList = [dynamicObj, secondDynamicObj]
 secondaryList = [staticObj]
@@ -77,7 +77,8 @@ cnt = 0
    #cnt += 1
 blitAndFlip()
 time.sleep(3)
-myScene.setPosition(100,0)
-blitAndFlip()
-time.sleep(3)
+print myScene.getXSize()
+print myScene.getYSize()
+print myScene.getXPos()
+print myScene.getYPos()
 
