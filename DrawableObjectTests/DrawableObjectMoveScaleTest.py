@@ -69,7 +69,7 @@ myScene.addObjects(secondaryList)
 
 myScene.nextFrame()
 cnt = 0
-while cnt < 20:
+while cnt < 3:
 
    myScene.moveObjects()
    myScene.nextFrame()
