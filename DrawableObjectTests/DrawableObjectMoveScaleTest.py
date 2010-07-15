@@ -71,7 +71,7 @@ myScene.nextFrame()
 cnt = 0
 while cnt < 20:
 
-   myScene.move()
+   myScene.moveObjects()
    myScene.nextFrame()
    blitAndFlip()
 
