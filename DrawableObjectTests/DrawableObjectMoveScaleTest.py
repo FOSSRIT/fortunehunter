@@ -24,7 +24,7 @@ screen.fill((BACKGROUNDR, BACKGROUNDG, BACKGROUNDB))
 
 def blitAndFlip():
     screen.fill((BACKGROUNDR, BACKGROUNDG, BACKGROUNDB))
-    cn = 0
+    cnt = 0
     while cnt < myScene.getListSize():
 
        screen.blit(myScene.getObject(cnt).image[0], [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
