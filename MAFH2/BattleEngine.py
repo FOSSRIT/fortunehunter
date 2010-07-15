@@ -3,6 +3,7 @@ from Enemy import get_enemy
 from BattleMenu import BattleMenuHolder
 from MagicMenu import MagicMenuHolder
 from AnimatedSprite import Spritesheet
+from Items import get_item
 import pygame
 
 from constants import CHAR_PATH, HUD_PATH
@@ -327,8 +328,15 @@ class BattleEngine(GameEngineElement):
     def __end_battle(self, menu):
         #Give items if any
         room = self.game_engine.get_object('dungeon').get_current_room()
-        for item in room.item:
-            self.game_engine.get_object('profile').hero.addInventory(item)
+            
+        for i in range( 0, 4 ):
+            item_key = room.get_item( i )
+            # If visible, remove from room and place in players inventory
+            if item_key[0] != '0' and item_key[1] == 'b':
+                item = get_item( item_key[0] )
+                self.game_engine.get_object('profile').give_item( item )
+                room.remove_item( i )
+                self.game_engine.get_object('mesg').add_line(_("%s dropped!")% item.name)
         room.has_enemy = False
         #self terminate
         #print 'end battle called'
