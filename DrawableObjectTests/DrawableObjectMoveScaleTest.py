@@ -69,9 +69,9 @@ myScene.addObjects(secondaryList)
 
 myScene.nextFrame()
 cnt = 0
-while cnt < 10:
+while cnt < 40:
 
-   myScene.moveObjects()
+   myScene.moveScene(1,0)
    myScene.nextFrame()
    blitAndFlip()
    cnt += 1
