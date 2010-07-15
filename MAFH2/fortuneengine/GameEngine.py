@@ -247,9 +247,9 @@ class GameEngine(object):
                 timer_id = event.type - pygame.USEREVENT
 
                 # Call timer
+                str_rep = str(self.__active_event_timers[timer_id])
                 start = time()
                 self.__active_event_timers[timer_id]()
-                str_rep = str(self.__active_event_timers[timer_id])
                 self.__timer_time[str_rep] += time() - start
                 self.__timer_calls[str_rep] += 1
 
