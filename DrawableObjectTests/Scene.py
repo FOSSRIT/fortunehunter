@@ -74,7 +74,7 @@ class Scene:
     def getObject(self, index):
 
        if index < len(self._my_Objects):
-          return  self._my_Objects[index]
+          return  self._my_Objects[index][0]
           
     def getListSize(self):
        return len(self._my_Objects)
