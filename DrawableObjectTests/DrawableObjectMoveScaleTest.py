@@ -70,7 +70,7 @@ switch2 = [
 ]
 
 spriteSheet = Spritesheet("IndividualFrames/bmp16/a1/8.bmp")
-switch4 = spriteSheet.img_extract(1, 1, 40, 40, pygame.Color(255, 153, 0, 255))
+switch4 = spriteSheet.img_extract(1, 1, 40, 40, pygame.Color("ff9900"))
 
 dynamicObj = DynamicDrawableObject(switch4,'',1,39,3, 2, 2)
 secondDynamicObj = DynamicDrawableObject(switch3,'',1,39,100, 3, 3)
