@@ -100,8 +100,6 @@ class DrawableObject(pygame.sprite.Sprite):
             self._images[cnt] = pygame.transform.rotate(self._images[cnt], self.myAngle)
             cnt += 1
 
-        self.scale(self.xSize, self.ySize)
-
     def getRotation(self):
 
        return self.myAngle
