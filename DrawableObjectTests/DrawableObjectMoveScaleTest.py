@@ -74,8 +74,6 @@ dynamicObj = DynamicDrawableObject(switch1,'',1,39,3, 2, 2)
 secondDynamicObj = DynamicDrawableObject(switch1,'',1,39,100, 3, 3)
 staticObj = DynamicDrawableObject(switch2,'',1,40,43, 4, 4)
 
-dynamicObj.setColorKey(pygame.Color("0xFF9900"))
-
 initialList = [dynamicObj, secondDynamicObj]
 secondaryList = [staticObj]
 

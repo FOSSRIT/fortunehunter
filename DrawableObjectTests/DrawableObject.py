@@ -76,7 +76,7 @@ class DrawableObject(pygame.sprite.Sprite):
         cnt = 0
         while  cnt < len(self._images):
             
-            self._images[cnt][0] = pygame.transform.scale(self._images[cnt][0], (newXSize, newYSize))
+            self._images[cnt] = pygame.transform.scale(self._images[cnt], (newXSize, newYSize))
             cnt += 1
             
     def getXSize(self):
