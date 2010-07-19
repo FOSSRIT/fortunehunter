@@ -12,7 +12,7 @@ class Spritesheet:
     def imgat(self, rect, myColorKey = None):
         rect = pygame.Rect(rect)
         image = pygame.Surface(rect.size).convert()
-        if myColorKey == None: myColorKey = images.get_at(0,0)
+        if myColorKey == None: myColorKey = image.get_at(0,0)
         image.set_colorkey(myColorKey)
         image.blit(self.sheet, (0, 0), rect)
         return image
