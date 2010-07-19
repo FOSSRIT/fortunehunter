@@ -89,14 +89,14 @@ cnt = 0
    #cnt += 1
 blitAndFlip()
 time.sleep(2)
-myScene.getObject(1).rotate(20)
+myScene.getObject(1).rotate(-20)
 myScene.getObject(1).nextFrame()
 myScene.getObject(0).nextFrame()
 myScene.getObject(2).nextFrame()
 print "scaled"
 blitAndFlip()
 time.sleep(2)
-myScene.getObject(1).rotate(-20)
+myScene.getObject(1).rotate(20)
 myScene.getObject(1).nextFrame()
 myScene.getObject(0).nextFrame()
 myScene.getObject(2).nextFrame()
