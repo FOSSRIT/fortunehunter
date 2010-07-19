@@ -28,7 +28,7 @@ def blitAndFlip():
     while cnt < myScene.getListSize():
 
        print cnt
-       screen.blit(myScene.getObject(cnt).image, [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
+       screen.blit(myScene.getObject(cnt).image[0], [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
        cnt += 1
 
 
@@ -70,15 +70,10 @@ switch2 = [
   [pygame.image.load("%sa2/9%s"%("IndividualFrames/bmp16/",".bmp"))]
 ]
 
-spriteSheet = Spritesheet("IndividualFrames/bmp16/a1/8.bmp")
-switch4 = spriteSheet.img_extract(1, 1, 40, 40, pygame.Color("0xFF9900"))
 
-spriteSheet = Spritesheet("IndividualFrames/bmp16/a1/9.bmp")
-switch5 = spriteSheet.img_extract(1, 1, 40, 40, pygame.Color("0xFF9900"))
-
-dynamicObj = DynamicDrawableObject(switch4,'',1,39,3, 2, 2)
-secondDynamicObj = DynamicDrawableObject(switch4,'',1,39,100, 3, 3)
-staticObj = DynamicDrawableObject(switch4,'',1,40,43, 4, 4)
+dynamicObj = DynamicDrawableObject(switch3,'',1,39,3, 2, 2)
+secondDynamicObj = DynamicDrawableObject(switch1,'',1,39,100, 3, 3)
+staticObj = DynamicDrawableObject(switch2,'',1,40,43, 4, 4)
 
 initialList = [dynamicObj, secondDynamicObj]
 secondaryList = [staticObj]
