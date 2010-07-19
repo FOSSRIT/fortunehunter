@@ -6,11 +6,11 @@ class DrawableObject(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         cnt = 0
         
-        self._originals = images
+        #self._originals = images
         #self._images = images
         self._images = []
         while cnt < len(images):
-            self._images.append(images[cnt].convert())
+            self._images.append(images[cnt][0].convert())
         self._start = pygame.time.get_ticks()
         self._delay = 1000 / fps
         self._last_update = 0
@@ -39,7 +39,7 @@ class DrawableObject(pygame.sprite.Sprite):
     def addImages(self, images):
 
         self._images.extend(images)
-        self._originals.extend(images)
+        #self._originals.extend(images)
         
     def goToAnim(self, animName):
 
@@ -75,7 +75,7 @@ class DrawableObject(pygame.sprite.Sprite):
         cnt = 0
         while  cnt < len(self._images):
             
-            self._images[cnt][0] = pygame.transform.scale(self._originals[cnt][0], (newXSize, newYSize))
+            self._images[cnt][0] = pygame.transform.scale(self._images[cnt][0], (newXSize, newYSize))
             cnt += 1
             
     def getXSize(self):
