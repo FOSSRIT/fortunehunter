@@ -11,6 +11,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self._images = []
         while cnt < len(images):
             self._images.append(images[cnt][0].convert())
+            cnt += 1
         self._start = pygame.time.get_ticks()
         self._delay = 1000 / fps
         self._last_update = 0
