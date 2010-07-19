@@ -91,6 +91,7 @@ cnt = 0
 blitAndFlip()
 time.sleep(2)
 myScene.getObject(1).scale(20,20)
+myScene.getObject(1).nextFrame()
 print "scaled"
 blitAndFlip()
 time.sleep(2)
