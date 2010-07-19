@@ -27,7 +27,7 @@ def blitAndFlip():
     cnt = 0
     while cnt < myScene.getListSize():
 
-       screen.blit(myScene.getObject(cnt).image[0], [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
+       screen.blit(myScene.getObject(cnt).image, [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
        cnt += 1
 
 
