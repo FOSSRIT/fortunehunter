@@ -45,6 +45,18 @@ switch1 = [
   [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
 ]
 
+switch3 = [
+  [pygame.image.load("%sa1/1%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/2%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/3%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/4%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/5%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/6%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/7%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/8%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
+]
+
 switch2 = [
   [pygame.image.load("%sa2/1%s"%("IndividualFrames/bmp16/",".bmp"))],
   [pygame.image.load("%sa2/2%s"%("IndividualFrames/bmp16/",".bmp"))],
@@ -58,7 +70,7 @@ switch2 = [
 ]
 
 dynamicObj = DynamicDrawableObject(switch1,'',1,39,3, 2, 2)
-secondDynamicObj = DynamicDrawableObject(switch1,'',1,39,100, 3, 3)
+secondDynamicObj = DynamicDrawableObject(switch3,'',1,39,100, 3, 3)
 staticObj = DynamicDrawableObject(switch2,'',1,40,43, 4, 4)
 
 initialList = [dynamicObj, secondDynamicObj]
