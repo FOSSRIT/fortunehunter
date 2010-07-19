@@ -97,7 +97,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.myAngle += angle
         while  cnt < len(self._images):
 
-            self._images[cnt] = pygame.transform.rotate(self._images[cnt], self.myAngle)
+            self._images[cnt] = pygame.transform.rotate(self._images[cnt], self.angle)
             cnt += 1
 
     def getRotation(self):
