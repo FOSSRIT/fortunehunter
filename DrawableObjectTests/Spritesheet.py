@@ -27,5 +27,5 @@ class Spritesheet:
         rect_list = []
         for y in range(0, rows):
             for x in range(0, cols):
-                rect_list.append( (width*x, height*y, width, height, myColorKey) )
-        return self.imgsat( rect_list)
+                rect_list.append( (width*x, height*y, width, height,) )
+        return self.imgsat( rect_list, myColorKey)
