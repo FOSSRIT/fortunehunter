@@ -26,7 +26,6 @@ def blitAndFlip():
     cnt = 0
     while cnt < myScene.getListSize():
 
-       print cnt
        screen.blit(myScene.getObject(cnt).image, [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
        cnt += 1
 
@@ -80,27 +79,24 @@ myScene = Scene(initialList)
 myScene.addObjects(secondaryList)
 
 myScene.nextFrame()
-cnt = 0
-#while cnt < 40:
-
-   #myScene.moveScene(1,0)
-   #myScene.nextFrame()
-   #blitAndFlip()
-   #cnt += 1
+blitAndFlip()
+time.sleep(2)
+myScene.getObject(1).scale(100, 100)
+myScene.getObject(1).nextFrame()
+myScene.getObject(0).nextFrame()
+myScene.getObject(2).nextFrame()
 blitAndFlip()
 time.sleep(2)
 myScene.getObject(1).rotate(-20)
 myScene.getObject(1).nextFrame()
 myScene.getObject(0).nextFrame()
 myScene.getObject(2).nextFrame()
-print "scaled"
 blitAndFlip()
 time.sleep(2)
 myScene.getObject(1).rotate(20)
 myScene.getObject(1).nextFrame()
 myScene.getObject(0).nextFrame()
 myScene.getObject(2).nextFrame()
-print "scaled"
 blitAndFlip()
 time.sleep(2)
 
