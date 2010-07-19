@@ -7,7 +7,10 @@ class DrawableObject(pygame.sprite.Sprite):
         cnt = 0
         
         self._originals = images
-        self._images = images
+        #self._images = images
+        self._images = []
+        while cnt < len(images):
+            self._images.append(images[cnt].convert())
         self._start = pygame.time.get_ticks()
         self._delay = 1000 / fps
         self._last_update = 0
@@ -84,11 +87,11 @@ class DrawableObject(pygame.sprite.Sprite):
        return self.ySize
 
     #def rotate(self,angle):
-            
+
         #self._images = copy.deepcopy(self._originals)
 
-        #cnt = 0 
-       
+        #cnt = 0
+
         #self.myAngle += angle
         #while  cnt < len(self._images):
 

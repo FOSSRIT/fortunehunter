@@ -70,7 +70,7 @@ switch2 = [
   [pygame.image.load("%sa2/9%s"%("IndividualFrames/bmp16/",".bmp"))]
 ]
 
-dynamicObj = DynamicDrawableObject(switch3,'',1,39,3, 2, 2)
+dynamicObj = DynamicDrawableObject(switch1,'',1,39,3, 2, 2)
 secondDynamicObj = DynamicDrawableObject(switch1,'',1,39,100, 3, 3)
 staticObj = DynamicDrawableObject(switch2,'',1,40,43, 4, 4)
 
