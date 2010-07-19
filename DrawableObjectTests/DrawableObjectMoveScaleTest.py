@@ -6,7 +6,6 @@ import pygame
 import time
 pygame.init()
 
-make=input("How many images would you like to load? ")
 img={}
 ft="" #filetype
 r=0 #frame refreshes
@@ -27,13 +26,25 @@ def blitAndFlip():
     cnt = 0
     while cnt < myScene.getListSize():
 
-       screen.blit(myScene.getObject(cnt).image[0], [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
+       screen.blit(myScene.getObject(cnt).image, [myScene.getObject(cnt).getXPos(),myScene.getObject(cnt).getYPos()])
        cnt += 1
 
 
     pygame.display.flip()
 
 switch1 = [
+  [pygame.image.load("%sa1/1%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/2%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/3%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/4%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/5%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/6%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/7%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/8%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
+]
+
+switch3 = [
   [pygame.image.load("%sa1/1%s"%("IndividualFrames/bmp16/",".bmp"))],
   [pygame.image.load("%sa1/2%s"%("IndividualFrames/bmp16/",".bmp"))],
   [pygame.image.load("%sa1/3%s"%("IndividualFrames/bmp16/",".bmp"))],
@@ -68,17 +79,24 @@ myScene = Scene(initialList)
 myScene.addObjects(secondaryList)
 
 myScene.nextFrame()
-cnt = 0
-#while cnt < 40:
-
-   #myScene.moveScene(1,0)
-   #myScene.nextFrame()
-   #blitAndFlip()
-   #cnt += 1
 blitAndFlip()
 time.sleep(2)
-print(good)
-myScene.scaleScene(100,100)
+myScene.getObject(1).scale(100, 100)
+myScene.getObject(1).nextFrame()
+myScene.getObject(0).nextFrame()
+myScene.getObject(2).nextFrame()
+blitAndFlip()
+time.sleep(2)
+myScene.getObject(1).rotate(45)
+myScene.getObject(1).nextFrame()
+myScene.getObject(0).nextFrame()
+myScene.getObject(2).nextFrame()
+blitAndFlip()
+time.sleep(2)
+myScene.getObject(1).rotate(-45)
+myScene.getObject(1).nextFrame()
+myScene.getObject(0).nextFrame()
+myScene.getObject(2).nextFrame()
 blitAndFlip()
 time.sleep(2)
 

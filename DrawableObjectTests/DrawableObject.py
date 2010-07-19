@@ -6,8 +6,14 @@ class DrawableObject(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         cnt = 0
         
-        self._originals = images
-        self._images = images
+        #self._originals = images
+        #self._images = images
+        self._images = []
+        self._origImages = []
+        while cnt < len(images):
+            self._images.append(images[cnt][0].convert())
+            self._origImages.append(images[cnt][0].convert())
+            cnt += 1
         self._start = pygame.time.get_ticks()
         self._delay = 1000 / fps
         self._last_update = 0
@@ -18,7 +24,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.yPos = y
         self.xSpeed = xVelocity
         self.ySpeed = yVelocity
-        #self.myAngle = 0
+        self.myAngle = 0
         self.xSize = 40
         self.ySize = 40
         
@@ -36,7 +42,7 @@ class DrawableObject(pygame.sprite.Sprite):
     def addImages(self, images):
 
         self._images.extend(images)
-        self._originals.extend(images)
+        #self._originals.extend(images)
         
     def goToAnim(self, animName):
 
@@ -72,7 +78,8 @@ class DrawableObject(pygame.sprite.Sprite):
         cnt = 0
         while  cnt < len(self._images):
             
-            self._images[cnt][0] = pygame.transform.scale(self._originals[cnt][0], (newXSize, newYSize))
+            self._origImages[cnt] = pygame.transform.scale(self._origImages[cnt], (self.xSize, self.ySize))
+            self._images[cnt] = self._origImages[cnt]
             cnt += 1
             
     def getXSize(self):
@@ -83,23 +90,19 @@ class DrawableObject(pygame.sprite.Sprite):
 
        return self.ySize
 
-    #def rotate(self,angle):
-            
-        #self._images = copy.deepcopy(self._originals)
+    def rotate(self,angle):
 
-        #cnt = 0 
-       
-        #self.myAngle += angle
-        #while  cnt < len(self._images):
+        cnt = 0
 
-            #self._images[cnt][0] = pygame.transform.rotate(self._images[cnt][0], self.myAngle)
-            #cnt += 1
+        self.myAngle += angle
+        while  cnt < len(self._images):
 
-        #self.scale(self.xSize, self.ySize)
+            self._images[cnt] = pygame.transform.rotate(self._origImages[cnt], self.myAngle)
+            cnt += 1
 
-    #def getRotation(self):
-    
-       #return self.myAngle
+    def getRotation(self):
+
+       return self.myAngle
     
     def setPosition(self, x = None, y = None):
     
@@ -127,6 +130,18 @@ class DrawableObject(pygame.sprite.Sprite):
 
        return self.ySpeed
        
+    def calcColorKey(self):
+    
+       myColorKey = images[0][0].get_at((0,0))
+       setColorKey(myColorKey)
+
+    def setColorKey(self, aColor):
+
+       cnt = 0
+       while cnt < len(self._images):
+          self._images[cnt][0].set_colorkey(aColor)
+          cnt += 1
+
     def update(self, t):
        pass
 

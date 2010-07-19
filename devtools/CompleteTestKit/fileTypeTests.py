@@ -405,22 +405,32 @@ def scaleTest(preferences):
             preferences[0][9]=f
         t=t+1
 
+def rotateTest():
+    pass
+    
+    
+    
+    
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 while 1:
     print "\n\nWelcome to the master File Type Tester Interface"
     print "Authors: Scott 'JT' Mengel and Dave Silverman"
     print "\nPlease select the test(s) you want to run in the order you want to run them (Do not seperate them with any characters)."
-    print "Please Note: The logs for the tests you are running will automatically be placed in the logs/ directory in the test folder as a .csv file. \n"
-    print "1. Pygame.image.load() surface speed test, with and without surface.convert()"
-    print "2. Pygame.transform surface Selected Scalability Test"
+    print "Please Note: The logs for the tests you are running will automatically be placed in the 'logs/' directory in the test folder as a .csv file. \n"
+    print "1. image.load() surface speed test (with and without surface.convert() testing)"
+    print "2. transform.scale() surface Selected Scalability Test"
+    print "3. transform.rotate() tests"
     print "Other menu options to come!\n"
 
-    acceptible='^[1-2]$'
+    acceptible='^[1-3]$'
     list={ 1:imgTest,
-        2:scaleTest }
+        2:scaleTest,
+        3:rotateTest }
     keyIn="temp val"
 
     while 1:
         keyIn=str(raw_input(">>>"))
+        if keyin.
         for i in keyIn:
             if not re.search(acceptible,i): break
             else:
@@ -431,3 +441,38 @@ while 1:
         break
 
 #ILY GEOFF A
+
+"""
+CANVAS_SIZE=(600,400)
+BLACK=(0,0,0)
+
+screen=pygame.display.set_mode(CANVAS_SIZE)
+run=0
+
+while 1:
+    pygame.display.set_caption("Test 1 : %s (Referred)" %(ftArr[run][2]) )
+    # myimage[0] is the convert()'ed image surface, to remain untouched
+    myimage = [
+        pygame.Surface.convert(pygame.image.load( "%s%s" %(  ftArr[run][1],ftArr[run][0]  )  )) ,
+        pygame.Surface.convert(pygame.image.load( "%s%s" %(  ftArr[run][1],ftArr[run][0]  )  )),
+        pygame.Surface.convert(pygame.image.load( "%s%s" %(  ftArr[run][1],ftArr[run][0]  )  )).get_rect() ,
+        0
+        ]
+        
+    iterate=0
+    print "\nTest 1 : Same image referred evey time (original image not edited).\n"
+    while iterate<36:
+    
+        time.sleep(.5)
+        start=time.time()
+        myimage[3]= int( myimage[3] ) + 10
+        myimage[1]=pygame.transform.rotate(myimage[0],myimage[3])
+        myimage[2]=myimage[1].get_rect()
+        screen.fill(BLACK)
+        screen.blit( myimage[1] ,
+            ( -( myimage[1].get_width() - myimage[0].get_width() )/2 ,
+              -( myimage[1].get_height()-myimage[0].get_height() )/2 ) )
+        
+        pygame.display.flip()
+"""
+
