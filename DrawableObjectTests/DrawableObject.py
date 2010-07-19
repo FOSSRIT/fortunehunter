@@ -135,7 +135,7 @@ class DrawableObject(pygame.sprite.Sprite):
     def setColorKey(self, aColor):
 
        cnt = 0
-       while cnt < len(images):
+       while cnt < len(self.images):
           images[cnt][0].set_colorkey(aColor)
           cnt += 1
 
