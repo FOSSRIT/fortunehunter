@@ -4,9 +4,8 @@ from AnimatedSprite import Spritesheet
 from AnimatedSprite import AnimatedSprite
 import pygame
 import time
-import pdb
-pygame.init()
 
+pygame.init()
 make=input("How many images would you like to load? ")
 img={}
 ft="" #filetype

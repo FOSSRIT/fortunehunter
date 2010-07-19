@@ -431,3 +431,38 @@ while 1:
         break
 
 #ILY GEOFF A
+
+"""
+CANVAS_SIZE=(600,400)
+BLACK=(0,0,0)
+
+screen=pygame.display.set_mode(CANVAS_SIZE)
+run=0
+
+while 1:
+    pygame.display.set_caption("Test 1 : %s (Referred)" %(ftArr[run][2]) )
+    # myimage[0] is the convert()'ed image surface, to remain untouched
+    myimage = [
+        pygame.Surface.convert(pygame.image.load( "%s%s" %(  ftArr[run][1],ftArr[run][0]  )  )) ,
+        pygame.Surface.convert(pygame.image.load( "%s%s" %(  ftArr[run][1],ftArr[run][0]  )  )),
+        pygame.Surface.convert(pygame.image.load( "%s%s" %(  ftArr[run][1],ftArr[run][0]  )  )).get_rect() ,
+        0
+        ]
+        
+    iterate=0
+    print "\nTest 1 : Same image referred evey time (original image not edited).\n"
+    while iterate<36:
+    
+        time.sleep(.5)
+        start=time.time()
+        myimage[3]= int( myimage[3] ) + 10
+        myimage[1]=pygame.transform.rotate(myimage[0],myimage[3])
+        myimage[2]=myimage[1].get_rect()
+        screen.fill(BLACK)
+        screen.blit( myimage[1] ,
+            ( -( myimage[1].get_width() - myimage[0].get_width() )/2 ,
+              -( myimage[1].get_height()-myimage[0].get_height() )/2 ) )
+        
+        pygame.display.flip()
+"""
+
