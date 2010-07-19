@@ -127,6 +127,18 @@ class DrawableObject(pygame.sprite.Sprite):
 
        return self.ySpeed
        
+    def calcColorKey(self):
+    
+       myColorKey = images[0][0].get_at((0,0))
+       setColorKey(myColorKey)
+
+    def setColorKey(self, aColor):
+
+       cnt = 0
+       while cnt < len(images):
+          images[cnt][0].set_colorkey(aColor)
+          cnt += 1
+
     def update(self, t):
        pass
 
