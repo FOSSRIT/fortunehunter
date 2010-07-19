@@ -20,7 +20,7 @@ class Spritesheet:
     def imgsat(self, rects, myColorKey = None):
         imgs = []
         for rect in rects:
-            imgs.append(self.imgat(rect), myColorKey)
+            imgs.append(self.imgat(rect, myColorKey))
         return imgs
 
     def img_extract( self, cols, rows, width, height, myColorKey = None):
