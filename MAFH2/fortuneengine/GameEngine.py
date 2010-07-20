@@ -225,7 +225,6 @@ class GameEngine(object):
             # Handle Game Quit Message
             if event.type == pygame.QUIT:
                 self.__run_event = False
-                self.__run_draw = False
 
             # No-Op sent, draw if set to always draw
             elif event.type == pygame.NOEVENT:
