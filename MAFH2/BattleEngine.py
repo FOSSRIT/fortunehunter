@@ -42,10 +42,10 @@ class BattleEngine(GameEngineElement):
         # Preload images
         self.__images = {}
         for i in ['arrow_select']:
-            self.__images[i] = pygame.image.load( HUD_PATH + i + ".gif" )
+            self.__images[i] = pygame.image.load( HUD_PATH + i + ".gif" ) #-----------------------------------------------------------------------------
 
-        self.__images['hp'] = Spritesheet( HUD_PATH + "hp.png" ).img_extract(11,1,100,100)
-        self.__images['bt'] = Spritesheet( HUD_PATH + "bt.png" ).img_extract(1,11,100,25)
+        self.__images['hp'] = Spritesheet( HUD_PATH + "hp.png" ).img_extract(11,1,100,100) #------------------------------------------------------------
+        self.__images['bt'] = Spritesheet( HUD_PATH + "bt.png" ).img_extract(1,11,100,25) #-------------------------------------------------------------
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )
@@ -379,7 +379,7 @@ class BattleEngine(GameEngineElement):
         for enemy in self.enemy_list:
             if enemy.alive:
                 if self.active_target == i:
-                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))
+                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25)) #----------------------------------------------------------------------
                 enemy.sprite.update( tick_time )
                 screen.blit(enemy.sprite.image, (x+(i*200),y))
                 i = i+1
@@ -389,4 +389,4 @@ class BattleEngine(GameEngineElement):
 
         # Player Health
         health = 10 - profile.hero.healthLevel()
-        screen.blit(self.__images['hp'][health], (25,25))
+        screen.blit(self.__images['hp'][health], (25,25)) #---------------------------------------------------------------------------------------------
