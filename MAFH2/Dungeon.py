@@ -272,7 +272,7 @@ class Dungeon(GameEngineElement):
 
 #-------------------------------------------------------------------------------------------------------------------------------------------------------
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
-
+#
     def draw(self,screen,time_delta):
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
@@ -295,7 +295,7 @@ class Dungeon(GameEngineElement):
         # Draw Items
         img_list = []
 
-        for i in range( dir, (dir + 4) ):
+        for i in range( dir, (dir + 4) ):p
             #imod for room rotation
             imod = i % 4
 

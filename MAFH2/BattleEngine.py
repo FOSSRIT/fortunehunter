@@ -367,7 +367,9 @@ class BattleEngine(GameEngineElement):
 
         # We don't want to allow other things to run during battle
         return True
-
+#-------------------------------------------------------------------------------------------------------------------------------------------------------
+# \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
+#
     def draw(self,screen,time_delta):
         x=250
         y=150
@@ -379,7 +381,7 @@ class BattleEngine(GameEngineElement):
         for enemy in self.enemy_list:
             if enemy.alive:
                 if self.active_target == i:
-                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25)) #----------------------------------------------------------------------
+                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))
                 enemy.sprite.update( tick_time )
                 screen.blit(enemy.sprite.image, (x+(i*200),y))
                 i = i+1
@@ -389,4 +391,4 @@ class BattleEngine(GameEngineElement):
 
         # Player Health
         health = 10 - profile.hero.healthLevel()
-        screen.blit(self.__images['hp'][health], (25,25)) #---------------------------------------------------------------------------------------------
+        screen.blit(self.__images['hp'][health], (25,25)) 
