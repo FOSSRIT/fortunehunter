@@ -62,6 +62,7 @@ class GameEngine(object):
         self.__event_cb = []
         self.__draw_lst = []
         self.__object_hold = {}
+        self.__dirtyList=[]
 
         # Game Timers
         self.__active_event_timers = []
@@ -200,9 +201,10 @@ class GameEngine(object):
             pygame.display.flip()
 
         else:
+            __dirtyList=[]
             for fnc in self.__draw_lst:
                 start = time()
-                fnc(screen, tick_time)
+                __dirtyList.append(fnc(screen, tick_time))
                 self.__draw_time[str(fnc)] += time() - start
                 self.__draw_calls[str(fnc)] += 1
 
@@ -210,9 +212,10 @@ class GameEngine(object):
             if self.__showfps:
                 text = self.__font.render('FPS: %d' % self.clock.get_fps(),
                        False, (255, 255, 255), (159, 182, 205))
-                screen.blit(text, (0, 0))
+#                screen.blit(text, (0, 0))
+                __dirtyList.append(text.get_rect())
 
-            pygame.display.flip()
+            pygame.display.update(__dirtyList)
 
     def _event_loop(self):
         """

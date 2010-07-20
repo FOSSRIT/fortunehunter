@@ -3,7 +3,7 @@ from DrawableObject import DrawableObject
 
 class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
-    def __init__(self,images,textfileName,fps = 10, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
+    def __init__(self,images,textfileName,fps = 2, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
 
         DrawableObject.__init__(self, images, textfileName, fps, x, y, xVelocity, yVelocity)
 
@@ -11,7 +11,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
         self._images.extend(images)
 
-    def update(self, t):
+    def updateAnim(self, t):
 
         timePassed = t + self._last_update
         if timePassed > self._delay:

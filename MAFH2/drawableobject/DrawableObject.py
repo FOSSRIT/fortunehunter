@@ -2,7 +2,7 @@ import pygame
 
 class DrawableObject(pygame.sprite.Sprite):
 
-    def __init__(self,images,textfileName,fps = 10, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
+    def __init__(self,images,textfileName,fps = 2, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
         pygame.sprite.Sprite.__init__(self)
         cnt = 0
         
@@ -11,9 +11,10 @@ class DrawableObject(pygame.sprite.Sprite):
         self._images = []
         self._origImages = []
         while cnt < len(images):
-            self._images.append(images[cnt][0].convert())
-            self._origImages.append(images[cnt][0].convert())
+            self._images.append(images[cnt].convert())
+            self._origImages.append(images[cnt].convert())
             cnt += 1
+        self.image = self._images[0]
         self._start = pygame.time.get_ticks()
         self._delay = 1000 / fps
         self._last_update = 0
@@ -132,14 +133,14 @@ class DrawableObject(pygame.sprite.Sprite):
        
     def calcColorKey(self):
     
-       myColorKey = images[0][0].get_at((0,0))
+       myColorKey = images[0].get_at((0,0))
        setColorKey(myColorKey)
 
     def setColorKey(self, aColor):
 
        cnt = 0
        while cnt < len(self._images):
-          self._images[cnt][0].set_colorkey(aColor)
+          self._images[cnt].set_colorkey(aColor)
           cnt += 1
 
     def update(self, t):

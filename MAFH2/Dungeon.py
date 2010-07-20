@@ -295,7 +295,7 @@ class Dungeon(GameEngineElement):
         # Draw Items
         img_list = []
 
-        for i in range( dir, (dir + 4) ):p
+        for i in range( dir, (dir + 4) ):
             #imod for room rotation
             imod = i % 4
 

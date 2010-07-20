@@ -2,9 +2,10 @@ from fortuneengine.GameEngineElement import GameEngineElement
 from Enemy import get_enemy
 from BattleMenu import BattleMenuHolder
 from MagicMenu import MagicMenuHolder
-from AnimatedSprite import Spritesheet
+from drawableobject.Spritesheet import Spritesheet
 from Items import get_item
-from drawableobject import DrawableObject, DynamicDrawableObject, Spritesheet
+from drawableobject.DrawableObject import DrawableObject
+from drawableobject.DynamicDrawableObject import DynamicDrawableObject
 import pygame
 
 from constants import CHAR_PATH, HUD_PATH
@@ -14,6 +15,7 @@ import random
 
 PLAYER_WAIT = 1
 PLAYER_MULT = 2
+_dirtyList=[]
 
 class BattleEngine(GameEngineElement):
     def __init__(self, dgn):
@@ -372,24 +374,31 @@ class BattleEngine(GameEngineElement):
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 #
     def draw(self,screen,time_delta):
+        _dirtyList=[]
         x=250
         y=150
         i = 1
-
+        
         tick_time = pygame.time.get_ticks()
 
         # Draw Enemy and Item Selection
         for enemy in self.enemy_list:
-            if enemy.alive:
-                if self.active_target == i:
-                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))
-                enemy.sprite.update( tick_time )
-                screen.blit(enemy.sprite.image, (x+(i*200),y))
-                i = i+1
+            if enemy.alive and self.active_target == i:
+#                screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))                        #1 orig
+                _dirtyList.append(self.__images['arrow_select'].get_rect().move((x+(i*200),y-25)))  #1 new
+            enemy.sprite.updateAnim( tick_time )                                                    #2 orig
+#            screen.blit(enemy.sprite.image, (x+(i*200),y) )                                         #3 orig
+            _dirtyList.append(enemy.sprite.image.get_rect().move( (x+(i*200),y) ))                  #3 new
+            i = i+1
 
         # Draw Hud
         profile = self.game_engine.get_object('profile')
 
         # Player Health
         health = 10 - profile.hero.healthLevel()
-        screen.blit(self.__images['hp'][health], (25,25)) 
+#        screen.blit(self.__images['hp'][health], (25,25))                                           #4 orig
+        _dirtyList.append( self.__images['hp'][health].get_rect().move((25,25)) )                   #4 new
+        enemy.sprite.updateAnim( tick_time )                                                        #2 new
+        #what the hell does ^^ do??
+#        pygame.display.update(_dirtyList)                                                           #5 new
+        return _dirtyList

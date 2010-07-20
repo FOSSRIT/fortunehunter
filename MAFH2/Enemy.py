@@ -1,10 +1,12 @@
 from gettext import gettext as _
 from constants import CHAR_PATH
+#from drawableobject.DrawableObject import DrawableObject
+from drawableobject.DynamicDrawableObject import DynamicDrawableObject
 class InvalidEnemyException(Exception): pass
 
 import pygame
 from Actor import Actor
-from AnimatedSprite import Spritesheet, AnimatedSprite
+from drawableobject.Spritesheet import Spritesheet
 ENEMY = {
     '1':{'name':_('Wizard Adept'),'img':"anim_test.gif",'hp':20,'att':2,'weak':'special', 'sprite':(3,2, 156,166)}, #concept_wizard.gif , (1,1, 181,365)
     '2':{'name':_('Goblin'),'img':"dog~.gif",'hp':40,'att':3,'weak':'fire','sprite':(2,1, 58/2,39)},                #concept_goblin.gif , (1,1, 217,317)
@@ -30,7 +32,7 @@ class Enemy(Actor):
         self.inv_Ar = []
         self.attacks_Ar = []
         col,row,width,height = ENEMY[id]['sprite']
-        self.sprite=AnimatedSprite(Spritesheet(CHAR_PATH + ENEMY[id]['img']).img_extract(col,row,width,height))
+        self.sprite = DynamicDrawableObject( Spritesheet(CHAR_PATH + ENEMY[id]['img'] ).img_extract(col,row,width,height) , "")
         self.place=0
         self.alive = True
 
