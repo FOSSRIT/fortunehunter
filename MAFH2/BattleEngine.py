@@ -4,6 +4,7 @@ from BattleMenu import BattleMenuHolder
 from MagicMenu import MagicMenuHolder
 from AnimatedSprite import Spritesheet
 from Items import get_item
+from drawableobject import DrawableObject, DynamicDrawableObject, Spritesheet
 import pygame
 
 from constants import CHAR_PATH, HUD_PATH
@@ -44,8 +45,8 @@ class BattleEngine(GameEngineElement):
         for i in ['arrow_select']:
             self.__images[i] = pygame.image.load( HUD_PATH + i + ".gif" ) #-----------------------------------------------------------------------------
 
-        self.__images['hp'] = Spritesheet( HUD_PATH + "hp.png" ).img_extract(11,1,100,100) #------------------------------------------------------------
-        self.__images['bt'] = Spritesheet( HUD_PATH + "bt.png" ).img_extract(1,11,100,25) #-------------------------------------------------------------
+        self.__images['hp'] = Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100) #------------------------------------------------------------
+        self.__images['bt'] = Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25) #-------------------------------------------------------------
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from fortuneengine.GameEngine import GameEngine
 from MafhGameMenu import GameMenuHolder
-
 from constants import MENU_PATH, FMC_PATH, TOUR_PATH
 
 from Comic import Comic
