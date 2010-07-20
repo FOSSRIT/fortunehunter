@@ -87,11 +87,11 @@ class Dungeon(GameEngineElement):
             img = pygame.image.load(LVL_PATH+img_key+".png").convert()
             img.set_colorkey((255,0,255))
             width,height = img.get_size()
-
+            
             img = pygame.transform.scale(img, (self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False)))
 
             self.__images[img_key] = img
-
+            
     def get_current_room(self):
         profile = self.game_engine.get_object('profile')
         return self.rooms[profile.position]
@@ -269,6 +269,9 @@ class Dungeon(GameEngineElement):
 
         elif dir == WEST:
             return 'S', 'W', 'N'
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------
+# \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 
     def draw(self,screen,time_delta):
         profile = self.game_engine.get_object('profile')
