@@ -45,8 +45,8 @@ switch3 = [
 ]
 
 boxes.add(UpDownBox(switch1, (0, 0)))
-boxesTwo.add(UpDownBox(switch2, (0, 350)))
-boxesThree.add(UpDownBox(switch3, (0, 600)))
+boxesTwo.add(UpDownBox(switch2, (350, 350)))
+boxesThree.add(UpDownBox(switch3, (600, 600)))
 
 screen = pygame.display.set_mode([1200, 900])
 background = pygame.image.load("Room.gif")
