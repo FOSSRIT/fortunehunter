@@ -63,7 +63,6 @@ for i in range(2000):
     #rectlist.append(boxesTwo.draw(screen))
     #rectlist.append(boxesThree.draw(screen))
     pygame.display.update(rectlist)
-)
     #pygame.time.delay(10)
     boxes.clear(screen, background)
     boxesTwo.clear(screen, background)
