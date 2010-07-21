@@ -3,7 +3,8 @@ import pygame
 from fortuneengine.GameEngineElement import GameEngineElement
 from constants import MENU_PATH, NORTH, RIGHT, LEFT
 from Hero import Hero
-
+from Dungeon import Dungeon
+from Items import Key
 from gettext import gettext as _
 
 class Profile(GameEngineElement):
@@ -37,6 +38,17 @@ class Profile(GameEngineElement):
             self.name_cb = name_entry_cb
             self.add_to_engine()
 
+    def next_dungeon(self):
+        self.position = (-1, -1)
+        self.playerFacin = NORTH
+        
+        d = self.game_engine.get_object('dungeon')
+        self.dungeon_id = d.next
+        d.remove_from_engine()
+        self.game_engine.remove_object('dungeon')
+        self.game_engine.add_object('dungeon', Dungeon( self.dungeon_id ))
+        self.remove_keys()
+
     def load_from_json_string( self, recall_string ):
         print "TO BE IMPLEMENTED"
 
@@ -65,6 +77,14 @@ class Profile(GameEngineElement):
 
     def give_item(self, item):
         self.inventory.append(item)
+
+    def remove_keys(self):
+        i = 0
+        new_inv = []
+        for item in self.inventory:
+            if not isinstance(item, Key):
+                new_inv.append(item)
+        self.inventory = new_inv
 
     def add_to_engine(self):
         bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()

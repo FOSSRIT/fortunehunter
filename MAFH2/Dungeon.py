@@ -170,8 +170,7 @@ class Dungeon(GameEngineElement):
             door_flag = self.rooms[profile.position].get_door( dc )
             if door_flag == EXIT_DOOR or door_flag == ENTRANCE_DOOR:
                 if self.move_permissions( door_flag ):
-                    # TODO: Next Dungeon
-                    pass
+                    self.game_engine.get_object('profile').next_dungeon()
 
     def check_for_enemies(self):
         current_room = self.get_current_room()
