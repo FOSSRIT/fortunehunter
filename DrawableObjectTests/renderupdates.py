@@ -5,12 +5,21 @@ from time import time
 
 pygame.init()
 boxes = pygame.sprite.RenderUpdates()
-for color, location in [([255, 0, 0], [0, 0]),
-		        ([0, 255, 0], [60, 60]),
-                        ([0, 0, 255], [120, 120])]:
-    boxes.add(UpDownBox(color, location))
 
-screen = pygame.display.set_mode([150, 150])
+switch1 = [
+  [pygame.image.load("%sa1/1%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/2%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/3%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/4%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/5%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/6%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/7%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/8%s"%("IndividualFrames/bmp16/",".bmp"))],
+  [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
+
+boxes.add(UpDownBox(switch1, location))
+
+screen = pygame.display.set_mode([400, 400])
 background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
