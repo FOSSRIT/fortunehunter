@@ -20,7 +20,7 @@ switch1 = [
 
 boxes.add(UpDownBox(switch1, (60, 60)))
 
-screen = pygame.display.set_mode([400, 400])
+screen = pygame.display.set_mode([1200, 900])
 background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
