@@ -28,4 +28,4 @@ class UpDownBox(pygame.sprite.Sprite):
             else:
                self.listPos = 0
             self.image = self.images[self.listPos]
-            self.next_update_time = current_time + 150
+            self.next_update_time = current_time

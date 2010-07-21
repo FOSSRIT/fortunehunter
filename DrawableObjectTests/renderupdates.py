@@ -26,7 +26,7 @@ background = pygame.image.load("Room.gif")
 screen.blit(background, [0, 0])
 pygame.display.flip()
 start = time()
-for i in range(20000):
+for i in range(500):
     boxes.update(pygame.time.get_ticks(), 400)
     rectlist = boxes.draw(screen)
     pygame.display.update(rectlist)
