@@ -27,7 +27,7 @@ screen.blit(background, [0, 0])
 pygame.display.flip()
 start = time()
 for i in range(500):
-    boxes.update(pygame.time.get_ticks(), 150)
+    boxes.update(pygame.time.get_ticks(), 400)
     rectlist = boxes.draw(screen)
     pygame.display.update(rectlist)
     #pygame.time.delay(10)
