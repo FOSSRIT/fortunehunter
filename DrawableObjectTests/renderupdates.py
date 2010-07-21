@@ -33,4 +33,4 @@ for i in range(2000):
     #pygame.time.delay(10)
     boxes.clear(screen, background)
 
-print 500/(time() - start)
+print 2000/(time() - start)
