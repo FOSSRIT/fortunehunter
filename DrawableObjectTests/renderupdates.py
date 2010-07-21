@@ -13,6 +13,7 @@ screen = pygame.display.set_mode([150, 150])
 background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
+pygame.display.flip()
 while pygame.event.poll().type != KEYDOWN:
     boxes.update(pygame.time.get_ticks(), 150)
     rectlist = boxes.draw(screen)
