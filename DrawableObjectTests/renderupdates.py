@@ -10,7 +10,7 @@ for color, location in [([255, 0, 0], [0, 0]),
     boxes.add(UpDownBox(color, location))
 
 screen = pygame.display.set_mode([150, 150])
-background = pygame.Surface([150, 150])
+background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
 while pygame.event.poll().type != KEYDOWN:
@@ -18,4 +18,4 @@ while pygame.event.poll().type != KEYDOWN:
     rectlist = boxes.draw(screen)
     pygame.display.update(rectlist)
     #pygame.time.delay(10)
-    boxes.clear(screen, pygame.image.load("Room.gif"))
+    boxes.clear(screen, background)
