@@ -58,7 +58,9 @@ for i in range(2000):
     boxes.update(pygame.time.get_ticks(), 700)
     boxesTwo.update(pygame.time.get_ticks(), 700)
     boxesThree.update(pygame.time.get_ticks(), 700)
-    rectlist = [boxes.draw(screen), boxesTwo.draw(screen), boxesThree.draw(screen)]
+    rectlist = boxes.draw(screen)
+    rectList.append(boxesTwo.draw(screen))
+    rectList.append(boxesThree.draw(screen))
     pygame.display.update(rectlist)
     #pygame.time.delay(10)
     boxes.clear(screen, background)
