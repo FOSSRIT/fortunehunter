@@ -11,7 +11,7 @@ for color, location in [([255, 0, 0], [0, 0]),
 
 screen = pygame.display.set_mode([150, 150])
 background = pygame.Surface([150, 150])
-background.fill([0, 0, 0])
+background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
 while pygame.event.poll().type != KEYDOWN:
     boxes.update(pygame.time.get_ticks(), 150)
