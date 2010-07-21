@@ -5,8 +5,8 @@ from boxes import UpDownBox
 pygame.init()
 boxes = pygame.sprite.RenderUpdates()
 for color, location in [([255, 0, 0], [0, 0]),
-		        ([0, 255, 0], [60, 60]),
-                        ([0, 0, 255], [120, 120])]:
+		        ([0, 255, 0], [0, 60]),
+                        ([0, 0, 255], [0, 120])]:
     boxes.add(UpDownBox(color, location))
 
 screen = pygame.display.set_mode([150, 150])
