@@ -44,9 +44,9 @@ switch3 = [
   pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))
 ]
 
-boxes.add(UpDownBox(switch1, (0, 60)))
-boxesTwo.add(UpDownBox(switch2, (350, 60)))
-boxesThree.add(UpDownBox(switch3, (700, 60)))
+boxes.add(UpDownBox(switch1, (0, 0)))
+boxesTwo.add(UpDownBox(switch2, (0, 350)))
+boxesThree.add(UpDownBox(switch3, (0, 700)))
 
 screen = pygame.display.set_mode([1200, 900])
 background = pygame.image.load("Room.gif")
@@ -59,11 +59,9 @@ for i in range(2000):
     boxesTwo.update(pygame.time.get_ticks(), 700)
     boxesThree.update(pygame.time.get_ticks(), 700)
     rectlist = boxes.draw(screen)
-    print rectlist
-    #rectlist.append(boxesTwo.draw(screen))
-    #rectlist.append(boxesThree.draw(screen))
+    rectlist.extend(boxesTwo.draw(screen))
+    rectlist.extend(boxesThree.draw(screen))
     pygame.display.update(rectlist)
-    #pygame.time.delay(10)
     boxes.clear(screen, background)
     boxesTwo.clear(screen, background)
     boxesThree.clear(screen, background)
