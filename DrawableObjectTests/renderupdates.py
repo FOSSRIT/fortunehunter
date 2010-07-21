@@ -17,5 +17,5 @@ while pygame.event.poll().type != KEYDOWN:
     boxes.update(pygame.time.get_ticks(), 150)
     rectlist = boxes.draw(screen)
     pygame.display.update(rectlist)
-    pygame.time.delay(10)
+    #pygame.time.delay(10)
     boxes.clear(screen, background)
