@@ -18,7 +18,7 @@ switch1 = [
   [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
 ]
 
-boxes.add(UpDownBox(switch1, location))
+boxes.add(UpDownBox(switch1, (60, 60)))
 
 screen = pygame.display.set_mode([400, 400])
 background = pygame.image.load("Room.gif")
