@@ -32,5 +32,6 @@ for i in range(500):
     pygame.display.update(rectlist)
     #pygame.time.delay(10)
     boxes.clear(screen, background)
+    time.sleep(.1)
     
 print 500/(time() - start)
