@@ -7,15 +7,15 @@ pygame.init()
 boxes = pygame.sprite.RenderUpdates()
 
 switch1 = [
-  [pygame.image.load("%sa1/1%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/2%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/3%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/4%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/5%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/6%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/7%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/8%s"%("IndividualFrames/bmp16/",".bmp"))],
-  [pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))]
+  pygame.image.load("%sa1/1%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/2%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/3%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/4%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/5%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/6%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/7%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/8%s"%("IndividualFrames/bmp16/",".bmp")),
+  pygame.image.load("%sa1/9%s"%("IndividualFrames/bmp16/",".bmp"))
 ]
 
 boxes.add(UpDownBox(switch1, (60, 60)))
