@@ -45,8 +45,8 @@ switch3 = [
 ]
 
 boxes.add(UpDownBox(switch1, (0, 0)))
-boxesTwo.add(UpDownBox(switch2, (350, 350)))
-boxesThree.add(UpDownBox(switch3, (600, 600)))
+boxes.add(UpDownBox(switch2, (350, 350)))
+boxes.add(UpDownBox(switch3, (600, 600)))
 
 screen = pygame.display.set_mode([1200, 900])
 background = pygame.image.load("Room.gif")
@@ -56,14 +56,8 @@ pygame.display.flip()
 start = time()
 for i in range(2000):
     boxes.update(pygame.time.get_ticks(), 700)
-    boxesTwo.update(pygame.time.get_ticks(), 700)
-    boxesThree.update(pygame.time.get_ticks(), 700)
     rectlist = boxes.draw(screen)
-    rectlist.extend(boxesTwo.draw(screen))
-    rectlist.extend(boxesThree.draw(screen))
     pygame.display.update(rectlist)
     boxes.clear(screen, background)
-    boxesTwo.clear(screen, background)
-    boxesThree.clear(screen, background)
 
 print 2000/(time() - start)
