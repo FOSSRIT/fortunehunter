@@ -50,7 +50,7 @@ boxes.add(UpDownBox(switch1, (200, 200)))
 
 
 screen = pygame.display.set_mode([1200, 900])
-boxesTwo.add(UpDownBox([goblin], (0,0)))
+boxesTwo.add(UpDownBox(["goblin.png"], (0,0)))
 background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
