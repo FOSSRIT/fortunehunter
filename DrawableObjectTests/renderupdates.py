@@ -45,7 +45,7 @@ switch3 = [
 ]
 
 boxes.add(UpDownBox(switch1, (0, 0)))
-boxes.add(UpDownBox(switch2, (350, 350)))
+#boxes.add(UpDownBox(switch2, (350, 350)))
 boxes.add(UpDownBox(switch3, (600, 600)))
 
 screen = pygame.display.set_mode([1200, 900])
