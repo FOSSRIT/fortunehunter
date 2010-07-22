@@ -38,26 +38,16 @@ frameList = [
     pygame.image.load("./art/BMP24/9.bmp").convert(),
 ]
 
-#make our groups
-group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(0,0)) )
-group2=pygame.sprite.RenderUpdates(BouncingBox(frameList,(40,40)) )
-group3=pygame.sprite.RenderUpdates(BouncingBox(frameList,(80,80)) )
-group4=pygame.sprite.RenderUpdates(BouncingBox(frameList,(120,120)) )
-group5=pygame.sprite.RenderUpdates(BouncingBox(frameList,(160,160)) )
-
-print (time()-start) ,
-print " -- Time to load"
-
-groups=[group1,group2,group3,group4,group5]
-
-print time()-start
-
 for aTrial in range(maxTrial):
+    start = time()
     group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(0,0)) )
     group2=pygame.sprite.RenderUpdates(BouncingBox(frameList,(40,40)) )
     group3=pygame.sprite.RenderUpdates(BouncingBox(frameList,(80,80)) )
     group4=pygame.sprite.RenderUpdates(BouncingBox(frameList,(120,120)) )
     group5=pygame.sprite.RenderUpdates(BouncingBox(frameList,(160,160)) )
+    groups=[group1,group2,group3,group4,group5]
+    print (time()-start) ,
+    print " -- Time to load"
     print "group created"
 
     start = time()
