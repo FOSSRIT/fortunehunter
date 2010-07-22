@@ -24,7 +24,7 @@ class UpDownBox(pygame.sprite.Sprite):
             if self.going_down: self.rect.top += 1
             else: self.rect.top -= 1
 
-            if self.listPos < self.listLen:
+            if self.listPos < self.listLen - 1:
                self.listPos += 1
             else:
                self.listPos = 0
