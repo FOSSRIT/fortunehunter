@@ -50,7 +50,7 @@ boxes.add(UpDownBox(switch1, (200, 200)))
 
 
 screen = pygame.display.set_mode([1200, 900])
-boxesTwo.add(UpDownBox([pygame.image.load("goblin.png")], (0,0)))
+boxesTwo.add(UpDownBox([pygame.image.load("goblin.png")], (300,0)))
 background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
@@ -65,6 +65,7 @@ for i in range(2000):
     rectlist = boxesTwo.draw(screen)
     rectlist.extend(boxes.draw(screen))
     pygame.display.update(rectlist)
+    boxesTwo.clear(screen, background)
     boxes.clear(screen, background)
 
 print 2000/(time() - start)
