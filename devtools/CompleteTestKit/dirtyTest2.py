@@ -40,13 +40,13 @@ frameList = [
 for aTrial in range(maxTrial):
     start = time()
     group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(20,20)) )
-    group1.add(BouncingBox(frameList,(40,40)) )
-    group1.add(BouncingBox(frameList,(60,60)) )
-    group1.add(BouncingBox(frameList,(80,80)) )
-    group1.add(BouncingBox(frameList,(100,100)) )
-    group1.add(BouncingBox(frameList,(120,120)) )
-    group1.add(BouncingBox(frameList,(140,140)) )
-    group1.add(BouncingBox(frameList,(160,160)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(BouncingBox(frameList,(20,20)) )
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
