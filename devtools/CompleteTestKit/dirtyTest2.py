@@ -36,6 +36,17 @@ frameList = [
     pygame.image.load("./art/BMP24/8.bmp").convert(),
     pygame.image.load("./art/BMP24/9.bmp").convert(),
 ]
+frameList2 = [
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/1.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/2.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/3.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/4.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/5.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/6.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/7.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/8.bmp").convert(),
+    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/9.bmp").convert(),
+]
 
 for aTrial in range(maxTrial):
     start = time()
@@ -43,7 +54,7 @@ for aTrial in range(maxTrial):
     group1.add(BouncingBox(frameList,(20,20)) )
     group1.add(BouncingBox(frameList,(20,20)) )
     group1.add(BouncingBox(frameList,(20,20)) )
-    group1.add(BouncingBox(frameList,(20,20)) )
+    group1.add(DynamicDrawableObject(frameList2,20,20) )
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
