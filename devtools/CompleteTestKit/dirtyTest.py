@@ -58,7 +58,8 @@ for aTrial in range(maxTrial):
     group3=pygame.sprite.RenderUpdates(BouncingBox(frameList,(80,80)) )
     group4=pygame.sprite.RenderUpdates(BouncingBox(frameList,(120,120)) )
     group5=pygame.sprite.RenderUpdates(BouncingBox(frameList,(160,160)) )
-    
+    print "group created"
+
     start = time()
     for frame in range(FRAME):
         dirtyList=[]
