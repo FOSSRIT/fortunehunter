@@ -63,7 +63,6 @@ for aTrial in range(maxTrial):
         pygame.display.update(dirtyList)
         for image in range(numImages):
             groups[image].clear(screen, background)
-        pygame.display.flip()    
-
 
     print 1/((time()-start)/FRAME)
+    pygame.display.flip()
