@@ -208,6 +208,19 @@ class GameEngine(object):
                 self.__draw_time[str(fnc)] += time() - start
                 self.__draw_calls[str(fnc)] += 1
 
+            cnt = 0
+            while cnt < len(__dirty_lst):
+               cntTwo = 0
+               while cntTwo < len(__dirty_lst):
+                  if cnt != cntTwo
+                     if __dirty_lst[cnt].colliderect(__dirty_lst[cntTwo])
+                        __dirty_lst[cnt] = __dirty_lst[cnt].union(__dirty_lst[cntTwo])
+                        del __dirty_lst[cntTwo]
+                        cnt = cnt -1
+                        cntTwo = len(__dirty_lst) + 1
+                  cntTwo += 1
+               cnt += 1
+
             # Print Frame Rate
             if self.__showfps:
                 text = self.__font.render('FPS: %d' % self.clock.get_fps(),

@@ -41,13 +41,14 @@ frameList = [
 for aTrial in range(maxTrial):
     start = time()
     group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(0,0)) )
-    group2=pygame.sprite.RenderUpdates(BouncingBox(frameList,(40,40)) )
-    group3=pygame.sprite.RenderUpdates(BouncingBox(frameList,(80,80)) )
-    group4=pygame.sprite.RenderUpdates(BouncingBox(frameList,(120,120)) )
-    group5=pygame.sprite.RenderUpdates(BouncingBox(frameList,(160,160)) )
-    groups=[group1,group2,group3,group4,group5]
+    group1.add(BouncingBox(frameList,(40,40)) )
+    group1.add(BouncingBox(frameList,(80,80)) )
+    group1.add(BouncingBox(frameList,(120,120)) )
+    group1.add(BouncingBox(frameList,(160,160)) )
+    groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
+
 
     start = time()
     for frame in range(FRAME):
