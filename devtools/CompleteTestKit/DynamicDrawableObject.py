@@ -46,7 +46,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
         else:
            self._frame = 0
            
-        self.image = self._images[frame]
+        self.image = self._images[self._frame]
 
     def updateCurrentAnimation(self, t):
 
