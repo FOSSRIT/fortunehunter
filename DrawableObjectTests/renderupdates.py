@@ -62,6 +62,7 @@ start = time()
 for i in range(2000):
     boxes.update(pygame.time.get_ticks(), 700)
     rectlist = boxes.draw(screen)
+    rectlist.extend(boxesTwo.draw(screen))
     pygame.display.update(rectlist)
     boxes.clear(screen, background)
 
