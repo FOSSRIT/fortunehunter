@@ -45,17 +45,17 @@ switch3 = [
 ]
 
 boxes.add(UpDownBox(switch1, (0, 0)))
-boxes.add(UpDownBox(switch1, (350, 350)))
-boxes.add(UpDownBox(switch1, (600, 600)))
+boxes.add(UpDownBox(switch1, (100, 100)))
 boxes.add(UpDownBox(switch1, (200, 200)))
-boxes.add(UpDownBox(switch1, (300, 300)))
-boxes.add(UpDownBox(switch1, (500, 500)))
+
 
 screen = pygame.display.set_mode([1200, 900])
+boxesTwo.add(UpDownBox([goblin], (0,0))
 background = pygame.image.load("Room.gif")
 #background.fill(pygame.image.load("Room.gif"))
 screen.blit(background, [0, 0])
 pygame.display.flip()
+boxesTwo.update(pygame.time.get_ticks(), 700)
 start = time()
 for i in range(2000):
     boxes.update(pygame.time.get_ticks(), 700)
