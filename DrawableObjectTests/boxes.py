@@ -4,6 +4,7 @@ class UpDownBox(pygame.sprite.Sprite):
     def __init__(self, imagesList, initial_position):
         pygame.sprite.Sprite.__init__(self)
         self.images = imagesList
+        self.listLen = len(imagesList)
         self.listPos = 0
         self.image = imagesList[self.listPos]
         self.rect = self.image.get_rect()
@@ -23,7 +24,7 @@ class UpDownBox(pygame.sprite.Sprite):
             if self.going_down: self.rect.top += 1
             else: self.rect.top -= 1
 
-            if self.listPos < 8:
+            if self.listPos < self.listLen:
                self.listPos += 1
             else:
                self.listPos = 0
