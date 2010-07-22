@@ -21,7 +21,7 @@ screen = pygame.display.set_mode( [int(screenWidth),
     int(screenHeight)] ) #Screen Set 600x400
 pygame.display.set_caption("Sprite Speed Test Window")
 GREEN = 0, 192, 0 # green
-background = pygame.image.load("room.gif")
+background = pygame.image.load("Room.gif")
 screen.blit(background,[0,0])
 pygame.display.flip()
 start = time()
