@@ -11,8 +11,8 @@ class DrawableObject(pygame.sprite.Sprite):
         self._images = []
         self._origImages = []
         while cnt < len(images):
-            self._images.append(images[cnt][0].convert())
-            self._origImages.append(images[cnt][0].convert())
+            self._images.append(images[cnt].convert())
+            self._origImages.append(images[cnt].convert())
             cnt += 1
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]
@@ -30,7 +30,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.ySize = 40
         self.rect = self.image.get_rect()
         self.rect.topleft = (x,y)
-        
+
         if textfileName != '':
 
            f = open(textfileName, 'r')
@@ -46,19 +46,19 @@ class DrawableObject(pygame.sprite.Sprite):
 
         self._images.extend(images)
         #self._originals.extend(images)
-        
+
     def goToAnim(self, animName):
 
         cnt = 0
         while cnt < len(animations):
-           
+
            if animations[cnt] == animName:
              self._current_anim = animName
              self._frame = self.animations[animName][0]
              self.image = self._images[self._frame]
              cnt = len(animations)
            cnt += 1
-    
+
     def move(self):
 
         self.xPos += self.xSpeed
@@ -80,13 +80,13 @@ class DrawableObject(pygame.sprite.Sprite):
 
         cnt = 0
         while  cnt < len(self._images):
-            
+
             self._origImages[cnt] = pygame.transform.scale(self._origImages[cnt], (self.xSize, self.ySize))
             self._images[cnt] = self._origImages[cnt]
             cnt += 1
-            
+
     def getXSize(self):
-    
+
        return self.xSize
 
     def getYSize(self):
@@ -106,9 +106,9 @@ class DrawableObject(pygame.sprite.Sprite):
     def getRotation(self):
 
        return self.myAngle
-    
+
     def setPosition(self, x = None, y = None):
-    
+
        if x != None and x >= 0:  self.xPos = x
        if y != None and y >= 0:  self.yPos = y
 
@@ -126,23 +126,23 @@ class DrawableObject(pygame.sprite.Sprite):
        if yVelocity != None:  self.ySpeed = yVelocity
 
     def getXSpeed(self):
-    
+
        return self.xSpeed
 
     def getYSpeed(self):
 
        return self.ySpeed
-       
+
     def calcColorKey(self):
-    
-       myColorKey = images[0][0].get_at((0,0))
+
+       myColorKey = images[0].get_at((0,0))
        setColorKey(myColorKey)
 
     def setColorKey(self, aColor):
 
        cnt = 0
        while cnt < len(self._images):
-          self._images[cnt][0].set_colorkey(aColor)
+          self._images[cnt].set_colorkey(aColor)
           cnt += 1
 
     def update(self, t):
