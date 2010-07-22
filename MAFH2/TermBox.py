@@ -20,9 +20,12 @@ class TermBox(GameEngineElement):
             self.__lines.pop(0)
 
     def draw(self,screen,time_delta):
+        dirtyList=[] #added Jul 20
         pygame.draw.rect(screen, [0, 0, 0], (self.x, self.y, self.width, self.height))
         i=0
         for line in self.__lines:
             ren = self.font.render(line, 1, [255, 255, 255])
-            screen.blit(ren, (self.x, self.y + i*self.font.get_height()))
+#            screen.blit(ren, (self.x, self.y + i*self.font.get_height()))
+            dirtyList.append(ren.get_rect().move( (self.x, self.y + i*self.font.get_height()) )) #added Jul 20
             i+=1
+        return dirtyList #added Jul 20
