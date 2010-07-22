@@ -79,6 +79,7 @@ groups=[group1,group2,group3,group4,group5]
 print time()-start
 
 for aTrial in range(maxTrial):
+    start = time()
     for frame in range(FRAME):
         dirtyList=[]
         for image in range(numImages):
