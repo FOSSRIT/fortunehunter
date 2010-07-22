@@ -5,11 +5,11 @@ from boxes import BouncingBox
 from time import time
 pygame.init()
 
-FRAME=3000
+FRAME=500
 screenWidth = 600
 screenHeight = 400
 numImages = 5
-maxTrial = 1 # multiple trials, but hard coded in this test
+maxTrial = 5 # multiple trials, but hard coded in this test
 dirtyList=[]
 """
 try:
@@ -119,4 +119,5 @@ for i in range(2000):
     boxesTwo.clear(screen, background)
     boxes.clear(screen, background)
 
-print 2000/(time() - start)"""
+print 2000/(time() - start)
+"""
