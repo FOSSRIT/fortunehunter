@@ -44,6 +44,9 @@ for aTrial in range(maxTrial):
     group1.add(BouncingBox(frameList,(80,80)) )
     group1.add(BouncingBox(frameList,(120,120)) )
     group1.add(BouncingBox(frameList,(160,160)) )
+    group1.add(BouncingBox(frameList,(200,200)) )
+    group1.add(BouncingBox(frameList,(240,240)) )
+    group1.add(BouncingBox(frameList,(280,280)) )
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
