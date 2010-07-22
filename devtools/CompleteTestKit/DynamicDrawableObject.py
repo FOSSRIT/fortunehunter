@@ -35,10 +35,10 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
         if (self.xPos + self.xSize) >= bottom or self.xPos <= 0: self.xSpeed = self.xSpeed * -1
  
         # Move our position up or down by 2 pixels
-        self.rect.top += ySpeed
+        self.rect.top += self.ySpeed
         self.yPos = self.rect.top
         # Move our position left or right by 2 pixels
-        self.rect.right += xSpeed
+        self.rect.right += self.xSpeed
         self.xPos = self.rect.top
 
         if self._frame < len(self._images - 1):
