@@ -41,7 +41,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
         self.rect.right += self.xSpeed
         self.xPos = self.rect.top
 
-        if self._frame < len(self._images - 1):
+        if self._frame < len(self._images) - 1:
            self._frame += 1
         else:
            self._frame = 0
