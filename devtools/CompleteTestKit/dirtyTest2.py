@@ -52,11 +52,11 @@ frameList2 = [
 
 for aTrial in range(maxTrial):
     start = time()
-    group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(20,20)) )
-    group1.add(BouncingBox(frameList,(20,20)) )
-    group1.add(BouncingBox(frameList,(20,20)) )
-    group1.add(BouncingBox(frameList,(20,20)) )
-    group1.add(DynamicDrawableObject(frameList2,"",1,20,20) )
+    group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(0,0)) )
+    group1.add(BouncingBox(frameList,(40,40)) )
+    group1.add(BouncingBox(frameList,(80,80)) )
+    group1.add(BouncingBox(frameList,(120,120)) )
+    group1.add(DynamicDrawableObject(frameList2,"",1,160,160) )
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
