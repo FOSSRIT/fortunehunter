@@ -8,7 +8,7 @@ pygame.init()
 FRAME=500
 screenWidth = 600
 screenHeight = 400
-numImages = 5
+numImages = 1
 maxTrial = 5 # multiple trials, but hard coded in this test
 dirtyList=[]
 
