@@ -56,7 +56,7 @@ for aTrial in range(maxTrial):
     group1.add(BouncingBox(frameList,(40,40)) )
     group1.add(BouncingBox(frameList,(80,80)) )
     group1.add(BouncingBox(frameList,(120,120)) )
-    group1.add(DynamicDrawableObject(frameList2,"",1,160,160) )
+    group1.add(DynamicDrawableObject(frameList2,"",1,160,160,2,2) )
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
@@ -68,10 +68,10 @@ for aTrial in range(maxTrial):
         for image in range(numImages):
             #move / collision detection
             groups[image].update( screenWidth,screenHeight )
-            
+
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
-            
+
         #draw the images flip/update
         pygame.display.update(dirtyList)
         for image in range(numImages):
