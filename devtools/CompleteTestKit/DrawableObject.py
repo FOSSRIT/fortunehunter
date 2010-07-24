@@ -61,6 +61,9 @@ class DrawableObject(pygame.sprite.Sprite):
 
     def move(self):
 
+        print self.xPos
+        print self.yPos
+
         self.xPos += self.xSpeed
         self.yPos += self.ySpeed
 
