@@ -21,6 +21,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self._frame = 0
         self.animations = {}
         self._current_anim = ""
+        #self.rect = self.get_rect()
         self.xPos = x
         self.yPos = y
         self.xSpeed = xVelocity
@@ -28,7 +29,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.myAngle = 0
         self.xSize = 40
         self.ySize = 40
-        self.rect.topleft = (x,y)
+        #self.rect.topleft = (x,y)
 
         if textfileName != '':
 
