@@ -28,7 +28,6 @@ class DrawableObject(pygame.sprite.Sprite):
         self.myAngle = 0
         self.xSize = 40
         self.ySize = 40
-        self.rect = self.image.get_rect()
         self.rect.topleft = (x,y)
 
         if textfileName != '':
