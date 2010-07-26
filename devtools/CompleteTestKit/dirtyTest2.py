@@ -67,6 +67,7 @@ for aTrial in range(maxTrial):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
+            if FRAME == 250: groups[4].scale(80,80)
             groups[image].update( screenWidth,screenHeight )
 
             #individually blit each image group - add to list for update
