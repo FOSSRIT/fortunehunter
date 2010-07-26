@@ -43,9 +43,7 @@ class Scene(pygame.sprite.RenderUpdates):
            if (self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()) > highestY: highestY = self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()
            cnt += 1
 
-       print highestX, " - ", self.xPos
        self.xSize = highestX - self.xPos
-       print highestY, " - ", self.yPos
        self.ySize = highestY - self.yPos
 
     def addObjects(self, newDrawableObjects):
@@ -132,14 +130,13 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def scaleScene(self, newXSize = None, newYSize = None):
 
+       self.calcPosition()
        self.calcSize()
 
        xScale = 1
        yScale = 1
 
-       print newXSize, " != None: ", xScale, " = ", newXSize, " / ", self.xSize
        if newXSize != None: xScale = (newXSize * 1.0)/self.xSize
-       print newYSize, " != None: ", yScale, " = ", newYSize, " / ", self.ySize
        if newYSize != None: yScale = (newYSize * 1.0)/self.ySize
 
        cnt = 0
