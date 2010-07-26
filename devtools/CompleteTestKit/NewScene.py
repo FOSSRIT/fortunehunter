@@ -7,49 +7,49 @@ class Scene(pygame.sprite.RenderUpdates):
        self._spritelist = []
        RenderUpdates.__init__(self, *sprites)
 
-    def calcPosition(self):
+    #def calcPosition(self):
 
-    def calcSize(self):
+    #def calcSize(self):
 
     def addObjects(self, newDrawableObjects):
         for sprite in range len(newDrawableObjects):
            RenderUpdates.add_internal(self, newDrawableObjects[sprite])
            self._spritelist.append(newDrawableObjects[sprite])
 
-    def setRelativePositions(self):
+    #def setRelativePositions(self):
 
     def removeObject(self, sprite):
        RenderUpdates.remove_internal(self, sprite)
        self._spritelist.remove(sprite)
 
-    def getObject(self, index):
+    #def getObject(self, index):
 
     def getListSize(self):
-       
+
        return len(self._spritelist)
-       
+
     def getList(self):
-       
+
        return list(self._spritelist)
 
-    def moveObjects(self):
+    #def moveObjects(self):
 
-    def moveScene(self, xNudge = 0, yNudge = 0):
+    #def moveScene(self, xNudge = 0, yNudge = 0):
 
-    def setPosition(self, newXPos = None, newYPos = None):
+    #def setPosition(self, newXPos = None, newYPos = None):
 
-    def getXPos(self):
+    #def getXPos(self):
 
-    def getYPos(self):
+    #def getYPos(self):
 
-    def getXSize(self):
+    #def getXSize(self):
 
-    def getYSize(self):
+    #def getYSize(self):
 
-    def scaleObjects(self, newXSize = None, newYSize = None):
+    #@def scaleObjects(self, newXSize = None, newYSize = None):
 
-    def scaleScene(self, newXSize = None, newYSize = None):
+    #def scaleScene(self, newXSize = None, newYSize = None):
 
-    def updateAnimations(self, t):
+    #def updateAnimations(self, t):
 
-    def nextFrame(self):
+    #def nextFrame(self):
