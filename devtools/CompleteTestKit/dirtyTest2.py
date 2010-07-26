@@ -84,4 +84,7 @@ for aTrial in range(maxTrial):
     group1.calcPosition()
     print group1.getXPos()
     print group1.getYPos()
+    group1.calcSize()
+    print group1.getXSize()
+    print group1.getYSize()
     pygame.display.flip()

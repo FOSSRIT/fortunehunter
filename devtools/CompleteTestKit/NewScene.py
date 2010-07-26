@@ -14,7 +14,7 @@ class Scene(pygame.sprite.RenderUpdates):
        self.ySize = 0
        
        self.calcPosition()
-       #self.calcSize()
+       self.calcSize()
        #self.setRelativePositions()
 
     def calcPosition(self):
@@ -31,7 +31,19 @@ class Scene(pygame.sprite.RenderUpdates):
        self.xPos = lowestX
        self.yPos = lowestY
 
-    #def calcSize(self):
+    def calcSize(self):
+    
+       highestX = 0
+       highestY = 0
+       
+       cnt = 0
+       while cnt < len(self._spritelist):
+           if self._spritelist[cnt][0].getXPos() + self._spritelist[cnt][0].getXSize() > highestX: highestX = self._spritelist[cnt][0].getXPos() + self._spritelist[cnt][0].getXSize()
+           if self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize() > highestY: highestY = self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()
+           cnt += 1
+
+       self.xSize = highestX - self.xPos
+       self.ySize = highestY - self.yPos
 
     def addObjects(self, newDrawableObjects):
         for sprite in newDrawableObjects:
@@ -66,9 +78,11 @@ class Scene(pygame.sprite.RenderUpdates):
     def getYPos(self):
        return self.yPos
 
-    #def getXSize(self):
+    def getXSize(self):
+       return self.xSize
 
-    #def getYSize(self):
+    def getYSize(self):
+       return self.ySize
 
     #@def scaleObjects(self, newXSize = None, newYSize = None):
 
