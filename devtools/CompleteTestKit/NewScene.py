@@ -128,7 +128,22 @@ class Scene(pygame.sprite.RenderUpdates):
            self._spritelist[cnt][0].scale(newXSize, newYSize)
            cnt += 1
 
-    #def scaleScene(self, newXSize = None, newYSize = None):
+    def scaleScene(self, newXSize = None, newYSize = None):
+
+       xScale = 1
+       yScale = 1
+
+       if newXSize != None: xScale = (newXSize * 1.0)/self.xSize
+       if newYSize != None: yScale = (newYSize * 1.0)/self.ySize
+
+       cnt = 0
+       while cnt < len(self._spritelist):
+           self._spritelist[cnt][0].scale(xScale * self._spritelist[cnt][0].getXSize(), yScale * self._spritelist[cnt][0].getYSize())
+           self._spritelist[cnt][1] = xScale * self._spritelist[cnt][1]
+           self._spritelist[cnt][2] = yScale * self._spritelist[cnt][2]
+           cnt += 1
+
+       self.setPosition()
 
     #def updateAnimations(self, t):
 
