@@ -8,7 +8,7 @@ from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
 
-FRAME=500
+FRAME=100
 screenWidth = 600
 screenHeight = 400
 numImages = 1
@@ -69,7 +69,7 @@ for aTrial in range(maxTrial):
         #if frame == 250: groups[0][4].scale(200,200)
         for image in range(numImages):
             #move / collision detection
-            groups[image].update( screenWidth,screenHeight )
+            groups[image].moveScene( 1,0 )
 
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
