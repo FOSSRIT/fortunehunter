@@ -53,9 +53,8 @@ frameList2 = [
 
 for aTrial in range(maxTrial):
     start = time()
-    d = DynamicDrawableObject(frameList2,"",1,0,0,2,2)
-    d.scale(20,20)
-    group1=Scene(d)
+
+    group1=Scene(DynamicDrawableObject(frameList2,"",1,0,0,2,2)
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,40,40,2,2)])
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,80,80,2,2)])
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,120,120,2,2)])
@@ -70,7 +69,9 @@ for aTrial in range(maxTrial):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            if frame == 50: groups[image].scaleObjects(20,20)
+            if frame == 50: 
+               groups[image].scaleObjects(20,20)
+               groups[image].update()
             groups[image].moveScene( 1,0 )
 
             #individually blit each image group - add to list for update
