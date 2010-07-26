@@ -6,7 +6,7 @@ class Scene(pygame.sprite.RenderUpdates):
     def __init__(self, sprites):
 
        self._spritelist = []
-       self._spritelist.append(sprites)
+       self._spritelist.append([sprites, sprites.getXPos(), sprites.getYPos()])
        RenderUpdates.__init__(self, sprites)
 
        self.xPos = 0
@@ -25,8 +25,8 @@ class Scene(pygame.sprite.RenderUpdates):
        
        cnt = 0
        while cnt < len(self._spritelist):
-           if self._spritelist[cnt].getXPos() < lowestX: lowestX = self._spritelist[cnt].getXPos()
-           if self._spritelist[cnt].getYPos() < lowestY: lowestY = self._spritelist[cnt].getYPos()
+           if self._spritelist[cnt][0].getXPos() < lowestX: lowestX = self._spritelist[cnt][0].getXPos()
+           if self._spritelist[cnt][0].getYPos() < lowestY: lowestY = self._spritelist[cnt][0].getYPos()
            cnt += 1
 
        self.xPos = lowestX
@@ -39,8 +39,8 @@ class Scene(pygame.sprite.RenderUpdates):
        
        cnt = 0
        while cnt < len(self._spritelist):
-           if (self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()) > highestX: highestX = self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()
-           if (self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()) > highestY: highestY = self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()
+           if (self._spritelist[cnt][0].getXPos() + self._spritelist[cnt][0].getXSize()) > highestX: highestX = self._spritelist[cnt][0].getXPos() + self._spritelist[cnt][0].getXSize()
+           if (self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()) > highestY: highestY = self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()
            cnt += 1
 
        self.xSize = highestX - self.xPos
@@ -49,14 +49,14 @@ class Scene(pygame.sprite.RenderUpdates):
     def addObjects(self, newDrawableObjects):
         for sprite in newDrawableObjects:
            RenderUpdates.add_internal(self, sprite)
-           self._spritelist.append(sprite)
+           self._spritelist.append([sprite, sprite.getXPos(), sprite.getYPos()])
 
     def setRelativePositions(self):
 
        cnt = 0
        while cnt < len(self._spritelist):
-           self._spritelist[cnt][1] = self._spritelist[cnt][1] - self.xPos
-           self._spritelist[cnt][2] = self._spritelist[cnt][2] - self.yPos
+           self._spritelist[cnt][1] = self._spritelist[cnt][0].getXPos - self.xPos
+           self._spritelist[cnt][2] = self._spritelist[cnt][0].getYPos - self.yPos
            cnt += 1
 
     def removeObject(self, sprite):
