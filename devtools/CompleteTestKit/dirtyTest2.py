@@ -70,7 +70,7 @@ for aTrial in range(maxTrial):
         for image in range(numImages):
             #move / collision detection
             if frame == 200:
-               groups[image].scaleScene(200,200)
+               groups[image].scaleScene(100,100)
             if frame % 4 == 0: groups[image].update(screenWidth,screenHeight)
 
             #individually blit each image group - add to list for update
