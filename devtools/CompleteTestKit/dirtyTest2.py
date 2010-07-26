@@ -8,7 +8,7 @@ from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
 
-FRAME=200
+FRAME=800
 screenWidth = 600
 screenHeight = 400
 numImages = 1
@@ -54,11 +54,11 @@ frameList2 = [
 for aTrial in range(maxTrial):
     start = time()
 
-    group1=Scene(DynamicDrawableObject(frameList2,"",1,0,0,2,2))
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,40,40,2,2)])
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,80,80,2,2)])
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,120,120,2,2)])
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,160,160,2,2)])
+    group1=Scene(DynamicDrawableObject(frameList2,"",1,0,0,1,1))
+    group1.addObjects([DynamicDrawableObject(frameList2,"",1,40,40,1,1)])
+    group1.addObjects([DynamicDrawableObject(frameList2,"",1,80,80,1,1)])
+    group1.addObjects([DynamicDrawableObject(frameList2,"",1,120,120,1,1)])
+    group1.addObjects([DynamicDrawableObject(frameList2,"",1,160,160,1,1)])
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
@@ -69,9 +69,9 @@ for aTrial in range(maxTrial):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            if frame == 50:
+            if frame == 200:
                groups[image].scaleScene(200,200)
-            groups[image].update(screenWidth,screenHeight)
+            if frame % 4 == 0: groups[image].update(screenWidth,screenHeight)
 
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
