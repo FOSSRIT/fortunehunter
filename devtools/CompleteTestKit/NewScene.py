@@ -38,11 +38,15 @@ class Scene(pygame.sprite.RenderUpdates):
        
        cnt = 0
        while cnt < len(self._spritelist):
+           print "if ", self._spritelist[cnt].getXPos(), " + ", self._spritelist[cnt].getXSize(), " > ", highestX
            if (self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()) > highestX: highestX = self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()
+           print "if ", self._spritelist[cnt].getYPos(), " + ", self._spritelist[cnt].getYSize(), " > ", highestY
            if (self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()) > highestY: highestY = self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()
            cnt += 1
 
+       print highestX, " - ", self.xPos
        self.xSize = highestX - self.xPos
+       print highestY, " - ", self.yPos
        self.ySize = highestY - self.yPos
 
     def addObjects(self, newDrawableObjects):
