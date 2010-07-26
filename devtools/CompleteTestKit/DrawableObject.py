@@ -113,7 +113,7 @@ class DrawableObject(pygame.sprite.Sprite):
        if x != None and x >= 0:  self.xPos = x
        if y != None and y >= 0:  self.yPos = y
        
-       self.rect.topleft(self.xPos, self.yPos)
+       self.rect.topleft = (self.xPos, self.yPos)
 
     def getXPos(self):
 
