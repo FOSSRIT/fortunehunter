@@ -146,6 +146,8 @@ class Scene(pygame.sprite.RenderUpdates):
            self._spritelist[cnt][2] = yScale * self._spritelist[cnt][2]
            cnt += 1
 
+       self.calcPosition()
+       self.calcSize()
        self.setPosition()
 
     #def updateAnimations(self, t):
