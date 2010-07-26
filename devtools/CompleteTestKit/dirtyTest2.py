@@ -71,7 +71,7 @@ for aTrial in range(maxTrial):
             #move / collision detection
             if frame == 50: 
                groups[image].scaleObjects(20,20)
-               groups[image].update()
+               groups[image].update(screenWidth,screenHeight)
             groups[image].moveScene( 1,0 )
 
             #individually blit each image group - add to list for update
