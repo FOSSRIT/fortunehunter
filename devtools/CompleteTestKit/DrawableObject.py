@@ -67,7 +67,8 @@ class DrawableObject(pygame.sprite.Sprite):
         self.xPos += self.xSpeed
         self.yPos += self.ySpeed
 
-        self.rect.move(self.xPos,self.yPos)
+        self.rect.right += self.xSpeed
+        self.rect.top += self.ySpeed
 
     def nudge(self, xNudge = 0, yNudge = 0):
 
