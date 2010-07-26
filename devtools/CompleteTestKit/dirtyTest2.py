@@ -52,7 +52,7 @@ frameList2 = [
 
 for aTrial in range(maxTrial):
     start = time()
-    group1=pygame.sprite.RenderUpdates(BouncingBox(frameList,(0,0)) )
+    group1=pygame.sprite.OrderedUpdates(BouncingBox(frameList,(0,0)) )
     group1.add(BouncingBox(frameList,(40,40)) )
     group1.add(BouncingBox(frameList,(80,80)) )
     group1.add(BouncingBox(frameList,(120,120)) )
