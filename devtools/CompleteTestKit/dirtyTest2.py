@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from boxes import BouncingBox
 from time import time
+from NewScene import Scene
 from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
@@ -52,7 +53,7 @@ frameList2 = [
 
 for aTrial in range(maxTrial):
     start = time()
-    group1=pygame.sprite.OrderedUpdates(BouncingBox(frameList,(0,0)) )
+    group1=pygame.sprite.Scene(BouncingBox(frameList,(0,0)) )
     group1.add(BouncingBox(frameList,(40,40)) )
     group1.add(BouncingBox(frameList,(80,80)) )
     group1.add(BouncingBox(frameList,(120,120)) )
