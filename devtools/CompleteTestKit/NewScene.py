@@ -55,8 +55,8 @@ class Scene(pygame.sprite.RenderUpdates):
 
        cnt = 0
        while cnt < len(self._spritelist):
-           self._spritelist[cnt][1] = self._spritelist[cnt][0].getXPos - self.xPos
-           self._spritelist[cnt][2] = self._spritelist[cnt][0].getYPos - self.yPos
+           self._spritelist[cnt][1] = self._spritelist[cnt][0].getXPos() - self.xPos
+           self._spritelist[cnt][2] = self._spritelist[cnt][0].getYPos() - self.yPos
            cnt += 1
 
     def removeObject(self, sprite):
