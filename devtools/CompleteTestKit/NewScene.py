@@ -24,8 +24,8 @@ class Scene(pygame.sprite.RenderUpdates):
        
        cnt = 0
        while cnt < len(self._spritelist):
-           if self._spritelist[cnt][0].getXPos() < lowestX: lowestX = self._spritelist[cnt][0].getXPos()
-           if self._spritelist[cnt][0].getYPos() < lowestY: lowestY = self._spritelist[cnt][0].getYPos()
+           if self._spritelist[cnt].getXPos() < lowestX: lowestX = self._spritelist[cnt].getXPos()
+           if self._spritelist[cnt].getYPos() < lowestY: lowestY = self._spritelist[cnt].getYPos()
            cnt += 1
 
        self.xPos = lowestX
