@@ -12,7 +12,7 @@ class Scene(pygame.sprite.RenderUpdates):
     #def calcSize(self):
 
     def addObjects(self, newDrawableObjects):
-        for sprite in range len(newDrawableObjects):
+        for sprite in range(len(newDrawableObjects)):
            RenderUpdates.add_internal(self, newDrawableObjects[sprite])
            self._spritelist.append(newDrawableObjects[sprite])
 
