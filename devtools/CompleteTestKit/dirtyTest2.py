@@ -65,7 +65,7 @@ for aTrial in range(maxTrial):
     start = time()
     for frame in range(FRAME):
         dirtyList=[]
-        if frame == 250: groups[4].scale(200,200)
+        if frame == 250: groups[0][4].scale(200,200)
         for image in range(numImages):
             #move / collision detection
             groups[image].update( screenWidth,screenHeight )
