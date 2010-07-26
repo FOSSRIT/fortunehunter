@@ -72,8 +72,8 @@ class DrawableObject(pygame.sprite.Sprite):
         self.xPos += xNudge
         self.yPos += yNudge
 
-        self.rect.right += self.xNudge
-        self.rect.top += self.yNudge
+        self.rect.right += xNudge
+        self.rect.top += yNudge
 
     def scale(self, newXSize = None, newYSize = None):
 
