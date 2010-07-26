@@ -135,12 +135,15 @@ class Scene(pygame.sprite.RenderUpdates):
 
        if newXSize != None: xScale = (newXSize * 1.0)/self.xSize
        if newYSize != None: yScale = (newYSize * 1.0)/self.ySize
+       
+       print xScale
+       print yScale
 
        cnt = 0
        while cnt < len(self._spritelist):
-           self._spritelist[cnt][0].scale(.5 * self._spritelist[cnt][0].getXSize(), .5 * self._spritelist[cnt][0].getYSize())
-           self._spritelist[cnt][1] = .5 * self._spritelist[cnt][1]
-           self._spritelist[cnt][2] = .5 * self._spritelist[cnt][2]
+           self._spritelist[cnt][0].scale(xScale * self._spritelist[cnt][0].getXSize(), yScale * self._spritelist[cnt][0].getYSize())
+           self._spritelist[cnt][1] = xScale * self._spritelist[cnt][1]
+           self._spritelist[cnt][2] = yScale * self._spritelist[cnt][2]
            cnt += 1
 
        self.setPosition()
