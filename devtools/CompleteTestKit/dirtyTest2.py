@@ -53,11 +53,11 @@ frameList2 = [
 
 for aTrial in range(maxTrial):
     start = time()
-    group1=Scene(DynamicDrawableObject(frameList,"",1,1,1,2,2))
+    group1=Scene(DynamicDrawableObject(frameList2,"",1,1,1,2,2))
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,40,40,2,2)])
-    group1.addObjects([DynamicDrawableObject(frameList,"",1,80,80,2,2)])
+    group1.addObjects([DynamicDrawableObject(frameList2,"",1,80,80,2,2)])
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,120,120,2,2)])
-    group1.addObjects([DynamicDrawableObject(frameList,"",1,160,160,2,2)])
+    group1.addObjects([DynamicDrawableObject(frameList2,"",1,160,160,2,2)])
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
