@@ -63,7 +63,10 @@ class Scene(pygame.sprite.RenderUpdates):
        RenderUpdates.remove_internal(self, sprite)
        self._spritelist.remove(sprite)
 
-    #def getObject(self, index):
+    def getObject(self, index):
+
+       if index < len(self._spritelist):
+          return  self._spritelist[index][0]
 
     def getListSize(self):
 
@@ -73,11 +76,38 @@ class Scene(pygame.sprite.RenderUpdates):
 
        return list(self._spritelist)
 
-    #def moveObjects(self):
+    def moveObjects(self):
 
-    #def moveScene(self, xNudge = 0, yNudge = 0):
+       cnt = 0
+       while cnt < len(self._spritelist):
 
-    #def setPosition(self, newXPos = None, newYPos = None):
+          self._spritelist[cnt][0].move()
+          cnt += 1
+
+       self.calcPosition()
+       self.calcSize()
+       self.setRelativePositions()
+
+    def moveScene(self, xNudge = 0, yNudge = 0):
+
+       cnt = 0
+       while cnt < len(self._spritelist):
+
+          self._spritelist[cnt][0].nudge(xNudge, yNudge)
+          cnt += 1
+
+       self.calcPosition()
+
+    def setPosition(self, newXPos = None, newYPos = None):
+
+       if newXPos != None: self.xPos = newXPos
+       if newYPos != None: self.yPos = newYPos
+
+       cnt = 0
+       while cnt < len(self._spritelist):
+
+          self._spritelist[cnt][0].setPosition(self.xPos + self._spritelist[cnt][1], self.yPos + self._spritelist[cnt][2])
+          cnt += 1
 
     def getXPos(self):
        return self.xPos
