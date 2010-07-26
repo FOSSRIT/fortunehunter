@@ -43,7 +43,9 @@ class Scene(pygame.sprite.RenderUpdates):
            if (self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()) > highestY: highestY = self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()
            cnt += 1
 
+       print highestX, " - ", self.xPos
        self.xSize = highestX - self.xPos
+       print highestY, " - ", self.yPos
        self.ySize = highestY - self.yPos
 
     def addObjects(self, newDrawableObjects):
