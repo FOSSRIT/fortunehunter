@@ -53,7 +53,9 @@ frameList2 = [
 
 for aTrial in range(maxTrial):
     start = time()
-    group1=Scene(DynamicDrawableObject(frameList2,"",1,0,0,2,2))
+    d = DynamicDrawableObject(frameList2,"",1,0,0,2,2)
+    d.scale(20,20)
+    group1=Scene(d)
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,40,40,2,2)])
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,80,80,2,2)])
     group1.addObjects([DynamicDrawableObject(frameList2,"",1,120,120,2,2)])
