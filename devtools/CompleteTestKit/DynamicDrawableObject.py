@@ -32,7 +32,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
         if (self.yPos + self.ySize) >= bottom or self.yPos <= 0: self.ySpeed = self.ySpeed * -1
 
         # If we're at the right or left of the screen, switch directions.
-        if (self.xPos + self.xSize) >= bottom or self.xPos <= 0: self.xSpeed = self.xSpeed * -1
+        if (self.xPos + self.xSize) >= right or self.xPos <= 0: self.xSpeed = self.xSpeed * -1
  
         self.move()
 
