@@ -16,7 +16,7 @@ class Scene(pygame.sprite.RenderUpdates):
        
        self.calcPosition()
        self.calcSize()
-       #self.setRelativePositions()
+       self.setRelativePositions()
 
     def calcPosition(self):
     
@@ -38,17 +38,12 @@ class Scene(pygame.sprite.RenderUpdates):
        highestY = 0
        
        cnt = 0
-       print "length", len(self._spritelist)
        while cnt < len(self._spritelist):
-           print "if ", self._spritelist[cnt].getXPos(), " + ", self._spritelist[cnt].getXSize(), " > ", highestX
            if (self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()) > highestX: highestX = self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()
-           print "if ", self._spritelist[cnt].getYPos(), " + ", self._spritelist[cnt].getYSize(), " > ", highestY
            if (self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()) > highestY: highestY = self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()
            cnt += 1
 
-       print highestX, " - ", self.xPos
        self.xSize = highestX - self.xPos
-       print highestY, " - ", self.yPos
        self.ySize = highestY - self.yPos
 
     def addObjects(self, newDrawableObjects):
@@ -56,7 +51,13 @@ class Scene(pygame.sprite.RenderUpdates):
            RenderUpdates.add_internal(self, sprite)
            self._spritelist.append(sprite)
 
-    #def setRelativePositions(self):
+    def setRelativePositions(self):
+
+       cnt = 0
+       while cnt < len(self._spritelist):
+           self._spritelist[cnt][1] = self._spritelist[cnt][1] - self.xPos
+           self._spritelist[cnt][2] = self._spritelist[cnt][2] - self.yPos
+           cnt += 1
 
     def removeObject(self, sprite):
        RenderUpdates.remove_internal(self, sprite)
