@@ -79,7 +79,8 @@ for aTrial in range(maxTrial):
         for image in range(numImages):
             groups[image].clear(screen, background)
 
-    print 1/((time()-start)/FRAME)
+    time.sleep(1)
+    #print 1/((time()-start)/FRAME)
     group1.calcPosition()
     print group1.getXPos()
     print group1.getYPos()
