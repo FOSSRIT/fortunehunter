@@ -79,5 +79,8 @@ for aTrial in range(maxTrial):
         for image in range(numImages):
             groups[image].clear(screen, background)
 
+    group1.calcPosition()
+    print group1.getXPos()
+    print group1.getYPos()
     print 1/((time()-start)/FRAME)
     pygame.display.flip()

@@ -8,7 +8,28 @@ class Scene(pygame.sprite.RenderUpdates):
        self._spritelist = []
        RenderUpdates.__init__(self, *sprites)
 
-    #def calcPosition(self):
+       self.xPos = 0
+       self.yPos = 0
+       self.xSize = 0
+       self.ySize = 0
+       
+       self.calcPosition()
+       #self.calcSize()
+       #self.setRelativePositions()
+
+    def calcPosition(self):
+    
+       lowestX = 9000
+       lowestY = 9000
+       
+       cnt = 0
+       while cnt < len(self._spritelist):
+           if self._spritelist[cnt][0].getXPos() < lowestX: lowestX = self._spritelist[cnt][0].getXPos()
+           if self._spritelist[cnt][0].getYPos() < lowestY: lowestY = self._spritelist[cnt][0].getYPos()
+           cnt += 1
+
+       self.xPos = lowestX
+       self.yPos = lowestY
 
     #def calcSize(self):
 
@@ -39,9 +60,11 @@ class Scene(pygame.sprite.RenderUpdates):
 
     #def setPosition(self, newXPos = None, newYPos = None):
 
-    #def getXPos(self):
+    def getXPos(self):
+       return self.xPos
 
-    #def getYPos(self):
+    def getYPos(self):
+       return self.yPos
 
     #def getXSize(self):
 
