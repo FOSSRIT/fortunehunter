@@ -42,8 +42,8 @@ class Scene(pygame.sprite.RenderUpdates):
            if self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize() > highestY: highestY = self._spritelist[cnt].getYPos() + self._spritelist[cnt].getYSize()
            cnt += 1
 
-       self.xSize = highestX - self.xPos
-       self.ySize = highestY - self.yPos
+       self.xSize = highestX #- self.xPos
+       self.ySize = highestY #- self.yPos
 
     def addObjects(self, newDrawableObjects):
         for sprite in newDrawableObjects:
