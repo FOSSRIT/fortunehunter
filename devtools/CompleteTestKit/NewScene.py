@@ -3,7 +3,7 @@ from pygame.sprite import RenderUpdates
 
 class Scene(pygame.sprite.RenderUpdates):
 
-    def __init__(self, *sprites):
+    def __init__(self, sprites):
 
        self._spritelist = []
        self._spritelist.append(sprites)
