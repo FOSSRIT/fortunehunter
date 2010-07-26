@@ -8,7 +8,7 @@ from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
 
-FRAME=800
+FRAME=1200
 screenWidth = 600
 screenHeight = 400
 numImages = 1
