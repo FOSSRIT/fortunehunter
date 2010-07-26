@@ -1,4 +1,5 @@
 import pygame
+from pygame.sprite import RenderUpdates
 
 class Scene(pygame.sprite.RenderUpdates):
 
