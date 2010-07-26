@@ -121,7 +121,12 @@ class Scene(pygame.sprite.RenderUpdates):
     def getYSize(self):
        return self.ySize
 
-    #@def scaleObjects(self, newXSize = None, newYSize = None):
+    def scaleObjects(self, newXSize = None, newYSize = None):
+
+       cnt = 0
+       while cnt < len(self._spritelist):
+           self._spritelist[cnt][0].scale(newXSize, newYSize)
+           cnt += 1
 
     #def scaleScene(self, newXSize = None, newYSize = None):
 
