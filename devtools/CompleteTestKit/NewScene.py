@@ -37,7 +37,7 @@ class Scene(pygame.sprite.RenderUpdates):
        highestY = 0
        
        cnt = 0
-       print "length", self._spritelist
+       print "length", len(self._spritelist)
        while cnt < len(self._spritelist):
            print "if ", self._spritelist[cnt].getXPos(), " + ", self._spritelist[cnt].getXSize(), " > ", highestX
            if (self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()) > highestX: highestX = self._spritelist[cnt].getXPos() + self._spritelist[cnt].getXSize()
