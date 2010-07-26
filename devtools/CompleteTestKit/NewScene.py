@@ -5,7 +5,8 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def __init__(self, *sprites):
 
-       self._spritelist = [sprites]
+       self._spritelist = []
+       self._spritelist.append(sprites)
        RenderUpdates.__init__(self, *sprites)
 
        self.xPos = 0
