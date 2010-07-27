@@ -49,31 +49,24 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def update(self, t):
 
-        cnt = 0
-        while cnt < len(self.animations):
+       #if self.animations[cnt] == self._current_anim:
+  
+        timePassed = t + self._last_update
+        if timePassed > self._delay:
 
-           if self.animations[cnt] == self._current_anim:
+            if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
 
-              timePassed = t + self._last_update
-              if timePassed > self._delay:
+              self._frame = self.animations.get(self._current_anim)[0]
 
-                  if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
+            self._frame += timePassed/self._delay
+            while self._frame >= self.animations.get(self._current_anim)[1]:
 
-                    self._frame = self.animations.get(self._current_anim)[0]
+              framesPast = self._frame - self.animations.get(self._current_anim)[1]
+              self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
 
-                  self._frame += timePassed/self._delay
-                  while self._frame >= self.animations.get(self._current_anim)[1]:
-
-                    framesPast = self._frame - self.animations.get(self._current_anim)[1]
-                    self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
-
-                  self.image = self._images[self._frame]
-                  self._last_update = timePassed%self._delay
-              self._last_update = timePassed
-
-              cnt = len(self.animations)
-
-           cnt += 1
+            self.image = self._images[self._frame]
+            self._last_update = timePassed%self._delay
+        self._last_update = timePassed
 
     def nextFrame(self):
 
