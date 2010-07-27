@@ -54,15 +54,15 @@ frameList2 = [
 for aTrial in range(maxTrial):
     start = time()
 
-    d = DynamicDrawableObject(frameList2,"text.txt",5,0,0,1,1)
+    d = DynamicDrawableObject(frameList2,"text.txt",1,0,0,1,1)
     d.goToAnim("anim1")
-    d2 = DynamicDrawableObject(frameList2,"text.txt",5,40,40,1,1)
+    d2 = DynamicDrawableObject(frameList2,"text.txt",1,40,40,1,1)
     d2.goToAnim("anim1")
-    d3 = DynamicDrawableObject(frameList2,"text.txt",5,80,80,1,1)
+    d3 = DynamicDrawableObject(frameList2,"text.txt",1,80,80,1,1)
     d3.goToAnim("anim1")
-    d4 = DynamicDrawableObject(frameList2,"text.txt",5,120,120,1,1)
+    d4 = DynamicDrawableObject(frameList2,"text.txt",1,120,120,1,1)
     d4.goToAnim("anim1")
-    d5 = DynamicDrawableObject(frameList2,"text.txt",5,160,160,1,1)
+    d5 = DynamicDrawableObject(frameList2,"text.txt",1,160,160,1,1)
     d5.goToAnim("anim1")
 
     group1=Scene(d)
