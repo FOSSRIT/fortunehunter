@@ -61,6 +61,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
               self._frame = self.animations.get(self._current_anim)[0]
 
             self._frame += timePassed/self._delay
+            print self._frame
 
             while self._frame >= self.animations.get(self._current_anim)[1]:
               framesPast = self._frame - self.animations.get(self._current_anim)[1]
