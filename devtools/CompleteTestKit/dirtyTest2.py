@@ -75,16 +75,17 @@ for aTrial in range(maxTrial):
     print " -- Time to load"
 
 
+    clock = pygame.time.Clock()
+    clock.tick()
     start = time()
-    other = time()
     for frame in range(FRAME):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            groups[image].update(time() - other)
+            groups[image].update(clock.getTime())
+            clock.tick()
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
-            other = time()
 
         #draw the images flip/update
         pygame.display.update(dirtyList)
