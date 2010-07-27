@@ -52,7 +52,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
        #if self.animations[cnt] == self._current_anim:
   
         print self.animations.get(self._current_anim)[0]
-        print self.animations.get(self._current_anim)[0]
+        print self.animations.get(self._current_anim)[1]
 
         timePassed = t + self._last_update
         if timePassed > self._delay:
