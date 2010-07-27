@@ -5,6 +5,7 @@ from MagicMenu import MagicMenuHolder
 from AnimatedSprite import Spritesheet
 from Items import get_item
 import pygame
+import time
 
 from constants import CHAR_PATH, HUD_PATH
 
@@ -32,6 +33,7 @@ class BattleEngine(GameEngineElement):
         self.state = PLAYER_WAIT
         self.player_input = '0'
         self.active_target = 1
+        self.battleTimer = -1.0
 
         for i in range(0,4):
             e_index = self.current_room.get_enemy( i )
@@ -59,7 +61,6 @@ class BattleEngine(GameEngineElement):
             self.isMagic = False
             random.seed()
             isCrit = random.randint(0,100)
-                
             if( isCrit > 90 ):
                 #Show problem
                 menu.show_menu('attack')
@@ -67,10 +68,11 @@ class BattleEngine(GameEngineElement):
                 tempR2 = random.randint(0,10)
                 self.critAns = tempR1 * tempR2
                 menu.set_disp('%d x %d' %(tempR1, tempR2))
+                self.battleTimer = time.time()
                 self.state = PLAYER_MULT
             else:
                 #Do Attack
-                print "Non Crit"
+                #print "Non Crit"
                 menu.show_menu('selection')
                 menu.set_sec_disp('')
                 self.__attack_phase(menu)
@@ -107,25 +109,28 @@ class BattleEngine(GameEngineElement):
             self.spellType = 1
             self.isMagic = True
             self.magicWin = False
+            self.battleTimer = time.time()
         elif selection == 'lightning':
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('lightning')
             self.spellType = 2
             self.isMagic = True
             self.magicWin = False
+            self.battleTimer = time.time()
         elif selection == 'missile':
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('missile')
             self.spellType = 3
             self.isMagic = True
             self.magicWin = False
+            self.battleTimer = time.time()
         elif selection == 'heal':
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('heal')
             self.spellType = 4
             self.isMagic = True
             self.magicWin = False
-            
+            self.battleTimer = time.time()
         elif selection == 'scan':
             menu.set_disp('Enemy Scanned!')
             self.isMagic = False
@@ -267,6 +272,14 @@ class BattleEngine(GameEngineElement):
         hero = self.game_engine.get_object('profile').hero
         damage = 0
         curTarget = self.active_target - 1
+        timeRatio = time.time() - self.battleTimer
+        self.battleTimer = -1.0
+        if timeRatio < 10:
+            timeRatio = timeRatio / 10.0
+        else:
+            timeRatio = 1.0
+        tbonus = 1.0 - timeRatio
+        tbonus += 1.3
         if self.isMagic:
             weakness = self.enemy_list[curTarget]
             spellTypes = ['none', 'fire', 'lightning', 'missile', 'heal', 'special']
@@ -276,21 +289,23 @@ class BattleEngine(GameEngineElement):
                 damage += bonus
             if self.magicWin and not(self.spellType == 4):
                 damage += hero.attackPower(spellTypes[self.spellType])
-                self.enemy_list[curTarget].HP -= damage
+                damage *= tbonus
+                self.enemy_list[curTarget].HP -= int(damage)
                 self.player_input = spellTypes[self.spellType] + ' cast!'
             elif self.spellType == 4:
-                hero.giveHealth(hero.attackPower('heal'))
+                hero.giveHealth(int(hero.attackPower('heal') * tbonus))
             else:
                 self.player_input = 'Spell fizzles'
         elif self.state == PLAYER_MULT:
             if self.correct:
                 damage = hero.attackPower("critical")
-                self.enemy_list[curTarget].HP -= damage
-                self.player_input = "Your attack crits for " + str(damage) + " damage"
+                damage = damage * tbonus
+                self.enemy_list[curTarget].HP -= int(damage)
+                self.player_input = "Your attack crits for " + str(int(damage)) + " damage"
         else:
             damage = hero.attackPower('basic')
             self.enemy_list[curTarget].HP -= damage
-            self.player_input = "You attack for " + str(damage) + " damage"
+            self.player_input = "You attack for " + str(int(damage)) + " damage"
                 
         
         #generate enemy attack
@@ -308,7 +323,8 @@ class BattleEngine(GameEngineElement):
                     hero.defendAttack(enemy.attackPower('critical'))
                 else:
                     hero.defendAttack(enemy.attackPower('basic'))
-
+            if hero.healthPoints() <= 0:
+                self.__youDied()
         
         self.game_engine.get_object('profile').hero = hero
         self.state = PLAYER_WAIT
@@ -343,6 +359,17 @@ class BattleEngine(GameEngineElement):
         self.remove_from_engine()
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battle')
+        
+    def __youDied(self):
+        #self.remove_from_engine()
+        #self.game_engine.get_object('battlemenu').remove_from_engine()
+        #self.game_engine.get_object('battle').remove_from_engine()
+        #self.game_engine.get_object('dungeon').remove_from_engine()
+        #self.game_engine.get_object('manager').remove_from_engine()
+        #self.game_engine.get_object('mesg').remove_from_engine()
+        #self.game_engine.get_object('map').remove_from_engine()
+        #self.game_engine.get_object('term
+        pass
         
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -390,3 +417,10 @@ class BattleEngine(GameEngineElement):
         # Player Health
         health = 10 - profile.hero.healthLevel()
         screen.blit(self.__images['hp'][health], (25,25))
+        
+        #Battle Timer
+        if(self.battleTimer > 0):
+            tIndex = int(time.time() - self.battleTimer)
+            if tIndex > 10:
+                tIndex = 10
+            screen.blit(self.__images['bt'][tIndex], (25,130))
