@@ -1,7 +1,7 @@
 from gettext import gettext as _
 from constants import CHAR_PATH
 #from drawableobject.DrawableObject import DrawableObject
-from fortunengine.DynamicDrawableObject import DynamicDrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
 class InvalidEnemyException(Exception): pass
 
 import pygame
@@ -52,7 +52,9 @@ class Enemy(Actor):
             return int((self.ATT+self.BAE) * 1.5)
         elif name=="special":
             return int((self.ATT+self.BAE) * 1.3)
-
+    
+    def get_sprite(self):
+        return self.sprite
 
 def get_enemy(key):
     if key in ENEMY:
@@ -60,6 +62,4 @@ def get_enemy(key):
     else:
         raise InvalidEnemyException()
         
-def get_sprite(self):
 
-   return self.sprite

@@ -4,9 +4,9 @@ from BattleMenu import BattleMenuHolder
 from MagicMenu import MagicMenuHolder
 from Spritesheet import Spritesheet
 from Items import get_item
-from DrawableObject import DrawableObject
-from DynamicDrawableObject import DynamicDrawableObject
-from Scene import Scene
+from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
+from fortuneengine.Scene import Scene
 import pygame
 
 from constants import CHAR_PATH, HUD_PATH
@@ -41,8 +41,9 @@ class BattleEngine(GameEngineElement):
             e_index = self.current_room.get_enemy( i )
 
             if e_index != '0':
-                self.enemy_list.append( get_enemy( e_index ) )
-                self.get_engine.get_scene().addObjects([get_enemy(e_index)])
+                curE = get_enemy( e_index )
+                self.enemy_list.append( curE )
+                self.game_engine.get_scene().addObjects([curE.get_sprite()])
 
         # Preload images
         self.__drawableObjects = {}
@@ -51,7 +52,7 @@ class BattleEngine(GameEngineElement):
 
         self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100), '')
         self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '')
-        self.get_engine.get_scene().addObjects(self.__drawableObjects)
+        self.game_engine.get_scene().addObjects(self.__drawableObjects)
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )
@@ -405,4 +406,4 @@ class BattleEngine(GameEngineElement):
         #what the hell does ^^ do??
 #        pygame.display.update(_dirtyList)                                                           #5 new
         
-        self.get_engine.get_scene().update(clock.get_time())
+        self.game_engine.get_scene().update(clock.get_time())

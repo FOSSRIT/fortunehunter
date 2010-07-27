@@ -215,13 +215,13 @@ class GameEngine(object):
                  fnc(screen, tick_time)
                  self.__draw_time[str(fnc)] += time() - start
                  self.__draw_calls[str(fnc)] += 1
-            self.__scene.update(tick_time)
             # Print Frame Rate
             if self.__showfps:
                 text = self.__font.render('FPS: %d' % self.clock.get_fps(),
                        False, (255, 255, 255), (159, 182, 205))
                 screen.blit(text, (0, 0))
-                pygame.display.flip()
+            pygame.display.flip()
+            self.__scene.update(tick_time)
 
 
     def _event_loop(self):
