@@ -82,7 +82,7 @@ for aTrial in range(maxTrial):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            groups[image].update(clock.get_Time())
+            groups[image].update(clock.get_time())
             clock.tick()
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
