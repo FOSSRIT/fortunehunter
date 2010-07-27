@@ -210,7 +210,7 @@ class GameEngine(object):
 
         else:
             # __dirtyList=[]
-             for fnc in self.__draw_lst:
+            for fnc in self.__draw_lst:
                  start = time()
                  fnc(screen, tick_time)
                  self.__draw_time[str(fnc)] += time() - start
