@@ -92,12 +92,4 @@ for aTrial in range(maxTrial):
             groups[image].clear(screen, background)
 
     #print 1/((time()-start)/FRAME)
-    group1.calcPosition()
-    print "Position"
-    print group1.getXPos()
-    print group1.getYPos()
-    group1.calcSize()
-    print "Size"
-    print group1.getXSize()
-    print group1.getYSize()
     pygame.display.flip()
