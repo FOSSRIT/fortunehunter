@@ -49,8 +49,6 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def update(self, t): # just updates the frame / object
 
-       #if self.animations[cnt] == self._current_anim:
-
         print "last update     ", self._last_update
         timePassed = t + self._last_update#getting the time since the last time I updated my frame and adding it to the time that I last updated my frame
         print "time passed    ", timePassed

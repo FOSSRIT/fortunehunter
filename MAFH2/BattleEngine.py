@@ -2,10 +2,11 @@ from fortuneengine.GameEngineElement import GameEngineElement
 from Enemy import get_enemy
 from BattleMenu import BattleMenuHolder
 from MagicMenu import MagicMenuHolder
-from drawableobject.Spritesheet import Spritesheet
+from Spritesheet import Spritesheet
 from Items import get_item
-from drawableobject.DrawableObject import DrawableObject
-from drawableobject.DynamicDrawableObject import DynamicDrawableObject
+from DrawableObject import DrawableObject
+from DynamicDrawableObject import DynamicDrawableObject
+from Scene import Scene
 import pygame
 
 from constants import CHAR_PATH, HUD_PATH
@@ -374,7 +375,7 @@ class BattleEngine(GameEngineElement):
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 #
     def draw(self,screen,time_delta):
-        _dirtyList=[]
+        #_dirtyList=[]
         x=250
         y=150
         i = 1

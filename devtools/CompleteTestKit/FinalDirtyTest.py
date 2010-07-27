@@ -54,7 +54,7 @@ frameList2 = [
 for aTrial in range(maxTrial):
     start = time()
 
-    d = DynamicDrawableObject(frameList2,"text.txt",400,0,0,1,1)
+    d = DrawableObject(frameList2,"text.txt",400,0,0,1,1)
     d.goToAnim("anim1")
     d2 = DynamicDrawableObject(frameList2,"text.txt",400,40,40,1,1)
     d2.goToAnim("anim1")

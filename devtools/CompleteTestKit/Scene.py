@@ -7,7 +7,7 @@ class Scene(pygame.sprite.RenderUpdates):
 
        self._spritelist = []
        self._spritelist.append([sprites, sprites.getXPos(), sprites.getYPos()])
-       #RenderUpdates.__init__(self, sprites)
+       RenderUpdates.__init__(self, sprites)
 
        self.xPos = 0
        self.yPos = 0
