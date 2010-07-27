@@ -8,7 +8,7 @@ from DrawableObject import DrawableObject
 from DynamicDrawableObject2 import DynamicDrawableObject
 pygame.init()
 
-FRAME=2500
+FRAME=500
 screenWidth = 600
 screenHeight = 400
 numImages = 1
@@ -80,10 +80,10 @@ for aTrial in range(maxTrial):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            if frame % 4 == 0: groups[image].update(time())
-
+            groups[image].update(time())
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
+            print frame
 
         #draw the images flip/update
         pygame.display.update(dirtyList)
