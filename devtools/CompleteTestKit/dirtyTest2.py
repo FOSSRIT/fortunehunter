@@ -66,10 +66,10 @@ for aTrial in range(maxTrial):
     d5.goToAnim("anim1")
 
     group1=Scene(d)
-    group1.addObjects(d2)
-    group1.addObjects(d3)
-    group1.addObjects(d4)
-    group1.addObjects(d5)
+    group1.addObjects([d2])
+    group1.addObjects([d3])
+    group1.addObjects([d4])
+    group1.addObjects([d5])
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
