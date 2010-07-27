@@ -78,9 +78,12 @@ for aTrial in range(maxTrial):
     start = time()
     for frame in range(FRAME):
         dirtyList=[]
+        print "Made dirty list"
         for image in range(numImages):
+            print "In range numImages"
             #move / collision detection
             groups[image].update(time())
+            print "updated"
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
             print frame
