@@ -51,28 +51,24 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
        #if self.animations[cnt] == self._current_anim:
   
-        print 1
+        print self.animations.get(self._current_anim)[0]
+        print self.animations.get(self._current_anim)[0]
+
         timePassed = t + self._last_update
         if timePassed > self._delay:
 
-            print 2
             if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
-              print 3
               self._frame = self.animations.get(self._current_anim)[0]
 
-            print 4
             self._frame += timePassed/self._delay
-            print 5
+
             while self._frame >= self.animations.get(self._current_anim)[1]:
-              print 6
               framesPast = self._frame - self.animations.get(self._current_anim)[1]
               self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
 
-            print 7
             self.image = self._images[self._frame]
-            print 8
             self._last_update = timePassed%self._delay
-        print 9
+
         self._last_update = timePassed
 
     def nextFrame(self):
