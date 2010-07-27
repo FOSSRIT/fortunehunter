@@ -1,7 +1,7 @@
 from gettext import gettext as _
 from constants import CHAR_PATH
 #from drawableobject.DrawableObject import DrawableObject
-from drawableobject.DynamicDrawableObject import DynamicDrawableObject
+from fortunengine.DynamicDrawableObject import DynamicDrawableObject
 class InvalidEnemyException(Exception): pass
 
 import pygame
@@ -59,4 +59,7 @@ def get_enemy(key):
         return Enemy( key )
     else:
         raise InvalidEnemyException()
+        
+def get_sprite(self):
 
+   return self.sprite

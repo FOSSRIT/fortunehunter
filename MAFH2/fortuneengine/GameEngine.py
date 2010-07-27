@@ -17,6 +17,9 @@ import pygame
 from time import time
 from GameEngineConsole import GameEngineConsole
 from GameInspect import GameInspect
+from DrawableObject import DrawableObject
+from DynamicDrawableObject import DynamicDrawableObject
+from Scene import Scene
 
 
 class GameEngine(object):
@@ -49,6 +52,7 @@ class GameEngine(object):
         self.height = height
         size = width, height
         self.screen = pygame.display.set_mode(size)
+        self.__scene = Scene(DrawableObject([pygame.Surface((size))],''))
 
         # Engine Internal Variables
         self.__fps_cap = fps_cap
@@ -96,6 +100,10 @@ class GameEngine(object):
         it enters the draw flag.
         """
         self.__dirty = True
+        
+    def get_scene(self):
+    
+       return self.__scene
 
     def start_event_timer(self, function_cb, time):
         """
@@ -201,34 +209,20 @@ class GameEngine(object):
             pygame.display.flip()
 
         else:
-            __dirtyList=[]
-            for fnc in self.__draw_lst:
-                start = time()
-                __dirtyList.append(fnc(screen, tick_time))
-                self.__draw_time[str(fnc)] += time() - start
-                self.__draw_calls[str(fnc)] += 1
-
-            cnt = 0
-            while cnt < len(__dirty_lst):
-               cntTwo = 0
-               while cntTwo < len(__dirty_lst):
-                  if cnt != cntTwo
-                     if __dirty_lst[cnt].colliderect(__dirty_lst[cntTwo])
-                        __dirty_lst[cnt] = __dirty_lst[cnt].union(__dirty_lst[cntTwo])
-                        del __dirty_lst[cntTwo]
-                        cnt = cnt -1
-                        cntTwo = len(__dirty_lst) + 1
-                  cntTwo += 1
-               cnt += 1
-
+            # __dirtyList=[]
+             for fnc in self.__draw_lst:
+                 start = time()
+                 fnc(screen, tick_time)
+                 self.__draw_time[str(fnc)] += time() - start
+                 self.__draw_calls[str(fnc)] += 1
+            self.__scene.update(tick_time)
             # Print Frame Rate
             if self.__showfps:
                 text = self.__font.render('FPS: %d' % self.clock.get_fps(),
                        False, (255, 255, 255), (159, 182, 205))
-#                screen.blit(text, (0, 0))
-                __dirtyList.append(text.get_rect())
+                screen.blit(text, (0, 0))
+                pygame.display.flip()
 
-            pygame.display.update(__dirtyList)
 
     def _event_loop(self):
         """
