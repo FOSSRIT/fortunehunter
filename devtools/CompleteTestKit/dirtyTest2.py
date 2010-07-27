@@ -5,7 +5,7 @@ from boxes import BouncingBox
 from time import time
 from NewScene import Scene
 from DrawableObject import DrawableObject
-from DynamicDrawableObject import DynamicDrawableObject
+from DynamicDrawableObject2 import DynamicDrawableObject
 pygame.init()
 
 FRAME=2500
@@ -54,11 +54,22 @@ frameList2 = [
 for aTrial in range(maxTrial):
     start = time()
 
-    group1=Scene(DynamicDrawableObject(frameList2,"",1,0,0,1,1))
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,40,40,1,1)])
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,80,80,1,1)])
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,120,120,1,1)])
-    group1.addObjects([DynamicDrawableObject(frameList2,"",1,160,160,1,1)])
+    d = DynamicDrawableObject(frameList2,"text.txt",5,0,0,1,1)
+    d.goToAnim("anim1")
+    d2 = DynamicDrawableObject(frameList2,"text.txt",5,40,40,1,1)
+    d2.goToAnim("anim1")
+    d3 = DynamicDrawableObject(frameList2,"text.txt",5,80,80,1,1)
+    d3.goToAnim("anim1")
+    d4 = DynamicDrawableObject(frameList2,"text.txt",5,120,120,1,1)
+    d4.goToAnim("anim1")
+    d5 = DynamicDrawableObject(frameList2,"text.txt",5,160,160,1,1)
+    d5.goToAnim("anim1")
+
+    group1=Scene(d)
+    group1.addObjects(d2)
+    group1.addObjects(d3)
+    group1.addObjects(d4)
+    group1.addObjects(d5)
     groups=[group1]
     print (time()-start) ,
     print " -- Time to load"
@@ -69,9 +80,7 @@ for aTrial in range(maxTrial):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            if frame == 200:
-               groups[image].scaleScene(400,400)
-            if frame % 4 == 0: groups[image].update(screenWidth,screenHeight)
+            if frame % 4 == 0: groups[image].update(time())
 
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
