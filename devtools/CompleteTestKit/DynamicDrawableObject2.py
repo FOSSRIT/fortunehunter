@@ -53,6 +53,8 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
   
         print self.animations.get(self._current_anim)[0]
         print self.animations.get(self._current_anim)[1]
+        print t
+        print self._last_update
 
         timePassed = t + self._last_update
         print timePassed
