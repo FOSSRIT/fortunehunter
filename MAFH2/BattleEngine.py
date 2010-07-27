@@ -49,12 +49,12 @@ class BattleEngine(GameEngineElement):
         self.__drawableObjects = {}
         for i in ['arrow_select']:
             self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )],'')
-            self.game_engine.get_scene().addObjects(self.__drawableObjects[i])
+            self.game_engine.get_scene().addObjects([self.__drawableObjects[i]])
 
         self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100), '')
         self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '')
-        self.game_engine.get_scene().addObjects(self.__drawableObjects['hp'])
-        self.game_engine.get_scene().addObjects(self.__drawableObjects['bt'])
+        self.game_engine.get_scene().addObjects([self.__drawableObjects['hp']])
+        self.game_engine.get_scene().addObjects([self.__drawableObjects['bt']])
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )
@@ -402,10 +402,10 @@ class BattleEngine(GameEngineElement):
         # Player Health
         health = 10 - profile.hero.healthLevel()
 #        screen.blit(self.__images['hp'][health], (25,25))                                           #4 orig
-        self.__drawableObjects['hp'].goToAnim(heatlh)                   #4 new
+        self.__drawableObjects['hp'].goToAnim(health)                   #4 new
         self.__drawableObjects['hp'].setPosition(25,25)
         #enemy.sprite.updateAnim( tick_time )                                                        #2 new
         #what the hell does ^^ do??
 #        pygame.display.update(_dirtyList)                                                           #5 new
         
-        self.game_engine.get_scene().update(clock.get_time())
+        #self.game_engine.get_scene().update(clock.get_time())
