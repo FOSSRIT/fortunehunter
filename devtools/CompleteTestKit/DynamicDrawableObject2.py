@@ -55,6 +55,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
         print self.animations.get(self._current_anim)[1]
 
         timePassed = t + self._last_update
+        print timePassed
         if timePassed > self._delay:
 
             if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
