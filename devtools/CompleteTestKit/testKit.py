@@ -10,6 +10,7 @@ os.system("clear")
 pygame.init()
 
 #2345678911234567892123456789312345678941234567895123456789612345678971234567898
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """The file type array will be iterated through as the test progresses to tell 
 the program what extension and path to use for the images
 
@@ -23,7 +24,7 @@ of having a module that collects data pertenent to these tests once before the
 tests are run; so i will run the getVal() return the data in an array which is 
 then passed onto all def's thereafter.
 
-preferences[0] - All Tests -
+preferences[0] - Multiple Tests -
     [0][0] - screenWidth
     [0][1] - screenHeight
     [0][2] - images
@@ -34,12 +35,15 @@ preferences[1] - speedTest Specific
 preferences[2] - scaleTest Specific
     [2][0] - scale x
     [2][1] - scale y
+preferences[3] - rotateTest Specific
+    [3][0] - Degree to rotate image to
+    [3][1] - how many rotational steps to take
 """
 def getValues(keyIn):
     preferences={}
-
     print "\nTest Details\nFor default values, please leave the field blank"
     preferences[0]={}
+
     try:
         print "\nSet size, formatted as '>width,height':"
         print "Default value is '600,400'."
@@ -47,25 +51,35 @@ def getValues(keyIn):
         screenSize  = screenSize.split(',')
         preferences[0][0] = int(screenSize[0])
         preferences[0][1] = int(screenSize[1])
-
     except:
         print "Value was erroneous/blank, Default set..."
         preferences[0][0]=600
         preferences[0][1]=400
-    try:
-        print "\nHow many images would you like to draw?"
-        print "Default value is 5 images."
-        preferences[0][2]=int(raw_input('>>>'))
-    except:
-        print "Value was erroneous/blank, Default set..."
-        preferences[0][2]=5
-    try:
-        print "\nHow many trials would you like to run?"
-        print "Default value is 5 trials."
-        preferences[0][3]=int(raw_input('>>>'))
-    except:
-        print "Value was erroneous/blank, Default set..."
-        preferences[0][3]=5
+    
+    if '1' in keyIn or '2' in keyIn:       
+        try:
+            print "\nHow many images would you like to draw?"
+            print "Default value is 5 images."
+            preferences[0][2]=int(raw_input('>>>'))
+        except:
+            print "Value was erroneous/blank, Default set..."
+            preferences[0][2]=5
+        try:
+            print "\nHow many trials would you like to run?"
+            print "Default value is 5 trials."
+            preferences[0][3]=int(raw_input('>>>'))
+        except:
+            print "Value was erroneous/blank, Default set..."
+            preferences[0][3]=5
+        try:
+            print "\nHow many frames per trial would you like to run?"
+            print "(The average framerate is taken from this value.)"
+            print "Default value is 500 frames."
+            preferences[0][4]=int(raw_input('>>>'))
+        except:         
+            print "Value was erroneous/blank, Default set..."
+            preferences[0][4]=500
+
     if '2' in keyIn:
         preferences[2]={}
         try:
@@ -80,10 +94,30 @@ def getValues(keyIn):
             print "Value was erroneous/blank, Default set..."
             preferences[2][0] = 40
             preferences[2][1] = 40
-
+            
+    if '3' in keyIn:
+        preferences[3]={}
+        try:
+            print "\nTo what degree would you like to rotate (in degrees)?"
+            print "Default value is 90 degrees."
+            preferences[3][0] = int(raw_input('>>>'))
+        except:
+            print "Value was erroneous/blank, Default set..."
+            preferences[3][0] = 90
+        try:
+            print "\nHow many steps would you like to take?"
+            print "Default value is 18 steps."
+            preferences[3][1] = int(raw_input('>>>'))
+        except:
+            print "Value was erroneous/blank, Default set..."
+            preferences[3][1] = 18
+    
     print "END OF INFO GATHERING - Testing beginning now...\n"
     return preferences
 
+
+
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 #2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """Image() Animation Test 
 This test will simply load the image(s) to screen, and move them around to
@@ -104,43 +138,46 @@ def imgTest(preferences):
     ]
     screenWidth = preferences[0][0]
     screenHeight = preferences[0][1]
-    numImages = preferences[0][2]
+    maxImage = preferences[0][2]
     maxTrial = preferences[0][3]
+    maxFrame = preferences[0][4]
+    BACKGROUND = 152, 251, 152 # pale green
+    
+    ft=""   #filetype
+    img={}
+    i=1   #cycles images
+    
     try:
         f=preferences[0][9]
+        f.write("\n\n")
     except:
         f=preferences[0][9]=open('./logs/Test Results - %s.csv' 
             %str(datetime.now()),'a')
-    f.write("\n\nSpeed Test - "+str(datetime.now()))
+    
+    f.write("Speed Test - "+str(datetime.now()))
     f.write(",Width (pixels)"+','+"Height (pixels)"+','+
         "Trial Runs"+','+"Image Objects Drawn")
     f.write("\n,"+str(screenWidth)+','+str(screenHeight)+','+
-        str(maxTrial)+','+str(numImages))
-    f.write("\nFile Type"+','+"Time taken to load images to memory"+
-        ','+"Trials (frames per second)")
-    ft="" #filetype
-    img={}
-    r=0 #frame refreshes
-    i=1 #cycles images
-    t=0 #trial number n
+        str(maxTrial)+','+str(maxImage))
+    f.write("\nFile Type"+','+"Time taken to load images to memory (seconds)")
+    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+" (frames per second)")
+    
     print "width,height",
     print screenWidth,
     print ",",
     print screenHeight
+    
     screen = pygame.display.set_mode( [int(screenWidth),
-        int(screenHeight)] ) #Screen Set 600x400
+        int(screenHeight)] )
     pygame.display.set_caption("Speed Test Window")
-    BACKGROUND = 152, 251, 152 # pale green
 
-    while 1:
-        cnt=numImages
-        try:ft=ftArr[t]
-        except: 
-            print "\nTest Complete\n"
-            break
+    for trialType in range( len(ftArr) ):
+        ft=ftArr[trialType]
+            
         f.seek(0,2)
         f.write(str('\n'+ft[1]+' Speed Test'))
         f.seek(0,2)
+        
         start=time.time()
         imgSwitch={
             1: pygame.image.load("%s2%s"%(ft[1],ft[0])),
@@ -150,76 +187,62 @@ def imgTest(preferences):
             5: pygame.image.load("%s6%s"%(ft[1],ft[0])),
             6: pygame.image.load("%s7%s"%(ft[1],ft[0])),
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])),
-            8: pygame.image.load("%s9%s"%(ft[1],ft[0])),
-        }
+            8: pygame.image.load("%s9%s"%(ft[1],ft[0])),}
+        
         f.write(',')
         f.write(str(time.time()-start))
-        #print time.time()-start()
         print "Speed Test: "+ft[1]+" extension "+ft[0]
-        trial=maxTrial
-        while trial>0:
-            while cnt>0:
-                img[cnt,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
-                img[cnt,1]=  img[cnt,0].get_rect()
-                img[cnt,2]= [2,2] #speed
-                m=cnt*40
-                img[cnt,1]=img[cnt,1].move(m,m)
-                cnt=cnt-1
+
+        for aTrial in range(maxTrial):
+            for eachImage in range(maxImage):
             
-            r=0
+                img[eachImage,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
+                img[eachImage,1]=  img[eachImage,0].get_rect()
+                img[eachImage,2]= [2,2] # velocity of image(s)
+                displace=eachImage*40
+                img[eachImage,1]=img[eachImage,1].move(displace,displace)
+            
             start=time.time()
-            while 1:
-                cnt=numImages
-                while cnt>0:
-                    print cnt
-                    img[cnt,0]=imgSwitch.get(i,None)
-                    if img[cnt,1].left < 0 or img[cnt,1].right > screenWidth:
-                        img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
-                    if img[cnt,1].top < 0 or img[cnt,1].bottom > screenHeight:
-                        img[cnt,2]=[ img[cnt,2][0], -img[cnt,2][1] ]
-                    img[cnt,1] = img[cnt,1].move(img[cnt,2])
-                    screen.blit(img[cnt,0],img[cnt,1])
-                    cnt=cnt-1
+            
+            for frame in range(maxFrame):
+                for image in range(maxImage):
+                    img[image,0]=imgSwitch.get(i,None)
+                    if img[image,1].left < 0 or img[image,1].right > screenWidth:
+                        img[image,2]=[ -img[image,2][0], img[image,2][1] ]
+                        
+                    if img[image,1].top < 0 or img[image,1].bottom > screenHeight:
+                        img[image,2]=[ img[image,2][0], -img[image,2][1] ]
+                        
+                    img[image,1] = img[image,1].move(img[image,2])
+                    screen.blit(img[image,0],img[image,1])
+                            
                 pygame.display.flip()
                 i=i+1
                 if i>8: i=1
                 screen.fill(BACKGROUND)
-                r=r+1
-                if r>500: break
-                
-            print 1/((time.time()-start)/r)
+
+            print 1/((time.time()-start)/maxFrame)
             f.seek(0,2)
-            f.write(','+str(1/((time.time()-start)/r)))
-            trial=trial-1
-        t=t+1
+            f.write(','+str(1/((time.time()-start)/maxFrame)))
 
     ft="" #filetype
     img={}
-    r=0 #frame refreshes
     i=1 #cycles images
-    t=0 #trial number n    
-    f.write("\n\nNow using .convert()")
-    f.write("\nFile Type"+','+"Time taken to load images to memory"+','+
-        "Trials (frames per second)")
-    ft="" #filetype
-    img={}
-    r=0 #frame refreshes
-    i=1 #cycles images
-    t=0 #trial number n
-#Screen Set 600x400
+
+    f.write("\n\nUsing .convert()")
+    f.write("\nFile Type"+','+"Time taken to load images to memory (seconds)")
+    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+" (frames per second)")
+    
     screen = pygame.display.set_mode( [screenWidth,screenHeight] )
     pygame.display.set_caption("Speed convert() Test Window")
-    BACKGROUND = 152, 251, 152 # pale green
-
-    while 1:
-        cnt=numImages
-        try:ft=ftArr[t]
-        except: 
-            print "\nTest Complete\n"
-            break
+    
+    for trialType in range( len(ftArr) ):
+        ft=ftArr[trialType]
+            
         f.seek(0,2)
         f.write(str('\n'+ft[1]+' Speed convert() Test'))
         f.seek(0,2)
+        
         start=time.time()
         imgSwitch={
             1: pygame.image.load("%s2%s"%(ft[1],ft[0])).convert(),
@@ -229,49 +252,47 @@ def imgTest(preferences):
             5: pygame.image.load("%s6%s"%(ft[1],ft[0])).convert(),
             6: pygame.image.load("%s7%s"%(ft[1],ft[0])).convert(),
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])).convert(),
-            8: pygame.image.load("%s9%s"%(ft[1],ft[0])).convert(),
-        }        
+            8: pygame.image.load("%s9%s"%(ft[1],ft[0])).convert(),}
+        
         f.write(',')
         f.write( str(time.time()-start) )
         print "Convert Test: "+ft[1]+" extension "+ft[0]
-        trial=maxTrial
         
-        while trial>0:
-            while cnt>0:
-                img[cnt,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
-                img[cnt,1]=  img[cnt,0].get_rect()
-                img[cnt,2]= [2,2] #speed
-                m=cnt*40
-                img[cnt,1]=img[cnt,1].move(m,m)
-                cnt=cnt-1
-            r=0
+        for trial in range(maxTrial):
+            for image in range(maxImage):
+                img[image,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
+                img[image,1]=  img[image,0].get_rect()
+                img[image,2]= [2,2] #speed
+                displace = image * 40
+                img[image,1]=img[image,1].move( displace,displace )
+                
             start=time.time()
-            while 1:
-                cnt=numImages
-                while cnt>0:
-                    img[cnt,0]=imgSwitch.get(i,None)
-                    if img[cnt,1].left < 0 or img[cnt,1].right > screenWidth:
-                        img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
-                    if img[cnt,1].top < 0 or img[cnt,1].bottom > screenHeight:
-                        img[cnt,2]=[ img[cnt,2][0], -img[cnt,2][1] ]
-                    img[cnt,1] = img[cnt,1].move(img[cnt,2])
-                    screen.blit(img[cnt,0],img[cnt,1])
-                    cnt=cnt-1
+            
+            for frame in range(maxFrame):
+                for image in range(maxImage):
+                    img[image,0]=imgSwitch.get(i,None)
+                    if img[image,1].left < 0 or img[image,1].right > screenWidth:
+                        img[image,2]=[ -img[image,2][0], img[image,2][1] ]
+                    
+                    if img[image,1].top < 0 or img[image,1].bottom > screenHeight:
+                        img[image,2]=[ img[image,2][0], -img[image,2][1] ]
+                    
+                    img[image,1] = img[image,1].move(img[image,2])
+                    screen.blit(img[image,0],img[image,1])
+                    
                 pygame.display.flip()
                 i=i+1
                 if i>8: i=1
                 screen.fill(BACKGROUND)
-                r=r+1
-                if r>500: break
                 
-            print 1/((time.time()-start)/r)
+            print 1/((time.time()-start)/maxFrame)
             f.seek(0,2)
-            f.write(','+str(1/((time.time()-start)/r)))
-            trial=trial-1
-
-        t=t+1
+            f.write(','+str(1/((time.time()-start)/maxFrame)))
+    preferences[0][9]=f
 
 
+
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 #2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """Scalability Test 
 The scalability test is still very much hard coded and not very elegant, but
@@ -293,10 +314,13 @@ def scaleTest(preferences):
     sizeTo = [ preferences[2][0],preferences[2][1] ]
     screenWidth = preferences[0][0]
     screenHeight = preferences[0][1]
-    numImages = preferences[0][2]
+    maxImage = preferences[0][2]
     maxTrial = preferences[0][3]
+    maxFrame = preferences[0][4]
+
     try:
         f=preferences[0][9]
+        f.write("\n\n")
     except:
         f=preferences[0][9]=\
             open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')
@@ -336,25 +360,21 @@ def scaleTest(preferences):
         [".png","art/PNGT/PNGT200/"] , 
         [".png","art/PNGT/PNGT400/"] ]
     
-    f.write("\n\nScaling Test"+str(datetime.now()))
+    f.write("Scaling Test"+str(datetime.now()))
     f.write(",Width (pixels)"+','+"Height (pixels)"+','+
         "Trial Runs"+','+"Image Objects Drawn")
     f.write("\n,"+str(screenWidth)+','+str(screenHeight)+
-        ','+str(maxTrial)+','+str(numImages))
-    f.write("\nFile Type"+','+"Time taken to load images to memory"+
-        ','+"Trials (frames per second)")
+        ','+str(maxTrial)+','+str(maxImage))
+    f.write("\nFile Type"+','+"Time taken to load images to memory (seconds)")    
+    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+" (frames per second)")
     
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Scaling Test Window")
     BACKGROUND = 152, 251, 152 # pale green
 
+    for trialType in range( len(ftArr) ):
+        ft=ftArr[trialType]
 
-    while 1:
-        cnt=numImages
-        try:ft=ftArr[t]
-        except: 
-            print "\nTest Complete\n"
-            break
         print "Scale Test: "+ft[1]+" extension "+ft[0]
         trialthis=maxTrial
         f.seek(0,2)
@@ -362,6 +382,7 @@ def scaleTest(preferences):
         f.seek(0,2)
         start=time.time()
     # This timer will reflect the time taken to load and resize images in memory
+        
         switcher = {
     # This is also where we need advise regarding implementing convert()
             1: pygame.transform.scale( pygame.image.load("%s2%s"%(ft[1],
@@ -383,109 +404,155 @@ def scaleTest(preferences):
             9: pygame.transform.scale( pygame.image.load("%s1%s"%(ft[1],
                 ft[0])).convert(),(sizeTo[0],sizeTo[1] ))
         }
+
         f.write(',')
         f.write( str(time.time()-start) )
     # Here ends the loading section, and hereafter we jump into the main loop
-        while trialthis>0:
-            while cnt>0: 
+        
+        for trial in range(maxTrial):
+            for image in range(maxImage):
     # establish the initial state for the images of the next trial
-                img[cnt,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
-                img[cnt,0]= pygame.transform.scale(img[cnt,0], \
+                img[image,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
+                img[image,0]= pygame.transform.scale(img[image,0], \
                     (sizeTo[0], sizeTo[1])) 
-                img[cnt,1]=  img[cnt,0].get_rect()
-                img[cnt,2]= [2,2] #speed
-                m=cnt*40
+                img[image,1]=  img[image,0].get_rect()
+                img[image,2]= [2,2] #speed
+                displace=image*40
     # Here I move images to avoid indistinguishable stacks of image rectangles
-                img[cnt,1]=img[cnt,1].move(m,m) 
-                cnt=cnt-1
-            r=0
+                img[image,1]=img[image,1].move(displace,displace)
             start=time.time()
             
-            while 1:
+            for frame in range(maxFrame):
     # This loop is the 'main event' so to speak, as it is the section that is
     # measured in terms of frames per second
-
-                cnt=numImages # For each 'ball' icon loaded
-                while cnt>0: # Cycle and check if the 'ball' should bounce
-
-                    img[cnt,0]=switcher.get(i,None)
-                    if img[cnt,1].left < 0 or img[cnt,1].right > screenWidth:
-                        img[cnt,2]=[ -img[cnt,2][0], img[cnt,2][1] ]
-                    if img[cnt,1].top < 0 or img[cnt,1].bottom > screenHeight:
-                        img[cnt,2]=[ img[cnt,2][0], -img[cnt,2][1] ]
-                    img[cnt,1] = img[cnt,1].move(img[cnt,2]) 
+                screen.fill(BACKGROUND)
+                for image in range(maxImage):
+                    img[image,0]=switcher.get(i,None)
+                    if img[image,1].left < 0 or img[image,1].right > screenWidth:
+                        img[image,2]=[ -img[image,2][0], img[image,2][1] ]
+                    
+                    if img[image,1].top < 0 or img[image,1].bottom > screenHeight:
+                        img[image,2]=[ img[image,2][0], -img[image,2][1] ]
+                    
+                    img[image,1] = img[image,1].move(img[image,2]) 
     # Move the 'ball' image accordingly, plot the change
-                    screen.blit(img[cnt,0],img[cnt,1])
-                    cnt=cnt-1 
+                    screen.blit(img[image,0],img[image,1])
+
                 pygame.display.flip()
-    # "Make it so, number two," on those changes above
+    # "Make it so, number two", on those changes above
                 i=i+1
                 if i>8: i=1
-                screen.fill(BACKGROUND)
-                r=r+1
-                if r>500: break
-    # After 500 frames, we print the average frame rate to the terminal
-            print 1/((time.time()-start)/r)
+
+            print 1/((time.time()-start)/maxFrame)
             f.seek(0,2)
-            f.write(','+str(1/((time.time()-start)/r)))
-            trialthis=trialthis-1
-            preferences[0][9]=f
-        t=t+1
-
-
-
-
-
-
-
+            f.write(','+str(1/((time.time()-start)/maxFrame)))        
+    preferences[0][9]=f
 
 
 
 #2345678911234567892123456789312345678941234567895123456789612345678971234567898
-def rotateTest():
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
+"""rotateTest is a test that will move a selected image by way of a select 
+variety of methods, with the controlled variables being the method, the number
+of steps, the screen's dimensions, the number of trials, and the rotation (in 
+degrees) for each step.  The static variables include the image itself.
+"""
+def rotateTest(preferences):
     screenWidth = preferences[0][0]
     screenHeight = preferences[0][1]
-    numImages = preferences[0][2]
-    maxTrial = preferences[0][3]
+    maxRotate = preferences[3][0]
+    degreeRotate = preferences[3][0] / preferences[3][1]
     BACKGROUND = (152, 251, 152) # pale green
 
+    try:
+        f=preferences[0][9]
+        f.write("\n\n")
+    except:
+        f=preferences[0][9]=\
+            open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')    
+            
     screen=pygame.display.set_mode((screenWidth,screenHeight))
     pygame.display.set_caption("Rotate Test Window")
-    pygame.display.set_caption("'Save the Original!' Image Test")
 
-    # myimage[0] is the convert()'ed image surface, to remain untouched
-    myimage = [
-        pygame.Surface.convert(pygame.image.load("hearthstone.jpg")) ,
-        pygame.Surface.convert(pygame.image.load("hearthstone.jpg")),
-        pygame.Surface.convert(pygame.image.load("hearthstone.jpg")).get_rect() ,
-        0
-        ]
-    iterate=0
+    myImage=[ pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ) ,
+        pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ),
+        pygame.Surface.convert( pygame.image.load("art/GIF/1.gif")).get_rect() ,
+        0 ]
+    
+    f.write("Rotation Testing,"+str(datetime.now())+",Total Rotation,Rotational Steps,Degrees per Step,Original Image Surface")
+    f.write("\n,,"+str(preferences[3][0])+','+str(preferences[3][1])+','+str(degreeRotate)+','+str( myImage[0] ))
+    
+    f.write("\nTest type,Time of test,Screen capture location,Final image surface info")
+    
     print "\nTest 1 : Same image called evey time, original image not edited.\n"
-    while iterate<19:
-        start=time.time()
-        myimage[3]= int( myimage[3] ) + 10
-        myimage[1]=pygame.transform.rotate(myimage[0],myimage[3])
-        myimage[2]=myimage[1].get_rect()
+    totalTime=0
+    for step in range(preferences[3][1]):
+        stepStart=time.time()
+        myImage[3]= int( myImage[3] ) + degreeRotate
+        myImage[1]=pygame.transform.rotate(myImage[0],myImage[3])
+        myImage[2]=myImage[1].get_rect()
         screen.fill(BACKGROUND)
         
-        screen.blit( myimage[1] ,
-            ( -( myimage[1].get_width() - myimage[0].get_width() )/2 ,
-              -( myimage[1].get_height()-myimage[0].get_height() )/2 ) )
-        
+        screen.blit( myImage[1] ,
+            (((screenWidth/2) - (myImage[1].get_width()/2)) ,
+            ((screenHeight/2) - (myImage[1].get_height()/2))) )
         pygame.display.flip()
-        print "\n%35s%35s" %("Rotation #" , "Orig. Img Info")
-        print "%35s%35s" %(   str(iterate) , str(myimage[0]) )
-        print "%35s%35s" %("Rot. Img. Info" , "Rot. Img. Rect.")
-        print "%35s%35s" %( str(myimage[1]) ,  str(myimage[2]))
-        print "%35s%35s" %("Degrees from 0" , "Time: Calc. Rot.")
-        print "%35s%35s" %( str(myimage[3]) ,  str(time.time()-start) )
-        iterate=iterate+1
+        
+        stepEnd=time.time()
 
+        totalTime+=(float(stepEnd)-float(stepStart))
+        
+        print "\n%35s%35s" %("Rotation #"     , str(step+1) )
+        print "%35s%35s" %( "Degrees from 0"  , str(myImage[3]) )
+        print "%35s%35s" %( "Time: Calc. Rot.", str(stepEnd-stepStart) )
+        print "%35s%35s" %( "Orig. Img Info" , str(myImage[0]) )
+        print "%35s%35s" %( "Rot. Img. Rect.", str(myImage[2]) )
+        print "%35s%35s" %( "Rot. Img. Info" , str(myImage[1]) )
+    
+    screenPath = './logs/screencaps/reference-'+ str(datetime.now()) +'.bmp'
+    pygame.image.save(screen,screenPath)
+    f.write("\nReference Image Saved,"+str(totalTime)+','+str(screenPath)+','+str(myImage[1]))
+    
+    #simple continuous rotate test    
+    myImage=[ pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ) ,
+        pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ),
+        pygame.Surface.convert( pygame.image.load("art/GIF/1.gif")).get_rect() ,
+        0 ]
+    totalTime=0
+    
+    for step in range(preferences[3][1]):
+        stepStart=time.time()
+        myImage[1]=pygame.transform.rotate(myImage[1],degreeRotate)
+        myImage[2]=myImage[1].get_rect()
+        screen.blit( myImage[1] ,
+            (((screenWidth/2) - (myImage[1].get_width()/2)) ,
+            ((screenHeight/2) - (myImage[1].get_height()/2))) )
+        pygame.display.flip()
+        stepStop=time.time()
 
+        totalTime+=float(stepStop)-float(stepStart)
+        myImage[3]+=degreeRotate
+        
+        print "\n%35s%35s" %("Rotation #"     , str(step+1) )
+        print "%35s%35s" %( "Degrees from 0"  , str(myImage[3]) )
+        print "%35s%35s" %( "Time: Calc. Rot.", str(stepEnd-stepStart) )
+        print "%35s%35s" %( "Orig. Img Info" , str(myImage[0]) )
+        print "%35s%35s" %( "Rot. Img. Rect.", str(myImage[2]) )
+        print "%35s%35s" %( "Rot. Img. Info" , str(myImage[1]) )
+
+    screenPath = './logs/screencaps/Continuous-'+ str(datetime.now()) +'.bmp'
+    pygame.image.save(screen,screenPath)
+    f.write("\nContinuous Rotate,"+str(totalTime)+','+str(screenPath)+','+str(myImage[1]))
+    
+    preferences[0][9]=f
+    
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 #2345678911234567892123456789312345678941234567895123456789612345678971234567898
 while 1:
-    print "\nWelcome to the master File Type Tester Interface"
+    pygame.display.quit()
+    try:preferences[0][9].close()
+    except:pass
+    print "\nWelcome to the Master Test Interface"
     print "Authors: Scott 'JT' Mengel and Dave Silverman"
     print "\nPlease select the test(s) you want to run in the order you want ",
     print "to run them (Do not seperate them with any characters)."
@@ -499,12 +566,12 @@ while 1:
     print "Enter 'Exit' to return to the terminal and other menu options to come!\n"
 
     acceptible='^[1-3]$'
-    list={ 1:imgTest,
+    menuItems={ 1:imgTest,
         2:scaleTest,
         3:rotateTest }
     keyIn="temp val"
 
-    while 1:
+    while True:
         keyIn=str(raw_input(">>>"))
         if 'exit' in keyIn or 'Exit' in keyIn: 
             print "\nClosing...\n"
@@ -512,9 +579,9 @@ while 1:
         for i in keyIn:
             if not re.search(acceptible,i): break
             else:
-                preferences=dict(getValues(keyIn))
+                preferences=dict( getValues(keyIn) )
                 for i in keyIn:
-                    list.get(int(i))(preferences)
+                    menuItems.get(int(i))(preferences)
                 break
         break
 
