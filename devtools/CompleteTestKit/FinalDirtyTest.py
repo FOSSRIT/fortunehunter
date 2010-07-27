@@ -3,9 +3,9 @@ import pygame
 from pygame.locals import *
 from boxes import BouncingBox
 from time import time
-from NewScene import Scene
+from Scene import Scene
 from DrawableObject import DrawableObject
-from DynamicDrawableObject2 import DynamicDrawableObject
+from DynamicDO import DynamicDrawableObject
 pygame.init()
 
 FRAME=500

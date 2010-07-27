@@ -26,7 +26,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 #             self._last_update = timePassed%self._delay
 #         self._last_update = timePassed
 
-    def updateCurrentAnimation(self, right, bottom):
+    def updateWithMovementself, right, bottom):
 
          # If we're at the top or bottom of the screen, switch directions.
         if (self.yPos + self.ySize) >= bottom or self.yPos < 0: self.ySpeed = self.ySpeed * -1
