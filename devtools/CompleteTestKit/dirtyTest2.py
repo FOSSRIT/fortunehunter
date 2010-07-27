@@ -76,13 +76,15 @@ for aTrial in range(maxTrial):
 
 
     start = time()
+    other = time()
     for frame in range(FRAME):
         dirtyList=[]
         for image in range(numImages):
             #move / collision detection
-            groups[image].update(time())
+            groups[image].update(time() - other)
             #individually blit each image group - add to list for update
             dirtyList.extend(groups[image].draw(screen))
+            other = time()
 
         #draw the images flip/update
         pygame.display.update(dirtyList)
