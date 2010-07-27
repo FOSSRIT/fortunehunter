@@ -5,7 +5,7 @@ from boxes import BouncingBox
 from time import time
 from Scene import Scene
 from DrawableObject import DrawableObject
-from DynamicDrawableObject import DynamicDrawableObject
+from DynamicDO import DynamicDrawableObject
 pygame.init()
 
 FRAME=500

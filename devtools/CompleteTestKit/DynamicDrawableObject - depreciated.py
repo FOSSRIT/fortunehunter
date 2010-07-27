@@ -26,7 +26,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 #             self._last_update = timePassed%self._delay
 #         self._last_update = timePassed
 
-    def updateWithMovementself, right, bottom):
+    def update(self, right, bottom):
 
          # If we're at the top or bottom of the screen, switch directions.
         if (self.yPos + self.ySize) >= bottom or self.yPos < 0: self.ySpeed = self.ySpeed * -1
@@ -47,29 +47,33 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
            
         self.image = self._images[self._frame]
 
-    def update(self, t):
+    def updateCurrentAnimation(self, t):
 
-       #if self.animations[cnt] == self._current_anim:
-
-        print "last update     ", self._last_update
-        timePassed = t + self._last_update#getting the time since the last time I updated my frame and adding it to the time that I last updated my frame
-        print "time passed    ", timePassed
-        if (timePassed) > self._delay:
-            if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
-              self._frame = self.animations.get(self._current_anim)[0]
-
-            self._frame += timePassed/self._delay
-            print "frame   ", self._frame
-
-            while self._frame >= self.animations.get(self._current_anim)[1]:
-              framesPast = self._frame - self.animations.get(self._current_anim)[1]
-              self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
-
-            self.image = self._images[self._frame]
-            self._last_update = timePassed%self._delay
-        else:
+        cnt = 0
+        while cnt < len(animations):
            
-           self._last_update = timePassed
+           if animations[cnt] == self._current_anim:
+        
+              timePassed = t + self._last_update
+              if timePassed > self._delay:
+
+                  if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
+
+                    self._frame = self.animations.get(self._current_anim)[0]
+
+                  self._frame += timePassed/self._delay
+                  while self._frame >= self.animations.get(self._current_anim)[1]:
+      
+                    framesPast = self._frame - self.animations.get(self._current_anim)[1]
+                    self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
+      
+                  self.image = self._images[self._frame]
+                  self._last_update = timePassed%self._delay
+              self._last_update = timePassed
+                  
+              cnt = len(animations)
+
+           cnt += 1
 
     def nextFrame(self):
 

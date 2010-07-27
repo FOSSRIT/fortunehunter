@@ -81,7 +81,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
         self.image = self._images[self._frame]
 
-    def nextCurrentAnimFrame(self): # push to the next frame of curr animation
+    def nextCurrentAnimFrame(self):
 
         cnt = 0
         while cnt < len(animations):
