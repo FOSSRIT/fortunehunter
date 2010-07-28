@@ -33,7 +33,7 @@ for aTrial in range(maxTrial):
     start = time()
 
     font = pygame.font.Font(None, 16)
-    d = DrawableFontObject(font, "hello world")
+    d = DrawableFontObject("hello world", font)
     d.goToAnim("anim1")
 
     group1=Scene(d)
