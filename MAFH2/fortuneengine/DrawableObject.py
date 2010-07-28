@@ -11,8 +11,8 @@ class DrawableObject(pygame.sprite.Sprite):
         self._images = []
         self._origImages = []
         while cnt < len(images):
-            self._images.append(images[cnt].convert())
-            self._origImages.append(images[cnt].convert())
+            self._images.append(images[cnt].convert_to_alpha())
+            self._origImages.append(images[cnt].convert_to_alpha())
             cnt += 1
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]
