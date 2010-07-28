@@ -6,8 +6,9 @@ class GameMenuHolder( GameEngineElement ):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        bg = pygame.image.load(background).convert()
-        self.background = pygame.transform.scale(bg, (width, height))
+        self.background = DrawableObject([pygame.image.load(background).convert()], '')
+        self.background.scale(width, height)
+        self.game_engine.get_scene().addObject(self.background)
         self.width = width
         self.height = height
 
