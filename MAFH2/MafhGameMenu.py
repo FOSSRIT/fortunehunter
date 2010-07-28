@@ -29,6 +29,7 @@ class GameMenuHolder( GameEngineElement ):
 
     def clear_menu(self):
         if self.menu:
+            self.menu.clear_menu()
             self.menu.remove_from_engine()
             self.menu = None
 
@@ -107,7 +108,7 @@ class GameMenuHolder( GameEngineElement ):
 class GameMenu(GameEngineElement):
     def __init__(self, game_menu, width=800, height=400):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
-        self.menu = ezmenu.EzMenu(game_menu)
+        self.menu = ezmenu.EzMenu(game_menu, self.game_engine.get_scene())
         self.menu.center_at(width - (width/3), height/2)
         self.menu.help_text_at( 0, height-(height/10))
         self.menu.set_font(pygame.font.SysFont("Arial", 20))
@@ -118,5 +119,8 @@ class GameMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
+    def clear_menu(self):
+        self.menu.clear_menu()
+        
     def draw(self,screen,time_delta):
         self.menu.draw( screen )

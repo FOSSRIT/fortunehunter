@@ -209,7 +209,6 @@ class GameEngine(object):
             pygame.display.flip()
 
         else:
-            # __dirtyList=[]
             for fnc in self.__draw_lst:
                  start = time()
                  fnc(screen, tick_time)
@@ -220,10 +219,9 @@ class GameEngine(object):
                 text = self.__font.render('FPS: %d' % self.clock.get_fps(),
                        False, (255, 255, 255), (159, 182, 205))
                 screen.blit(text, (0, 0))
-            pygame.display.flip()
+            #pygame.display.flip()
             self.__scene.update(tick_time)
-            pygame.display.update(self.__scene.draw(self.screen))
-            #self.__scene
+            pygame.display.update(self.__scene.draw(screen))
 
     def _event_loop(self):
         """
