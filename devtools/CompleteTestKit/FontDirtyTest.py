@@ -32,7 +32,7 @@ start = time()
 for aTrial in range(maxTrial):
     start = time()
 
-    font = pygame.font.SysFont("cmr10", 100)
+    font = pygame.font.SysFont("cmr10", 24)
     d = DrawableFontObject("hello world", font)
     d.goToAnim("anim1")
 
