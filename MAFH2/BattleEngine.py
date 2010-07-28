@@ -380,7 +380,6 @@ class BattleEngine(GameEngineElement):
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 #
     def draw(self,screen,time_delta):
-        #_dirtyList=[]
         x=250
         y=150
         i = 1
@@ -390,10 +389,8 @@ class BattleEngine(GameEngineElement):
         # Draw Enemy and Item Selection
         for enemy in self.enemy_list:
             if enemy.alive and self.active_target == i:
-                self.__drawableObjects['arrow_select'].setPosition(x+(i*200),y-25)                        #1 orig
-            #enemy.sprite.updateAnim( tick_time )                                                    #DO SOMETHING
+                self.__drawableObjects['arrow_select'].setPosition(x+(i*200),y-25)
             enemy.get_sprite().setPosition(x+(i*200),y)
-            #screen.blit(enemy.sprite.image, (x+(i*200),y) )                                         #DO SOMETHING
             i = i+1
 
         # Draw Hud
@@ -401,11 +398,6 @@ class BattleEngine(GameEngineElement):
 
         # Player Health
         health = 10 - profile.hero.healthLevel()
-#        screen.blit(self.__images['hp'][health], (25,25))                                           #4 orig
-        self.__drawableObjects['hp'].goToAnim(health)                   #4 new
+        self.__drawableObjects['hp'].goToAnim(health)
         self.__drawableObjects['hp'].setPosition(25,25)
-        #enemy.sprite.updateAnim( tick_time )                                                        #2 new
-        #what the hell does ^^ do??
-#        pygame.display.update(_dirtyList)                                                           #5 new
-        
-        #self.game_engine.get_scene().update(clock.get_time())
+
