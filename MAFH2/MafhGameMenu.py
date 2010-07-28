@@ -1,5 +1,6 @@
 import pygame, ezmenu
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableObject import DrawableObject
 
 class GameMenuHolder( GameEngineElement ):
     def __init__(self, callback, background=None, width=1200, height=900):
@@ -13,12 +14,13 @@ class GameMenuHolder( GameEngineElement ):
         self.height = height
 
     def remove_from_engine(self):
+        self.game_engine.get_scene().removeObject(self.background)
         super( GameMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
     def draw(self,screen,time_delta):
         if self.background:
-            screen.blit(self.background,(0,0))
+            self.background.setPosition(0,0)
         else:
             screen.fill((0, 0, 255))
 
