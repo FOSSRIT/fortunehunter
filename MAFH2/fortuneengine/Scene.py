@@ -65,8 +65,11 @@ class Scene(pygame.sprite.RenderUpdates):
            cnt += 1
 
     def removeObject(self, sprite):
+       print "1"
        RenderUpdates.remove_internal(self, sprite)
+       PRINT "2"
        self._spritelist.remove(sprite)
+       PRINT "3"
 
     def getObject(self, index):
 
