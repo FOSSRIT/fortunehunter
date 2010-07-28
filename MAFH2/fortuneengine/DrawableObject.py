@@ -41,9 +41,12 @@ class DrawableObject(pygame.sprite.Sprite):
              self.animations[animValues[0]] =  [int(animValues[1]), int(animValues[2])]
              currentLine = f.readline()
 
+           self.goToAnim("anim1")
+
         else:
         
-            self.animations["basic"] = [0, len(self._images) - 1]
+            self.animations["anim1"] = [0, len(self._images) - 1]
+            self.goToAnim("anim1")
 
     def addImages(self, images):
 
