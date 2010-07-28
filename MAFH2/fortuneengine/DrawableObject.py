@@ -5,14 +5,12 @@ class DrawableObject(pygame.sprite.Sprite):
     def __init__(self,images,textfileName,fps = 10, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
         pygame.sprite.Sprite.__init__(self)
         cnt = 0
-        
-        #self._originals = images
-        #self._images = images
+
         self._images = []
         self._origImages = []
         while cnt < len(images):
-            self._images.append(images[cnt].convert_to_alpha())
-            self._origImages.append(images[cnt].convert_to_alpha())
+            self._images.append(images[cnt].convert_alpha())
+            self._origImages.append(images[cnt].convert_alpha())
             cnt += 1
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]
