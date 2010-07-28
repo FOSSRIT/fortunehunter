@@ -8,89 +8,121 @@ from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
 
-FRAME=500
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
+
+#GREEN = 0, 192, 0
 screenWidth = 600
 screenHeight = 400
-numImages = 1
-maxTrial = 5 # multiple trials, but hard coded in this test
-dirtyList=[]
+maxGroup = 1
+maxTrial = 1 # multiple trials, but hard coded in this test
+maxFrame=500 #temperary
+infoFilePath = 'animInfo.txt'
 
-print "width,height",
-print screenWidth,
-print ",",
-print screenHeight
-
-screen = pygame.display.set_mode( [int(screenWidth),
-    int(screenHeight)] ) #Screen Set 600x400
-pygame.display.set_caption("Sprite Speed Test Window")
-GREEN = 0, 192, 0 # green
+screen = pygame.display.set_mode(( screenWidth,screenHeight) )
+pygame.display.set_caption("Testing Custom Objects - FinalDirtyTest.py")
 background = pygame.image.load("Room.gif")
-screen.blit(background,[0,0])
-pygame.display.flip()
+
 start = time()
-frameList = [
-    pygame.image.load("./art/BMP24/1.bmp").convert(),
-    pygame.image.load("./art/BMP24/2.bmp").convert(),
-    pygame.image.load("./art/BMP24/3.bmp").convert(),
-    pygame.image.load("./art/BMP24/4.bmp").convert(),
-    pygame.image.load("./art/BMP24/5.bmp").convert(),
-    pygame.image.load("./art/BMP24/6.bmp").convert(),
-    pygame.image.load("./art/BMP24/7.bmp").convert(),
-    pygame.image.load("./art/BMP24/8.bmp").convert(),
-    pygame.image.load("./art/BMP24/9.bmp").convert(),
-]
-frameList2 = [
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/1.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/2.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/3.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/4.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/5.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/6.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/7.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/8.bmp").convert(),
-    pygame.image.load("./Animation Styles/IndividualFrames/bmp16/a2/9.bmp").convert(),
-]
 
-for aTrial in range(maxTrial):
+for trial in range(maxTrial):
+    print "New trial"
+    screen.blit( background , [0,0] )
+    pygame.display.flip()
+    
     start = time()
+    
+    ###NOTE: Convert to an encapsulated LOOP###
+    
+    surfaceList = [
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/1.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/2.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/3.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/4.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/5.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/6.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/7.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/8.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/9.bmp").convert()
+    ]
 
-    d = DrawableObject(frameList2,"text.txt",400,0,0,1,1)
-    d.goToAnim("anim1")
-    d2 = DynamicDrawableObject(frameList2,"text.txt",400,40,40,1,1)
-    d2.goToAnim("anim1")
-    d3 = DynamicDrawableObject(frameList2,"text.txt",400,80,80,1,1)
-    d3.goToAnim("anim1")
-    d4 = DynamicDrawableObject(frameList2,"text.txt",400,120,120,1,1)
-    d4.goToAnim("anim1")
-    d5 = DynamicDrawableObject(frameList2,"text.txt",400,160,160,1,1)
-    d5.goToAnim("anim1")
+    """ Object 1 will be a static image that will not be animating NOTE: once 
+        you pass the list of frames to the object, they and their encapsulated 
+        metadata are no longer only surfaces but are considered instead to be 
+        Sprite Objects
+    """
+    drawObject1 = DrawableObject(surfaceList, infoFilePath, None, 0 , 0 , 1 , 1)
+    drawObject1.goToAnim("anim1")
+    
+    """ 2-4 are dynamic objects that will refresh at varying rates to illustrate
+        the capabilities of our code to allow users to have varying refresh rate
+    """
+    drawObject2 = DynamicDrawableObject(
+        surfaceList,infoFilePath,24,40,40,1,1)
+    drawObject2.goToAnim("anim1")
+    
+    drawObject3 = DynamicDrawableObject(
+        surfaceList,infoFilePath,24,80,80,1,1)
+    drawObject3.goToAnim("anim1")
+    
+    drawObject4 = DynamicDrawableObject(
+        surfaceList,infoFilePath,24,120,120,1,1)
+    drawObject4.goToAnim("anim1")
+    
+    drawObject5 = DynamicDrawableObject(
+        surfaceList,infoFilePath,24,160,160,1,1)
+    drawObject5.goToAnim("anim1")
 
-    group1=Scene(d)
-    group1.addObjects([d2])
-    group1.addObjects([d3])
-    group1.addObjects([d4])
-    group1.addObjects([d5])
-    groups=[group1]
+    group1 = Scene( drawObject1 )
+    group1.addObjects( [drawObject2] )
+    group1.addObjects( [drawObject3] )
+    group1.addObjects( [drawObject4] )
+    group1.addObjects( [drawObject5] )
+
+    ### END: Convert to an encapsulated LOOP###
+
+    """ We only need a single group for this example, but this format of an 
+        ordered list of our scenes/groups will be echoed in our end 
+        implementation.
+        
+        Revisit this and possibly simplify: this isn't a tutorial for suggested
+        techniques, but a test to demonstrate that it can be applied and to 
+        record the data to imply why it's a viable alternative
+    """
+    
+#    groupsList=[group1] # < --- What the hell and why
+
     print (time()-start) ,
-    print " -- Time to load"
-
+    print " -- Time to load and sort animations into groupsListList"
 
     clock = pygame.time.Clock()
-    clock.tick()
+    clock.tick() # <--Updates the clock variable in milliseconds
+    
     start = time()
-    for frame in range(FRAME):
+    for maxFrame in range(maxFrame):
         dirtyList=[]
-        for image in range(numImages):
-            #move / collision detection
-            groups[image].update(clock.get_time())
+
+        """ Move/collision detection, individually blit each image group, add to 
+            dirtyList within the trial, this iterates through a list containing 
+            sublists of surfaces that we want to update.  This list contains both 
+        """
+        for grp in range(maxGroup):
+            groupsList[grp].update( clock.get_time() )
             clock.tick()
-            #individually blit each image group - add to list for update
-            dirtyList.extend(groups[image].draw(screen))
+            dirtyList.extend( groupsList[grp].draw(screen) )
+        print dirtyList
+        pygame.display.update(dirtyList) # <-- is there a faster way to place?
+        
+        for grp in range(maxGroup):
+            groupsList[grp].clear(screen, background)
 
-        #draw the images flip/update
-        pygame.display.update(dirtyList)
-        for image in range(numImages):
-            groups[image].clear(screen, background)
-
-    #print 1/((time()-start)/FRAME)
-    pygame.display.flip()
+    print "Trial's average framerate was " , str(1/((time()-start)/maxFrame))
