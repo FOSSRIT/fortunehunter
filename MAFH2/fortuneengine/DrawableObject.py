@@ -5,9 +5,7 @@ class DrawableObject(pygame.sprite.Sprite):
     def __init__(self,images,textfileName,fps = 10, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
         pygame.sprite.Sprite.__init__(self)
         cnt = 0
-        
-        #self._originals = images
-        #self._images = images
+
         self._images = []
         self._origImages = []
         while cnt < len(images):
