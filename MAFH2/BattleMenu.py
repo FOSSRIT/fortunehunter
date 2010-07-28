@@ -1,5 +1,6 @@
 import pygame
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableObject import DrawableObject
 
 from constants import MENU_PATH
 from gettext import gettext as _
@@ -12,7 +13,9 @@ class BattleMenuHolder( GameEngineElement ):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        self.background = pygame.image.load(MENU_PATH + "battleMenubackground.gif")
+        #self.background = pygame.image.load(MENU_PATH + "battleMenubackground.gif")
+        self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")],'')
+        self.game_engine.get_scene().addObject(self.background)
         self.disp = ""
         self.sec_des = ""
         self.font = pygame.font.SysFont("cmr10",18,False,False)
@@ -28,7 +31,8 @@ class BattleMenuHolder( GameEngineElement ):
         self.clear_menu()
 
     def draw(self,screen,time_delta):
-        screen.blit(self.background,(0,286,452,414))
+        #screen.blit(self.background,(0,286,452,414))
+        self.background.setPosition(0,286)
         ren = self.font.render(self.disp, 1, (0,0,0))
         screen.blit(ren, (250, 340))
 

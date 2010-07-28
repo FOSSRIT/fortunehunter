@@ -43,18 +43,18 @@ class BattleEngine(GameEngineElement):
             if e_index != '0':
                 curE = get_enemy( e_index )
                 self.enemy_list.append( curE )
-                self.game_engine.get_scene().addObjects([curE.get_sprite()])
+                self.game_engine.get_scene().addObject(curE.get_sprite())
 
         # Preload images
         self.__drawableObjects = {}
         for i in ['arrow_select']:
             self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )],'')
-            self.game_engine.get_scene().addObjects([self.__drawableObjects[i]])
+            self.game_engine.get_scene().addObject(self.__drawableObjects[i])
 
         self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100), '')
         self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '')
-        self.game_engine.get_scene().addObjects([self.__drawableObjects['hp']])
-        self.game_engine.get_scene().addObjects([self.__drawableObjects['bt']])
+        self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
+        self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )

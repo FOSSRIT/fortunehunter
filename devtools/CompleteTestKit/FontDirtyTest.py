@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import pygame
 from pygame.locals import *
-from boxes import BouncingBox
 from time import time
 from Scene import Scene
 from DrawableObject import DrawableObject
@@ -32,9 +31,10 @@ start = time()
 for aTrial in range(maxTrial):
     start = time()
 
-    font = pygame.font.SysFont("cmr10", 24)
+    font = pygame.font.SysFont("cmr10", 100)
     d = DrawableFontObject("hello world", font)
     d.goToAnim("anim1")
+    
 
     group1=Scene(d)
     groups=[group1]
@@ -47,6 +47,7 @@ for aTrial in range(maxTrial):
     start = time()
     for frame in range(FRAME):
         dirtyList=[]
+        d.changeText(str(frame))
         for image in range(numImages):
             #move / collision detection
             groups[image].update(clock.get_time())
