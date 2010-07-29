@@ -1,23 +1,26 @@
 import pygame, ezmenu
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableObject import DrawableObject
 
 class GameMenuHolder( GameEngineElement ):
     def __init__(self, callback, background=None, width=1200, height=900):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        bg = pygame.image.load(background).convert()
-        self.background = pygame.transform.scale(bg, (width, height))
+        self.background = DrawableObject([pygame.image.load(background).convert()], '')
+        self.background.scale(width, height)
+        self.game_engine.get_scene().addObject(self.background)
         self.width = width
         self.height = height
 
     def remove_from_engine(self):
+        self.game_engine.get_scene().removeObject(self.background)
         super( GameMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
     def draw(self,screen,time_delta):
         if self.background:
-            screen.blit(self.background,(0,0))
+            self.background.setPosition(0,0)
         else:
             screen.fill((0, 0, 255))
 
@@ -26,6 +29,7 @@ class GameMenuHolder( GameEngineElement ):
 
     def clear_menu(self):
         if self.menu:
+            self.menu.clear_menu()
             self.menu.remove_from_engine()
             self.menu = None
 
@@ -104,7 +108,7 @@ class GameMenuHolder( GameEngineElement ):
 class GameMenu(GameEngineElement):
     def __init__(self, game_menu, width=800, height=400):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
-        self.menu = ezmenu.EzMenu(game_menu)
+        self.menu = ezmenu.EzMenu(game_menu, self.game_engine.get_scene())
         self.menu.center_at(width - (width/3), height/2)
         self.menu.help_text_at( 0, height-(height/10))
         self.menu.set_font(pygame.font.SysFont("Arial", 20))
@@ -115,5 +119,8 @@ class GameMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
+    def clear_menu(self):
+        self.menu.clear_menu()
+        
     def draw(self,screen,time_delta):
         self.menu.draw( screen )

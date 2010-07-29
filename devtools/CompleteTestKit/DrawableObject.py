@@ -18,6 +18,7 @@ class DrawableObject(pygame.sprite.Sprite):
 #self._images = images
 
         self._images = []
+<<<<<<< HEAD:devtools/CompleteTestKit/DrawableObject.py
         self._origImages = []
         
 #        
@@ -27,6 +28,13 @@ class DrawableObject(pygame.sprite.Sprite):
             self._images.append(images[i].convert())
             self._origImages.append(images[i].convert())
         
+=======
+        self._origImages = []
+        while cnt < len(images):
+            self._images.append(images[cnt].convert_alpha())
+            self._origImages.append(images[cnt].convert_alpha())
+            cnt += 1
+>>>>>>> 8832b7c67d9c73d371538c2ba7aae7e0abddb090:devtools/CompleteTestKit/DrawableObject.py
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]
 #

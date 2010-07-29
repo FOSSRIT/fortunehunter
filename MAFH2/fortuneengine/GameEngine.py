@@ -52,7 +52,7 @@ class GameEngine(object):
         self.height = height
         size = width, height
         self.screen = pygame.display.set_mode(size)
-        self.__scene = Scene(DrawableObject([pygame.Surface((size))],''))
+        self.__scene = Scene(DrawableObject([pygame.Surface((1,1))],''))
 
         # Engine Internal Variables
         self.__fps_cap = fps_cap
@@ -209,7 +209,6 @@ class GameEngine(object):
             pygame.display.flip()
 
         else:
-            # __dirtyList=[]
             for fnc in self.__draw_lst:
                  start = time()
                  fnc(screen, tick_time)
@@ -220,9 +219,9 @@ class GameEngine(object):
                 text = self.__font.render('FPS: %d' % self.clock.get_fps(),
                        False, (255, 255, 255), (159, 182, 205))
                 screen.blit(text, (0, 0))
-            pygame.display.flip()
+            #pygame.display.flip()
             self.__scene.update(tick_time)
-
+            pygame.display.update(self.__scene.draw(screen))
 
     def _event_loop(self):
         """
