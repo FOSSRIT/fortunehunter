@@ -2,56 +2,25 @@ import pygame
 
 class DrawableObject(pygame.sprite.Sprite):
 
-# I removed the parameter for FPS, x and y velocities, and the text file reference
-#  since this is not a dynamic object
-
-    def __init__(self,images, x = 0, y = 0,):
+    def __init__(self,images, textfileName, x = 0, y = 0,):
         pygame.sprite.Sprite.__init__(self)
-        
-        #
-        #   My question is why do drawable objects take the form of a List?
-        #   it seems that every object takes lists, but then why encapsulate?
-        #   I believe that we can collapse these objects
-        #   JT Jul 2010
-
-#self._originals = images
-#self._images = images
 
         self._images = []
         self._origImages = []
-        
-#        
-#   Made the below while loop more efficient and quicker
-#   JT Jul 28 2010
+
         for i in range(len(images)):
             self._images.append(images[i].convert())
             self._origImages.append(images[i].convert())
 
-        self._start = pygame.time.get_ticks()
         self.image = self._images[0]
-#
-#   This went away since it was relient on FPS which DO's don't have
-"""        self._delay = 1000 / fps     """
-#   JT Jul 28 2010
-        
-        self._last_update = 0
-        self._frame = 0
-        self.animations = {}
-        self._current_anim = ""
         self.rect = self.image.get_rect()
         self.xPos = x
         self.yPos = y
-        self.xSpeed = xVelocity
-        self.ySpeed = yVelocity
         self.myAngle = 0
-        self.xSize = 40     # <--
-        self.ySize = 40     # <-- 
+        self.xSize = images[0].get_width()
+        self.ySize = images[0].get_width()
         self.rect.topleft = (x,y)
-#
-#   Since there will be no animation in a static object I removed the code that
-#   read the animFile since it was an unecessary slowdown
-#
-        """
+        
         if textfileName != '':
 
            f = open(textfileName, 'r')
@@ -61,11 +30,11 @@ class DrawableObject(pygame.sprite.Sprite):
              animValues = currentLine.split(",")
              self.animations[animValues[0]] =  [int(animValues[1]), int(animValues[2])]
              currentLine = f.readline()
-        """
 
     def addImages(self, images):
-        self._images.extend(images)
-        #self._originals.extend(images)
+        for i in range(len(images)):
+            self._images.append(images[i].convert())
+            self._origImages.append(images[i].convert())
 
     def goToAnim(self, animName):
       if self.animations.get(animName, 0) != 0:
@@ -146,63 +115,9 @@ class DrawableObject(pygame.sprite.Sprite):
 #   JT Jul 28 2010
     def update(self, t=None):
        pass
-
-#
-#   removed current animation method
-#
+       
     def nextFrame(self):
        pass
 
     def nextCurrentAnimFrame(self):
        pass
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-#
-#   Removed this because it took into account the depreciated velocity concept that was
-#   contrary to the projected use of the drawable object
-#   This would be more useful in a Dynamic Drawable Object
-#   JT Jul 28 2010
-"""
-    def move(self):
-        self.xPos += self.xSpeed
-        self.yPos += self.ySpeed
-        self.rect.right += self.xSpeed
-        self.rect.top += self.ySpeed
-"""
-
-#
-#   I removed velocity because a static object should not have variables pertaining to movement
-#   That is not instructed manually; velocity, being displacement over time, is easily perceived
-#   as an exaple of autonomous motion since it's dictated by the passage of time
-#   JT Jul 28 2010
-"""
-    def setSpeed(self, xVelocity = None, yVelocity = None):
-
-       if xVelocity != None:  self.xSpeed = xVelocity
-       if yVelocity != None:  self.ySpeed = yVelocity
-
-    def getXSpeed(self):
-
-       return self.xSpeed
-
-    def getYSpeed(self):
-
-       return self.ySpeed
-"""
