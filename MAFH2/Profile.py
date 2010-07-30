@@ -88,12 +88,17 @@ class Profile(GameEngineElement):
         bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
         self.background = DrawableObject([bg], '')
         self.background.scale(self.game_engine.width, self.game_engine.height)
+        self.game_engine.get_scene().addObject(self.background)
         super( Profile, self).add_to_engine()
 
     def remove_from_engine(self):
         super( Profile, self).remove_from_engine()
-        del self.background
-
+        self.game_engine.get_scene().removeObject(self.background)
+        self.game_engine.get_scene().removeObject(self.blueRect)
+        
+        for dfo in self.text_list:
+            self.game_engine.get_scene().removeObject(dfo)
+            
     def event_handler(self, event):
         """
         Handles user input (used only for name entry)
