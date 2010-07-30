@@ -14,7 +14,7 @@ class BattleMenuHolder( GameEngineElement ):
         self.menu = None
         self.callback = callback
         #self.background = pygame.image.load(MENU_PATH + "battleMenubackground.gif")
-        self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")])
+        self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")], '')
         self.game_engine.get_scene().addObject(self.background)
         self.disp = ""
         self.sec_des = ""

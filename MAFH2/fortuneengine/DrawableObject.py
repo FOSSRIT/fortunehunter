@@ -2,11 +2,9 @@ import pygame
 
 class DrawableObject(pygame.sprite.Sprite):
 
-# I removed the parameter for FPS, x and y velocities, and the text file reference
-#  since this is not a dynamic object
-
-    def __init__(self,images, x = 0, y = 0,):
+    def __init__(self,images, textfileName, x = 0, y = 0,):
         pygame.sprite.Sprite.__init__(self)
+        
         self._images = []
         self._origImages = []
         for i in range(len(images)):
@@ -26,11 +24,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.xSize = 40     # <--
         self.ySize = 40     # <-- 
         self.rect.topleft = (x,y)
-#
-#   Since there will be no animation in a static object I removed the code that
-#   read the animFile since it was an unecessary slowdown
-#
-        """
+
         if textfileName != '':
 
            f = open(textfileName, 'r')
@@ -40,34 +34,28 @@ class DrawableObject(pygame.sprite.Sprite):
              animValues = currentLine.split(",")
              self.animations[animValues[0]] =  [int(animValues[1]), int(animValues[2])]
              currentLine = f.readline()
-        """
+
+        else:
+        
+            self.animations["anim1"] = [0, len(self._images)]
+            self.goToAnim("anim1")
 
     def addImages(self, images):
         self._images.extend(images)
-        #self._originals.extend(images)
+        self._origImages.extend(images)
 
     def goToAnim(self, animName):
       if self.animations.get(animName, 0) != 0:
          self._current_anim = animName
          self._frame = self.animations[animName][0]
          self.image = self._images[self._frame]
-         
-#
-#   Again I took out default values because I don't want the primary function
-#   of the method to be effectively overridable and have a method that can
-#   do nothing without raising flags
-#   I also conformed the parameter naming convention so that it conforms with the
-#   other methods' naming convention in this object
-#   JT Jul 28 2010
+
     def nudge(self, x, y):
         self.xPos += x
         self.yPos += y
         self.rect.right += x
         self.rect.top += y
 
-#
-#   reworked the loop for efficiency and the if statement logic
-#   JT Jul 28 2010
     def scale(self, x=None, y=None):
         if type(x).__name__=='int': self.xSize = x
         if type(y).__name__=='int': self.ySize = y
@@ -82,9 +70,6 @@ class DrawableObject(pygame.sprite.Sprite):
     def getYSize(self):
        return self.ySize
 
-#
-#   I changed rotate to utilize a for instead of a counter/while loop for speed
-#   JT - Jul 28 2010
     def rotate(self,angle):
         self.myAngle += angle
         for i in range(len(self._images)):
@@ -93,12 +78,6 @@ class DrawableObject(pygame.sprite.Sprite):
     def getRotation(self):
        return self.myAngle
 
-#
-#   I don't recommend forcing people to keep images within the screen
-#   a common trick in bullet hells is to temporarily move image objects off-
-#   screen when they die so the game isn't constantly loading a new instance of
-#   a common enemy
-#   JT - Jul 28 2010
     def setPosition(self, x = None, y = None):
         if type(x).__name__=='int': self.xPos = x
         if type(y).__name__=='int': self.yPos = y
@@ -110,9 +89,6 @@ class DrawableObject(pygame.sprite.Sprite):
     def getYPos(self):
        return self.yPos
 
-#
-#   Added defaul values in case someone wants their color key to be taken from bot.right corner, eg
-#   JT Jul 28 2010
     def calcColorKey(self, x=0, y=0):
        myColorKey = images[0].get_at((x,y))
        setColorKey(myColorKey)
@@ -120,68 +96,12 @@ class DrawableObject(pygame.sprite.Sprite):
     def setColorKey(self, aColor):
        for i in range(len(self._images)):
           self._images[i].set_colorkey(aColor)
-#
-#   Set default value to allow the method to be called empty (since t does nothing atm)
-#   JT Jul 28 2010
+
     def update(self, t=None):
        pass
 
-#
-#   removed current animation method
-#
     def nextFrame(self):
        pass
 
     def nextCurrentAnimFrame(self):
        pass
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-#
-#   Removed this because it took into account the depreciated velocity concept that was
-#   contrary to the projected use of the drawable object
-#   This would be more useful in a Dynamic Drawable Object
-#   JT Jul 28 2010
-"""
-    def move(self):
-        self.xPos += self.xSpeed
-        self.yPos += self.ySpeed
-        self.rect.right += self.xSpeed
-        self.rect.top += self.ySpeed
-"""
-
-#
-#   I removed velocity because a static object should not have variables pertaining to movement
-#   That is not instructed manually; velocity, being displacement over time, is easily perceived
-#   as an exaple of autonomous motion since it's dictated by the passage of time
-#   JT Jul 28 2010
-"""
-    def setSpeed(self, xVelocity = None, yVelocity = None):
-
-       if xVelocity != None:  self.xSpeed = xVelocity
-       if yVelocity != None:  self.ySpeed = yVelocity
-
-    def getXSpeed(self):
-
-       return self.xSpeed
-
-    def getYSpeed(self):
-
-       return self.ySpeed
-"""
