@@ -7,33 +7,14 @@ class DrawableObject(pygame.sprite.Sprite):
 
     def __init__(self,images, x = 0, y = 0,):
         pygame.sprite.Sprite.__init__(self)
-        
-        #
-        #   My question is why do drawable objects take the form of a List?
-        #   it seems that every object takes lists, but then why encapsulate?
-        #   I believe that we can collapse these objects
-        #   JT Jul 2010
-
-#self._originals = images
-#self._images = images
-
         self._images = []
         self._origImages = []
-        
-#        
-#   Made the below while loop more efficient and quicker
-#   JT Jul 28 2010
         for i in range(len(images)):
             self._images.append(images[i].convert())
             self._origImages.append(images[i].convert())
 
         self._start = pygame.time.get_ticks()
-        self.image = self._images[0]
-#
-#   This went away since it was relient on FPS which DO's don't have
-"""        self._delay = 1000 / fps     """
-#   JT Jul 28 2010
-        
+        self.image = self._images[0]        
         self._last_update = 0
         self._frame = 0
         self.animations = {}
@@ -41,8 +22,6 @@ class DrawableObject(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.xPos = x
         self.yPos = y
-        self.xSpeed = xVelocity
-        self.ySpeed = yVelocity
         self.myAngle = 0
         self.xSize = 40     # <--
         self.ySize = 40     # <-- 
