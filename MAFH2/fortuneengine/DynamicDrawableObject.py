@@ -11,7 +11,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
         self._images.extend(images)
 
-    # def update(self, t):
+# def update(self, t):
 # 
 #         timePassed = t + self._last_update
 #         if timePassed > self._delay:
@@ -28,54 +28,59 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def updateWithMovement(self, right, bottom): # causes objects to move and collide with walls
 
-         # If we're at the top or bottom of the screen, switch directions.
-        if (self.yPos + self.ySize) >= bottom or self.yPos < 0: self.ySpeed = self.ySpeed * -1
-        if (self.yPos + self.ySize) >= bottom and self.ySpeed > 0: self.ySpeed = self.ySpeed * -1
-        if self.yPos < 0 and self.ySpeed < 0: self.ySpeed = self.ySpeed * -1
+# If we're at the top or bottom of the screen, switch directions.
+        if (self.yPos + self.ySize) >= bottom or self.yPos < 0: 
+            self.ySpeed = self.ySpeed * -1
+        if (self.yPos + self.ySize) >= bottom and self.ySpeed > 0: 
+            self.ySpeed = self.ySpeed * -1
+        if self.yPos < 0 and self.ySpeed < 0: 
+            self.ySpeed = self.ySpeed * -1
 
-        # If we're at the right or left of the screen, switch directions.
-        if (self.xPos + self.xSize) >= right or self.xPos < 0: self.xSpeed = self.xSpeed * -1
-        if (self.xPos + self.xSize) >= right and self.xSpeed > 0: self.xSpeed = self.xSpeed * -1
-        if self.xPos < 0 and self.xSpeed < 0: self.xSpeed = self.xSpeed * -1
+#2345678911234567892123456789312345678941234567895123456789612345678971234567898
+
+# If we're at the right or left of the screen, switch directions.
+        if (self.xPos + self.xSize) >= right or self.xPos < 0:
+            self.xSpeed = self.xSpeed * -1
+        if (self.xPos + self.xSize) >= right and self.xSpeed > 0:
+             self.xSpeed = self.xSpeed * -1
+        if self.xPos < 0 and self.xSpeed < 0:
+            self.xSpeed = self.xSpeed * -1
  
         self.move()
 
         if self._frame < len(self._images) - 1:
-           self._frame += 1
+            self._frame += 1
         else:
-           self._frame = 0
+            self._frame = 0
            
         self.image = self._images[self._frame]
 
     def update(self, t): # just updates the frame / object
+        ##print "Last update:", self._last_update,
+#getting the time since the last time I updated my frame and adding it to the time that I last updated my frame
+        timePassed = t + self._last_update
+        ##print " Time since:", timePassed,
 
-       #if self.animations[cnt] == self._current_anim:
-
-        print "last update     ", self._last_update
-        timePassed = t + self._last_update#getting the time since the last time I updated my frame and adding it to the time that I last updated my frame
-        print "time passed    ", timePassed
+#checking if I am in the animation and putting me there if I am not
         if (timePassed) > self._delay:
-            if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: #checking if I am in the animation and putting me there if I am not
-              self._frame = self.animations.get(self._current_anim)[0]
+            if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: 
+                self._frame = self.animations.get(self._current_anim)[0]
 
             self._frame += timePassed/self._delay
-            print "frame   ", self._frame
+            ##print " On frame:", self._frame,"\n"
 
             while self._frame >= self.animations.get(self._current_anim)[1]:
-              framesPast = self._frame - self.animations.get(self._current_anim)[1]
-              self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
+                framesPast = self._frame - self.animations.get(self._current_anim)[1]
+                self._frame = framesPast - 1 + self.animations.get(self._current_anim)[0]
 
             self.image = self._images[self._frame]
             self._last_update = timePassed%self._delay
-        else:
-           
-           self._last_update = timePassed
+        else:   
+            self._last_update = timePassed
 
     def nextFrame(self): # push to next frame
-
         self._frame += 1
         if self._frame >= len(self._images):
-
             framesPast = self._frame - len(self._images)
             self._frame = framesPast
 
@@ -83,24 +88,18 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def nextCurrentAnimFrame(self): # push to the next frame of curr animation
 
-        cnt = 0
-        while cnt < len(animations):
-           
-           if animations[cnt] == self._current_anim:
-              
-              if self._frame < self.animations[self._current_anim][0] or self._frame > self.animations[self._current_anim][1]:
-                  
-                  self._frame = self.animations[self._current_anim][0]
-              else:
-                  self._frame += 1
+        for cnt in range(len(animations)):
 
-              if self._frame > self.animations[self._current_anim][1]:
-      
-                  framesPast = self._frame - self.animations[self._current_anim][1]
-                  self._frame = framesPast - 1 + self.animations[self._current_anim][0]
-                  
-              self.image = self._images[self._frame]
-              
-              cnt = len(anmiations)
+            if animations[cnt] == self._current_anim:
+                if self._frame < self.animations[self._current_anim][0] or self._frame > self.animations[self._current_anim][1]:
+                    self._frame = self.animations[self._current_anim][0]
 
-           cnt += 1
+                else: self._frame += 1
+
+                if self._frame > self.animations[self._current_anim][1]:
+                    framesPast = self._frame - self.animations[self._current_anim][1]
+                    self._frame = framesPast - 1 + self.animations[self._current_anim][0]
+                  
+                self.image = self._images[self._frame]
+              
+#                cnt = len(anmiations)  <-- why was this here?

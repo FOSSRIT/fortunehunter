@@ -13,7 +13,7 @@ class Scene(pygame.sprite.RenderUpdates):
        self.yPos = 0
        self.xSize = 0
        self.ySize = 0
-
+       
        self.calcPosition()
        self.calcSize()
        self.setRelativePositions()
@@ -46,11 +46,6 @@ class Scene(pygame.sprite.RenderUpdates):
        self.xSize = highestX - self.xPos
        self.ySize = highestY - self.yPos
 
-    def addObject(self, newDrawableObject):
-
-           RenderUpdates.add_internal(self, newDrawableObject)
-           self._spritelist.append([newDrawableObject, newDrawableObject.getXPos(), newDrawableObject.getYPos()])
-           
     def addObjects(self, newDrawableObjects):
         for sprite in newDrawableObjects:
            RenderUpdates.add_internal(self, sprite)
@@ -66,8 +61,7 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def removeObject(self, sprite):
        RenderUpdates.remove_internal(self, sprite)
-       #self._spritelist.remove(sprite)
-
+       self._spritelist.remove(sprite)
 
     def getObject(self, index):
 
