@@ -7,7 +7,7 @@ class DrawableFontObject(DrawableObject, pygame.sprite.Sprite):
 
         self.font = font
         self.textImage = font.render(text, 1, (255,255,255))
-        #self._image = self.textImage
+
         DrawableObject.__init__(self, [self.textImage], '', fps, x, y, xVelocity, yVelocity)
 
     def changeText(self, newText):

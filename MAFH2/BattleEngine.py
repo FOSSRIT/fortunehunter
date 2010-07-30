@@ -48,11 +48,11 @@ class BattleEngine(GameEngineElement):
         # Preload images
         self.__drawableObjects = {}
         for i in ['arrow_select']:
-            self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )],'')
+            self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )])
             self.game_engine.get_scene().addObject(self.__drawableObjects[i])
 
-        self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100), '')
-        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '')
+        self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100))
+        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25))
         self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
         self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
 
