@@ -6,7 +6,6 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
     def __init__(self,images,textfileName,fps = 10, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
 
         DrawableObject.__init__(self, images, textfileName, fps, x, y, xVelocity, yVelocity)
-
     def addImages(self, images):
 
         self._images.extend(images)
