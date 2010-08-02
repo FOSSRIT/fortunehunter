@@ -176,7 +176,7 @@ class Scene(pygame.sprite.RenderUpdates):
                else:
                    dirty_append(newrect)
                    dirty_append(r)
-           spritedict[s] = newrect
+           spritedict[s[0]] = newrect
        return dirty
 
     def nextFrame(self):
