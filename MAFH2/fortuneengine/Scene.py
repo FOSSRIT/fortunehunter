@@ -159,17 +159,26 @@ class Scene(pygame.sprite.RenderUpdates):
     
        for s in self._spritelist: s[0].update(t);
 
-#     def draw(self, surface):
-#         """draw(surface)
-#            draw all sprites onto the surface
-# 
-#            Draws all the sprites onto the given surface."""
-#         sprites = self.sprites()
-#         surface_blit = surface.blit
-#         for spr in sprites:
-#             self.spritedict[spr] = surface_blit(spr.image, spr.rect)
-#         self.lostsprites = []
-
+    def draw(self, surface):
+       spritedict = self.spritedict
+       surface_blit = surface.blit
+       dirty = self.lostsprites
+       self.lostsprites = []
+       dirty_append = dirty.append
+       for s in self.sprites():
+           r = spritedict[s]
+           newrect = surface_blit(s.image, s.rect)
+           if r is 0:
+               dirty_append(newrect)
+           else:
+               if newrect.colliderect(r):
+                   dirty_append(newrect.union(r))
+               else:
+                   dirty_append(newrect)
+                   dirty_append(r)
+           spritedict[s] = newrect
+       return dirty
+       
     def nextFrame(self):
 
        cnt = 0
