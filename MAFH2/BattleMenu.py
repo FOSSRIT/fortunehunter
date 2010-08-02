@@ -1,6 +1,7 @@
 import pygame
 from fortuneengine.GameEngineElement import GameEngineElement
 from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DrawableFontObject import DrawableFontObject
 
 from constants import MENU_PATH
 from gettext import gettext as _
@@ -111,7 +112,7 @@ class BattleMenu(GameEngineElement):
     def __init__(self, game_menu, x, y, type=NORMAL_MENU):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
 
-        self.menu = Menu(game_menu, type )
+        self.menu = Menu(game_menu, type, self.game_engine.get_scene() )
 
         self.menu.set_pos(x, y)
         self.add_to_engine()
@@ -123,11 +124,12 @@ class BattleMenu(GameEngineElement):
         self.menu.draw( screen )
 
 class Menu(object):
-    def __init__(self, options, cols):
+    def __init__(self, options, cols, scene):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
 
         self.options = options
+        self.scene = scene
         self.x = 0
         self.y = 0
         self.cols = cols
@@ -137,30 +139,54 @@ class Menu(object):
         self.color = [0, 0, 0]
         self.hcolor = [255, 0, 0]
         self.height = len(self.options)*self.font.get_height()
+        self.font_list = []
+        self.rect_list = []
+        
+        for o in self.options:
+            self.font_list.append(DrawableFontObject(o[0], self.font))
+            ren = self.font.render(o[0], 1, [0,0,0])
+            if ren.get_width() > self.width:
+                self.width = ren.get_width()
+            surf = pygame.Surface((60,60))
+            self.rect_list.append(DrawableObject([surf], ""))
+            self.rect_list.append(DrawableObject([surf], ""))
+            
+        self.scene.addObjects(self.rect_list)
+        self.scene.addObjects(self.font_list)
 
     def draw(self, surface):
         """Draw the menu to the surface."""
         i=0 # Row Spacing
         h=0 # Selection Spacing
         j=0 # Col Spacing
+        k=1 # Rect Counter
         for o in self.options:
             if h==self.option:
                 clr = self.hcolor
             else:
                 clr = self.color
             text = o[0]
-            ren = self.font.render(text, 1, clr)
-            if ren.get_width() > self.width:
-                self.width = ren.get_width()
+            self.font_list[h].changeText(text, clr)
 
             newX = self.x + 45 * j
-            newY = self.y + i * 45            
-            pygame.draw.rect(surface, (0, 74, 94), ( newX, newY, o[2], 44))
-            pygame.draw.rect(surface, (4, 119, 152), ( newX + 2, newY + 2, o[2]-4, 40))
-            surface.blit(ren, (newX + 15, newY + 12))
+            newY = self.y + i * 45
+            
+            
+            self.rect_list[k-1].scale(o[2], 44)
+            self.rect_list[k-1].setPosition(newX, newY)
+            self.rect_list[k-1].fill((0, 74, 94))
+            self.rect_list[k].scale(o[2]-4, 40)
+            self.rect_list[k].setPosition(newX+2, newY+2)
+            self.rect_list[k].fill((4, 119, 152))
+            
+            #pygame.draw.rect(surface, (0, 74, 94), ( newX, newY, o[2], 44))
+            #pygame.draw.rect(surface, (4, 119, 152), ( newX + 2, newY + 2, o[2]-4, 40))
+            self.font_list[h].setPosition(newX + 15, newY + 12)
+            #surface.blit(ren, (newX + 15, newY + 12))
 
             j+=o[3]
             h+=1
+            k+=2
             if j >= self.cols:
                 i+=1
                 j=0
