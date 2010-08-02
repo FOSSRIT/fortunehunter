@@ -189,6 +189,7 @@ class Scene(pygame.sprite.RenderUpdates):
        self.lostsprites = []
        dirty_append = dirty.append
        for s in self._spritelist:
+           dirty_append(spritedict[s[0]])
            dirty_append(surface_blit(s[0].image, s[0].rect))
        return dirty
 
