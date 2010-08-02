@@ -165,8 +165,8 @@ class Scene(pygame.sprite.RenderUpdates):
        dirty = self.lostsprites
        self.lostsprites = []
        dirty_append = dirty.append
-       for s in self.sprites():
-           r = spritedict[s]
+       for s in self._spritelist:
+           r = spritedict[s[0]]
            newrect = surface_blit(s.image, s.rect)
            if r is 0:
                dirty_append(newrect)
@@ -178,7 +178,7 @@ class Scene(pygame.sprite.RenderUpdates):
                    dirty_append(r)
            spritedict[s] = newrect
        return dirty
-       
+
     def nextFrame(self):
 
        cnt = 0
