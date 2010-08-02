@@ -167,7 +167,7 @@ class Scene(pygame.sprite.RenderUpdates):
        dirty_append = dirty.append
        for s in self._spritelist:
            r = spritedict[s[0]]
-           newrect = surface_blit(s.image, s.rect)
+           newrect = surface_blit(s[0].image, s[0].rect)
            if r is 0:
                dirty_append(newrect)
            else:
