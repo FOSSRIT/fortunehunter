@@ -155,13 +155,9 @@ class Scene(pygame.sprite.RenderUpdates):
        self.calcSize()
        self.setPosition()
 
-    def updateAnimations(self, t):
-
-       cnt = 0
-       while cnt < len(self._spritelist):
-
-          self._spritelist[cnt][0].updateCurrentAnimation(t)
-          cnt += 1
+    def update(self, t):
+    
+       for s in self._spritelist: s[0].update(t);
 
     def nextFrame(self):
 
