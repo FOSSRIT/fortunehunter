@@ -113,9 +113,8 @@ class BattleMenu(GameEngineElement):
     def __init__(self, game_menu, x, y, type=NORMAL_MENU):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
 
-        self.menu = Menu(game_menu, type, self.game_engine.get_scene() )
+        self.menu = Menu(game_menu, type, self.game_engine.get_scene(), x, y )
 
-        self.menu.set_pos(x, y)
         self.add_to_engine()
 
     def event_handler(self, event):
@@ -128,14 +127,14 @@ class BattleMenu(GameEngineElement):
         self.menu.clear()
 
 class Menu(object):
-    def __init__(self, options, cols, scene):
+    def __init__(self, options, cols, scene, x=237, y=375):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
 
         self.options = options
         self.scene = scene
-        self.x = 0
-        self.y = 0
+        self.x = x
+        self.y = y
         self.cols = cols
         self.font = pygame.font.SysFont("cmr10",18,False,False)
         self.option = 0
@@ -151,15 +150,37 @@ class Menu(object):
             ren = self.font.render(o[0], 1, [0,0,0])
             if ren.get_width() > self.width:
                 self.width = ren.get_width()
+
+        i=0 # Row Spacing
+        h=0 # Selection Spacing
+        j=0 # Col Spacing
         for o in self.options:
-            surf = pygame.Surface((self.height,self.width))
-            self.rect_list.append(DrawableObject([surf], ""))
-            self.rect_list.append(DrawableObject([surf], ""))
+            newX = self.x + 45 * j
+            newY = self.y + i * 45
+            
+            surf = pygame.Surface((o[2],44))
+            surf.fill((0, 74, 94))
+            tempDO = DrawableObject([surf], "")
+            tempDO.setPosition(newX,newY)
+            self.rect_list.append(tempDO)
+            
+            surf = pygame.Surface((o[2]-4, 40))
+            surf.fill((4, 119, 152))
+            tempDO = DrawableObject([surf], "")
+            tempDO.setPosition(newX+2, newY+2)
+            self.rect_list.append(tempDO)
+
+            j+=o[3]
+            h+=1
+            if j >= self.cols:
+                i+=1
+                j=0
             
         self.scene.addObjects(self.rect_list)
         self.scene.addObjects(self.font_list)
 
     def draw(self, surface):
+        self.scene.drawEntireScene(surface)
         """Draw the menu to the surface."""
         i=0 # Row Spacing
         h=0 # Selection Spacing
@@ -176,18 +197,7 @@ class Menu(object):
             newX = self.x + 45 * j
             newY = self.y + i * 45
             
-            
-            self.rect_list[k-1].scale(o[2], 44)
-            self.rect_list[k-1].setPosition(newX, newY)
-            self.rect_list[k-1].fill((0, 74, 94))
-            self.rect_list[k].scale(o[2]-4, 40)
-            self.rect_list[k].setPosition(newX+2, newY+2)
-            self.rect_list[k].fill((4, 119, 152))
-            
-            #pygame.draw.rect(surface, (0, 74, 94), ( newX, newY, o[2], 44))
-            #pygame.draw.rect(surface, (4, 119, 152), ( newX + 2, newY + 2, o[2]-4, 40))
             self.font_list[h].setPosition(newX + 15, newY + 12)
-            #surface.blit(ren, (newX + 15, newY + 12))
 
             j+=o[3]
             h+=1

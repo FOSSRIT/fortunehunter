@@ -1,6 +1,7 @@
 import pygame
 import random
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableObject import DrawableObject
 from AnimatedSprite import Spritesheet
 
 from constants import MENU_PATH, PUZZLE_PATH
@@ -89,7 +90,7 @@ class MagicMenu(GameEngineElement):
     def __init__(self, menu_options, x, y, spell_type):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
         magic_list = self.game_engine.get_object('battle').magic_list
-        self.menu = Menu(menu_options, spell_type, magic_list)
+        self.menu = Menu(menu_options, spell_type, magic_list, self.game_engine.get_scene())
         
 
         self.menu.set_pos(x, y)
@@ -102,10 +103,11 @@ class MagicMenu(GameEngineElement):
         self.menu.draw( screen )
 
 class Menu(object):
-    def __init__(self, options, spelltype, magic_list):
+    def __init__(self, options, spelltype, magic_list, scene):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
         
+        self.scene = scene
         self.buttons = []
         self.options = options
         self.x = 0
@@ -115,6 +117,7 @@ class Menu(object):
         self.width = 2
         self.spelltype = spelltype
         self.magic_list = magic_list
+        self.reference = []
         
         lightning = []
         fire = []
@@ -130,56 +133,56 @@ class Menu(object):
         if(spelltype == 0):
             #fire attack
             for i in range(4):
-                self.buttons.append(pygame.transform.scale(fire[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(fire[i] , (60,60))], ""))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(lightning[i] , (60,60))], ""))
             random.seed()
-            self.buttons.append(pygame.transform.scale(heal[random.randint(0,3)] , (60,60)))
-            self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
+            self.buttons.append(DrawableObject([pygame.transform.scale(heal[random.randint(0,3)] , (60,60))], ""))
+            self.buttons.append(DrawableObject([pygame.transform.scale(missile[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert()
+            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert()], "")
             self.glyphs = fire
             
         elif(spelltype == 1):
             #lightning attack
             for i in range(4):
-                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(lightning[i] , (60,60))], ""))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.transform.scale(fire[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(fire[i] , (60,60))], ""))
             random.seed()
-            self.buttons.append(pygame.transform.scale(heal[random.randint(0,3)] , (60,60)))
-            self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
+            self.buttons.append(DrawableObject([pygame.transform.scale(heal[random.randint(0,3)] , (60,60))], ""))
+            self.buttons.append(DrawableObject([pygame.transform.scale(missile[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert()
+            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert()], "")
             self.glyphs = lightning
             
         elif(spelltype == 2):
             #missile attack
             for i in range(4):
-                self.buttons.append(pygame.transform.scale(missile[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(missile[i] , (60,60))], ""))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(lightning[i] , (60,60))], ""))
             random.seed()
-            self.buttons.append(pygame.transform.scale(heal[random.randint(0,3)] , (60,60)))
-            self.buttons.append(pygame.transform.scale(fire[random.randint(0,3)] , (60,60)))
+            self.buttons.append(DrawableObject([pygame.transform.scale(heal[random.randint(0,3)] , (60,60))], ""))
+            self.buttons.append(DrawableObject([pygame.transform.scale(fire[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert()
+            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert()], "")
             self.glyphs = missile
         elif(spelltype == 3):
             #heal
             for i in range(4):
-                self.buttons.append(pygame.transform.scale(heal[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(heal[i] , (60,60))], ""))
             #filler buttons
             for i in range(0,2):
-                self.buttons.append(pygame.transform.scale(lightning[i] , (60,60)))
+                self.buttons.append(DrawableObject([pygame.transform.scale(lightning[i] , (60,60))], ""))
             random.seed()
-            self.buttons.append(pygame.transform.scale(missile[random.randint(0,3)] , (60,60)))
-            self.buttons.append(pygame.transform.scale(fire[random.randint(0,3)] , (60,60)))
+            self.buttons.append(DrawableObject([pygame.transform.scale(missile[random.randint(0,3)] , (60,60))], ""))
+            self.buttons.append(DrawableObject([pygame.transform.scale(fire[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()
+            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()], "")
             self.glyphs = heal
         
         deck = [0,1,2,3,4,5,6,7]
@@ -194,7 +197,16 @@ class Menu(object):
         self.buttons = tButtons
         self.options = tOptions
         
-        self.height = (len(self.options)*self.buttons[1].get_height()) / self.cols
+        self.scene.addObjects(self.buttons)
+        
+        for image in self.glyphs:
+            tempDO = DrawableObject([image],"")
+            tempDO.makeTransparent(True)
+            self.reference.append(tempDO)
+        self.scene.addObjects(self.reference)
+        self.scene.addObject(self.mainGlyph)
+        
+        self.height = (len(self.options)*self.buttons[1].getYSize()) / self.cols
 
     def draw(self, surface):
         """Draw the menu to the surface."""
@@ -202,8 +214,8 @@ class Menu(object):
         h=0 # Selection Spacing
         j=0 # Col Spacing
         index=0 #current spot in buttons list
-        height = self.buttons[0].get_height()
-        width = self.buttons[0].get_width()
+        height = self.buttons[0].getYSize()
+        width = self.buttons[0].getXSize()
         
         for o in self.options:
 
@@ -212,7 +224,8 @@ class Menu(object):
             
             if h==self.option:
                 pygame.draw.rect(surface, (4, 119, 152), ( newX, newY, height, width))
-            surface.blit(self.buttons[index], (newX, newY) )
+            self.buttons[index].setPosition(newX, newY)
+            #surface.blit(self.buttons[index], (newX, newY) )
 
             j+=1
             h+=1
@@ -221,14 +234,16 @@ class Menu(object):
                 i+=1
                 j=0
                 
-        self.mainGlyph.set_colorkey((255,0,255), pygame.RLEACCEL)
-        surface.blit(self.mainGlyph, (485,350))
+        self.mainGlyph.setColorKey((255,0,255))
+        self.mainGlyph.setPosition(485,350)
         
         
         # Draw reference glyphs
         for i in range(4):
             if i in self.magic_list:
-                surface.blit(self.glyphs[i], (800+((i%2) * 150), 350+(i/2 * 150)))
+                #surface.blit(self.glyphs[i], (800+((i%2) * 150), 350+(i/2 * 150)))
+                self.reference[i].makeTransparent(False)
+                self.reference[i].setPosition(800+((i%2) * 150), 350+(i/2 * 150))
                 
     def update(self, event):
         """Update the menu and get input for the menu."""
