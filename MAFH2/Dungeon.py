@@ -105,10 +105,12 @@ class Dungeon(GameEngineElement):
             for item in self.game_engine.get_object('profile').inventory:
                 # Search for small key (ID: 'q')
                 if item.id == 'q':
-                    self.game_engine.get_object('mesg').add_line(_("You use a SMALL KEY"))
+                    self.game_engine.get_object('mesg').add_line(
+                        _("You use a SMALL KEY"))
                     return True
 
-            self.game_engine.get_object('mesg').add_line(_("This door is locked, you need a SMALL KEY"))
+            self.game_engine.get_object('mesg').add_line(
+                _("This door is locked, you need a SMALL KEY"))
             return False
 
         elif door_type == PUZZLE_DOOR or door_type == LOCKED_PUZZLE_DOOR:
@@ -116,7 +118,8 @@ class Dungeon(GameEngineElement):
             return False
 
         elif door_type == ENTRANCE_DOOR:
-            self.game_engine.get_object('mesg').add_line(_("There is no turning back now"))
+            self.game_engine.get_object('mesg').add_line(
+                _("There is no turning back now"))
             return False
 
         elif door_type == EXIT_DOOR:
@@ -124,11 +127,13 @@ class Dungeon(GameEngineElement):
             for item in self.game_engine.get_object('profile').inventory:
                 # Search for big key (ID: 'r')
                 if item.id == 'r':
-                    self.game_engine.get_object('mesg').add_line(_("You use the BIG KEY, and the door slams behind you!"))
+                    self.game_engine.get_object('mesg').add_line(
+                        _("You use the BIG KEY, and the door slams behind you!"))
                     return True
 
 
-            self.game_engine.get_object('mesg').add_line(_("This door is locked, you need a BIG KEY"))
+            self.game_engine.get_object('mesg').add_line(
+                _("This door is locked, you need a BIG KEY"))
             return False
 
         return False
