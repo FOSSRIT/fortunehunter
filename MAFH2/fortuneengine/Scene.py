@@ -67,7 +67,7 @@ class Scene(pygame.sprite.RenderUpdates):
 
        for i in self._spritelist:
            if i[0] == sprite:
-               self._spritelist.remove(i[0])
+               self._spritelist.remove(i)
                break
        RenderUpdates.remove_internal(self, sprite)
 
