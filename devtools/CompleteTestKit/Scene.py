@@ -171,3 +171,4 @@ class Scene(pygame.sprite.RenderUpdates):
 
           self._spritelist[cnt][0].nextFrame()
           cnt += 1
+

@@ -14,3 +14,4 @@ class DrawableFontObject(DrawableObject, pygame.sprite.Sprite):
 
         self._images[0] = self.font.render(newText, True, (111,22,45))
         self.image = self._images[0]
+

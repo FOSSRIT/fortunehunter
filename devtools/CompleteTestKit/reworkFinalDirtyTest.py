@@ -44,16 +44,12 @@ for trial in range(maxTrial):
     for img in range(maxImage)[1:]:
         surfaceList.append(pygame.image.load(
             "./Animation Styles/IndividualFrames/bmp16/a2/",img,
-            "1.bmp").convert()))
+            "1.bmp").convert())
         drawObject[img] = DynamicDrawableObject(
             surfaceList,infoFilePath,24,img*40,img*40,1,1)
         drawObject[img].goToAnim("anim1")
-        if img==1:
-            scene1[] = Scene( drawObject[img] )
-            scenesList.append(scene1)
-        else:
-            scene1.addObjects( [ drawObject[img] ] )
-            scenesList.append(scene1)
+        
+        scenesList.append( Scene( drawObject[img] ) )
 
 # 'scenesList' is a list filled with Scene objects (those inherit/extend Group)
 
@@ -76,3 +72,4 @@ for trial in range(maxTrial):
         scenesList[grp].clear(screen, background)
 
     print "Trial's average framerate was " , str(1/((time()-start)/maxFrame))
+    

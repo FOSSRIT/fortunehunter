@@ -126,3 +126,4 @@ for trial in range(maxTrial):
             groupsList[grp].clear(screen, background)
 
     print "Trial's average framerate was " , str(1/((time()-start)/maxFrame))
+    
