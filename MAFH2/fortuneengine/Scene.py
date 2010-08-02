@@ -160,12 +160,14 @@ class Scene(pygame.sprite.RenderUpdates):
        for s in self._spritelist: s[0].update(t);
 
     def draw(self, surface):
+        """draw(surface)
+           draw all sprites onto the surface
 
-        print "h"
-        #sprites = self.sprites()
+           Draws all the sprites onto the given surface."""
+        sprites = self.sprites()
         surface_blit = surface.blit
-        for spr in self._spritelist:
-            surface_blit(spr[0].image, spr[0].rect)
+        for spr in sprites:
+            self.spritedict[spr] = surface_blit(spr.image, spr.rect)
         self.lostsprites = []
 
     def nextFrame(self):
