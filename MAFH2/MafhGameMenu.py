@@ -34,10 +34,6 @@ class GameMenuHolder( GameEngineElement ):
             self.menu = None
 
     def show_menu(self,id):
-        if self.is_in_engine():
-            self.clear_menu()
-        else:
-            self.add_to_engine()
 
         if id == "title":
             menu_options = [
@@ -104,6 +100,11 @@ class GameMenuHolder( GameEngineElement ):
             return
 
         self.menu = GameMenu(menu_options, self.width, self.height)
+        
+        if self.is_in_engine():
+            self.clear_menu()
+        else:
+            self.add_to_engine()
 
 class GameMenu(GameEngineElement):
     def __init__(self, game_menu, width=800, height=400):
