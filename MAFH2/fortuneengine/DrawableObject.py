@@ -109,7 +109,7 @@ class DrawableObject(pygame.sprite.Sprite):
         if (timePassed) > 1000:
 
             self.image = self._images[self._frame]
-            self._last_update = timePassed%self._delay
+            self._last_update = timePassed%1000
         else:   
             self._last_update = timePassed
 
