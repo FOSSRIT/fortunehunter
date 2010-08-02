@@ -158,19 +158,22 @@ class Dungeon(GameEngineElement):
             dY = y
             dc = 'W'
 
-        if self.rooms.has_key( (dX, dY) ):
-            door_flag = self.rooms[profile.position].get_door( dc )
+
+
+        door_flag = self.rooms[profile.position].get_door( dc )
+        if door_flag == EXIT_DOOR or door_flag == ENTRANCE_DOOR:
+            if self.move_permissions( door_flag ):
+                self.game_engine.get_object('profile').next_dungeon()
+
+        elif self.rooms.has_key( (dX, dY) ):
             if self.move_permissions( door_flag ):
                 self.game_engine.get_object('mesg').add_line(_("You enter room at %i,%i")%(dX, dY))
                 profile.move_to( dX, dY )
                 self.game_engine.get_object('map').update_macro()
                 self.check_for_enemies()
         else:
-            #Entrance or exit may be on a border of the grid
-            door_flag = self.rooms[profile.position].get_door( dc )
-            if door_flag == EXIT_DOOR or door_flag == ENTRANCE_DOOR:
-                if self.move_permissions( door_flag ):
-                    self.game_engine.get_object('profile').next_dungeon()
+            #On a border of the grid
+            pass
 
     def check_for_enemies(self):
         current_room = self.get_current_room()
