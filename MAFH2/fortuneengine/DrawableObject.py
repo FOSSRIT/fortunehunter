@@ -40,6 +40,19 @@ class DrawableObject(pygame.sprite.Sprite):
             self.animations["anim1"] = [0, len(self._images)]
             self.goToAnim("anim1")
 
+    def repopulateImages(self, newImages):
+    
+        self._images = []
+        self._origImages = []
+        for i in range(len(images)):
+            self._images.append(images[i].convert())
+            self._origImages.append(images[i].convert())
+        
+        self.image = self._images[0]
+        self._frame = 0
+        self.xSize = 40     # <--
+        self.ySize = 40     # <--
+
     def addImages(self, images):
         self._images.extend(images)
         self._origImages.extend(images)
@@ -92,6 +105,13 @@ class DrawableObject(pygame.sprite.Sprite):
     def calcColorKey(self, x=0, y=0):
        myColorKey = images[0].get_at((x,y))
        setColorKey(myColorKey)
+       
+    def makeTransparent(self, bool = True):
+       
+       if bool == True:
+            self.nudge(-3000, 0)
+       else:
+            self.nudge(3000, 0)
 
     def setColorKey(self, aColor):
        for i in range(len(self._images)):
