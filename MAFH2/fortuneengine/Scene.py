@@ -161,6 +161,7 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def draw(self, surface):
 
+        print "h"
         #sprites = self.sprites()
         surface_blit = surface.blit
         for spr in self._spritelist:
