@@ -46,6 +46,7 @@ class BattleMenuHolder( GameEngineElement ):
 
     def clear_menu(self):
         if self.menu:
+            self.menu.clear()
             self.menu.remove_from_engine()
             self.menu = None
 
@@ -122,6 +123,9 @@ class BattleMenu(GameEngineElement):
 
     def draw(self,screen,time_delta):
         self.menu.draw( screen )
+    
+    def clear(self):
+        self.menu.clear()
 
 class Menu(object):
     def __init__(self, options, cols, scene):
@@ -147,7 +151,8 @@ class Menu(object):
             ren = self.font.render(o[0], 1, [0,0,0])
             if ren.get_width() > self.width:
                 self.width = ren.get_width()
-            surf = pygame.Surface((60,60))
+        for o in self.options:
+            surf = pygame.Surface((self.height,self.width))
             self.rect_list.append(DrawableObject([surf], ""))
             self.rect_list.append(DrawableObject([surf], ""))
             
@@ -225,6 +230,12 @@ class Menu(object):
             self.option = self.option % len(self.options)
 
         return return_val
+
+    def clear(self):
+        for text in self.font_list:
+            self.scene.removeObject(text)
+        for rect in self.rect_list:
+            self.scene.removeObject(rect)
 
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""

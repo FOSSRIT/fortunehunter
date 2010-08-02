@@ -64,6 +64,12 @@ class DrawableObject(pygame.sprite.Sprite):
             self._origImages[i] = pygame.transform.scale(self._origImages[i], (self.xSize, self.ySize))
             self._images[i] = self._origImages[i]
 
+    def fill(self, color):
+        for i in range(len(self._images)):
+            #print "filling with ", color
+            self._origImages[i].fill(color)
+            self._images[i].fill(color)
+            
     def getXSize(self):
        return self.xSize
 
