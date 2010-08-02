@@ -47,7 +47,6 @@ class Scene(pygame.sprite.RenderUpdates):
        self.ySize = highestY - self.yPos
 
     def addObject(self, newDrawableObject):
-        sprite = newDrawableObject
         RenderUpdates.add_internal(self, newDrawableObject)
         self._spritelist.append([newDrawableObject, newDrawableObject.getXPos(), newDrawableObject.getYPos()])
 
@@ -66,7 +65,7 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def removeObject(self, sprite):
        RenderUpdates.remove_internal(self, sprite)
-       #self._spritelist.remove(sprite)
+       self._spritelist.remove(sprite)
 
     def getObject(self, index):
 
