@@ -12,7 +12,7 @@ class DrawableObject(pygame.sprite.Sprite):
             self._origImages.append(images[i].convert())
 
         self._start = pygame.time.get_ticks()
-        self.image = self._images[0]        
+        self.image = self._images[0]
         self._last_update = 0
         self._frame = 0
         self.animations = {}
@@ -22,7 +22,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.yPos = y
         self.myAngle = 0
         self.xSize = 40     # <--
-        self.ySize = 40     # <-- 
+        self.ySize = 40     # <--
         self.rect.topleft = (x,y)
 
         if textfileName != '':
@@ -104,7 +104,14 @@ class DrawableObject(pygame.sprite.Sprite):
           self._images[i].set_colorkey(aColor)
 
     def update(self, t=None):
-       pass
+        timePassed = t + self._last_update
+
+        if (timePassed) > 1000:
+
+            self.image = self._images[self._frame]
+            self._last_update = timePassed%self._delay
+        else:   
+            self._last_update = timePassed
 
     def nextFrame(self):
        pass
