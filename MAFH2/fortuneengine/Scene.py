@@ -159,6 +159,14 @@ class Scene(pygame.sprite.RenderUpdates):
     
        for s in self._spritelist: s[0].update(t);
 
+    def draw(self, surface):
+
+        #sprites = self.sprites()
+        surface_blit = surface.blit
+        for spr in self._spritelist:
+            surface_blit(spr[0].image, spr[0].rect)
+        self.lostsprites = []
+
     def nextFrame(self):
 
        cnt = 0
