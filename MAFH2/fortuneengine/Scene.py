@@ -47,7 +47,6 @@ class Scene(pygame.sprite.RenderUpdates):
        self.ySize = highestY - self.yPos
 
     def addObject(self, newDrawableObject):
-        sprite = newDrawableObject
         RenderUpdates.add_internal(self, newDrawableObject)
         self._spritelist.append([newDrawableObject, newDrawableObject.getXPos(), newDrawableObject.getYPos()])
 
@@ -65,8 +64,12 @@ class Scene(pygame.sprite.RenderUpdates):
            cnt += 1
 
     def removeObject(self, sprite):
+
+       for i in self._spritelist:
+           if i[0] == sprite:
+               self._spritelist.remove(i)
+               break
        RenderUpdates.remove_internal(self, sprite)
-       #self._spritelist.remove(sprite)
 
     def getObject(self, index):
 
@@ -158,6 +161,26 @@ class Scene(pygame.sprite.RenderUpdates):
     def update(self, t):
     
        for s in self._spritelist: s[0].update(t);
+
+    def draw(self, surface):
+       spritedict = self.spritedict
+       surface_blit = surface.blit
+       dirty = self.lostsprites
+       self.lostsprites = []
+       dirty_append = dirty.append
+       for s in self._spritelist:
+           r = spritedict[s[0]]
+           newrect = surface_blit(s[0].image, s[0].rect)
+           if r is 0:
+               dirty_append(newrect)
+           else:
+               if newrect.colliderect(r):
+                   dirty_append(newrect.union(r))
+               else:
+                   dirty_append(newrect)
+                   dirty_append(r)
+           spritedict[s[0]] = newrect
+       return dirty
 
     def nextFrame(self):
 
