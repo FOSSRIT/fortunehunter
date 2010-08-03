@@ -36,6 +36,32 @@ class Dungeon(GameEngineElement):
 
         self.add_to_engine()
 
+        doorsList = []
+
+        self.game_engine.get_scene().addObject(self.__images['Room'],(0,0))
+        doorsList.append(DrawableObject([self.__images['L']], '', 0 ,0))
+        doorsList.append(DrawableObject([self.__images['F']], '', 360 ,0))
+        doorsList.append(DrawableObject([pygame.transform.flip(self.__images['L'], True, False)], '', 990 ,0))
+        
+        for door in doorsList: door.makeTransparent(True)
+
+        self.game_engine.get_scene().addObjects(doorsList)
+        
+        self.itemsList = []
+       
+        for i in range(4):
+            surf = pygame.Surface((10,10))
+            surf.fill((0,0,0))
+            self.blueRect = DrawableObject([surf],"")
+            self.blueRect.makeTransparent(True)
+            itemsList.append(self.blueRect)
+            
+        itemsList[0].setPosition(self.game_engine.art_scale(270, 1200, True), self.game_engine.art_scale(330, 900, False))
+        itemsList[1].setPosition(self.game_engine.art_scale(100, 1200, True),self.game_engine.art_scale(600, 900, False))
+        itemsList[2].setPosition(self.game_engine.art_scale(1100, 1200, True),self.game_engine.art_scale(600, 900, False))
+        itemsList[3].setPosition(self.game_engine.art_scale(900, 1200, True),self.game_engine.art_scale(330, 900, False))
+        self.game_engine.get_scene().addObjects(itemsList)
+
     def add_to_engine(self):
         super(Dungeon, self).add_to_engine()
         self.game_engine.add_object('map', Map( self ) )
@@ -278,19 +304,16 @@ class Dungeon(GameEngineElement):
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
 
-        # Draw Room Background
-        screen.blit(self.__images['Room'],(0,0))
-
         # Draw Room Doors
         left, front, right = self.normalize_dir()
         if current_room.get_door( left ) != '0':
-            screen.blit(self.__images['L'],(0,0))
+            doorsList[0].makeTransparent(False)
 
         if current_room.get_door( front ) != '0':
-            screen.blit(self.__images['F'],( self.game_engine.art_scale(360, 1200, True),0))
+            doorsList[1].makeTransparent(False)
 
         if current_room.get_door( right ) != '0':
-            screen.blit(pygame.transform.flip(self.__images['L'], True, False),(self.game_engine.art_scale(990, 1200, True),0))
+            doorsList[2].makeTransparent(False)
 
         # Draw Items
         img_list = []
@@ -302,30 +325,26 @@ class Dungeon(GameEngineElement):
             item_key = current_room.get_item( imod )
 
             if item_key[0] == '0' or item_key[1] != 'v':
-                path = "noItem.gif"
+                itemsList[i].makeTransparent(True)
             else:
-                path = get_item( item_key[0] ).path
+                itemsList[i].repopulateImages([get_item( item_key[0] ).path])
+                itemsList[i].makeTransparent(False)
 
-            if not self.__images.has_key( path ):
-                img = pygame.image.load(ITEM_PATH + path).convert()
-                width,height = img.get_size()
-                img = pygame.transform.scale(img, (self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False)))
-                self.__images[path] = img
+            #if not self.__images.has_key( path ):
+                #img = pygame.image.load(ITEM_PATH + path).convert()
+                #width,height = img.get_size()
+                #img = pygame.transform.scale(img, (self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False)))
+                #self.__images[path] = img
 
-            img_list.append( self.__images[path] )
-
-        screen.blit(img_list[0],(self.game_engine.art_scale(270, 1200, True),self.game_engine.art_scale(330, 900, False)))
-        screen.blit(img_list[1],(self.game_engine.art_scale(100, 1200, True),self.game_engine.art_scale(600, 900, False)))
-        screen.blit(img_list[2],(self.game_engine.art_scale(1100, 1200, True),self.game_engine.art_scale(600, 900, False)))
-        screen.blit(img_list[3],(self.game_engine.art_scale(900, 1200, True),self.game_engine.art_scale(330, 900, False)))
+            #img_list.append( self.__images[path] )
 
         #Amulet Search Function
-        if hasattr(self, 'pickup_time'):
-            elp = time() - self.pickup_time
-            color_a = int(elp*COLOR_DELTA)
-            if color_a > 255:
-                color_a = 255
-                self.game_engine.stop_event_timer(self.search_timer_handler)
-            surf1 = pygame.Surface((self.game_engine.width,self.game_engine.height), pygame.SRCALPHA)
-            pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, self.game_engine.width, self.game_engine.height))
-            screen.blit( surf1, (0, 0) )
+        # if hasattr(self, 'pickup_time'):
+#             elp = time() - self.pickup_time
+#             color_a = int(elp*COLOR_DELTA)
+#             if color_a > 255:
+#                 color_a = 255
+#                 self.game_engine.stop_event_timer(self.search_timer_handler)
+#             surf1 = pygame.Surface((self.game_engine.width,self.game_engine.height), pygame.SRCALPHA)
+#             pygame.draw.rect(surf1, (255, 255, 255, color_a), (0, 0, self.game_engine.width, self.game_engine.height))
+#             screen.blit( surf1, (0, 0) )
