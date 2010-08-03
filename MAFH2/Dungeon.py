@@ -330,7 +330,7 @@ class Dungeon(GameEngineElement):
             if item_key[0] == '0' or item_key[1] != 'v':
                 self.itemsList[imod].makeTransparent(True)
             else:
-                self.itemsList[imod].repopulateImages([pygame.image.load(get_item( item_key[0] ).path)])
+                self.itemsList[imod].repopulateImages([pygame.image.load(ITEM_PATH + get_item( item_key[0] ).path)])
                 self.itemsList[imod].makeTransparent(False)
 
             #if not self.__images.has_key( path ):

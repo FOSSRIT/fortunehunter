@@ -32,6 +32,11 @@ class Profile(GameEngineElement):
         self.puzzlesSolved=0
         self.inventory = []
 
+        bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
+        self.background = DrawableObject([bg], '')
+        self.background.scale(self.game_engine.width, self.game_engine.height)
+        self.game_engine.get_scene().addObject(self.background)
+
         #create background rect
         draw_width = self.game_engine.width/4
         draw_height = self.game_engine.height/4
@@ -85,10 +90,6 @@ class Profile(GameEngineElement):
         self.inventory.append(item)
 
     def add_to_engine(self):
-        bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
-        self.background = DrawableObject([bg], '')
-        self.background.scale(self.game_engine.width, self.game_engine.height)
-        self.game_engine.get_scene().addObject(self.background)
         super( Profile, self).add_to_engine()
 
     def remove_from_engine(self):
