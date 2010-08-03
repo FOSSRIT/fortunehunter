@@ -2,7 +2,7 @@ import pygame
 
 class DrawableObject(pygame.sprite.Sprite):
 
-    def __init__(self, images, textfileName, x = 0, y = 0):
+    def __init__(self, images, textfileName, transparent = False x = 0, y = 0):
         pygame.sprite.Sprite.__init__(self)
         
         self._images = []
@@ -39,6 +39,8 @@ class DrawableObject(pygame.sprite.Sprite):
         
             self.animations["anim1"] = [0, len(self._images)]
             self.goToAnim("anim1")
+            
+        self.makeTransparent(transparent)
 
     def repopulateImages(self, newImages):
     
