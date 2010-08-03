@@ -115,7 +115,7 @@ class DrawableObject(pygame.sprite.Sprite):
     def makeTransparent(self, bool = True):
        
        if bool == True:
-            self.image.fill((255,255,255,0))
+            self.image.fill((255,255,255,255))
        else:
             self._images[self._frame] = self._origImages[self._frame]
             self.image = self._images[self._frame]
