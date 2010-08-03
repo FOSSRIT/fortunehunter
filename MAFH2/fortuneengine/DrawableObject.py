@@ -12,12 +12,6 @@ class DrawableObject(pygame.sprite.Sprite):
             self._origImages.append(images[i].convert_alpha())
 
         self._start = pygame.time.get_ticks()
-        
-        if transparent == False:
-            self.image = self._images[0]
-        else:
-            self.makeTransparent(transparent)
-
         self._last_update = 0
         self._frame = 0
         self.animations = {}
@@ -29,6 +23,10 @@ class DrawableObject(pygame.sprite.Sprite):
         self.xSize = self.image.get_width()
         self.ySize = self.image.get_height()
         self.rect.topleft = (x,y)
+        if transparent == False:
+            self.image = self._images[0]
+        else:
+            self.makeTransparent(transparent)
 
         if textfileName != '':
 
