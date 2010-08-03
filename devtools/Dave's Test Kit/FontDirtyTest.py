@@ -7,25 +7,25 @@ from DrawableObject import DrawableObject
 from DrawableFontObject import DrawableFontObject
 pygame.init()
 
-FRAME=500
-screenWidth = 600
-screenHeight = 400
-numImages = 1
+FRAME=500 #setting number of frames per trial
+screenWidth = 600 #screen width
+screenHeight = 400 #screen height
+numImages = 1 #number of copies of images
 maxTrial = 5 # multiple trials, but hard coded in this test
-dirtyList=[]
+dirtyList=[] #list for objects to be updated
 
+#print the height and width
 print "width,height",
 print screenWidth,
 print ",",
 print screenHeight
 
 screen = pygame.display.set_mode( [int(screenWidth),
-    int(screenHeight)] ) #Screen Set 600x400
+    int(screenHeight)] ) #Setting the screen size to the given size
 pygame.display.set_caption("Sprite Speed Test Window")
-GREEN = 0, 192, 0 # green
-background = pygame.image.load("Room.gif")
-screen.blit(background,[0,0])
-pygame.display.flip()
+background = pygame.image.load("Room.gif")#Loading my background image
+screen.blit(background,[0,0])#blitting my background to screen
+pygame.display.flip()#flipping screen
 start = time()
 
 for aTrial in range(maxTrial):
@@ -61,4 +61,4 @@ for aTrial in range(maxTrial):
             groups[image].clear(screen, background)
 
     #print 1/((time()-start)/FRAME)
-    pygame.display.flip()
+    #pygame.display.flip()
