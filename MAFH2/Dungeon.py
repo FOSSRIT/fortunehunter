@@ -41,7 +41,7 @@ class Dungeon(GameEngineElement):
 
         doorsList = []
 
-        self.game_engine.get_scene().addObject(DrawableObject(self.__images['Room'], ''))
+        self.game_engine.get_scene().addObject([DrawableObject(self.__images['Room'], '')])
         doorsList.append(DrawableObject([self.__images['L']], '', 0 ,0))
         doorsList.append(DrawableObject([self.__images['F']], '', 360 ,0))
         doorsList.append(DrawableObject([pygame.transform.flip(self.__images['L'], True, False)], '', 990 ,0))
