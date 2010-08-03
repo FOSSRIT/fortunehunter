@@ -338,6 +338,7 @@ class Dungeon(GameEngineElement):
             else:
                 self.itemsList[imod].repopulateImages([pygame.image.load(ITEM_PATH + get_item( item_key[0] ).path)])
                 self.itemsList[imod].makeTransparent(False)
+                self.itemsList[imod].setPosition(self.game_engine.art_scale(width, 1200, True), self.game_engine.art_scale(height, 900, False))
 
             #if not self.__images.has_key( path ):
                 #img = pygame.image.load(ITEM_PATH + path).convert()
