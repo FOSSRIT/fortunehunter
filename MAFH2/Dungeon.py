@@ -317,12 +317,12 @@ class Dungeon(GameEngineElement):
         if current_room.get_door( front ) != '0':
             self.doorsList[1].makeTransparent(False)
         else:
-            self.doorsList[0].makeTransparent(True)
+            self.doorsList[1].makeTransparent(True)
 
         if current_room.get_door( right ) != '0':
             self.doorsList[2].makeTransparent(False)
         else:
-            self.doorsList[0].makeTransparent(True)
+            self.doorsList[2].makeTransparent(True)
 
         # Draw Items
         img_list = []
