@@ -27,7 +27,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.ySize = self.image.get_height()
         self.rect.topleft = (x,y)
         self.image = self.blank
-        if transparent == False
+        if transparent == False:
             self.image = self._images[0]
 
         if textfileName != '':
