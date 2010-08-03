@@ -327,6 +327,7 @@ class Dungeon(GameEngineElement):
         # Draw Items
         img_list = []
 
+        cnt = 0
         for i in range( dir, (dir + 4) ):
             #imod for room rotation
             imod = i % 4
@@ -334,11 +335,12 @@ class Dungeon(GameEngineElement):
             item_key = current_room.get_item( imod )
 
             if item_key[0] == '0' or item_key[1] != 'v':
-                self.itemsList[imod].makeTransparent(True)
+                self.itemsList[cnt].makeTransparent(True)
             else:
-                self.itemsList[imod].repopulateImages([pygame.image.load(ITEM_PATH + get_item( item_key[0] ).path)])
-                self.itemsList[imod].makeTransparent(False)
-                self.itemsList[imod].setPosition(self.game_engine.art_scale(self.itemsList[imod].getXSize(), 1200, True), self.game_engine.art_scale(self.itemsList[imod].getYSize(), 900, False))
+                self.itemsList[cnt].repopulateImages([pygame.image.load(ITEM_PATH + get_item( item_key[0] ).path)])
+                self.itemsList[cnt].makeTransparent(False)
+                
+            cnt += 1
 
             #if not self.__images.has_key( path ):
                 #img = pygame.image.load(ITEM_PATH + path).convert()
