@@ -4,7 +4,7 @@ from pygame.locals import *
 from time import time
 from Scene import Scene
 from DrawableObject import DrawableObject
-from DrawableFontObject import DrawableFontObject
+from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
 
 FRAME=500 #setting number of frames per trial
@@ -27,11 +27,32 @@ background = pygame.image.load("Room.gif")#Loading my background image
 screen.blit(background,[0,0])#blitting my background to screen
 pygame.display.flip()#flipping screen
 
+#Creating my list of images to use later
+surfaceList = [
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/1.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/2.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/3.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/4.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/5.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/6.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/7.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/8.bmp").convert(),
+    pygame.image.load(
+        "./Animation Styles/IndividualFrames/bmp16/a2/9.bmp").convert()
+    ]
+
 for aTrial in range(maxTrial):
     start = time()#starting timer
 
-    font = pygame.font.SysFont("cmr10", 100) #creating my font object
-    d = DrawableFontObject("hello world", font) #creating my DrawableFontObject object using my previously made font object
+    d = DynamicDrawableObject(surfaceList,'') #creating my DynamicDrawableObject object using my previously made images list
 
     group1=Scene(d) #creating my scene
     groups=[group1] #creating my array of scenes
@@ -46,7 +67,7 @@ for aTrial in range(maxTrial):
     #loop that goes through and upodates my objects
     for frame in range(FRAME):
         dirtyList=[]
-        d.changeText(str(frame))#updates my text for my DFO
+        #d.changeText(str(frame))#updates my text for my DFO
         for image in range(numImages):
             groups[image].update(clock.get_time())#calls the update function for my DFO
             clock.tick()#ticks clock
