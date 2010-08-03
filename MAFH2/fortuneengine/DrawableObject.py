@@ -115,7 +115,7 @@ class DrawableObject(pygame.sprite.Sprite):
     def makeTransparent(self, bool = True):
        
        if bool == True:
-            surf = pygame.Surface((10,10))
+            surf = pygame.Surface((0,0))
             surf.fill((255, 255, 255, 0))
             surf.convert_alpha()
             self._images[self._frame] = surf
