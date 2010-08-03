@@ -8,8 +8,8 @@ class DrawableObject(pygame.sprite.Sprite):
         self._images = []
         self._origImages = []
         for i in range(len(images)):
-            self._images.append(images[i].convert())
-            self._origImages.append(images[i].convert())
+            self._images.append(images[i].convert_alpha())
+            self._origImages.append(images[i].convert_alpha())
 
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]
@@ -45,8 +45,8 @@ class DrawableObject(pygame.sprite.Sprite):
         self._images = []
         self._origImages = []
         for i in range(len(newImages)):
-            self._images.append(newImages[i].convert())
-            self._origImages.append(newImages[i].convert())
+            self._images.append(newImages[i].convert_alpha())
+            self._origImages.append(newImages[i].convert_alpha())
         
         self.image = self._images[0]
         self._frame = 0
