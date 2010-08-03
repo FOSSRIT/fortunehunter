@@ -2,6 +2,7 @@ import pygame
 import random
 from fortuneengine.GameEngineElement import GameEngineElement
 from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
 from AnimatedSprite import Spritesheet
 
 from constants import MENU_PATH, PUZZLE_PATH
@@ -13,20 +14,24 @@ class MagicMenuHolder( GameEngineElement ):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        self.background = pygame.image.load(MENU_PATH + "battleMenubackground.gif")
+        self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")], '')
+        self.background.setPosition(0,286)
+        self.game_engine.get_scene().addObject(self.background)
 
     def remove_from_engine(self):
+        self.game_engine.get_scene().removeObject(self.background)
         super( MagicMenuHolder, self ).remove_from_engine()
         self.clear_menu()
         
     def draw(self,screen,time_delta):
-        screen.blit(self.background,(0,286,452,414))
+        pass
 
     def menu_called(self, id):
         self.callback(id, self)
 
     def clear_menu(self):
         if self.menu:
+            self.menu.clear()
             self.menu.remove_from_engine()
             self.menu = None
             
@@ -91,8 +96,6 @@ class MagicMenu(GameEngineElement):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
         magic_list = self.game_engine.get_object('battle').magic_list
         self.menu = Menu(menu_options, spell_type, magic_list, self.game_engine.get_scene())
-        
-
         self.menu.set_pos(x, y)
         self.add_to_engine()
 
@@ -101,6 +104,9 @@ class MagicMenu(GameEngineElement):
 
     def draw(self,screen,time_delta):
         self.menu.draw( screen )
+    
+    def clear(self):
+        self.menu.clear()
 
 class Menu(object):
     def __init__(self, options, spelltype, magic_list, scene):
@@ -197,11 +203,19 @@ class Menu(object):
         self.buttons = tButtons
         self.options = tOptions
         
+        surf = pygame.Surface((60,60))
+        surf.fill((4, 119, 152))
+        self.selectRect = DynamicDrawableObject([surf],"")
+        self.selectRect.setPosition(297, 435)
+        self.scene.addObject(self.selectRect)
         self.scene.addObjects(self.buttons)
         
+        self.mainGlyph.setColorKey((255,0,255))
+        self.mainGlyph.setPosition(485,350)
+        
         for image in self.glyphs:
-            tempDO = DrawableObject([image],"")
-            tempDO.makeTransparent(True)
+            tempDO = DrawableObject([image],"",True)
+            #tempDO.makeTransparent(True)
             self.reference.append(tempDO)
         self.scene.addObjects(self.reference)
         self.scene.addObject(self.mainGlyph)
@@ -214,8 +228,8 @@ class Menu(object):
         h=0 # Selection Spacing
         j=0 # Col Spacing
         index=0 #current spot in buttons list
-        height = self.buttons[0].getYSize()
-        width = self.buttons[0].getXSize()
+        height = 60
+        width = 60
         
         for o in self.options:
 
@@ -223,7 +237,7 @@ class Menu(object):
             newY = self.y + i * height
             
             if h==self.option:
-                pygame.draw.rect(surface, (4, 119, 152), ( newX, newY, height, width))
+                self.selectRect.setPosition(newX, newY)
             self.buttons[index].setPosition(newX, newY)
             #surface.blit(self.buttons[index], (newX, newY) )
 
@@ -234,10 +248,6 @@ class Menu(object):
                 i+=1
                 j=0
                 
-        self.mainGlyph.setColorKey((255,0,255))
-        self.mainGlyph.setPosition(485,350)
-        
-        
         # Draw reference glyphs
         for i in range(4):
             if i in self.magic_list:
@@ -276,6 +286,14 @@ class Menu(object):
             self.option = self.option % len(self.options)
 
         return return_val
+
+    def clear(self):
+        for object in self.buttons:
+            self.scene.removeObject(object)
+        for object in self.reference:
+            self.scene.removeObject(object)
+        self.scene.removeObject(self.mainGlyph)
+        self.scene.removeObject(self.selectRect)
 
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""

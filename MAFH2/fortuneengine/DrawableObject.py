@@ -2,7 +2,7 @@ import pygame
 
 class DrawableObject(pygame.sprite.Sprite):
 
-    def __init__(self, images, textfileName, transparent = False x = 0, y = 0):
+    def __init__(self, images, textfileName, transparent = False, x = 0, y = 0):
         pygame.sprite.Sprite.__init__(self)
         
         self._images = []
@@ -115,7 +115,6 @@ class DrawableObject(pygame.sprite.Sprite):
        setColorKey(myColorKey)
        
     def makeTransparent(self, bool = True):
-       
        if bool == True:
             surf = pygame.Surface((0,0))
             surf.fill((255, 255, 255, 0))
