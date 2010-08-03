@@ -303,6 +303,9 @@ class Dungeon(GameEngineElement):
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 #
     def draw(self,screen,time_delta):
+
+        for door in self.doorsList: door.makeTransparent(True)
+
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
