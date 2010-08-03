@@ -15,6 +15,9 @@ from constants import (
         ENTRANCE_DOOR, EXIT_DOOR
         )
 from JournalIntegration import do_load, load_dungeon_by_id
+from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
+from fortuneengine.Scene import Scene
 
 SEARCH_TIME = 2
 COLOR_DELTA = 255/SEARCH_TIME
