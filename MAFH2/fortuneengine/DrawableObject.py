@@ -11,6 +11,9 @@ class DrawableObject(pygame.sprite.Sprite):
             self._images.append(images[i].convert_alpha())
             self._origImages.append(images[i].convert_alpha())
 
+        self.blank = pygame.Surface((0,0))
+        self.blank.fill((255, 255, 255, 0))
+        self.blank.convert_alpha()
         self._start = pygame.time.get_ticks()
         self._last_update = 0
         self._frame = 0
@@ -23,10 +26,9 @@ class DrawableObject(pygame.sprite.Sprite):
         self.xSize = self.image.get_width()
         self.ySize = self.image.get_height()
         self.rect.topleft = (x,y)
-        if transparent == False:
+        self.image = self.blank
+        if transparent == False
             self.image = self._images[0]
-        else:
-            self.makeTransparent(transparent)
 
         if textfileName != '':
 
@@ -117,10 +119,7 @@ class DrawableObject(pygame.sprite.Sprite):
        
     def makeTransparent(self, bool = True):
        if bool == True:
-            surf = pygame.Surface((0,0))
-            surf.fill((255, 255, 255, 0))
-            surf.convert_alpha()
-            self._images[self._frame] = surf
+            self._images[self._frame] = self.blank
        else:
             self._images[self._frame] = self._origImages[self._frame]
             self.image = self._images[self._frame]
