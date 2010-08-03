@@ -12,7 +12,12 @@ class DrawableObject(pygame.sprite.Sprite):
             self._origImages.append(images[i].convert_alpha())
 
         self._start = pygame.time.get_ticks()
-        self.image = self._images[0]
+        
+        if transparent == False:
+            self.image = self._images[0]
+        else:
+            self.makeTransparent(transparent)
+
         self._last_update = 0
         self._frame = 0
         self.animations = {}
@@ -39,8 +44,6 @@ class DrawableObject(pygame.sprite.Sprite):
         
             self.animations["anim1"] = [0, len(self._images)]
             self.goToAnim("anim1")
-            
-        self.makeTransparent(transparent)
 
     def repopulateImages(self, newImages):
     
