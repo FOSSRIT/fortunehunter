@@ -39,16 +39,16 @@ class Dungeon(GameEngineElement):
 
         self.add_to_engine()
 
-        doorsList = []
+        self.doorsList = []
 
         self.game_engine.get_scene().addObject(DrawableObject([self.__images['Room']], ''))
-        doorsList.append(DrawableObject([self.__images['L']], '', 0 ,0))
-        doorsList.append(DrawableObject([self.__images['F']], '', 360 ,0))
-        doorsList.append(DrawableObject([pygame.transform.flip(self.__images['L'], True, False)], '', 990 ,0))
+        self.doorsList.append(DrawableObject([self.__images['L']], '', 0 ,0))
+        self.doorsList.append(DrawableObject([self.__images['F']], '', 360 ,0))
+        self.doorsList.append(DrawableObject([pygame.transform.flip(self.__images['L'], True, False)], '', 990 ,0))
         
-        for door in doorsList: door.makeTransparent(True)
+        for door in self.doorsList: door.makeTransparent(True)
 
-        self.game_engine.get_scene().addObjects(doorsList)
+        self.game_engine.get_scene().addObjects(self.doorsList)
         
         self.itemsList = []
        
@@ -310,13 +310,13 @@ class Dungeon(GameEngineElement):
         # Draw Room Doors
         left, front, right = self.normalize_dir()
         if current_room.get_door( left ) != '0':
-            doorsList[0].makeTransparent(False)
+            self.doorsList[0].makeTransparent(False)
 
         if current_room.get_door( front ) != '0':
-            doorsList[1].makeTransparent(False)
+            self.doorsList[1].makeTransparent(False)
 
         if current_room.get_door( right ) != '0':
-            doorsList[2].makeTransparent(False)
+            self.doorsList[2].makeTransparent(False)
 
         # Draw Items
         img_list = []
