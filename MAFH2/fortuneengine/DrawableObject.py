@@ -116,9 +116,11 @@ class DrawableObject(pygame.sprite.Sprite):
        
        if bool == True:
             self._images[self._frame].fill((255,255,255,0))
+            print "twas true"
        else:
             self._images[self._frame] = self._origImages[self._frame]
             self.image = self._images[self._frame]
+            print "that is incorrect sir"
 
     def setColorKey(self, aColor):
        for i in range(len(self._images)):
