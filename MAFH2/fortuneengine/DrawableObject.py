@@ -116,6 +116,7 @@ class DrawableObject(pygame.sprite.Sprite):
        
        if bool == True:
             surf = pygame.Surface((10,10))
+            surf.convert_alpha()
             surf.fill((0, 0, 0, 0))
             self._images[self._frame] = surf
        else:
