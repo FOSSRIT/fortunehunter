@@ -57,12 +57,12 @@ class Dungeon(GameEngineElement):
             surf.fill((0,0,0))
             self.blueRect = DrawableObject([surf],"")
             self.blueRect.makeTransparent(True)
-            itemsList.append(self.blueRect)
+            self.itemsList.append(self.blueRect)
             
-        itemsList[0].setPosition(self.game_engine.art_scale(270, 1200, True), self.game_engine.art_scale(330, 900, False))
-        itemsList[1].setPosition(self.game_engine.art_scale(100, 1200, True),self.game_engine.art_scale(600, 900, False))
-        itemsList[2].setPosition(self.game_engine.art_scale(1100, 1200, True),self.game_engine.art_scale(600, 900, False))
-        itemsList[3].setPosition(self.game_engine.art_scale(900, 1200, True),self.game_engine.art_scale(330, 900, False))
+        self.itemsList[0].setPosition(self.game_engine.art_scale(270, 1200, True), self.game_engine.art_scale(330, 900, False))
+        self.itemsList[1].setPosition(self.game_engine.art_scale(100, 1200, True),self.game_engine.art_scale(600, 900, False))
+        self.itemsList[2].setPosition(self.game_engine.art_scale(1100, 1200, True),self.game_engine.art_scale(600, 900, False))
+        self.itemsList[3].setPosition(self.game_engine.art_scale(900, 1200, True),self.game_engine.art_scale(330, 900, False))
         self.game_engine.get_scene().addObjects(itemsList)
 
     def add_to_engine(self):
@@ -328,10 +328,10 @@ class Dungeon(GameEngineElement):
             item_key = current_room.get_item( imod )
 
             if item_key[0] == '0' or item_key[1] != 'v':
-                itemsList[i].makeTransparent(True)
+                self.itemsList[i].makeTransparent(True)
             else:
-                itemsList[i].repopulateImages([get_item( item_key[0] ).path])
-                itemsList[i].makeTransparent(False)
+                self.itemsList[i].repopulateImages([get_item( item_key[0] ).path])
+                self.itemsList[i].makeTransparent(False)
 
             #if not self.__images.has_key( path ):
                 #img = pygame.image.load(ITEM_PATH + path).convert()
