@@ -14,6 +14,7 @@ class DrawableObject(pygame.sprite.Sprite):
         self.blank = pygame.Surface((0,0))
         self.blank.fill((255, 255, 255, 0))
         self.blank.convert_alpha()
+        self.transparent = transparent
         self._start = pygame.time.get_ticks()
         self._last_update = 0
         self._frame = 0
@@ -134,7 +135,7 @@ class DrawableObject(pygame.sprite.Sprite):
 
         if (timePassed) > 200:
 
-            self.image = self._images[self._frame]
+            if self.transparent == False: self.image = self._images[self._frame]
             self._last_update = timePassed%1000
         else:   
             self._last_update = timePassed
