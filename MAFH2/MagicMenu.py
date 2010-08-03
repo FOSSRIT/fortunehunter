@@ -147,7 +147,7 @@ class Menu(object):
             self.buttons.append(DrawableObject([pygame.transform.scale(heal[random.randint(0,3)] , (60,60))], ""))
             self.buttons.append(DrawableObject([pygame.transform.scale(missile[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert()], "")
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "FireGlyph.gif").convert_alpha()
             self.glyphs = fire
             
         elif(spelltype == 1):
@@ -161,7 +161,7 @@ class Menu(object):
             self.buttons.append(DrawableObject([pygame.transform.scale(heal[random.randint(0,3)] , (60,60))], ""))
             self.buttons.append(DrawableObject([pygame.transform.scale(missile[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert()], "")
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "LightningGlyph.gif").convert_alpha()
             self.glyphs = lightning
             
         elif(spelltype == 2):
@@ -175,7 +175,7 @@ class Menu(object):
             self.buttons.append(DrawableObject([pygame.transform.scale(heal[random.randint(0,3)] , (60,60))], ""))
             self.buttons.append(DrawableObject([pygame.transform.scale(fire[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert()], "")
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "MissileGlyph.gif").convert_alpha()
             self.glyphs = missile
         elif(spelltype == 3):
             #heal
@@ -188,7 +188,7 @@ class Menu(object):
             self.buttons.append(DrawableObject([pygame.transform.scale(missile[random.randint(0,3)] , (60,60))], ""))
             self.buttons.append(DrawableObject([pygame.transform.scale(fire[random.randint(0,3)] , (60,60))], ""))
             
-            self.mainGlyph = DrawableObject([pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert()], "")
+            self.mainGlyph = pygame.image.load(PUZZLE_PATH + "HealGlyph.gif").convert_alpha()
             self.glyphs = heal
         
         deck = [0,1,2,3,4,5,6,7]
@@ -210,15 +210,16 @@ class Menu(object):
         self.scene.addObject(self.selectRect)
         self.scene.addObjects(self.buttons)
         
-        self.mainGlyph.setColorKey((255,0,255))
-        self.mainGlyph.setPosition(485,350)
+        self.mainGlyph.set_colorkey((255,0,255), pygame.RLEACCEL)
+        self.mainGlyphDO = DrawableObject([self.mainGlyph],"")
+        self.mainGlyphDO.setPosition(485,350)
         
         for image in self.glyphs:
             tempDO = DrawableObject([image],"",True)
             #tempDO.makeTransparent(True)
             self.reference.append(tempDO)
         self.scene.addObjects(self.reference)
-        self.scene.addObject(self.mainGlyph)
+        self.scene.addObject(self.mainGlyphDO)
         
         self.height = (len(self.options)*self.buttons[1].getYSize()) / self.cols
 
@@ -292,7 +293,7 @@ class Menu(object):
             self.scene.removeObject(object)
         for object in self.reference:
             self.scene.removeObject(object)
-        self.scene.removeObject(self.mainGlyph)
+        self.scene.removeObject(self.mainGlyphDO)
         self.scene.removeObject(self.selectRect)
 
     def set_pos(self, x, y):
