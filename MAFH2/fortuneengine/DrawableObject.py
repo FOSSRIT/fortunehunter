@@ -19,16 +19,17 @@ class DrawableObject(pygame.sprite.Sprite):
         self._frame = 0
         self.animations = {}
         self._current_anim = ""
-        self.rect = self.image.get_rect()
         self.xPos = x
         self.yPos = y
         self.myAngle = 0
         self.xSize = self.image.get_width()
         self.ySize = self.image.get_height()
-        self.rect.topleft = (x,y)
         self.image = self.blank
         if transparent == False:
             self.image = self._images[0]
+            
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
 
         if textfileName != '':
 
