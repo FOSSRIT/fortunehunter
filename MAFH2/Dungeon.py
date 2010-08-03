@@ -42,9 +42,9 @@ class Dungeon(GameEngineElement):
         self.doorsList = []
 
         self.game_engine.get_scene().addObject(DrawableObject([self.__images['Room']], ''))
-        self.doorsList.append(DrawableObject([self.__images['L']], '', 0 ,0))
-        self.doorsList.append(DrawableObject([self.__images['F']], '', 360 ,0))
-        self.doorsList.append(DrawableObject([pygame.transform.flip(self.__images['L'], True, False)], '', 990 ,0))
+        self.doorsList.append(DrawableObject([self.__images['L']], '', False, 0 ,0))
+        self.doorsList.append(DrawableObject([self.__images['F']], '', False, 360 ,0))
+        self.doorsList.append(DrawableObject([pygame.transform.flip(self.__images['L'], True, False)], '', False, 990 ,0))
         
         for door in self.doorsList: door.makeTransparent(True)
 
@@ -55,8 +55,7 @@ class Dungeon(GameEngineElement):
         for i in range(4):
             surf = pygame.Surface((10,10))
             surf.fill((0,0,0))
-            self.blueRect = DrawableObject([surf],"")
-            self.blueRect.makeTransparent(True)
+            self.blueRect = DrawableObject([surf],"", True)
             self.itemsList.append(self.blueRect)
             
         self.itemsList[0].setPosition(self.game_engine.art_scale(270, 1200, True), self.game_engine.art_scale(330, 900, False))
