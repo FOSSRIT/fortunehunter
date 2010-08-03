@@ -26,14 +26,13 @@ pygame.display.set_caption("Sprite Speed Test Window")
 background = pygame.image.load("Room.gif")#Loading my background image
 screen.blit(background,[0,0])#blitting my background to screen
 pygame.display.flip()#flipping screen
-start = time()
 
 for aTrial in range(maxTrial):
-    start = time()
+    start = time()#starting timer
 
-    font = pygame.font.SysFont("cmr10", 100)
-    d = DrawableFontObject("hello world", font)
-    d.goToAnim("anim1")
+    font = pygame.font.SysFont("cmr10", 100) #creating my font object
+    d = DrawableFontObject("hello world", font) #creating my DrawableFoneObject object using my previously made font object
+    #d.goToAnim("anim1")#going to the first animation. MUST DO THIS STEP
     
 
     group1=Scene(d)
@@ -59,6 +58,3 @@ for aTrial in range(maxTrial):
         pygame.display.update(dirtyList)
         for image in range(numImages):
             groups[image].clear(screen, background)
-
-    #print 1/((time()-start)/FRAME)
-    #pygame.display.flip()
