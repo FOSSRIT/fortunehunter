@@ -312,17 +312,17 @@ class Dungeon(GameEngineElement):
         left, front, right = self.normalize_dir()
         if current_room.get_door( left ) != '0':
             self.doorsList[0].makeTransparent(False)
-        else:
+        #else:
             #self.doorsList[0].makeTransparent(True)
 
         if current_room.get_door( front ) != '0':
             self.doorsList[1].makeTransparent(False)
-        else:
+        #else:
             #self.doorsList[1].makeTransparent(True)
 
         if current_room.get_door( right ) != '0':
             self.doorsList[2].makeTransparent(False)
-        else:
+        #else:
             #self.doorsList[2].makeTransparent(True)
 
         # Draw Items
