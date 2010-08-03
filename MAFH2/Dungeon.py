@@ -303,7 +303,7 @@ class Dungeon(GameEngineElement):
 # \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
 #
     def draw(self,screen,time_delta):
-        print "room loaded"
+
         profile = self.game_engine.get_object('profile')
         dir = profile.playerFacing
         current_room = self.rooms[profile.position]
@@ -312,19 +312,16 @@ class Dungeon(GameEngineElement):
         left, front, right = self.normalize_dir()
         if current_room.get_door( left ) != '0':
             self.doorsList[0].makeTransparent(False)
-            print "door to left of you"
         else:
             self.doorsList[0].makeTransparent(True)
 
         if current_room.get_door( front ) != '0':
             self.doorsList[1].makeTransparent(False)
-            print "door in front of you"
         else:
             self.doorsList[1].makeTransparent(True)
 
         if current_room.get_door( right ) != '0':
             self.doorsList[2].makeTransparent(False)
-            print "door to right of you"
         else:
             self.doorsList[2].makeTransparent(True)
 
