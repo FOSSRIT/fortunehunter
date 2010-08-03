@@ -52,7 +52,7 @@ surfaceList = [
 for aTrial in range(maxTrial):
     start = time()#starting timer
 
-    d = DynamicDrawableObject(surfaceList,'') #creating my DynamicDrawableObject object using my previously made images list
+    d = DynamicDrawableObject(surfaceList,'', 100) #creating my DynamicDrawableObject object using my previously made images list
 
     group1=Scene(d) #creating my scene
     groups=[group1] #creating my array of scenes
@@ -67,9 +67,8 @@ for aTrial in range(maxTrial):
     #loop that goes through and upodates my objects
     for frame in range(FRAME):
         dirtyList=[]
-        #d.changeText(str(frame))#updates my text for my DFO
         for image in range(numImages):
-            groups[image].update(clock.get_time())#calls the update function for my DFO
+            groups[image].update(clock.get_time())#calls the update function for my DDO
             clock.tick()#ticks clock
             dirtyList.extend(groups[image].draw(screen))#adding stuff that has been updated to my dirty list
 
