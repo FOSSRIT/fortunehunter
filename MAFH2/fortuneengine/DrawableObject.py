@@ -50,8 +50,8 @@ class DrawableObject(pygame.sprite.Sprite):
         
         self.image = self._images[0]
         self._frame = 0
-        self.xSize = 40     # <--
-        self.ySize = 40     # <--
+        self.xSize = self.image.get_width()
+        self.ySize = self.image.get_height()
 
     def addImages(self, images):
         self._images.extend(images)
@@ -116,7 +116,7 @@ class DrawableObject(pygame.sprite.Sprite):
        
        if bool == True:
             surf = pygame.Surface((10,10))
-            surf.fill((0, 0, 0, ))
+            surf.fill((255, 255, 255, 0))
             surf.convert_alpha()
             self._images[self._frame] = surf
        else:
