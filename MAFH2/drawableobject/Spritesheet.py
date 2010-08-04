@@ -7,13 +7,13 @@ class Spritesheet:
     This class can be used to seporate images from the sprite sheet
     """
     def __init__(self, filename):
-        self.sheet = pygame.image.load(filename).convert()
+        self.sheet = pygame.image.load(filename).convert_alpha()
         self.sheet = self.imgat(self.sheet.get_rect())
 
     def imgat(self, rect, myColorKey = None):
         rect = pygame.Rect(rect)
-        image = pygame.Surface(rect.size).convert()
-        if myColorKey == None: myColorKey = image.get_at((0,0))
+        image = pygame.Surface(rect.size).convert_alpha()
+        if myColorKey == None: myColorKey = (255,0,255)
         image.set_colorkey(myColorKey)
         image.blit(self.sheet, (0, 0), rect)
         return image
