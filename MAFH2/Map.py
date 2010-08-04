@@ -13,19 +13,22 @@ class Map(GameEngineElement):
     def __init__(self, dgn):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
 
-        self.draw_macro_set = False
-        self.sizeX=dgn.sizeX
-        self.sizeY=dgn.sizeY
-        self.rectSizeX=38
-        self.rectSizeY=38
-        self.rects={}
-        self.fullRooms={}
-        self.totalSurface=pygame.Surface((self.sizeX*40,self.sizeY*40))
+        self.draw_macro_set = False #A boolean value to determine whether the large map should draw
+        self.sizeX=dgn.sizeX #A variable that represents the number of rooms wide the dungeon is
+        self.sizeY=dgn.sizeY #A variable that represents the number of rooms tall the dungeon is
+        self.rectSizeX=38 #A variable representing the X size of a given room on the mini map
+        self.rectSizeY=38 #A variable representing the Y size of a given room on the mini map
+        self.rects={} #A dictionary of rectangles that represent the rooms on the map
+        self.fullRooms={} #A dictionary representing nothing?
+        self.totalSurface=pygame.Surface((self.sizeX*40,self.sizeY*40)) #A rect representing the size of the map as a whole
 
+        #A Two dimensional For Loop that goes through all of the positions on the map.
         for y in range(self.sizeY):
             for x in range(self.sizeX):
-                curRect=pygame.Rect(x*40,y*40,self.rectSizeX,self.rectSizeX)
-                self.rects[(x,y)]=curRect
+                curRect=pygame.Rect(x*40,y*40,self.rectSizeX,self.rectSizeX) #Creating a rectangle for the current position on the map.
+                self.rects[(x,y)]=curRect #Adds the rectangle associated with the current position to the dictionary using the position on the map as the key.
+                #Each 'if' tests whether there is a door in a given direction at the current position.
+                #If there is a door in the given direction, it fills the square associated with themeans that the position has a room and fills it accordingly.
                 if dgn.rooms.get((x,y)).get_door('N') != '0':
                     self.fullRooms[(x,y)]=True
                     self.totalSurface.fill((255,255,255),curRect,0)
@@ -42,7 +45,7 @@ class Map(GameEngineElement):
                     self.fullRooms[(x,y)]=True
                     self.totalSurface.fill((255,255,255),curRect,0)
 
-        self.add_to_engine()
+        self.add_to_engine() #Adds itself and all callbacks to the engine
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -57,9 +60,9 @@ class Map(GameEngineElement):
             return True
 
     def draw(self,screen,time_delta):
-        profile = self.game_engine.get_object('profile')
-        x, y = profile.position
-        playerFacing = profile.playerFacing
+        profile = self.game_engine.get_object('profile') #Creates a copy of the profile object
+        x, y = profile.position #Grabs the position of the player from the profiler
+        playerFacing = profile.playerFacing #Grabs the direction the player is facing from the profiler
 
         mapView=pygame.transform.chop(self.totalSurface,(0,0,0,0))
         mapView.fill((255,0,0),( x * 40, y * 40,38,38))
