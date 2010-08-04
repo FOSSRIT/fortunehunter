@@ -22,12 +22,10 @@ class Scene(pygame.sprite.RenderUpdates):
     
        lowestX = 9000
        lowestY = 9000
-       
-       cnt = 0
-       while cnt < len(self._spritelist):
-           if self._spritelist[cnt][0].getXPos() < lowestX: lowestX = self._spritelist[cnt][0].getXPos()
-           if self._spritelist[cnt][0].getYPos() < lowestY: lowestY = self._spritelist[cnt][0].getYPos()
-           cnt += 1
+
+       for i in range(len(self._spritelist)):
+           if self._spritelist[i][0].getXPos() < lowestX: lowestX = self._spritelist[i][0].getXPos()
+           if self._spritelist[i][0].getYPos() < lowestY: lowestY = self._spritelist[i][0].getYPos()
 
        self.xPos = lowestX
        self.yPos = lowestY
@@ -37,11 +35,9 @@ class Scene(pygame.sprite.RenderUpdates):
        highestX = 0
        highestY = 0
        
-       cnt = 0
-       while cnt < len(self._spritelist):
-           if (self._spritelist[cnt][0].getXPos() + self._spritelist[cnt][0].getXSize()) > highestX: highestX = self._spritelist[cnt][0].getXPos() + self._spritelist[cnt][0].getXSize()
-           if (self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()) > highestY: highestY = self._spritelist[cnt][0].getYPos() + self._spritelist[cnt][0].getYSize()
-           cnt += 1
+       for i in range(len(self._spritelist)):
+           if (self._spritelist[i][0].getXPos() + self._spritelist[i][0].getXSize()) > highestX: highestX = self._spritelist[i][0].getXPos() + self._spritelist[i][0].getXSize()
+           if (self._spritelist[i][0].getYPos() + self._spritelist[i][0].getYSize()) > highestY: highestY = self._spritelist[i][0].getYPos() + self._spritelist[i][0].getYSize()
 
        self.xSize = highestX - self.xPos
        self.ySize = highestY - self.yPos
@@ -57,11 +53,9 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def setRelativePositions(self):
 
-       cnt = 0
-       while cnt < len(self._spritelist):
-           self._spritelist[cnt][1] = self._spritelist[cnt][0].getXPos() - self.xPos
-           self._spritelist[cnt][2] = self._spritelist[cnt][0].getYPos() - self.yPos
-           cnt += 1
+       for i in range(len(self._spritelist)):
+           self._spritelist[i][1] = self._spritelist[i][0].getXPos() - self.xPos
+           self._spritelist[i][2] = self._spritelist[i][0].getYPos() - self.yPos
 
     def removeObject(self, sprite):
 
@@ -86,11 +80,8 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def moveObjects(self):
 
-       cnt = 0
-       while cnt < len(self._spritelist):
-
-          self._spritelist[cnt][0].move()
-          cnt += 1
+       for i in range(len(self._spritelist)):
+          self._spritelist[i][0].move()
 
        self.calcPosition()
        self.calcSize()
@@ -98,11 +89,11 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def moveScene(self, xNudge = 0, yNudge = 0):
 
-       cnt = 0
-       while cnt < len(self._spritelist):
+       
+       for i in range(len(self._spritelist)):
 
-          self._spritelist[cnt][0].nudge(xNudge, yNudge)
-          cnt += 1
+          self._spritelist[i][0].nudge(xNudge, yNudge)
+          
 
        self.calcPosition()
 
@@ -111,11 +102,9 @@ class Scene(pygame.sprite.RenderUpdates):
        if newXPos != None: self.xPos = newXPos
        if newYPos != None: self.yPos = newYPos
 
-       cnt = 0
-       while cnt < len(self._spritelist):
+       for i in range(len(self._spritelist)):
 
-          self._spritelist[cnt][0].setPosition(self.xPos + self._spritelist[cnt][1], self.yPos + self._spritelist[cnt][2])
-          cnt += 1
+          self._spritelist[i][0].setPosition(self.xPos + self._spritelist[i][1], self.yPos + self._spritelist[i][2])
 
     def getXPos(self):
        return self.xPos
@@ -131,10 +120,9 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def scaleObjects(self, newXSize = None, newYSize = None):
 
-       cnt = 0
-       while cnt < len(self._spritelist):
-           self._spritelist[cnt][0].scale(newXSize, newYSize)
-           cnt += 1
+       
+       for i in range(len(self._spritelist)):
+           self._spritelist[i][0].scale(newXSize, newYSize)
 
     def scaleScene(self, newXSize = None, newYSize = None):
 
@@ -146,13 +134,11 @@ class Scene(pygame.sprite.RenderUpdates):
 
        if newXSize != None: xScale = (newXSize * 1.0)/self.xSize
        if newYSize != None: yScale = (newYSize * 1.0)/self.ySize
-
-       cnt = 0
-       while cnt < len(self._spritelist):
-           self._spritelist[cnt][0].scale(xScale * self._spritelist[cnt][0].getXSize(), yScale * self._spritelist[cnt][0].getYSize())
-           self._spritelist[cnt][1] = xScale * self._spritelist[cnt][1]
-           self._spritelist[cnt][2] = yScale * self._spritelist[cnt][2]
-           cnt += 1
+       
+       for i in range(len(self._spritelist)):
+           self._spritelist[i][0].scale(xScale * self._spritelist[iaw][0].getXSize(), yScale * self._spritelist[i][0].getYSize())
+           self._spritelist[i][1] = xScale * self._spritelist[i][1]
+           self._spritelist[i][2] = yScale * self._spritelist[i][2]
 
        self.calcPosition()
        self.calcSize()
@@ -195,8 +181,6 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def nextFrame(self):
 
-       cnt = 0
-       while cnt < len(self._spritelist):
+       for i in range(len(self._spritelist)):
 
-          self._spritelist[cnt][0].nextFrame()
-          cnt += 1
+          self._spritelist[i][0].nextFrame()

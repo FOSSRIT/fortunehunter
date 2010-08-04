@@ -1,24 +1,18 @@
 #! /usr/bin/env python
 import pygame
 from pygame.locals import *
-from time import time
+import time
 from Scene import Scene
 from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
 pygame.init()
 
-FRAME=500 #setting number of frames per trial
+FRAME=2500 #setting number of frames per trial
 screenWidth = 600 #screen width
 screenHeight = 400 #screen height
-numImages = 1 #number of copies of images
+numImages = 4 #number of copies of images
+numGroups = 1
 maxTrial = 5 # multiple trials, but hard coded in this test
-dirtyList=[] #list for objects to be updated
-
-#print the height and width
-print "width,height",
-print screenWidth,
-print ",",
-print screenHeight
 
 screen = pygame.display.set_mode( [int(screenWidth),
     int(screenHeight)] ) #Setting the screen size to the given size
@@ -48,30 +42,51 @@ surfaceList = [
     pygame.image.load(
         "./Animation Styles/IndividualFrames/bmp16/a2/9.bmp").convert()
     ]
-
+    
 for aTrial in range(maxTrial):
-    start = time()#starting timer
+    start = time.time()#starting timer
 
-    d = DynamicDrawableObject(surfaceList,'', 100) #creating my DynamicDrawableObject object using my previously made images list
+#creating my DynamicDrawableObject object using my previously made images list
+    a = DynamicDrawableObject(surfaceList,'', 72, 40, 40 , 2,2)
+    b = DynamicDrawableObject(surfaceList,'', 24, 80, 80 , 2,2)
+    c = DynamicDrawableObject(surfaceList,'', 12,120, 120, 2,2)
+    d = DynamicDrawableObject(surfaceList,'', 1, 160, 160, 2,2)
 
-    group1=Scene(d) #creating my scene
-    groups=[group1] #creating my array of scenes
+    sceneList=[Scene(a),] #creating my array of scenes
+    sceneList[0].addObjects([b,c,d])
+    
+    for sc in range(numGroups):
+        for img in range(sceneList[sc].getListSize()):
+            sceneList[sc].getObject(img).setSpeed(2,2)
+    
     #printing time to load images and stuff
-    print (time()-start) ,
+    print (time.time()-start) ,
     print " -- Time to load"
-
+    
     #setting up timer stuff
     clock = pygame.time.Clock()
     clock.tick()
-    start = time()
+    start = time.time()
+    
     #loop that goes through and upodates my objects
     for frame in range(FRAME):
+        time.sleep(.25)
         dirtyList=[]
-        for image in range(numImages):
-            groups[image].update(clock.get_time())#calls the update function for my DDO
-            clock.tick()#ticks clock
-            dirtyList.extend(groups[image].draw(screen))#adding stuff that has been updated to my dirty list
+        for sc in range(numGroups):
 
-        pygame.display.update(dirtyList)#updates the screen with the dirty list
-        for image in range(numImages):
-            groups[image].clear(screen, background)#clears stuff behind images based on given background image.
+            for img in range(sceneList[sc].getListSize()):
+                thisrect = sceneList[sc].getObject(img).getRectangle()
+                if thisrect.right>screenWidth or thisrect.left<0:
+                    sceneList[sc].setSpeed( sceneList[sc].getXSpeed()*-1, None )
+                if thisrect.bottom>screenHeight or thisrect.top<0:
+                    sceneList[sc].setSpeed( None , sceneList[sc].getYSpeed()*-1 )
+            
+            sceneList[sc].update(clock.get_time()) #calls the update function for my DDO
+            
+            clock.tick() #ticks clock
+            
+            dirtyList.extend( sceneList[sc].draw(screen) )#adding stuff that has been updated to my dirty list
+
+        pygame.display.update(dirtyList) #updates the screen with the dirty list
+        for sc in range(numGroups):
+            sceneList[sc].clear(screen, background) #clears stuff behind images based on given background image.
