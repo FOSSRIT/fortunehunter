@@ -4,27 +4,25 @@ from DrawableObject import DrawableObject
 class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
 
     def __init__(self,images,textfileName,fps = 10, x = 0, y = 0, xVelocity = 0, yVelocity = 0):
-
         self._delay = 1000/fps
         DrawableObject.__init__(self, images, textfileName, x, y)
 
     def addImages(self, images):
-
         self._images.extend(images)
 
     def setSpeed(self, xVelocity = None, yVelocity = None):
-
        if xVelocity != None:  self.xSpeed = xVelocity
        if yVelocity != None:  self.ySpeed = yVelocity
 
     def getXSpeed(self):
-
        return self.xSpeed
 
     def getYSpeed(self):
-
        return self.ySpeed
-
+    
+    def getRectangle(self):
+        return self.rect
+    
     def move(self):
         self.xPos += self.xSpeed
         self.yPos += self.ySpeed
@@ -32,9 +30,7 @@ class DynamicDrawableObject(DrawableObject, pygame.sprite.Sprite):
         self.rect.top += self.ySpeed
 
     def update(self, t):
-
         timePassed = t + self._last_update
-
         if (timePassed) > self._delay:
             if self._frame < self.animations.get(self._current_anim)[0] or self._frame > self.animations.get(self._current_anim)[1]: 
                 self._frame = self.animations.get(self._current_anim)[0]
