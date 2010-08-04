@@ -32,7 +32,7 @@ class Enemy(Actor):
         self.inv_Ar = []
         self.attacks_Ar = []
         col,row,width,height = ENEMY[id]['sprite']
-        self.sprite = DynamicDrawableObject( Spritesheet(CHAR_PATH + ENEMY[id]['img'] ).img_extract(col,row,width,height) , "")
+        self.sprite = DynamicDrawableObject( Spritesheet(CHAR_PATH + ENEMY[id]['img'] ).img_extract(col,row,width,height) , "", 30)
         self.place=0
         self.alive = True
 
