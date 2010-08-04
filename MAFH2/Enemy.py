@@ -9,7 +9,7 @@ from Actor import Actor
 from drawableobject.Spritesheet import Spritesheet
 ENEMY = {
     '1':{'name':_('Wizard Adept'),'img':"anim_test.gif",'hp':20,'att':2,'weak':'special', 'sprite':(3,2, 156,166)}, #concept_wizard.gif , (1,1, 181,365)
-    '2':{'name':_('Goblin'),'img':"dog~.gif",'hp':40,'att':3,'weak':'fire','sprite':(2,1, 58/2,39)},                #concept_goblin.gif , (1,1, 217,317)
+    '2':{'name':_('Goblin'),'img':"dog~.gif",'hp':40,'att':3,'weak':'fire','sprite':(2,1, 29,39)},                #concept_goblin.gif , (1,1, 217,317)
     '3':{'name':_('Orc'),'img':"concept_orc.gif",'hp':50,'att':5,'weak':'lightning','sprite':(1,1, 264,338)},
     '4':{'name':_('Stone Golem'),'img':"concept_orc.gif",'hp':10,'att':6,'weak':'missile','sprite':(1,1, 264,338)},
     '5':{'name':_('Serratula'),'img':"Crab.gif",'hp':125,'att':12,'weak':'crit','sprite':(1,1,400,400)},
