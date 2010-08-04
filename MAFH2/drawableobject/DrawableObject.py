@@ -56,7 +56,12 @@ class DrawableObject(pygame.sprite.Sprite):
              self.image = self._images[self._frame]
              cnt = len(animations)
            cnt += 1
-    
+           
+    def goToFrame(self, frame):
+
+        self._frame = frame
+        self.image = self._images[self._frame]
+
     def move(self):
 
         self.xPos += self.xSpeed
