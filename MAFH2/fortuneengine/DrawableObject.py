@@ -11,11 +11,11 @@ class DrawableObject(pygame.sprite.Sprite):
             self._images.append(images[i].convert_alpha())
             self._origImages.append(images[i].convert_alpha())
             
-        self.blank = pygame.Surface((0,0))
+        blank = pygame.Surface((0,0))
         
         if(transparent):
             for i in range(len(images)):
-                self._images[i] = self.blank
+                self._images[i] = blank
 
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]
@@ -123,11 +123,11 @@ class DrawableObject(pygame.sprite.Sprite):
     def makeTransparent(self, bool = True):
        if bool == True:
             surf = pygame.Surface((0,0))
-            surf.fill((255, 255, 255, 0))
-            surf.convert_alpha()
-            self._images[self._frame] = surf
+            for i in range(len(self._images)):
+                self._images[i] = surf
        else:
-            self._images[self._frame] = self._origImages[self._frame]
+            for i in range(len(self._images)):
+                self._images[i] = self._origImages[i]
             self.image = self._images[self._frame]
 
     def setColorKey(self, aColor):

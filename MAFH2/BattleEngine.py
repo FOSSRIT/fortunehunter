@@ -307,7 +307,7 @@ class BattleEngine(GameEngineElement):
             if enemy.HP <= 0:
                 enemy.alive = False
                 self.enemy_list.remove(enemy)
-                enemy.makeTransparent(True)
+                enemy.get_sprite().makeTransparent(True)
                 self.active_target = 1
             if enemy.alive:
                 random.seed()
@@ -348,10 +348,10 @@ class BattleEngine(GameEngineElement):
                 room.remove_item( i )
                 self.game_engine.get_object('mesg').add_line(_("%s dropped!")% item.name)
         room.has_enemy = False
+        
         #self terminate
         #print 'end battle called'
         self.remove_from_engine()
-        self.game_engine.get_scene().removeObject(self.background)
         for object in self.__drawableObjects:
             self.game_engine.get_scene().removeObject(object)
             

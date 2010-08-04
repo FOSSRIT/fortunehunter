@@ -16,9 +16,9 @@ class BattleMenuHolder( GameEngineElement ):
         self.callback = callback
         self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")], '')
         self.game_engine.get_scene().addObject(self.background)
-        self.disp = ""
-        self.sec_des = ""
         self.font = pygame.font.SysFont("cmr10",18,False,False)
+        self.disp = DrawableFontObject("", self.font)
+        self.sec_des = DrawableFontObject("", self.font)
 
     def set_disp(self, msg):
         self.disp = msg
