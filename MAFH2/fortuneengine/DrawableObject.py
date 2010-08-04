@@ -70,6 +70,11 @@ class DrawableObject(pygame.sprite.Sprite):
          self._current_anim = animName
          self._frame = self.animations[animName][0]
          self.image = self._images[self._frame]
+         
+    def goToFrame(self, frame):
+
+        self._frame = frame
+        self.image = self._images[self._frame]
 
     def nudge(self, x, y):
         self.xPos += x
