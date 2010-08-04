@@ -15,29 +15,30 @@ class BattleMenuHolder( GameEngineElement ):
         self.menu = None
         self.callback = callback
         self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")], '')
-        self.game_engine.get_scene().addObject(self.background)
         self.font = pygame.font.SysFont("cmr10",18,False,False)
         self.disp = DrawableFontObject("", self.font)
-        self.sec_des = DrawableFontObject("", self.font)
+        self.sec_disp = DrawableFontObject("", self.font)
+        self.game_engine.get_scene().addObject(self.background)
+        self.game_engine.get_scene().addObject(self.disp)
+        self.game_engine.get_scene().addObject(self.sec_disp)
 
     def set_disp(self, msg):
-        self.disp = msg
+        self.disp.changeText(msg, (0,0,0))
 
     def set_sec_disp(self, msg):
-        self.sec_des = msg
+        self.sec_disp.changeText(msg, (0,0,0))
 
     def remove_from_engine(self):
         super( BattleMenuHolder, self ).remove_from_engine()
+        self.game_engine.removeObject(self.background)
+        self.game_engine.removeObject(self.disp)
+        self.game_engine.removeObject(self.sec_disp)
         self.clear_menu()
 
     def draw(self,screen,time_delta):
-        #screen.blit(self.background,(0,286,452,414))
         self.background.setPosition(0,286)
-        ren = self.font.render(self.disp, 1, (0,0,0))
-        screen.blit(ren, (250, 340))
-
-        ren = self.font.render(self.sec_des, 1, (0,0,0))
-        screen.blit(ren, (237, 375))
+        self.disp.setPosition(250,340)
+        self.sec_disp.setPosition(237, 375)
 
 
     def menu_called(self, id):
