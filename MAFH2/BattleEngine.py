@@ -51,8 +51,9 @@ class BattleEngine(GameEngineElement):
             self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )], '')
             self.game_engine.get_scene().addObject(self.__drawableObjects[i])
 
-        self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100), '')
+        self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100,[255,0,255]), '')
         self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '', True)
+        self.__drawableObjects['hp'].setColorKey((255,0,255))
         self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
         self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
 
@@ -352,8 +353,8 @@ class BattleEngine(GameEngineElement):
         #self terminate
         #print 'end battle called'
         self.remove_from_engine()
-        for object in self.__drawableObjects:
-            self.game_engine.get_scene().removeObject(object)
+        for key in self.__drawableObjects:
+            self.game_engine.get_scene().removeObject(self.__drawableObjects[key])
             
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battle')
@@ -401,6 +402,6 @@ class BattleEngine(GameEngineElement):
 
         # Player Health
         health = 10 - profile.hero.healthLevel()
-        self.__drawableObjects['hp'].goToAnim(health)
+        self.__drawableObjects['hp'].goToFrame(health)
         self.__drawableObjects['hp'].setPosition(25,25)
 

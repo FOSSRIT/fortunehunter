@@ -5,8 +5,8 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def __init__(self, sprites):
 
-       self._spritelist = []
-       self._spritelist.append([sprites, sprites.getXPos(), sprites.getYPos()])
+       self._spritelist = [[sprites, sprites.getXPos(), sprites.getYPos()]]
+       #self._spritelist.append([sprites, sprites.getXPos(), sprites.getYPos()])
        RenderUpdates.__init__(self, sprites)
 
        self.xPos = 0
@@ -48,12 +48,12 @@ class Scene(pygame.sprite.RenderUpdates):
 
     def addObject(self, newDrawableObject):
         RenderUpdates.add_internal(self, newDrawableObject)
-        self._spritelist.append([newDrawableObject, newDrawableObject.getXPos(), newDrawableObject.getYPos()])
+        self._spritelist.insert(len(self._spritelist) - 1, [newDrawableObject, newDrawableObject.getXPos(), newDrawableObject.getYPos()])
 
     def addObjects(self, newDrawableObjects):
         for sprite in newDrawableObjects:
            RenderUpdates.add_internal(self, sprite)
-           self._spritelist.append([sprite, sprite.getXPos(), sprite.getYPos()])
+           self._spritelist.insert(len(self._spritelist) - 1, [sprite, sprite.getXPos(), sprite.getYPos()])
 
     def setRelativePositions(self):
 

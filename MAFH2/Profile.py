@@ -125,15 +125,6 @@ class Profile(GameEngineElement):
 
         draw_width = width/4
         draw_height = height/4
-
-        #font = pygame.font.Font(None, 16)
-        #text=font.render(self.name,True,(0,0,0))
-        #textRect=(draw_width+60,draw_height+60,text.get_width(),text.get_height())
-        #screen.blit(self.background_img,(0,0,width,height))
-        #screen.fill((150,150,255),(draw_width,draw_height,2*draw_width,2*draw_height))
-        #screen.blit(font.render(_("Enter name:"),True,(0,0,0)),(draw_width,draw_height))
-        #screen.blit(font.render(_("Return to continue"),True,(0,0,0)),(draw_width+20,draw_height+20,20,20))
-        #screen.blit(text, textRect)
         
         self.background.setPosition(0,0)
         self.blueRect.setPosition(draw_width, draw_height)

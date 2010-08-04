@@ -30,16 +30,15 @@ class BattleMenuHolder( GameEngineElement ):
 
     def remove_from_engine(self):
         super( BattleMenuHolder, self ).remove_from_engine()
-        self.game_engine.removeObject(self.background)
-        self.game_engine.removeObject(self.disp)
-        self.game_engine.removeObject(self.sec_disp)
+        self.game_engine.get_scene().removeObject(self.background)
+        self.game_engine.get_scene().removeObject(self.disp)
+        self.game_engine.get_scene().removeObject(self.sec_disp)
         self.clear_menu()
 
     def draw(self,screen,time_delta):
         self.background.setPosition(0,286)
         self.disp.setPosition(250,340)
         self.sec_disp.setPosition(237, 375)
-
 
     def menu_called(self, id):
         self.callback(id, self)
@@ -82,8 +81,6 @@ class BattleMenuHolder( GameEngineElement ):
                         [_("C"), lambda: self.menu_called('clear'),44,1],
                         ['0', lambda: self.menu_called('0'),44,1],
                         [_("E"), lambda: self.menu_called('enter'),44,1],
-                        #[_("Clear"), lambda: self.menu_called('clear'),89,2],
-                        #[_("Enter"), lambda: self.menu_called('enter'),134,3],
             ]
 
         elif id == "special":

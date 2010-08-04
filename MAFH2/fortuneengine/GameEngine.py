@@ -19,6 +19,7 @@ from GameEngineConsole import GameEngineConsole
 from GameInspect import GameInspect
 from DrawableObject import DrawableObject
 from DynamicDrawableObject import DynamicDrawableObject
+from DrawableFontObject import DrawableFontObject
 from Scene import Scene
 
 
@@ -52,7 +53,8 @@ class GameEngine(object):
         self.height = height
         size = width, height
         self.screen = pygame.display.set_mode(size)
-        self.__scene = Scene( DrawableObject([pygame.Surface((1,1))], '' ))
+        self.__fps = DrawableFontObject("", pygame.font.Font(None, 17))
+        self.__scene = Scene(self.__fps)
 
         # Engine Internal Variables
         self.__fps_cap = fps_cap
@@ -216,10 +218,10 @@ class GameEngine(object):
                  self.__draw_calls[str(fnc)] += 1
             # Print Frame Rate
             if self.__showfps:
-                text = self.__font.render('FPS: %d' % self.clock.get_fps(),
-                       False, (255, 255, 255), (159, 182, 205))
-                screen.blit(text, (0, 0))
-            #pygame.display.flip()
+                self.__fps.changeText('FPS: %d' % self.clock.get_fps(), (255,255,255))
+                self.__fps.setPosition(0,0)
+            else:
+                self.__fps.changeText('')
             self.__scene.update(tick_time)
             pygame.display.update(self.__scene.draw(screen))
 
