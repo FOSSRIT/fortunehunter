@@ -10,6 +10,12 @@ class DrawableObject(pygame.sprite.Sprite):
         for i in range(len(images)):
             self._images.append(images[i].convert_alpha())
             self._origImages.append(images[i].convert_alpha())
+            
+        self.blank = pygame.Surface((0,0))
+        
+        if(transparent):
+            for i in range(len(images)):
+                self._images[i] = self.blank
 
         self._start = pygame.time.get_ticks()
         self.image = self._images[0]

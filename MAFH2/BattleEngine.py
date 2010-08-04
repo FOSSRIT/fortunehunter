@@ -52,7 +52,7 @@ class BattleEngine(GameEngineElement):
             self.game_engine.get_scene().addObject(self.__drawableObjects[i])
 
         self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100), '')
-        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '')
+        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '', True)
         self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
         self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
 
@@ -307,6 +307,7 @@ class BattleEngine(GameEngineElement):
             if enemy.HP <= 0:
                 enemy.alive = False
                 self.enemy_list.remove(enemy)
+                enemy.makeTransparent(True)
                 self.active_target = 1
             if enemy.alive:
                 random.seed()
@@ -350,6 +351,10 @@ class BattleEngine(GameEngineElement):
         #self terminate
         #print 'end battle called'
         self.remove_from_engine()
+        self.game_engine.get_scene().removeObject(self.background)
+        for object in self.__drawableObjects:
+            self.game_engine.get_scene().removeObject(object)
+            
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battle')
         
@@ -376,9 +381,7 @@ class BattleEngine(GameEngineElement):
 
         # We don't want to allow other things to run during battle
         return True
-#-------------------------------------------------------------------------------------------------------------------------------------------------------
-# \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/
-#
+
     def draw(self,screen,time_delta):
         x=250
         y=150
