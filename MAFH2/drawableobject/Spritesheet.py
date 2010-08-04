@@ -8,6 +8,7 @@ class Spritesheet:
     """
     def __init__(self, filename):
         self.sheet = pygame.image.load(filename).convert()
+        self.sheet = self.imgat(self.sheet.get_rect())
 
     def imgat(self, rect, myColorKey = None):
         rect = pygame.Rect(rect)
