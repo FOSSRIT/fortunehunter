@@ -9,11 +9,12 @@ class TermBox(GameEngineElement):
         self.max_lines = lines
         self.x = x
         self.y = y
-        surf = pygame.Surface((width,height))
+        surf = pygame.Surface((int(width),int(height)))
         surf.fill([0,0,0])
         self.box = DrawableObject([surf],"")
-        self.box.setPosition(x,y)
+        self.box.setPosition(int(x),int(y))
         self.font = pygame.font.Font(None, 20)
+        print width,height,x,y
         self.__lines = []
         for i in range(lines):
             self.__lines.append(DrawableFontObject('', self.font))
