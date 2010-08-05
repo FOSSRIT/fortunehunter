@@ -1,0 +1,28 @@
+Speed Test - 2010-08-04 11:25:58.338949,Width (pixels),Height (pixels),Trial Runs,Image Objects Drawn
+,600,400,1,1
+File Type,Time taken to load images to memory (seconds),Trial 1 (frames per second)
+./art/BMP16/ Speed Test,0.000369071960449,1259.21496009
+./art/BMP24/ Speed Test,0.000561952590942,1179.40039963
+./art/BMP32/ Speed Test,0.000652074813843,898.70368069
+./art/GIF/ Speed Test,0.000795125961304,1123.17383671
+./art/GIFT/ Speed Test,0.00184679031372,908.555748007
+./art/JPG1/ Speed Test,0.00170016288757,572.034582535
+./art/JPG2/ Speed Test,0.00154709815979,656.792011833
+./art/JPG3/ Speed Test,0.00372791290283,619.124573479
+./art/JPG4/ Speed Test,0.0396318435669,843.848959972
+./art/PNGI/ Speed Test,0.00243997573853,1096.77773635
+./art/PNGT/ Speed Test,0.00467014312744,799.515064639
+
+Using .convert()
+File Type,Time taken to load images to memory (seconds),Trial 1 (frames per second)
+./art/BMP16/ Speed convert() Test,0.000694990158081,1113.0157143
+./art/BMP24/ Speed convert() Test,0.00110793113708,639.263543739
+./art/BMP32/ Speed convert() Test,0.00073504447937,825.826613395
+./art/GIF/ Speed convert() Test,0.000856161117554,902.965188199
+./art/GIFT/ Speed convert() Test,0.000815868377686,1086.76322975
+./art/JPG1/ Speed convert() Test,0.00338506698608,1070.47306171
+./art/JPG2/ Speed convert() Test,0.00183987617493,871.391228797
+./art/JPG3/ Speed convert() Test,0.00433397293091,600.348216806
+./art/JPG4/ Speed convert() Test,0.00243592262268,950.111653813
+./art/PNGI/ Speed convert() Test,0.00196480751038,770.145634009
+./art/PNGT/ Speed convert() Test,0.00233697891235,719.110986753
