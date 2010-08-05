@@ -51,7 +51,7 @@ class Map(GameEngineElement):
         self.add_to_engine() #Adds itself and all callbacks to the engine
         
         self.myDrawableObject = DrawableObject([pygame.Surface((0,0))], '')
-        self.game_engine.get_scene().addObject(selfmyDrawableObject)
+        self.game_engine.get_scene().addObject(self.myDrawableObject)
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
@@ -109,6 +109,9 @@ class Map(GameEngineElement):
 
         mini_map = pygame.Surface( (200,200) )
         mini_map.blit( mapView, curSect )
+        
+        self.myDrawableObject.repopulateImages([mini_map])
+        self.myDrawableObject.setPosition(0,700)
         screen.fill(0,map_area,0)
         screen.blit(mini_map, map_area)
 

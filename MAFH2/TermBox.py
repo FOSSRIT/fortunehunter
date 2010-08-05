@@ -13,7 +13,7 @@ class TermBox(GameEngineElement):
         surf.fill([0,0,0])
         self.box = DrawableObject([surf],"")
         self.box.setPosition(int(x),int(y))
-        self.font = pygame.font.Font(None, 20)
+        self.font = pygame.font.Font(None, 28)
         self.__lines = []
         for i in range(lines):
             self.__lines.append(DrawableFontObject('', self.font))
