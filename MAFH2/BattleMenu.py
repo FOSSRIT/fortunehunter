@@ -35,7 +35,7 @@ class BattleMenuHolder( GameEngineElement ):
         self.game_engine.get_scene().removeObject(self.sec_disp)
         self.clear_menu()
 
-    def draw(self,screen,time_delta):
+    def draw(self):
         self.background.setPosition(0,286)
         self.disp.setPosition(250,340)
         self.sec_disp.setPosition(237, 375)
@@ -117,8 +117,8 @@ class BattleMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
-    def draw(self,screen,time_delta):
-        self.menu.draw( screen )
+    def draw(self):
+        self.menu.draw()
     
     def clear(self):
         self.menu.clear()
@@ -176,7 +176,7 @@ class Menu(object):
         self.scene.addObjects(self.rect_list)
         self.scene.addObjects(self.font_list)
 
-    def draw(self, surface):
+    def draw(self):
         self.scene.drawEntireScene(surface)
         """Draw the menu to the surface."""
         i=0 # Row Spacing

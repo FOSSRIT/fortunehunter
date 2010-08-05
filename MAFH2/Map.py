@@ -65,7 +65,7 @@ class Map(GameEngineElement):
         if self.draw_macro_set:
             return True
 
-    def draw(self,screen,time_delta):
+    def draw(self):
         profile = self.game_engine.get_object('profile') #Creates a copy of the profile object
         x, y = profile.position #Grabs the position of the player from the profiler
         playerFacing = profile.playerFacing #Grabs the direction the player is facing from the profiler
@@ -112,12 +112,11 @@ class Map(GameEngineElement):
         
         self.myDrawableObject.repopulateImages([mini_map])
         self.myDrawableObject.setPosition(0,700)
-        screen.fill(0,map_area,0)
         if self.draw_macro_set:
-            self.draw_macro(self, screen)
+            self.draw_macro(self)
 
 
-    def draw_macro(self,player,screen):
+    def draw_macro(self,player):
         #DRAW LEGEND
         font=pygame.font.SysFont("cmr10",24,False,False)
 

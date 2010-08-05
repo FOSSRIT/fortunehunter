@@ -28,7 +28,7 @@ class TermBox(GameEngineElement):
             else:
                 self.__lines[i].changeText(self.__lines[i+1].getText(), [255,255,255])
 
-    def draw(self,screen,time_delta):
+    def draw(self):
         i=0
         for line in self.__lines:
             line.setPosition(int(self.x), int(self.y + i*self.font.get_height()))

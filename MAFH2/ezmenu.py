@@ -45,7 +45,7 @@ class EzMenu():
                 
         self.scene.addObjects(self.font_list)
 
-    def draw(self, surface):
+    def draw(self):
         """Draw the menu to the surface."""
         i=0
         help_txt = ""
@@ -56,10 +56,8 @@ class EzMenu():
             else:
                 clr = self.color
             text = o[0]
-            #ren = self.font.render(text, True, clr)
             self.font_list[i].changeText(text, clr)
             self.font_list[i].setPosition( self.x, self.y + i*self.font.get_height() )
-            #surface.blit(ren, (self.x, self.y + i*self.font.get_height()))
             i+=1
 
         # Help Text

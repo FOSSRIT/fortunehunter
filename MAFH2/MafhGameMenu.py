@@ -18,7 +18,7 @@ class GameMenuHolder( GameEngineElement ):
         super( GameMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
-    def draw(self,screen,time_delta):
+    def draw(self):
         if self.background:
             self.background.setPosition(0,0)
         else:
@@ -122,5 +122,5 @@ class GameMenu(GameEngineElement):
     def clear_menu(self):
         self.menu.clear_menu()
         
-    def draw(self,screen,time_delta):
-        self.menu.draw( screen )
+    def draw(self):
+        self.menu.draw()

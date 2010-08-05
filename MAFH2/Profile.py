@@ -136,7 +136,7 @@ class Profile(GameEngineElement):
                 self.name+=event.unicode
                 return True
 
-    def draw(self,screen,time_delta):
+    def draw(self):
         """
         Draws user input for name to the screen
         """
