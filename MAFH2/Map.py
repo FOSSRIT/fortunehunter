@@ -86,9 +86,10 @@ class Map(GameEngineElement):
             mapView=pygame.transform.rotate(mapView,angle)
             angle=180
 
-        sideDifference=self.sizeX-self.sizeY
-        angle=angle*(math.pi/180)
-        curSect=pygame.Rect(0,0,200,200)
+        sideDifference=self.sizeX-self.sizeY #Getting the difference between the height and width of the dungeon
+        angle=angle*(math.pi/180) #Getting the angle the dungeon is rotated to
+        curSect=pygame.Rect(0,0,200,200) #Creating the rectangle for the mini-map
+        #Sets the position of the mini-map rectangle
         curSect.top+=((x*40-81)*math.cos(angle))-((y*40-81)*math.sin(angle))
         curSect.left-=((x*40-81)*math.sin(angle))+((y*40-81)*math.cos(angle))
 
