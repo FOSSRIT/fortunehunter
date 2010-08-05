@@ -52,6 +52,7 @@ class GameEngine(object):
         size = width, height
         self.screen = pygame.display.set_mode(size)
         self.__fps = DrawableFontObject("", pygame.font.Font(None, 17))
+        self.__fps.setPosition(0,0)
         self.__scene = Scene(self.__fps)
 
         # Engine Internal Variables
@@ -217,7 +218,6 @@ class GameEngine(object):
             # Print Frame Rate
             if self.__showfps:
                 self.__fps.changeText('FPS: %d' % self.clock.get_fps(), (255,255,255))
-                self.__fps.setPosition(0,0)
             else:
                 self.__fps.changeText('')
             self.__scene.update(tick_time)
