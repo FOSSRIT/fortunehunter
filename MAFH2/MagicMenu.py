@@ -16,14 +16,14 @@ class MagicMenuHolder( GameEngineElement ):
         self.callback = callback
         self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")], '')
         self.background.setPosition(0,286)
-        self.game_engine.get_scene().addObject(self.background)
+        self.add_to_scene([self.background])
 
     def remove_from_engine(self):
-        self.game_engine.get_scene().removeObject(self.background)
+        #self.game_engine.get_scene().removeObject(self.background)
         super( MagicMenuHolder, self ).remove_from_engine()
         self.clear_menu()
         
-    def draw(self,screen,time_delta):
+    def draw(self):
         pass
 
     def menu_called(self, id):
@@ -102,8 +102,8 @@ class MagicMenu(GameEngineElement):
     def event_handler(self, event):
         return self.menu.update(event)
 
-    def draw(self,screen,time_delta):
-        self.menu.draw( screen )
+    def draw(self):
+        self.menu.draw()
     
     def clear(self):
         self.menu.clear()
@@ -223,7 +223,7 @@ class Menu(object):
         
         self.height = (len(self.options)*self.buttons[1].getYSize()) / self.cols
 
-    def draw(self, surface):
+    def draw(self):
         """Draw the menu to the surface."""
         i=0 # Row Spacing
         h=0 # Selection Spacing
@@ -240,7 +240,6 @@ class Menu(object):
             if h==self.option:
                 self.selectRect.setPosition(newX, newY)
             self.buttons[index].setPosition(newX, newY)
-            #surface.blit(self.buttons[index], (newX, newY) )
 
             j+=1
             h+=1
@@ -252,7 +251,6 @@ class Menu(object):
         # Draw reference glyphs
         for i in range(4):
             if i in self.magic_list:
-                #surface.blit(self.glyphs[i], (800+((i%2) * 150), 350+(i/2 * 150)))
                 self.reference[i].makeTransparent(False)
                 self.reference[i].setPosition(800+((i%2) * 150), 350+(i/2 * 150))
                 

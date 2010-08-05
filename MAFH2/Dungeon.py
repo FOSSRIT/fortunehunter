@@ -17,7 +17,6 @@ from constants import (
 from JournalIntegration import do_load, load_dungeon_by_id
 from fortuneengine.DrawableObject import DrawableObject
 from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
-from fortuneengine.Scene import Scene
 
 SEARCH_TIME = 2
 COLOR_DELTA = 255/SEARCH_TIME
@@ -48,7 +47,7 @@ class Dungeon(GameEngineElement):
         
         #for door in self.doorsList: door.makeTransparent(True)
 
-        self.game_engine.get_scene().addObjects(self.doorsList)
+        self.add_to_scene(self.doorsList)
         
         self.itemsList = []
        
@@ -62,7 +61,7 @@ class Dungeon(GameEngineElement):
         self.itemsList[1].setPosition(self.game_engine.art_scale(100, 1200, True),self.game_engine.art_scale(600, 900, False))
         self.itemsList[2].setPosition(self.game_engine.art_scale(1100, 1200, True),self.game_engine.art_scale(600, 900, False))
         self.itemsList[3].setPosition(self.game_engine.art_scale(900, 1200, True),self.game_engine.art_scale(330, 900, False))
-        self.game_engine.get_scene().addObjects(self.itemsList)
+        self.add_to_scene(self.itemsList)
         self.add_to_engine()
 
     def add_to_engine(self):

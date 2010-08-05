@@ -45,20 +45,20 @@ class BattleEngine(GameEngineElement):
             if e_index != '0':
                 curE = get_enemy( e_index )
                 self.enemy_list.append( curE )
-                self.game_engine.get_scene().addObject(curE.get_sprite())
+                self.add_to_scene([curE.get_sprite()])
 
         # Preload images
         self.__drawableObjects = {}
         for i in ['arrow_select']:
             self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )], '')
-            self.game_engine.get_scene().addObject(self.__drawableObjects[i])
+            self.add_to_scene([self.__drawableObjects[i]])
 
         self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100,[255,0,255]), '')
         self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25, [255,0,255]), '', True)
         self.__drawableObjects['hp'].setColorKey((255,0,255))
         self.__drawableObjects['bt'].setColorKey((255,0,255))
-        self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
-        self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
+        self.add_to_scene([self.__drawableObjects['hp']])
+        self.add_to_scene([self.__drawableObjects['bt']])
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )
@@ -370,8 +370,6 @@ class BattleEngine(GameEngineElement):
         #self terminate
         #print 'end battle called'
         self.remove_from_engine()
-        for key in self.__drawableObjects:
-            self.game_engine.get_scene().removeObject(self.__drawableObjects[key])
             
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battle')

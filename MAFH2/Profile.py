@@ -36,7 +36,7 @@ class Profile(GameEngineElement):
         bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
         self.background = DrawableObject([bg], '')
         self.background.scale(self.game_engine.width, self.game_engine.height)
-        self.game_engine.get_scene().addObject(self.background)
+        self.add_to_scene([self.background])
 
         #create background rect
         draw_width = self.game_engine.width/4
@@ -44,14 +44,14 @@ class Profile(GameEngineElement):
         surf = pygame.Surface((draw_width+60,draw_height+60))
         surf.fill((150,150,255))
         self.blueRect = DrawableObject([surf],"")
-        self.game_engine.get_scene().addObject(self.blueRect)
+        self.add_to_scene([self.blueRect])
         
         font = pygame.font.Font(None, 16)
         self.text_list = []
         self.text_list.append(DrawableFontObject("1", font))
         self.text_list.append(DrawableFontObject("2", font))
         self.text_list.append(DrawableFontObject("name",font))
-        self.game_engine.get_scene().addObjects(self.text_list)
+        self.add_to_scene(self.text_list)
         
         
         if recall_string:
@@ -114,11 +114,6 @@ class Profile(GameEngineElement):
 
     def remove_from_engine(self):
         super( Profile, self).remove_from_engine()
-        self.game_engine.get_scene().removeObject(self.background)
-        self.game_engine.get_scene().removeObject(self.blueRect)
-        
-        for dfo in self.text_list:
-            self.game_engine.get_scene().removeObject(dfo)
             
     def event_handler(self, event):
         """

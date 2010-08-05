@@ -51,7 +51,7 @@ class Map(GameEngineElement):
         self.add_to_engine() #Adds itself and all callbacks to the engine
         
         self.myDrawableObject = DrawableObject([pygame.Surface((0,0))], '')
-        self.game_engine.get_scene().addObject(self.myDrawableObject)
+        self.add_to_scene([self.myDrawableObject])
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:

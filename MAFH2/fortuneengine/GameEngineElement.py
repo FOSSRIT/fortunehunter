@@ -14,9 +14,9 @@
 #    Author: Justin Lewis  <jlew.blackout@gmail.com>
 
 from fortuneengine.GameEngine import GameEngine
-from fortuneengine.DrawableFontObject import DrawableFontObject
-from fortuneengine.DrawableObject import DrawableObject
-from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
+#from fortuneengine.DrawableFontObject import DrawableFontObject
+#from fortuneengine.DrawableObject import DrawableObject
+#from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
 
 
 class GameEngineElement(object):
@@ -86,7 +86,7 @@ class GameEngineElement(object):
                 
             if not (self.__ddo_list == []):
                 for object in self.__ddo_list:
-                    self.game_engine.removeObject(object)
+                    self.game_engine.get_scene().removeObject(object)
                 
 
     def event_handler(self, event):

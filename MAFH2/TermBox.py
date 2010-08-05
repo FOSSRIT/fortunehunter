@@ -17,8 +17,8 @@ class TermBox(GameEngineElement):
         self.__lines = []
         for i in range(lines):
             self.__lines.append(DrawableFontObject('', self.font))
-        self.game_engine.get_scene().addObject(self.box)
-        self.game_engine.get_scene().addObjects(self.__lines)
+        self.add_to_scene([self.box])
+        self.add_to_scene(self.__lines)
         self.add_to_engine()
 
     def add_line(self, line):

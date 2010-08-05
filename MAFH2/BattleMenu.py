@@ -18,9 +18,9 @@ class BattleMenuHolder( GameEngineElement ):
         self.font = pygame.font.SysFont("cmr10",18,False,False)
         self.disp = DrawableFontObject("", self.font)
         self.sec_disp = DrawableFontObject("", self.font)
-        self.game_engine.get_scene().addObject(self.background)
-        self.game_engine.get_scene().addObject(self.disp)
-        self.game_engine.get_scene().addObject(self.sec_disp)
+        self.add_to_scene([self.background])
+        self.add_to_scene([self.disp])
+        self.add_to_scene([self.sec_disp])
 
     def set_disp(self, msg):
         self.disp.changeText(msg, (0,0,0))
@@ -30,9 +30,6 @@ class BattleMenuHolder( GameEngineElement ):
 
     def remove_from_engine(self):
         super( BattleMenuHolder, self ).remove_from_engine()
-        self.game_engine.get_scene().removeObject(self.background)
-        self.game_engine.get_scene().removeObject(self.disp)
-        self.game_engine.get_scene().removeObject(self.sec_disp)
         self.clear_menu()
 
     def draw(self):
@@ -177,7 +174,7 @@ class Menu(object):
         self.scene.addObjects(self.font_list)
 
     def draw(self):
-        self.scene.drawEntireScene(surface)
+        #self.scene.drawEntireScene(surface)
         """Draw the menu to the surface."""
         i=0 # Row Spacing
         h=0 # Selection Spacing

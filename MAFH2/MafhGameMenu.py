@@ -9,12 +9,11 @@ class GameMenuHolder( GameEngineElement ):
         self.callback = callback
         self.background = DrawableObject([pygame.image.load(background).convert()], '')
         self.background.scale(width, height)
-        self.game_engine.get_scene().addObject(self.background)
+        self.add_to_scene([self.background])
         self.width = width
         self.height = height
 
     def remove_from_engine(self):
-        self.game_engine.get_scene().removeObject(self.background)
         super( GameMenuHolder, self ).remove_from_engine()
         self.clear_menu()
 
