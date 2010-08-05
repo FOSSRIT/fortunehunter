@@ -17,8 +17,6 @@ import pygame
 from time import time
 from GameEngineConsole import GameEngineConsole
 from GameInspect import GameInspect
-from DrawableObject import DrawableObject
-from DynamicDrawableObject import DynamicDrawableObject
 from DrawableFontObject import DrawableFontObject
 from Scene import Scene
 
