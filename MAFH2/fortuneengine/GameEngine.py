@@ -29,7 +29,7 @@ class GameEngine(object):
     """
     instance = None
 
-    def __init__(self, width=1200, height=900, always_draw=False, fps_cap=15):
+    def __init__(self, width=1200, height=900, always_draw=False, fps_cap=15, version=False):
         """
         Constructor for the game engine.
 
@@ -45,6 +45,7 @@ class GameEngine(object):
         GameEngine.instance = self
         pygame.init()
         pygame.mouse.set_visible(False)
+        self.__version = version #true is new, false is old
 
         # Window Settings
         self.width = width
@@ -54,6 +55,7 @@ class GameEngine(object):
         self.__fps = DrawableFontObject("", pygame.font.Font(None, 17))
         self.__fps.setPosition(0,0)
         self.__scene = Scene(self.__fps)
+        
 
         # Engine Internal Variables
         self.__fps_cap = fps_cap
@@ -67,7 +69,7 @@ class GameEngine(object):
         self.__event_cb = []
         self.__draw_lst = []
         self.__object_hold = {}
-        self.__dirtyList=[]
+
 
         # Game Timers
         self.__active_event_timers = []
@@ -205,23 +207,38 @@ class GameEngine(object):
         # If console is active, we want to draw console, pausing
         # game drawing (events are still being fired, just no
         # draw updates.
-        if self.console.active:
-            self.console.draw()
-            pygame.display.flip()
-
-        else:
-            for fnc in self.__draw_lst:
-                 start = time()
-                 fnc(screen, tick_time)
-                 self.__draw_time[str(fnc)] += time() - start
-                 self.__draw_calls[str(fnc)] += 1
-            # Print Frame Rate
-            if self.__showfps:
-                self.__fps.changeText('FPS: %d' % self.clock.get_fps(), (255,255,255))
+        if self.__version:
+            if self.console.active:
+                self.console.draw()
+                pygame.display.flip()
             else:
-                self.__fps.changeText('')
-            self.__scene.update(tick_time)
-            pygame.display.update(self.__scene.draw(screen))
+                for fnc in self.__draw_lst:
+                     start = time()
+                     fnc()
+                     self.__draw_time[str(fnc)] += time() - start
+                     self.__draw_calls[str(fnc)] += 1
+                # Print Frame Rate
+                if self.__showfps:
+                    self.__fps.changeText('FPS: %d' % self.clock.get_fps(), (255,255,255))
+                else:
+                    self.__fps.changeText('')
+                self.__scene.update(tick_time)
+                pygame.display.update(self.__scene.draw(screen))
+        else:
+            if self.console.active:
+                self.console.draw()
+                pygame.display.flip()
+            else:
+                for fnc in self.__draw_lst:
+                    start = time()
+                    fnc(screen, tick_time)
+                    self.__draw_time[str(fnc)] += time() - start
+                    self.__draw_calls[str(fnc)] += 1
+                # Print Frame Rate
+                if self.__showfps:
+                    text = self.__font.render('FPS: %d' % self.clock.get_fps(),False, (255, 255, 255), (159, 182, 205))
+                    screen.blit(text, (0, 0))
+            pygame.display.flip()
 
     def _event_loop(self):
         """
