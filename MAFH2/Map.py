@@ -6,6 +6,9 @@ from constants import (
     LOCKED_PUZZLE_DOOR, ENTRANCE_DOOR, EXIT_DOOR
 )
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
+from fortuneengine.Scene import Scene
 
 from gettext import gettext as _
 
@@ -46,6 +49,9 @@ class Map(GameEngineElement):
                     self.totalSurface.fill((255,255,255),curRect,0)
 
         self.add_to_engine() #Adds itself and all callbacks to the engine
+        
+        self.myDrawableObject = DrawableObject([pygame.Surface((0,0))], '')
+        self.game_engine.get_scene().addObject(selfmyDrawableObject)
 
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
