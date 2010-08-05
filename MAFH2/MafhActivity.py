@@ -7,7 +7,7 @@ from Comic import Comic
 from Profile import Profile
 from MafhGameManager import MafhGameManager
 
-ge = GameEngine(width=1200, height=900, always_draw=True, fps_cap=15)
+ge = GameEngine(width=1200, height=900, always_draw=True, fps_cap=24)
 
 def start_game():
     ge.add_object('manager', MafhGameManager() )

@@ -54,8 +54,9 @@ class BattleEngine(GameEngineElement):
             self.game_engine.get_scene().addObject(self.__drawableObjects[i])
 
         self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100,[255,0,255]), '')
-        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '', True)
+        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25, [255,0,255]), '', True)
         self.__drawableObjects['hp'].setColorKey((255,0,255))
+        self.__drawableObjects['bt'].setColorKey((255,0,255))
         self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
         self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
 
@@ -435,7 +436,11 @@ class BattleEngine(GameEngineElement):
         
         #Battle Timer
         if(self.battleTimer > 0):
+            self.__drawableObjects['bt'].makeTransparent(False)
+            self.__drawableObjects['bt'].setPosition(25,130)
             tIndex = int(time.time() - self.battleTimer)
             if tIndex > 10:
                 tIndex = 10
-            #screen.blit(self.__images['bt'][tIndex], (25,130))
+            self.__drawableObjects['bt'].goToFrame(tIndex)
+        else:
+            self.__drawableObjects['bt'].makeTransparent(True)
