@@ -23,7 +23,6 @@ class TermBox(GameEngineElement):
 
     def add_line(self, line):
         for i in range(0, self.max_lines, 1):
-            print i
             if i == self.max_lines-1:
                 self.__lines[i].changeText(line, [255,255,255])
             else:

@@ -124,7 +124,9 @@ class Map(GameEngineElement):
         font=pygame.font.SysFont("cmr10",24,False,False)
 
         macroMap=pygame.transform.scale(self.totalSurface,(self.sizeX*100,self.sizeY*100))
-        screen.fill((0,0,0),(200,0,800,700))
+        tempScreen = pygame.Surface((800,700))
+        tempScreen.fill((0,0,0))
+        #screen.fill((0,0,0),(200,0,800,700))
         legend=pygame.Surface((200,300))
         legend.fill((255,0,0),(0,0,40,15))
         legend.blit(font.render(_("LOCKED"),True,(255,0,0)),(45,0,30,5))
@@ -136,8 +138,12 @@ class Map(GameEngineElement):
         legend.blit(font.render(_("EXIT"),True,(255,255,255)),(45,75,30,5))
         legend.fill((50,50,50),(0,100,40,15))
         legend.blit(font.render(_("ENTRANCE"),True,(50,50,50)),(45,100,30,5))
-        screen.blit(legend,(800,0,300,300))
-        screen.blit(macroMap,(200,0,800,700))
+        tempScreen.blit(legend,(800,0,300,300))
+        tempScreen.blit(macroMap, (0,0))
+        self.myDrawableObject.repopulateImages([tempScreen])
+        self.myDrawableObject.setPosition(200,0)
+        
+        #screen.blit(macroMap,(200,0,800,700))
 
     def update_macro(self):
         profile = self.game_engine.get_object('profile')
