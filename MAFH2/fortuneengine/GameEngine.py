@@ -238,7 +238,7 @@ class GameEngine(object):
                 if self.__showfps:
                     text = self.__font.render('FPS: %d' % self.clock.get_fps(),False, (255, 255, 255), (159, 182, 205))
                     screen.blit(text, (0, 0))
-            pygame.display.flip()
+                pygame.display.flip()
 
     def _event_loop(self):
         """

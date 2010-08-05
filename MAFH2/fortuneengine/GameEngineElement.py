@@ -14,6 +14,9 @@
 #    Author: Justin Lewis  <jlew.blackout@gmail.com>
 
 from fortuneengine.GameEngine import GameEngine
+from fortuneengine.DrawableFontObject import DrawableFontObject
+from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
 
 
 class GameEngineElement(object):
@@ -35,12 +38,24 @@ class GameEngineElement(object):
         self.__has_event = has_event
         self.__in_engine = False
         self.game_engine = GameEngine.instance
+        self.__ddo_list = []
 
     def is_in_engine(self):
         """
         Returns true if object has been registered with the game engine.
         """
         return self.__in_engine
+    
+    def add_to_scene(self, objects):
+        """
+        Adds some objects to the DynamicDrawableObject list and the
+        game engine's scene.
+        
+        @param  objects:    A list of DynamicDrawableObjects
+        """
+        
+        self.game_engine.get_scene().addObjects(objects)
+        self.__ddo_list += objects
 
     def add_to_engine(self):
         """
@@ -68,6 +83,11 @@ class GameEngineElement(object):
 
             if self.__has_event:
                 self.game_engine.remove_event_callback(self.event_handler)
+                
+            if not (self.__ddo_list == []):
+                for object in self.__ddo_list:
+                    self.game_engine.removeObject(object)
+                
 
     def event_handler(self, event):
         """
