@@ -113,8 +113,6 @@ class Map(GameEngineElement):
         self.myDrawableObject.repopulateImages([mini_map])
         self.myDrawableObject.setPosition(0,700)
         screen.fill(0,map_area,0)
-        screen.blit(mini_map, map_area)
-
         if self.draw_macro_set:
             self.draw_macro(self, screen)
 
@@ -138,12 +136,11 @@ class Map(GameEngineElement):
         legend.blit(font.render(_("EXIT"),True,(255,255,255)),(45,75,30,5))
         legend.fill((50,50,50),(0,100,40,15))
         legend.blit(font.render(_("ENTRANCE"),True,(50,50,50)),(45,100,30,5))
-        tempScreen.blit(legend,(800,0,300,300))
         tempScreen.blit(macroMap, (0,0))
+        tempScreen.blit(legend, (600,0))
         self.myDrawableObject.repopulateImages([tempScreen])
         self.myDrawableObject.setPosition(200,0)
         
-        #screen.blit(macroMap,(200,0,800,700))
 
     def update_macro(self):
         profile = self.game_engine.get_object('profile')
