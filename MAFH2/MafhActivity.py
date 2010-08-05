@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 from fortuneengine.GameEngine import GameEngine
 from MafhGameMenu import GameMenuHolder
-
 from constants import MENU_PATH, FMC_PATH, TOUR_PATH
 
 from Comic import Comic
 from Profile import Profile
 from MafhGameManager import MafhGameManager
 
-ge = GameEngine(width=1200, height=900, always_draw=True)
+ge = GameEngine(width=1200, height=900, always_draw=True, fps_cap=15)
 
 def start_game():
     ge.add_object('manager', MafhGameManager() )

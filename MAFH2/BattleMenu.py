@@ -1,5 +1,7 @@
 import pygame
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DrawableFontObject import DrawableFontObject
 
 from constants import MENU_PATH
 from gettext import gettext as _
@@ -12,35 +14,38 @@ class BattleMenuHolder( GameEngineElement ):
         GameEngineElement.__init__(self, has_draw=True, has_event=False)
         self.menu = None
         self.callback = callback
-        self.background = pygame.image.load(MENU_PATH + "battleMenubackground.gif")
-        self.disp = ""
-        self.sec_des = ""
+        self.background = DrawableObject([pygame.image.load( MENU_PATH + "battleMenubackground.gif")], '')
         self.font = pygame.font.SysFont("cmr10",18,False,False)
+        self.disp = DrawableFontObject("", self.font)
+        self.sec_disp = DrawableFontObject("", self.font)
+        self.game_engine.get_scene().addObject(self.background)
+        self.game_engine.get_scene().addObject(self.disp)
+        self.game_engine.get_scene().addObject(self.sec_disp)
 
     def set_disp(self, msg):
-        self.disp = msg
+        self.disp.changeText(msg, (0,0,0))
 
     def set_sec_disp(self, msg):
-        self.sec_des = msg
+        self.sec_disp.changeText(msg, (0,0,0))
 
     def remove_from_engine(self):
         super( BattleMenuHolder, self ).remove_from_engine()
+        self.game_engine.get_scene().removeObject(self.background)
+        self.game_engine.get_scene().removeObject(self.disp)
+        self.game_engine.get_scene().removeObject(self.sec_disp)
         self.clear_menu()
 
     def draw(self,screen,time_delta):
-        screen.blit(self.background,(0,286,452,414))
-        ren = self.font.render(self.disp, 1, (0,0,0))
-        screen.blit(ren, (250, 340))
-
-        ren = self.font.render(self.sec_des, 1, (0,0,0))
-        screen.blit(ren, (237, 375))
-
+        self.background.setPosition(0,286)
+        self.disp.setPosition(250,340)
+        self.sec_disp.setPosition(237, 375)
 
     def menu_called(self, id):
         self.callback(id, self)
 
     def clear_menu(self):
         if self.menu:
+            self.menu.clear()
             self.menu.remove_from_engine()
             self.menu = None
 
@@ -76,8 +81,6 @@ class BattleMenuHolder( GameEngineElement ):
                         [_("C"), lambda: self.menu_called('clear'),44,1],
                         ['0', lambda: self.menu_called('0'),44,1],
                         [_("E"), lambda: self.menu_called('enter'),44,1],
-                        #[_("Clear"), lambda: self.menu_called('clear'),89,2],
-                        #[_("Enter"), lambda: self.menu_called('enter'),134,3],
             ]
 
         elif id == "special":
@@ -107,9 +110,8 @@ class BattleMenu(GameEngineElement):
     def __init__(self, game_menu, x, y, type=NORMAL_MENU):
         GameEngineElement.__init__(self, has_draw=True, has_event=True)
 
-        self.menu = Menu(game_menu, type )
+        self.menu = Menu(game_menu, type, self.game_engine.get_scene(), x, y )
 
-        self.menu.set_pos(x, y)
         self.add_to_engine()
 
     def event_handler(self, event):
@@ -117,15 +119,19 @@ class BattleMenu(GameEngineElement):
 
     def draw(self,screen,time_delta):
         self.menu.draw( screen )
+    
+    def clear(self):
+        self.menu.clear()
 
 class Menu(object):
-    def __init__(self, options, cols):
+    def __init__(self, options, cols, scene, x=237, y=375):
         """Initialize the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
 
         self.options = options
-        self.x = 0
-        self.y = 0
+        self.scene = scene
+        self.x = x
+        self.y = y
         self.cols = cols
         self.font = pygame.font.SysFont("cmr10",18,False,False)
         self.option = 0
@@ -133,30 +139,66 @@ class Menu(object):
         self.color = [0, 0, 0]
         self.hcolor = [255, 0, 0]
         self.height = len(self.options)*self.font.get_height()
+        self.font_list = []
+        self.rect_list = []
+        
+        for o in self.options:
+            self.font_list.append(DrawableFontObject(o[0], self.font))
+            ren = self.font.render(o[0], 1, [0,0,0])
+            if ren.get_width() > self.width:
+                self.width = ren.get_width()
+
+        i=0 # Row Spacing
+        h=0 # Selection Spacing
+        j=0 # Col Spacing
+        for o in self.options:
+            newX = self.x + 45 * j
+            newY = self.y + i * 45
+            
+            surf = pygame.Surface((o[2],44))
+            surf.fill((0, 74, 94))
+            tempDO = DrawableObject([surf], "")
+            tempDO.setPosition(newX,newY)
+            self.rect_list.append(tempDO)
+            
+            surf = pygame.Surface((o[2]-4, 40))
+            surf.fill((4, 119, 152))
+            tempDO = DrawableObject([surf], "")
+            tempDO.setPosition(newX+2, newY+2)
+            self.rect_list.append(tempDO)
+
+            j+=o[3]
+            h+=1
+            if j >= self.cols:
+                i+=1
+                j=0
+            
+        self.scene.addObjects(self.rect_list)
+        self.scene.addObjects(self.font_list)
 
     def draw(self, surface):
+        self.scene.drawEntireScene(surface)
         """Draw the menu to the surface."""
         i=0 # Row Spacing
         h=0 # Selection Spacing
         j=0 # Col Spacing
+        k=1 # Rect Counter
         for o in self.options:
             if h==self.option:
                 clr = self.hcolor
             else:
                 clr = self.color
             text = o[0]
-            ren = self.font.render(text, 1, clr)
-            if ren.get_width() > self.width:
-                self.width = ren.get_width()
+            self.font_list[h].changeText(text, clr)
 
             newX = self.x + 45 * j
-            newY = self.y + i * 45            
-            pygame.draw.rect(surface, (0, 74, 94), ( newX, newY, o[2], 44))
-            pygame.draw.rect(surface, (4, 119, 152), ( newX + 2, newY + 2, o[2]-4, 40))
-            surface.blit(ren, (newX + 15, newY + 12))
+            newY = self.y + i * 45
+            
+            self.font_list[h].setPosition(newX + 15, newY + 12)
 
             j+=o[3]
             h+=1
+            k+=2
             if j >= self.cols:
                 i+=1
                 j=0
@@ -195,6 +237,12 @@ class Menu(object):
             self.option = self.option % len(self.options)
 
         return return_val
+
+    def clear(self):
+        for text in self.font_list:
+            self.scene.removeObject(text)
+        for rect in self.rect_list:
+            self.scene.removeObject(rect)
 
     def set_pos(self, x, y):
         """Set the topleft of the menu at x,y"""

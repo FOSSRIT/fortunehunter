@@ -1,21 +1,23 @@
 #! /usr/bin/env python
 
-############################################################
-#EzMeNu - A simple module to quickly make menus with PyGame#
-############################################################
-#Licensed under the GNU Lesser General Public License      #
-#Created by PyMike <pymike93@gmail.com>                    #
-#Some edits by Justin Lewis <jtl1728@rit.edu               #
-############################################################
+#############################################################
+#EzMeNu - A simple module to quickly make menus with PyGame #
+#############################################################
+#Licensed under the GNU Lesser General Public License       #
+#Created by PyMike <pymike93@gmail.com>                     #
+#Some edits by Justin Lewis <jtl1728@rit.edu>               #
+#Some edits by Kevin Hockey <kdh7733@rit.edu>               #
+#############################################################
 
 import pygame
+from fortuneengine.DrawableFontObject import DrawableFontObject
 
-class EzMenu:
+class EzMenu():
 
-    def __init__(self, options):
+    def __init__(self, options, scene):
         """Initialise the EzMenu! options should be a sequence of lists in the
         format of [option_name, option_function]"""
-
+        self.scene = scene
         self.options = options
         self.x = 0
         self.y = 0
@@ -29,11 +31,19 @@ class EzMenu:
         self.color = [0, 0, 0]
         self.hcolor = [255, 0, 0]
         self.height = len(self.options)*self.font.get_height()
+        self.font.set_italic( True )
+        self.help_text = DrawableFontObject("", self.font)
+        self.font.set_italic( False )
+        self.font_list = []
+        self.scene.addObject(self.help_text)
 
         for o in self.options:
             ren = self.font.render( o[0], 1, self.color)
+            self.font_list.append(DrawableFontObject(o[0], self.font))
             if self.width < ren.get_width():
                 self.width = ren.get_width()
+                
+        self.scene.addObjects(self.font_list)
 
     def draw(self, surface):
         """Draw the menu to the surface."""
@@ -46,21 +56,15 @@ class EzMenu:
             else:
                 clr = self.color
             text = o[0]
-            ren = self.font.render(text, True, clr)
-
-            surface.blit(ren, (self.x, self.y + i*self.font.get_height()))
+            #ren = self.font.render(text, True, clr)
+            self.font_list[i].changeText(text, clr)
+            self.font_list[i].setPosition( self.x, self.y + i*self.font.get_height() )
+            #surface.blit(ren, (self.x, self.y + i*self.font.get_height()))
             i+=1
 
-        # Help Test
-        self.font.set_italic( True )
-        ren = self.font.render( help_txt, 1, self.color )
-        self.font.set_italic( False )
-
-        #surf1 = pygame.Surface((self.width+20,self.font.get_height()+20), pygame.SRCALPHA)
-        #pygame.draw.rect(surf1, (255, 255, 255, 70), (0, 0, self.width + 20, self.font.get_height()))
-
-        #surface.blit( surf1, (self.hx, self.hy) )
-        surface.blit( ren, (self.hx+5, self.hy) )
+        # Help Text
+        self.help_text.changeText(help_txt, self.color)
+        self.help_text.setPosition(self.hx+5, self.hy)
 
     def update(self, event):
         """Update the menu and get input for the menu."""
@@ -110,3 +114,8 @@ class EzMenu:
     def help_text_at(self, x, y):
         self.hx = x
         self.hy = y
+        
+    def clear_menu(self):
+        for dfo in self.font_list:
+            self.scene.removeObject(dfo)
+        self.scene.removeObject(self.help_text)

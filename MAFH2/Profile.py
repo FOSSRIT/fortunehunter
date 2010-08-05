@@ -1,6 +1,8 @@
 import pygame
 
 from fortuneengine.GameEngineElement import GameEngineElement
+from fortuneengine.DrawableFontObject import DrawableFontObject
+from fortuneengine.DrawableObject import DrawableObject
 from constants import MENU_PATH, NORTH, RIGHT, LEFT
 from Hero import Hero
 from Dungeon import Dungeon
@@ -31,6 +33,27 @@ class Profile(GameEngineElement):
         self.puzzlesSolved=0
         self.inventory = []
 
+        bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
+        self.background = DrawableObject([bg], '')
+        self.background.scale(self.game_engine.width, self.game_engine.height)
+        self.game_engine.get_scene().addObject(self.background)
+
+        #create background rect
+        draw_width = self.game_engine.width/4
+        draw_height = self.game_engine.height/4
+        surf = pygame.Surface((draw_width+60,draw_height+60))
+        surf.fill((150,150,255))
+        self.blueRect = DrawableObject([surf],"")
+        self.game_engine.get_scene().addObject(self.blueRect)
+        
+        font = pygame.font.Font(None, 16)
+        self.text_list = []
+        self.text_list.append(DrawableFontObject("1", font))
+        self.text_list.append(DrawableFontObject("2", font))
+        self.text_list.append(DrawableFontObject("name",font))
+        self.game_engine.get_scene().addObjects(self.text_list)
+        
+        
         if recall_string:
             self.load_from_json_string( recall_string )
 
@@ -87,14 +110,16 @@ class Profile(GameEngineElement):
         self.inventory = new_inv
 
     def add_to_engine(self):
-        bg = pygame.image.load(MENU_PATH+"mafh_splash.gif").convert()
-        self.background_img = pygame.transform.scale(bg, (self.game_engine.width, self.game_engine.height))
         super( Profile, self).add_to_engine()
 
     def remove_from_engine(self):
         super( Profile, self).remove_from_engine()
-        del self.background_img
-
+        self.game_engine.get_scene().removeObject(self.background)
+        self.game_engine.get_scene().removeObject(self.blueRect)
+        
+        for dfo in self.text_list:
+            self.game_engine.get_scene().removeObject(dfo)
+            
     def event_handler(self, event):
         """
         Handles user input (used only for name entry)
@@ -120,13 +145,18 @@ class Profile(GameEngineElement):
 
         draw_width = width/4
         draw_height = height/4
-
-        font = pygame.font.Font(None, 16)
-        text=font.render(self.name,True,(0,0,0))
-        textRect=(draw_width+60,draw_height+60,text.get_width(),text.get_height())
-        screen.blit(self.background_img,(0,0,width,height))
-        screen.fill((150,150,255),(draw_width,draw_height,2*draw_width,2*draw_height))
-        screen.blit(font.render(_("Enter name:"),True,(0,0,0)),(draw_width,draw_height))
-        screen.blit(font.render(_("Return to continue"),True,(0,0,0)),(draw_width+20,draw_height+20,20,20))
-        screen.blit(text, textRect)
+        
+        self.background.setPosition(0,0)
+        self.blueRect.setPosition(draw_width, draw_height)
+        
+        #name
+        self.text_list[0].changeText(self.name,(0,0,0))
+        self.text_list[0].setPosition(draw_width+60, draw_height+60)
+        #text1
+        self.text_list[1].changeText(_("Enter Name:"), (0,0,0))
+        self.text_list[1].setPosition(draw_width,draw_height)
+        #text2
+        self.text_list[2].changeText(_("Return to continue"), (0,0,0))
+        self.text_list[2].setPosition(draw_width+20,draw_height+20)
+        
 

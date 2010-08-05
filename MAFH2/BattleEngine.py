@@ -2,8 +2,11 @@ from fortuneengine.GameEngineElement import GameEngineElement
 from Enemy import get_enemy
 from BattleMenu import BattleMenuHolder
 from MagicMenu import MagicMenuHolder
-from AnimatedSprite import Spritesheet
+from Spritesheet import Spritesheet
 from Items import get_item
+from fortuneengine.DrawableObject import DrawableObject
+from fortuneengine.DynamicDrawableObject import DynamicDrawableObject
+from fortuneengine.Scene import Scene
 import pygame
 import time
 
@@ -14,6 +17,7 @@ import random
 
 PLAYER_WAIT = 1
 PLAYER_MULT = 2
+_dirtyList=[]
 
 class BattleEngine(GameEngineElement):
     def __init__(self, dgn):
@@ -39,15 +43,21 @@ class BattleEngine(GameEngineElement):
             e_index = self.current_room.get_enemy( i )
 
             if e_index != '0':
-                self.enemy_list.append( get_enemy( e_index ) )
+                curE = get_enemy( e_index )
+                self.enemy_list.append( curE )
+                self.game_engine.get_scene().addObject(curE.get_sprite())
 
         # Preload images
-        self.__images = {}
+        self.__drawableObjects = {}
         for i in ['arrow_select']:
-            self.__images[i] = pygame.image.load( HUD_PATH + i + ".gif" )
+            self.__drawableObjects[i] = DrawableObject([pygame.image.load( HUD_PATH + i + ".gif" )], '')
+            self.game_engine.get_scene().addObject(self.__drawableObjects[i])
 
-        self.__images['hp'] = Spritesheet( HUD_PATH + "hp.png" ).img_extract(11,1,100,100)
-        self.__images['bt'] = Spritesheet( HUD_PATH + "bt.png" ).img_extract(1,11,100,25)
+        self.__drawableObjects['hp'] = DrawableObject(Spritesheet( HUD_PATH + "hp.gif" ).img_extract(11,1,100,100,[255,0,255]), '')
+        self.__drawableObjects['bt'] = DrawableObject(Spritesheet( HUD_PATH + "bt.gif" ).img_extract(1,11,100,25), '', True)
+        self.__drawableObjects['hp'].setColorKey((255,0,255))
+        self.game_engine.get_scene().addObject(self.__drawableObjects['hp'])
+        self.game_engine.get_scene().addObject(self.__drawableObjects['bt'])
 
         self.add_to_engine()
         self.game_engine.add_object('battlemenu', BattleMenuHolder( self.menu_callback ) )
@@ -313,6 +323,7 @@ class BattleEngine(GameEngineElement):
             if enemy.HP <= 0:
                 enemy.alive = False
                 self.enemy_list.remove(enemy)
+                enemy.get_sprite().makeTransparent(True)
                 self.active_target = 1
             if enemy.alive:
                 random.seed()
@@ -354,9 +365,13 @@ class BattleEngine(GameEngineElement):
                 room.remove_item( i )
                 self.game_engine.get_object('mesg').add_line(_("%s dropped!")% item.name)
         room.has_enemy = False
+        
         #self terminate
         #print 'end battle called'
         self.remove_from_engine()
+        for key in self.__drawableObjects:
+            self.game_engine.get_scene().removeObject(self.__drawableObjects[key])
+            
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battle')
         
@@ -399,28 +414,28 @@ class BattleEngine(GameEngineElement):
         x=250
         y=150
         i = 1
-
+        
         tick_time = pygame.time.get_ticks()
 
         # Draw Enemy and Item Selection
         for enemy in self.enemy_list:
-            if enemy.alive:
-                if self.active_target == i:
-                    screen.blit(self.__images['arrow_select'], (x+(i*200),y-25))
-                enemy.sprite.update( tick_time )
-                screen.blit(enemy.sprite.image, (x+(i*200),y))
-                i = i+1
+            if enemy.alive and self.active_target == i:
+                self.__drawableObjects['arrow_select'].setPosition(x+(i*200),y-25)
+            enemy.get_sprite().setPosition(x+(i*200),y)
+            i = i+1
 
         # Draw Hud
         profile = self.game_engine.get_object('profile')
 
         # Player Health
         health = 10 - profile.hero.healthLevel()
-        screen.blit(self.__images['hp'][health], (25,25))
+
+        self.__drawableObjects['hp'].goToFrame(health)
+        self.__drawableObjects['hp'].setPosition(25,25)
         
         #Battle Timer
         if(self.battleTimer > 0):
             tIndex = int(time.time() - self.battleTimer)
             if tIndex > 10:
                 tIndex = 10
-            screen.blit(self.__images['bt'][tIndex], (25,130))
+            #screen.blit(self.__images['bt'][tIndex], (25,130))
