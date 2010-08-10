@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # testKit - a testing kit run in terminal for pygame benchmarking pygame methods
 #
@@ -13,8 +14,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-#! /usr/bin/env python
 print "\n\nLoading..."
 from datetime import datetime
 import sys
