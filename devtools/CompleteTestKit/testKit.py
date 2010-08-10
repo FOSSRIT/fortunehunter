@@ -11,8 +11,6 @@ from animObj.DrawableObject import DrawableObject
 from animObj.DynamicDrawableObject import DynamicDrawableObject
 os.system("clear")
 
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """The file type array will be iterated through as the test progresses to tell 
 the program what extension and path to use for the images
 
@@ -50,7 +48,7 @@ def getValues(keyIn):
         print "Value was erroneous/blank, Default set..."
         preferences[0][0]=1200
         preferences[0][1]=700
-    
+
     if '1' in keyIn or '2' in keyIn or '4' in keyIn:
         try:
             print "\nHow many images would you like to draw?"
@@ -89,7 +87,7 @@ def getValues(keyIn):
             print "Value was erroneous/blank, Default set..."
             preferences[2][0] = 40
             preferences[2][1] = 40
-            
+
     if '3' in keyIn:
         preferences[3]={}
         try:
@@ -106,14 +104,12 @@ def getValues(keyIn):
         except:
             print "Value was erroneous/blank, Default set..."
             preferences[3][1] = 18
-    
+
     print "END OF INFO GATHERING - Testing beginning now...\n"
     return preferences
 
 
 
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """Image() Animation Test 
 This test will simply load the image(s) to screen, and move them around to
 create a CPU stressful environment.  The performance of the CPU in this 
@@ -122,7 +118,7 @@ environment is measured in the average frame rate demonstrated in a sample of
 using surface.convert() to see if converting all of the different file types
 will consequentially even out the framerates between tests.
 
-@param preferences: user-made list of preferences to be shared across tests
+@param preferences: user-made 2D list of preferences to be shared across tests
 """
 def imgTest(preferences):
     pygame.init()
@@ -139,45 +135,40 @@ def imgTest(preferences):
     maxImage = preferences[0][2]
     maxTrial = preferences[0][3]
     maxFrame = preferences[0][4]
-    
+
     ft=""   #filetype
     img={}
     i=1   #cycles images
-    
+
     try:
         f=preferences[0][9]
         f.write("\n\n")
     except:
         f=preferences[0][9]=open('./logs/Test Results - %s.csv' 
             %str(datetime.now()),'a')
-    
+
     f.write("Speed Test - "+str(datetime.now()))
-    f.write(",Width (pixels)"+','+"Height (pixels)"+','+
-        "Trial Runs"+','+"Image Objects Drawn")
+    f.write(",Width (pixels),Height (pixels),Frames per Trial,Image Objects"+
+        " Drawn")
     f.write("\n,"+str(screenWidth)+','+str(screenHeight)+','+
-        str(maxTrial)+','+str(maxImage))
+        str(maxFrame)+','+str(maxImage))
     f.write("\nFile Type"+','+"Time taken to load images to memory (seconds)")
     for trial in range(maxTrial): 
         f.write(",Trial "+str(trial+1)+" (frames per second)")
-    
-    print "width,height",
-    print screenWidth,
-    print ",",
-    print screenHeight
-    
+
     screen = pygame.display.set_mode( [int(screenWidth),int(screenHeight)] )
     BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
     pygame.display.set_caption("Speed Test Window")
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
-    
+
     for trialType in range( len(ftArr) ):
         ft=ftArr[trialType]
-            
+
         f.seek(0,2)
         f.write(str('\n'+ft[1]+' Speed Test'))
         f.seek(0,2)
-        
+
         start=time.time()
         imgSwitch={
             1: pygame.image.load("%s2%s"%(ft[1],ft[0])),
@@ -188,34 +179,34 @@ def imgTest(preferences):
             6: pygame.image.load("%s7%s"%(ft[1],ft[0])),
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])),
             8: pygame.image.load("%s9%s"%(ft[1],ft[0])),}
-        
+
         f.write(',')
         f.write(str(time.time()-start))
         print "Speed Test: "+ft[1]+" extension "+ft[0]
 
         for aTrial in range(maxTrial):
             for eachImage in range(maxImage):
-            
+
                 img[eachImage,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
                 img[eachImage,1]=  img[eachImage,0].get_rect()
                 img[eachImage,2]= [2,2] # velocity of image(s)
                 displace=eachImage*40
                 img[eachImage,1]=img[eachImage,1].move(displace,displace)
-            
+
             start=time.time()
-            
+
             for frame in range(maxFrame):
                 for image in range(maxImage):
                     img[image,0]=imgSwitch.get(i,None)
-                    if img[image,1].left < 0 or img[image,1].right > screenWidth:
+                    if img[image,1].left < 0 or img[image,1].right >screenWidth:
                         img[image,2]=[ -img[image,2][0], img[image,2][1] ]
-                        
-                    if img[image,1].top < 0 or img[image,1].bottom > screenHeight:
+
+                    if img[image,1].top < 0 or img[image,1].bottom>screenHeight:
                         img[image,2]=[ img[image,2][0], -img[image,2][1] ]
-                        
+
                     img[image,1] = img[image,1].move(img[image,2])
                     screen.blit(img[image,0],img[image,1])
-                            
+
                 pygame.display.flip()
                 i=i+1
                 if i>8: i=1
@@ -231,20 +222,21 @@ def imgTest(preferences):
 
     f.write("\n\nUsing .convert()")
     f.write("\nFile Type"+','+"Time taken to load images to memory (seconds)")
-    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+" (frames per second)")
-    
+    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+
+        " (frames per second)")
+
     screen = pygame.display.set_mode( [screenWidth,screenHeight] )
     pygame.display.set_caption("Speed convert() Test Window")
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
-    
+
     for trialType in range( len(ftArr) ):
         ft=ftArr[trialType]
-            
+
         f.seek(0,2)
         f.write(str('\n'+ft[1]+' Speed convert() Test'))
         f.seek(0,2)
-        
+
         start=time.time()
         imgSwitch={
             1: pygame.image.load("%s2%s"%(ft[1],ft[0])).convert(),
@@ -255,11 +247,11 @@ def imgTest(preferences):
             6: pygame.image.load("%s7%s"%(ft[1],ft[0])).convert(),
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])).convert(),
             8: pygame.image.load("%s9%s"%(ft[1],ft[0])).convert(),}
-        
+
         f.write(',')
         f.write( str(time.time()-start) )
         print "Convert Test: "+ft[1]+" extension "+ft[0]
-        
+
         for trial in range(maxTrial):
             for image in range(maxImage):
                 img[image,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
@@ -267,26 +259,26 @@ def imgTest(preferences):
                 img[image,2]= [2,2] #speed
                 displace = image * 40
                 img[image,1]=img[image,1].move( displace,displace )
-                
+
             start=time.time()
-            
+
             for frame in range(maxFrame):
                 for image in range(maxImage):
                     img[image,0]=imgSwitch.get(i,None)
-                    if img[image,1].left < 0 or img[image,1].right > screenWidth:
+                    if img[image,1].left < 0 or img[image,1].right >screenWidth:
                         img[image,2]=[ -img[image,2][0], img[image,2][1] ]
-                    
-                    if img[image,1].top < 0 or img[image,1].bottom > screenHeight:
+
+                    if img[image,1].top < 0 or img[image,1].bottom>screenHeight:
                         img[image,2]=[ img[image,2][0], -img[image,2][1] ]
-                    
+
                     img[image,1] = img[image,1].move(img[image,2])
                     screen.blit(img[image,0],img[image,1])
-                    
+
                 pygame.display.flip()
                 i=i+1
                 if i>8: i=1
                 screen.blit(BACKGROUND,(0,0))
-                
+
             print 1/((time.time()-start)/maxFrame)
             f.seek(0,2)
             f.write(','+str(1/((time.time()-start)/maxFrame)))
@@ -295,7 +287,6 @@ def imgTest(preferences):
 
 
 
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """Scalability Test 
 The scalability test is still very much hard coded and not very elegant, but
 this is a theme with all our code.
@@ -312,7 +303,7 @@ they are transform.scale()'d and convert()'d
 Last step, information is printed to the terminal and, once implemented, to
 a .csv file in the logs directory.
 
-@param preferences: user-made list of preferences to be shared across tests
+@param preferences: user-made 2D list of preferences to be shared across tests
 """
 def scaleTest(preferences):
     pygame.init()
@@ -329,7 +320,7 @@ def scaleTest(preferences):
     except:
         f=preferences[0][9]=\
             open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')
-    
+
     img={}
     ft="" #filetype
     r=0 #frame refreshes
@@ -340,30 +331,18 @@ def scaleTest(preferences):
 
 # paths to and extensions for image files to be turned into surfaces
     ftArr=[ 
-        [".bmp","art/BMP16/BMP16100/"] ,
-        [".bmp","art/BMP16/BMP16173/"] ,
-        [".bmp","art/BMP16/BMP16200/"] ,
-        [".bmp","art/BMP16/BMP16400/"] ,
-        [".bmp","art/BMP24/BMP24100/"] , 
-        [".bmp","art/BMP24/BMP24173/"] , 
-        [".bmp","art/BMP24/BMP24200/"] , 
-        [".bmp","art/BMP24/BMP24400/"] , 
-        [".gif","art/GIF/GIF100/"] , 
-        [".gif","art/GIF/GIF173/"] ,  
-        [".gif","art/GIF/GIF200/"] ,  
-        [".gif","art/GIF/GIF400/"] , 
-        [".gif","art/GIFT/GIFT100/"] , 
-        [".gif","art/GIFT/GIFT173/"] ,  
-        [".gif","art/GIFT/GIFT200/"] ,  
-        [".gif","art/GIFT/GIFT400/"] , 
-        [".png","art/PNGI/PNG100/"] , 
-        [".png","art/PNGI/PNG173/"] , 
-        [".png","art/PNGI/PNG200/"] , 
-        [".png","art/PNGI/PNG400/"] , 
-        [".png","art/PNGT/PNGT100/"] , 
-        [".png","art/PNGT/PNGT173/"] , 
-        [".png","art/PNGT/PNGT200/"] , 
-        [".png","art/PNGT/PNGT400/"] ]
+        [".bmp","art/BMP16/BMP16100/"],[".bmp","art/BMP16/BMP16173/"],
+        [".bmp","art/BMP16/BMP16200/"],[".bmp","art/BMP16/BMP16400/"],
+        [".bmp","art/BMP24/BMP24100/"],[".bmp","art/BMP24/BMP24173/"],
+        [".bmp","art/BMP24/BMP24200/"],[".bmp","art/BMP24/BMP24400/"],
+        [".gif","art/GIF/GIF100/"]    ,[".gif","art/GIF/GIF173/"],
+        [".gif","art/GIF/GIF200/"]    ,[".gif","art/GIF/GIF400/"],
+        [".gif","art/GIFT/GIFT100/"]  ,[".gif","art/GIFT/GIFT173/"], 
+        [".gif","art/GIFT/GIFT200/"]  ,[".gif","art/GIFT/GIFT400/"],
+        [".png","art/PNGI/PNG100/"]   ,[".png","art/PNGI/PNG173/"],
+        [".png","art/PNGI/PNG200/"]   ,[".png","art/PNGI/PNG400/"],
+        [".png","art/PNGT/PNGT100/"]  ,[".png","art/PNGT/PNGT173/"],
+        [".png","art/PNGT/PNGT200/"]  ,[".png","art/PNGT/PNGT400/"] ]
 
     f.write("Scaling Test"+str(datetime.now()))
     f.write(",Width (pixels)"+','+"Height (pixels)"+','+
@@ -371,13 +350,14 @@ def scaleTest(preferences):
     f.write("\n,"+str(screenWidth)+','+str(screenHeight)+
         ','+str(maxTrial)+','+str(maxImage))
     f.write("\nFile Type"+','+"Time taken to load images to memory (seconds)")    
-    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+" (frames per second)")
+    for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+
+        " (frames per second)")
 
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Scaling Test Window")
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
-    
+
     for trialType in range( len(ftArr) ):
         ft=ftArr[trialType]
 
@@ -434,10 +414,10 @@ def scaleTest(preferences):
                 screen.blit(BACKGROUND,(0,0))
                 for image in range(maxImage):
                     img[image,0]=switcher.get(i,None)
-                    if img[image,1].left < 0 or img[image,1].right > screenWidth:
+                    if img[image,1].left < 0 or img[image,1].right >screenWidth:
                         img[image,2]=[ -img[image,2][0], img[image,2][1] ]
 
-                    if img[image,1].top < 0 or img[image,1].bottom > screenHeight:
+                    if img[image,1].top < 0 or img[image,1].bottom>screenHeight:
                         img[image,2]=[ img[image,2][0], -img[image,2][1] ]
 
                     img[image,1] = img[image,1].move(img[image,2]) 
@@ -457,44 +437,57 @@ def scaleTest(preferences):
 
 
 
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
 """rotateTest is a test that will move a selected image by way of a select 
 variety of methods, with the controlled variables being the method, the number
 of steps, the screen's dimensions, the number of trials, and the rotation (in 
 degrees) for each step.  The static variables include the image itself.
 
-@param preferences: user-made list of preferences to be shared across tests
+@param preferences: user-made 2D list of preferences to be shared across tests
 """
 def rotateTest(preferences):
     pygame.init()
+    # Same functionality as above: loading in preferences into human-readable
+    # variable names below
     screenWidth = preferences[0][0]
     screenHeight = preferences[0][1]
     maxRotate = preferences[3][0]
     degreeRotate = preferences[3][0] / preferences[3][1]
 
+    # Make or reopen the file being used by the program
     try:
         f=preferences[0][9]
         f.write("\n\n")
     except:
         f=preferences[0][9]=\
             open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')    
-            
+
+    # Create the display screen for the program
     screen=pygame.display.set_mode((screenWidth,screenHeight))
     BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
     pygame.display.set_caption("Rotate Test Window")
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
 
+    # List of details: Original image, active image, rectangle of image and the
+    # degrees of seperation from the initial orientation.
+    # In hindsight, we had pretty much created a Sprite object by saving this 
+    # data in an object with the surface itself.
     myImage=[ pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ) ,
         pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ),
         pygame.Surface.convert( pygame.image.load("art/GIF/1.gif")).get_rect() ,
         0 ]
-    
-    f.write("Rotation Testing,"+str(datetime.now())+",Total Rotation,Rotational Steps,Degrees per Step,Original Image Surface")
-    f.write("\n,,"+str(preferences[3][0])+','+str(preferences[3][1])+','+str(degreeRotate)+','+str( myImage[0] ))
-    
-    f.write("\nTest type,Time of test,Screen capture location,Final image surface info")
-    
+
+    # Write the header/column names for this test in the .csv file
+    f.write("Rotation Testing,"+str(datetime.now())+",Total Rotation,"+
+        "Rotational Steps,Degrees per Step,Original Image Surface")
+    f.write("\n,,"+str(preferences[3][0])+','+str(preferences[3][1])+','+
+        str(degreeRotate)+','+str( myImage[0] ))
+    f.write("\nTest type,Time of test,Screen capture location,"+
+        "Final image surface info")
+
+    # The loop for the test - totalTime is so that we could measure how long all
+    # rotation calculations took in sum. Note that we do not write to the list
+    # value myImage[0] because that is the location of the original image
     print "\nTest 1 : Same image called evey time, original image not edited.\n"
     totalTime=0
     for step in range(preferences[3][1]):
@@ -503,34 +496,41 @@ def rotateTest(preferences):
         myImage[1]=pygame.transform.rotate(myImage[0],myImage[3])
         myImage[2]=myImage[1].get_rect()
         screen.blit(BACKGROUND,(0,0))
-        
+
         screen.blit( myImage[1] ,
             (((screenWidth/2) - (myImage[1].get_width()/2)) ,
             ((screenHeight/2) - (myImage[1].get_height()/2))) )
         pygame.display.flip()
-        
+
         stepEnd=time.time()
 
         totalTime+=(float(stepEnd)-float(stepStart))
-        
+
         print "\n%35s%35s" %("Rotation #"     , str(step+1) )
         print "%35s%35s" %( "Degrees from 0"  , str(myImage[3]) )
         print "%35s%35s" %( "Time: Calc. Rot.", str(stepEnd-stepStart) )
         print "%35s%35s" %( "Orig. Img Info" , str(myImage[0]) )
         print "%35s%35s" %( "Rot. Img. Rect.", str(myImage[2]) )
         print "%35s%35s" %( "Rot. Img. Info" , str(myImage[1]) )
-    
+
     screenPath = './logs/screencaps/reference-'+ str(datetime.now()) +'.bmp'
-    pygame.image.save(screen,screenPath)
-    f.write("\nReference Image Saved,"+str(totalTime)+','+str(screenPath)+','+str(myImage[1]))
-    
-    #simple continuous rotate test    
+    pygame.image.save(screen,screenPath) # Save a screen capture for records
+    f.write("\nReference Image Saved,"+str(totalTime)+','+str(screenPath)+','+
+        str(myImage[1]))
+
+    # simple continuous rotate test
+    # Test practices are similar to the above test above, however in this test 
+    # we ignor myImage[0] and merely continuously rotate the same image, causing
+    # severe warping of the surface as it attempts to average pixel color values
+    # This issue is a symptom of rotating a rendered image - with a vector-based
+    # image this issue would not come up (assuming that you are not rotating a 
+    # rendered surface of a .svg file, which would be again subject to warping)
     myImage=[ pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ) ,
         pygame.Surface.convert( pygame.image.load("art/GIF/1.gif") ),
-        pygame.Surface.convert( pygame.image.load("art/GIF/1.gif")).get_rect() ,
+        pygame.Surface.convert( pygame.image.load("art/GIF/1.gif")).get_rect(),
         0 ]
     totalTime=0
-    
+
     for step in range(preferences[3][1]):
         stepStart=time.time()
         myImage[1]=pygame.transform.rotate(myImage[1],degreeRotate)
@@ -543,7 +543,7 @@ def rotateTest(preferences):
 
         totalTime+=float(stepStop)-float(stepStart)
         myImage[3]+=degreeRotate
-        
+
         print "\n%35s%35s" %("Rotation #"     , str(step+1) )
         print "%35s%35s" %( "Degrees from 0"  , str(myImage[3]) )
         print "%35s%35s" %( "Time: Calc. Rot.", str(stepEnd-stepStart) )
@@ -552,36 +552,76 @@ def rotateTest(preferences):
         print "%35s%35s" %( "Rot. Img. Info" , str(myImage[1]) )
 
     screenPath = './logs/screencaps/Continuous-'+ str(datetime.now()) +'.bmp'
-    pygame.image.save(screen,screenPath)
-    f.write("\nContinuous Rotate,"+str(totalTime)+','+str(screenPath)+','+str(myImage[1]))
-    
-    preferences[0][9]=f
+    pygame.image.save(screen,screenPath) # Save a screen capture for records
+    f.write("\nContinuous Rotate,"+str(totalTime)+','+str(screenPath)+','+
+        str(myImage[1]))
+
+    preferences[0][9]=f #Store the log file information back in preferences
 
 
 
 
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
+
 """
+Drawable Object testing will attempt to recreate the earlier tests to 
+demonstrate the benefits of using of sprite objects instead of directly 
+handling surface objects.  While it is known that, through very specific and 
+delicate programming methods, directly controlling the surfaces can result in
+higher frame rates than using sprite objects, such programming is above the 
+skill level of a common programmer and would require every program to program
+their own very specific animation handler, which costs a development team time
+that could be otherwise spent on the specifics of their program.  Our solution 
+is an object that encapsulates all that we need it to do in a simple and easy to
+access heirarchy of objects (Scenes hold multiple Drawable Objects, which in 
+turn can be the most specific Dynamic Drawable Objects).
 
-@param preferences: user-made list of preferences to be shared across tests
+@param preferences: user-made 2D list of preferences to be shared across tests
 """
 def drawableObjectTest(preferences):
     pygame.init()
+    #preferences are loaded in and placed in human-readable variables
     screenWidth = preferences[0][0]
     screenHeight = preferences[0][1]
     maxImage = preferences[0][2]
     maxFrame = preferences[0][4]
-#    maxScene    = 1     # " Scenes to load simultaneously
     maxTrial = preferences[0][3]
 
-    # 'Constants' that would otherwise be passed in declared ^^ 
-    # Begin creating test variables
+    # try to open the previously used file, 'f', or create a new file
+    try:
+        f=preferences[0][9]
+        f.write("\n\n")
+    except:
+        f=preferences[0][9]=\
+            open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')
+
+    # Append to the file the header information for this test's data
+    f.write("Dynamic Drawable Object Testing - "+str(datetime.now())+"," )
+    f.write("Width (pixels),Height (pixels),Number of Images,Frames per Trial")
+    f.write("\n,"+str(screenWidth)+","+str(screenHeight)+","+str(maxImage)+","+
+        str(maxFrame)+"\nType of Test,Time to load myScene" )
+
+    for trial in range(maxTrial):f.write(",Trial "+str(trial+1)+
+        " (frames per second)")
+
+#    f.write("\n,,"+str(preferences[3][0])+','+str(preferences[3][1])+','+
+#        str(degreeRotate)+','+ str(myImage[0]))
+
+# 'Constants' that would otherwise be passed in declared ^^ 
+# Begin creating test variables
 
     screen = pygame.display.set_mode( (screenWidth,screenHeight) )
     BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
     clock=pygame.time.Clock()
 
-    #2345678911234567892123456789312345678941234567895123456789612345678971234567898
+    # Make the screen and the background image
+    pygame.display.set_caption("Sprite Speed Test Window")
+    screen.blit( BACKGROUND,(0,0) )
+    pygame.display.flip()
+    
+    # DDO Speed Test Below
+    # For this test we decided to use the .gif format, due to its economic size
+    # Here begins the loading process and associated timer
+    start=time.time()
     surfaceList = [
             pygame.image.load("./art/GIF/1.gif").convert(),
             pygame.image.load("./art/GIF/2.gif").convert(),
@@ -593,40 +633,120 @@ def drawableObjectTest(preferences):
             pygame.image.load("./art/GIF/8.gif").convert(),
             pygame.image.load("./art/GIF/9.gif").convert()]
 
-    #2345678911234567892123456789312345678941234567895123456789612345678971234567898
+    # DDO is a list, populated here, containing all the Dynamic Drawable Objects
+    DDO = [DynamicDrawableObject( surfaceList, '',   0,   0, False,  1, 2, 2 ),]
+    for img in range(maxImage)[1:]:
+        DDO.append(  DynamicDrawableObject( surfaceList, '', (img*40) ,(img*40), 
+            False, 72, 2, 2 )  )
+    myScene = Scene( DDO[0] )
+    myScene.addObjects( DDO[1:] )
+    print "Trial ",str(trial+1)
+    f.write( "\nDDO Speed Test,"+str(time.time()-start)  ) # time taken, flushed
+
+    # Trial loops DDO Speed test
+    for trial in range(maxTrial):
+        for img in range(maxImage):
+            myScene.getObject(img).setPosition( (40*img),(40*img) )
+        clock.tick()
+        start = time.time()
+
+        # Loop through every frame's refreshes 
+        for frame in range(maxFrame):
+            myScene.moveObjects()
+
+            for img in range(maxImage):
+                if myScene.getObject(img).getYPos() > screenHeight or \
+                myScene.getObject(img).getYPos() < 0:
+                    myScene.getObject(img).setSpeed(
+                        None,-(myScene.getObject(img).getYSpeed()))
+
+                if myScene.getObject(img).getXPos() > screenWidth or \
+                myScene.getObject(img).getXPos() < 0:
+                    myScene.getObject(img).setSpeed(
+                        -(myScene.getObject(img).getXSpeed()),None)
+
+            myScene.update( clock.get_time() )
+            myScene.clear(screen,BACKGROUND)
+            pygame.display.update( myScene.draw(screen) )
+            clock.tick()
+        print maxFrame/(time.time()-start)
+        f.write( "," + str(maxFrame/(time.time()-start) ) )
+
+
+
+
+
+
+    # Mixed DO and DDO test
+    # Reinitalize the screen
+    screen = pygame.display.set_mode( (screenWidth,screenHeight) )
+    BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
+    clock=pygame.time.Clock()
 
     # Make the screen and the background image
     pygame.display.set_caption("Sprite Speed Test Window")
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
 
-    # Make the DDO's to use in the screen
-    aDDO = DynamicDrawableObject( surfaceList,'', 1,  0,  0,2,2 )
-    bDDO = DynamicDrawableObject( surfaceList,'', 8, 40, 40,2,2 )
-    cDDO = DynamicDrawableObject( surfaceList,'',12, 80, 80,2,2 )
-    dDDO = DynamicDrawableObject( surfaceList,'',24,120,120,2,2 )
-    eDDO = DynamicDrawableObject( surfaceList,'',72,160,160,2,2 )
+    # Here begins the loading process and associated timer
+    start=time.time()
+    surfaceList = [
+            pygame.image.load("./art/GIF/1.gif").convert(),
+            pygame.image.load("./art/GIF/2.gif").convert(),
+            pygame.image.load("./art/GIF/3.gif").convert(),
+            pygame.image.load("./art/GIF/4.gif").convert(),
+            pygame.image.load("./art/GIF/5.gif").convert(),
+            pygame.image.load("./art/GIF/6.gif").convert(),
+            pygame.image.load("./art/GIF/7.gif").convert(),
+            pygame.image.load("./art/GIF/8.gif").convert(),
+            pygame.image.load("./art/GIF/9.gif").convert(),]
 
-    myScene = Scene(aDDO) # creating my scenes
-    myScene.addObjects( [ bDDO , cDDO , dDDO , eDDO ] )
+    # mixedDO is a list containing a Drawable Object as well as DDOs
+    mixedDO = [ DrawableObject( surfaceList, '', 0, 0, False ) ]
+    for img in range(maxImage)[1:]:
+        mixedDO.append( DynamicDrawableObject( surfaceList,'',(img*40),(img*40), 
+            False, 72, 2, 2 ) )
+    myScene = Scene( mixedDO[0] )
+    myScene.addObjects( mixedDO[1:] )
 
+    # time taken, flushed
+    f.write( "\nMixed DO and DDO Speed Test,"+str(time.time()-start)  )
+
+    # By here, myScene is set and we should only interface with myScene
     for trial in range(maxTrial):
-        print "Trial ",trial
+        for img in range(maxImage):
+            myScene.getObject(img).setPosition( (40*img),(40*img) )
+        print "Trial ",str(trial+1)
         clock.tick()
         start = time.time()
         for frame in range(maxFrame):
             dirtyList = []
-#            myScene.moveObjects()
+            myScene.moveObjects()
+
+            for img in range(maxImage):
+                if myScene.getObject(img).getYPos() > screenHeight or \
+                myScene.getObject(img).getYPos() < 0:
+                    myScene.getObject(img).setSpeed(
+                        None,-(myScene.getObject(img).getYSpeed()) )
+
+                if myScene.getObject(img).getXPos() > screenWidth or \
+                myScene.getObject(img).getXPos() < 0:
+                    myScene.getObject(img).setSpeed(
+                        -(myScene.getObject(img).getXSpeed()),None)
+
             myScene.update( clock.get_time() )
+            myScene.clear(screen,BACKGROUND)
             pygame.display.update( myScene.draw(screen) )
             clock.tick()
         print maxFrame/(time.time()-start)
+        f.write( "," + str(maxFrame/(time.time()-start) ) )
 
 
 
-#2345678911234567892123456789312345678941234567895123456789612345678971234567898
+
+
 """
-The main section of the code - this should be 
+The main section of the code
 """
 def main():
     while 1:
@@ -638,12 +758,15 @@ def main():
     
  Authors: Scott 'JT' Mengel and Dave Silverman
 
- Please select the test(s) you want to run in the order you want to run them (Do not seperate them with any characters).  
- Please Note: The logs for the tests you are running will automatically be placed in the 'logs/' directory in the test folder as a .csv file.
+ Please select the test(s) you want to run in the order you want to run them
+ Do not seperate them with any characters, for example type '>>>134'
+ Please Note: The logs for the tests you are running will be automatically 
+ placed in the 'logs/' directory in the test folder as a .csv file.
 
-     1. The image.load() surface speed test (with and without surface.convert() testing)
-     2. The transform.scale() surface scalability test
-     3. The transform.rotate() tests
+     1. The pygame.image.load() surface speed test 
+        (with and without pygame.surface.convert() testing)
+     2. The pygame.transform.scale() surface scalability test
+     3. The pygame.transform.rotate() tests
      4. The (developed in-house object) DrawableObject tests.
     
  Enter 'Exit' to return to the terminal and other menu options to come!
@@ -657,7 +780,7 @@ def main():
         keyIn="temp val"
 
         while True:
-            keyIn=str(raw_input(">>>"))
+            keyIn=str(raw_input(">>> "))
             if 'exit' in keyIn or 'Exit' in keyIn: 
                 print "\nClosing...\n"
                 sys.exit()
@@ -672,4 +795,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-#IDLY GEOFF A
+#ILY GEOFF A

@@ -1,6 +1,0 @@
-Speed Test - 2010-08-05 13:09:49.989796,Width (pixels),Height (pixels),Trial Runs,Image Objects Drawn
-,1200,700,5,5
-File Type,Time taken to load images to memory (seconds),Trial 1 (frames per second),Trial 2 (frames per second),Trial 3 (frames per second),Trial 4 (frames per second),Trial 5 (frames per second)
-./art/BMP16/ Speed Test,0.000768899917603,44.0083168641,42.3103949267,44.1073942464,43.9749214752,43.94628481
-./art/BMP24/ Speed Test,0.00132417678833,44.2620538185,44.2331046006,44.6153115629,44.2639026493,44.1436522724
-./art/BMP32/ Speed Test,0.00127100944519,40.9949337688,43.5377828352,43.9068723386

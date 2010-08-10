@@ -2,7 +2,7 @@ import pygame
 
 class DrawableObject(pygame.sprite.Sprite):
 
-    def __init__(self, images, textfileName, transparent = False, x = 0, y = 0):
+    def __init__(self, images, textfileName, x=0, y=0, transparent=False):
         pygame.sprite.Sprite.__init__(self)
         
         self._images = []

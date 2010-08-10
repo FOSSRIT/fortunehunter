@@ -81,7 +81,8 @@ class Scene(pygame.sprite.RenderUpdates):
     def moveObjects(self):
 
        for i in range(len(self._spritelist)):
-          self._spritelist[i][0].move()
+          try:self._spritelist[i][0].move()
+          except:pass
 
        self.calcPosition()
        self.calcSize()
