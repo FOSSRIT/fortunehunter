@@ -1,3 +1,19 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# testKit - a testing kit run in terminal for pygame benchmarking pygame methods
+#
+# Authors: Scott JT Mengel & Dave Silverman
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 #! /usr/bin/env python
 print "\n\nLoading..."
 from datetime import datetime
@@ -122,6 +138,7 @@ will consequentially even out the framerates between tests.
 """
 def imgTest(preferences):
     pygame.init()
+    # Create the list that will direct each test to its respective filetype
     ftArr=[
         [".bmp","./art/BMP16/"], [".bmp","./art/BMP24/"], 
         [".bmp","./art/BMP32/"], [".gif","./art/GIF/" ] , 
@@ -130,6 +147,8 @@ def imgTest(preferences):
         [ ".jpg","./art/JPG4/"], [".png","./art/PNGI/"] ,
         [".png","./art/PNGT/" ]
     ]
+    
+    # Load preferences into human-readable variables
     screenWidth = preferences[0][0]
     screenHeight = preferences[0][1]
     maxImage = preferences[0][2]
@@ -140,6 +159,7 @@ def imgTest(preferences):
     img={}
     i=1   #cycles images
 
+    # Attempt to load previously accessed .csv file & create a new one if fails
     try:
         f=preferences[0][9]
         f.write("\n\n")
@@ -147,6 +167,7 @@ def imgTest(preferences):
         f=preferences[0][9]=open('./logs/Test Results - %s.csv' 
             %str(datetime.now()),'a')
 
+    # Format the header of the .csv for this test's data
     f.write("Speed Test - "+str(datetime.now()))
     f.write(",Width (pixels),Height (pixels),Frames per Trial,Image Objects"+
         " Drawn")
@@ -156,6 +177,7 @@ def imgTest(preferences):
     for trial in range(maxTrial): 
         f.write(",Trial "+str(trial+1)+" (frames per second)")
 
+    # Create the display screen for these tests
     screen = pygame.display.set_mode( [int(screenWidth),int(screenHeight)] )
     BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
     pygame.display.set_caption("Speed Test Window")
@@ -163,13 +185,11 @@ def imgTest(preferences):
     pygame.display.flip()
 
     for trialType in range( len(ftArr) ):
+        # set ft as the current test's filetype 
         ft=ftArr[trialType]
-
-        f.seek(0,2)
         f.write(str('\n'+ft[1]+' Speed Test'))
-        f.seek(0,2)
 
-        start=time.time()
+        start=time.time() # time how long it takes to load surfaces
         imgSwitch={
             1: pygame.image.load("%s2%s"%(ft[1],ft[0])),
             2: pygame.image.load("%s3%s"%(ft[1],ft[0])),
@@ -180,40 +200,43 @@ def imgTest(preferences):
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])),
             8: pygame.image.load("%s9%s"%(ft[1],ft[0])),}
 
-        f.write(',')
-        f.write(str(time.time()-start))
+        f.write(',' + str(time.time()-start) )
         print "Speed Test: "+ft[1]+" extension "+ft[0]
 
         for aTrial in range(maxTrial):
             for eachImage in range(maxImage):
 
-                img[eachImage,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
-                img[eachImage,1]=  img[eachImage,0].get_rect()
-                img[eachImage,2]= [2,2] # velocity of image(s)
-                displace=eachImage*40
-                img[eachImage,1]=img[eachImage,1].move(displace,displace)
+                # Load the img dictionary with the image, rectangle, & velocity
+                img[eachImage , 0] = pygame.image.load("%s1%s" %(ft[1],ft[0]))
+                img[eachImage , 1] = img[eachImage , 0].get_rect()
+                img[eachImage , 2] = [ 2 , 2 ] # velocity of image(s)
+                displace = eachImage*40
+                img[ eachImage,1 ] = img[ eachImage,1 ].move(displace,displace)
 
             start=time.time()
 
             for frame in range(maxFrame):
                 for image in range(maxImage):
+                    # Change surfaces, effectively animating the image
                     img[image,0]=imgSwitch.get(i,None)
+
+                    # Collision detection 
                     if img[image,1].left < 0 or img[image,1].right >screenWidth:
                         img[image,2]=[ -img[image,2][0], img[image,2][1] ]
-
                     if img[image,1].top < 0 or img[image,1].bottom>screenHeight:
                         img[image,2]=[ img[image,2][0], -img[image,2][1] ]
-
+                    
+                    # movement
                     img[image,1] = img[image,1].move(img[image,2])
                     screen.blit(img[image,0],img[image,1])
 
+                # print screen's current state to the display
                 pygame.display.flip()
-                i=i+1
+                i+=1
                 if i>8: i=1
                 screen.blit(BACKGROUND,(0,0))
-
+            # Results are shown in the terminal and saved in the .csv file
             print 1/((time.time()-start)/maxFrame)
-            f.seek(0,2)
             f.write(','+str(1/((time.time()-start)/maxFrame)))
 
     ft="" #filetype
@@ -225,19 +248,22 @@ def imgTest(preferences):
     for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+
         " (frames per second)")
 
+    # display screen created
     screen = pygame.display.set_mode( [screenWidth,screenHeight] )
     pygame.display.set_caption("Speed convert() Test Window")
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
 
+    # Loop through all the filetypes queued up for the test
     for trialType in range( len(ftArr) ):
+        # determine this test's filetype
         ft=ftArr[trialType]
-
-        f.seek(0,2)
         f.write(str('\n'+ft[1]+' Speed convert() Test'))
-        f.seek(0,2)
 
-        start=time.time()
+        # take the time it takes to load all the converted images - This will 
+        # take longer since the surfaces are now being loaded and rendered into 
+        # a 'raw' format - However, this improves future performance.
+        start=time.time() 
         imgSwitch={
             1: pygame.image.load("%s2%s"%(ft[1],ft[0])).convert(),
             2: pygame.image.load("%s3%s"%(ft[1],ft[0])).convert(),
@@ -248,18 +274,18 @@ def imgTest(preferences):
             7: pygame.image.load("%s8%s"%(ft[1],ft[0])).convert(),
             8: pygame.image.load("%s9%s"%(ft[1],ft[0])).convert(),}
 
-        f.write(',')
-        f.write( str(time.time()-start) )
+        f.write(',' + str(time.time()-start) )
         print "Convert Test: "+ft[1]+" extension "+ft[0]
 
+        # execute the trial run
         for trial in range(maxTrial):
+            # store image information in img{}
             for image in range(maxImage):
                 img[image,0]= pygame.image.load("%s1%s"%(ft[1],ft[0]))
                 img[image,1]=  img[image,0].get_rect()
                 img[image,2]= [2,2] #speed
-                displace = image * 40
+                displace = image * 40 # stagger images so they don't overlap
                 img[image,1]=img[image,1].move( displace,displace )
-
             start=time.time()
 
             for frame in range(maxFrame):
@@ -603,11 +629,8 @@ def drawableObjectTest(preferences):
     for trial in range(maxTrial):f.write(",Trial "+str(trial+1)+
         " (frames per second)")
 
-#    f.write("\n,,"+str(preferences[3][0])+','+str(preferences[3][1])+','+
-#        str(degreeRotate)+','+ str(myImage[0]))
-
-# 'Constants' that would otherwise be passed in declared ^^ 
-# Begin creating test variables
+    # 'Constants' that would otherwise be passed in declared ^^ 
+    # Begin creating test variables
 
     screen = pygame.display.set_mode( (screenWidth,screenHeight) )
     BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
@@ -654,6 +677,7 @@ def drawableObjectTest(preferences):
         for frame in range(maxFrame):
             myScene.moveObjects()
 
+            # Collision detection in the for loop
             for img in range(maxImage):
                 if myScene.getObject(img).getYPos() > screenHeight or \
                 myScene.getObject(img).getYPos() < 0:
@@ -665,6 +689,11 @@ def drawableObjectTest(preferences):
                     myScene.getObject(img).setSpeed(
                         -(myScene.getObject(img).getXSpeed()),None)
 
+            # call updates to change positions, clear to remove old pixels
+            # update the screen to look like what we've just calculated above
+            # by passing a list of 'dirty' pixels to the update, we ensure that
+            # pixels that have not changed in any way will not be needlessly
+            # redrawn
             myScene.update( clock.get_time() )
             myScene.clear(screen,BACKGROUND)
             pygame.display.update( myScene.draw(screen) )
@@ -722,7 +751,8 @@ def drawableObjectTest(preferences):
         for frame in range(maxFrame):
             dirtyList = []
             myScene.moveObjects()
-
+            
+            # Collision detection in the for loop below
             for img in range(maxImage):
                 if myScene.getObject(img).getYPos() > screenHeight or \
                 myScene.getObject(img).getYPos() < 0:
@@ -734,6 +764,11 @@ def drawableObjectTest(preferences):
                     myScene.getObject(img).setSpeed(
                         -(myScene.getObject(img).getXSpeed()),None)
 
+            # call updates to change positions, clear to remove old pixels
+            # update the screen to look like what we've just calculated above
+            # by passing a list of 'dirty' pixels to the update, we ensure that
+            # pixels that have not changed in any way will not be needlessly
+            # redrawn
             myScene.update( clock.get_time() )
             myScene.clear(screen,BACKGROUND)
             pygame.display.update( myScene.draw(screen) )
