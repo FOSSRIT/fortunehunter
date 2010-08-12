@@ -382,9 +382,9 @@ def scaleTest(preferences):
     for trial in range(maxTrial): f.write(",Trial "+str(trial+1)+
         " (frames per second)")
 
-    BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
     screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Scaling Test Window")
+    BACKGROUND = pygame.image.load("./art/GIF/Room.gif").convert()
     screen.blit( BACKGROUND,(0,0) )
     pygame.display.flip()
 
