@@ -24,6 +24,7 @@ import os
 from animObj.Scene import Scene
 from animObj.DrawableObject import DrawableObject
 from animObj.DynamicDrawableObject import DynamicDrawableObject
+
 os.system("clear")
 
 """The file type array will be iterated through as the test progresses to tell 
@@ -163,8 +164,9 @@ def imgTest(preferences):
         f=preferences[0][9]
         f.write("\n\n")
     except:
-        f=preferences[0][9]=open('./logs/Test Results - %s.csv' 
-            %str(datetime.now()),'a')
+        f=preferences[0][9]=\
+            open('./logs/Test Results - %s- %s.csv'\
+                %(str( os.system("uname -vr") ),str( datetime.now() )),'a')
 
     # Format the header of the .csv for this test's data
     f.write("Speed Test - "+str(datetime.now()))
@@ -233,6 +235,7 @@ def imgTest(preferences):
                 pygame.display.flip()
                 i+=1
                 if i>8: i=1
+
                 screen.blit(BACKGROUND,(0,0))
             # Results are shown in the terminal and saved in the .csv file
             print 1/((time.time()-start)/maxFrame)
@@ -344,7 +347,8 @@ def scaleTest(preferences):
         f.write("\n\n")
     except:
         f=preferences[0][9]=\
-            open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')
+            open('./logs/Test Results - %s- %s.csv'\
+                %(str( os.system("uname -vr") ),str( datetime.now() )),'a')
 
     img={}
     ft="" #filetype
@@ -484,7 +488,8 @@ def rotateTest(preferences):
         f.write("\n\n")
     except:
         f=preferences[0][9]=\
-            open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')    
+            open('./logs/Test Results - %s- %s.csv'\
+                %(str( os.system("uname -vr") ),str( datetime.now() )),'a')
 
     # Create the display screen for the program
     screen=pygame.display.set_mode((screenWidth,screenHeight))
@@ -617,7 +622,8 @@ def drawableObjectTest(preferences):
         f.write("\n\n")
     except:
         f=preferences[0][9]=\
-            open('./logs/Test Results - %s.csv'%str(datetime.now()),'a')
+            open('./logs/Test Results - %s- %s.csv'\
+                %(str( os.system("uname -vr") ),str( datetime.now() )),'a')
 
     # Append to the file the header information for this test's data
     f.write("Dynamic Drawable Object Testing - "+str(datetime.now())+"," )
@@ -662,13 +668,13 @@ def drawableObjectTest(preferences):
             False, 72, 2, 2 )  )
     myScene = Scene( DDO[0] )
     myScene.addObjects( DDO[1:] )
-    print "Trial ",str(trial+1)
     f.write( "\nDDO Speed Test,"+str(time.time()-start)  ) # time taken, flushed
 
     # Trial loops DDO Speed test
     for trial in range(maxTrial):
         for img in range(maxImage):
             myScene.getObject(img).setPosition( (40*img),(40*img) )
+        print "Trial ",str(trial+1)
         clock.tick()
         start = time.time()
 
