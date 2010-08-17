@@ -2,7 +2,7 @@
 name = MAFH
 bundle_id = org.laptop.pippy.MAFH
 service_name = org.laptop.pippy.MAFH
-class = activity.VteActivity
+exec = sugar-activity activity.VteActivity
 icon = mafh-icon
 activity_version = 3
 show_launcher = yes
