@@ -58,9 +58,8 @@ class GameEngine(object):
         self.screen = pygame.display.set_mode(size)
         pygame.display.set_caption(title)
         self.__fps = DrawableFontObject("", pygame.font.Font(None, 17))
-        self.__fps.setPosition(0,0)
+        self.__fps.setPosition(0, 0)
         self.__scene = Scene(self.__fps)
-        
 
         # Engine Internal Variables
         self.__fps_cap = fps_cap
@@ -108,10 +107,14 @@ class GameEngine(object):
         it enters the draw flag.
         """
         self.__dirty = True
-        
+
     def get_scene(self):
-    
-       return self.__scene
+        """
+        Returns the scene object
+
+        @return:    Returns the scene object held by the game engine
+        """
+        return self.__scene
 
     def start_event_timer(self, function_cb, time):
         """
@@ -189,7 +192,6 @@ class GameEngine(object):
                     (mystr, key, timer_calls, timer_times, avg)
         return mystr
 
-
     def start_main_loop(self):
         """
         Starts the game loop.
@@ -218,13 +220,14 @@ class GameEngine(object):
                 pygame.display.flip()
             else:
                 for fnc in self.__draw_lst:
-                     start = time()
-                     fnc()
-                     self.__draw_time[str(fnc)] += time() - start
-                     self.__draw_calls[str(fnc)] += 1
+                    start = time()
+                    fnc()
+                    self.__draw_time[str(fnc)] += time() - start
+                    self.__draw_calls[str(fnc)] += 1
                 # Print Frame Rate
                 if self.__showfps:
-                    self.__fps.changeText('FPS: %d' % self.clock.get_fps(), (255,255,255))
+                    self.__fps.changeText('FPS: %d' % self.clock.get_fps(),
+                                                      (255, 255, 255))
                 else:
                     self.__fps.changeText('')
                 self.__scene.update(tick_time)
@@ -241,7 +244,9 @@ class GameEngine(object):
                     self.__draw_calls[str(fnc)] += 1
                 # Print Frame Rate
                 if self.__showfps:
-                    text = self.__font.render('FPS: %d' % self.clock.get_fps(),False, (255, 255, 255), (159, 182, 205))
+                    text = self.__font.render('FPS: %d' % \
+                           self.clock.get_fps(), False, (255, 255, 255),
+                           (159, 182, 205))
                     screen.blit(text, (0, 0))
                 pygame.display.flip()
 
@@ -314,7 +319,6 @@ class GameEngine(object):
                     if retur_val:
                         break
 
-
     def stop_event_loop(self):
         """
         Sends a pygame.QUIT event into the event queue which
@@ -372,7 +376,6 @@ class GameEngine(object):
             mystr = "%s\n\t%s\n\t\t%d\t%f\t%f" % \
                     (mystr, key, event_calls, event_times, avg)
         return mystr
-
 
     def add_draw_callback(self, fnc):
         """
