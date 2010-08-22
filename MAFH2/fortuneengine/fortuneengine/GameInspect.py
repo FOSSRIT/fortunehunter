@@ -105,7 +105,7 @@ class GameInspect(object):
         @param objectname:  A string representation of the location
                             of the object being inspected in relation
                             to the game engine registered object.
-        @param val:         A string to be evaluated and set to the object.
+        @param statement:   A string to be evaluated and set to the object.
         """
         try:
             obj, last, last_token = self.drilldown_object(objectname)
