@@ -29,7 +29,8 @@ class GameEngine(object):
     """
     instance = None
 
-    def __init__(self, width=1200, height=900, always_draw=False, fps_cap=15, version=False):
+    def __init__(self, width=1200, height=900, always_draw=False,
+                 fps_cap=15, version=False, title="FortuneEngine"):
         """
         Constructor for the game engine.
 
@@ -41,6 +42,9 @@ class GameEngine(object):
                              the cap. Warning: setting the cap to 0 when
                              always draw = False will cause cpu 100% when
                              not driving.
+        @param version:      If true, use new rendering system, false uses
+                             only the draw system
+        @param title:        Window Title
         """
         GameEngine.instance = self
         pygame.init()
@@ -52,6 +56,7 @@ class GameEngine(object):
         self.height = height
         size = width, height
         self.screen = pygame.display.set_mode(size)
+        pygame.display.set_caption(title)
         self.__fps = DrawableFontObject("", pygame.font.Font(None, 17))
         self.__fps.setPosition(0,0)
         self.__scene = Scene(self.__fps)
