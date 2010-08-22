@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-from fortuneengine.GameEngine import GameEngine
+
+try:
+    from fortuneengine.GameEngine import GameEngine
+except:
+    # Target system is an xo, so we may not have the module
+    # installed, so we want to load the one in our folder
+    print "Using forutune engine from path"
+    import sys
+    sys.path.append( 'fortuneengine' )
+    from fortuneengine.GameEngine import GameEngine
+
 from MafhGameMenu import GameMenuHolder
 from constants import MENU_PATH, FMC_PATH, TOUR_PATH
 
