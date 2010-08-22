@@ -1,0 +1,1111 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>fortuneengine.GameEngine.GameEngine</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="fortuneengine-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="fortuneengine-module.html">Package&nbsp;fortuneengine</a> ::
+        <a href="fortuneengine.GameEngine-module.html">Module&nbsp;GameEngine</a> ::
+        Class&nbsp;GameEngine
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="fortuneengine.GameEngine.GameEngine-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class GameEngine</h1><p class="nomargin-top"><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+object --+
+         |
+        <strong class="uidshort">GameEngine</strong>
+</pre>
+
+<hr />
+<p>The Fortune Engine GameEngine is a main loop wrapper around pygame. It
+  manages the event and drawing loops allowing the user to just register 
+  for user events and drawing time in the draw loop.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">width</span>=<span class="summary-sig-default">1200</span>,
+        <span class="summary-sig-arg">height</span>=<span class="summary-sig-default">900</span>,
+        <span class="summary-sig-arg">always_draw</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">fps_cap</span>=<span class="summary-sig-default">15</span>,
+        <span class="summary-sig-arg">version</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">title</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string">FortuneEngine</code><code class="variable-quote">'</code></span>)</span><br />
+      Constructor for the game engine.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_dirty"></a><span class="summary-sig-name">set_dirty</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Sets the dirty flag to force the engine to draw the next time it 
+      enters the draw flag.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.set_dirty">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#get_scene" class="summary-sig-name">get_scene</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns the scene object</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.get_scene">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#start_event_timer" class="summary-sig-name">start_event_timer</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">function_cb</span>,
+        <span class="summary-sig-arg">time</span>)</span><br />
+      Starts a timer that fires a user event into the queue every 
+      &quot;time&quot; milliseconds</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.start_event_timer">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#stop_event_timer" class="summary-sig-name">stop_event_timer</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">function_cb</span>)</span><br />
+      Stops the timer that has id from firing</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.stop_event_timer">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_event_timers"></a><span class="summary-sig-name">list_event_timers</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      returns a list of configured timers, if the timers has a time of 0 
+      the timer is disabled</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_event_timers">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_timer_time"></a><span class="summary-sig-name">list_timer_time</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a string representation of the time the game spends in each 
+      timer callback.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_timer_time">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#start_main_loop" class="summary-sig-name">start_main_loop</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Starts the game loop.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.start_main_loop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#_draw" class="summary-sig-name" onclick="show_private();">_draw</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">tick_time</span>)</span><br />
+      Draws all elements in draw callback to the screen</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine._draw">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_event_loop"></a><span class="summary-sig-name">_event_loop</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      The main event loop.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine._event_loop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="stop_event_loop"></a><span class="summary-sig-name">stop_event_loop</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Sends a pygame.QUIT event into the event queue which exits the event 
+      loop</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.stop_event_loop">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#add_event_callback" class="summary-sig-name">add_event_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cb</span>)</span><br />
+      Adds event callback to the event callback stack</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.add_event_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#remove_event_callback" class="summary-sig-name">remove_event_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">cb</span>)</span><br />
+      Removes an event from the event callback stack</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.remove_event_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_event_callbacks"></a><span class="summary-sig-name">list_event_callbacks</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a string representation of all events registered with the 
+      game engine</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_event_callbacks">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_event_time"></a><span class="summary-sig-name">list_event_time</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a string representation of the time the game spends in each 
+      event callback.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_event_time">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#add_draw_callback" class="summary-sig-name">add_draw_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fnc</span>)</span><br />
+      Adds a callback to the draw list.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.add_draw_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#pop_draw_callback" class="summary-sig-name">pop_draw_callback</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Removes top of draw stack and returns it</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.pop_draw_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="clear_draw_callback"></a><span class="summary-sig-name">clear_draw_callback</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Empties draw callback stack</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.clear_draw_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#remove_draw_callback" class="summary-sig-name">remove_draw_callback</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fnc</span>)</span><br />
+      Removes a draw callback from the game engine draw function</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.remove_draw_callback">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_draw_callbacks"></a><span class="summary-sig-name">list_draw_callbacks</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Lists all the draw callbacks currently registered with the game 
+      engine</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_draw_callbacks">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_draw_time"></a><span class="summary-sig-name">list_draw_time</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a string representation of the time the game spends in each 
+      drawing callback.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_draw_time">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#has_object" class="summary-sig-name">has_object</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Returns true if object is stored in game engine</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.has_object">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#add_object" class="summary-sig-name">add_object</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>,
+        <span class="summary-sig-arg">obj</span>)</span><br />
+      Adds an object to the game engine datastore</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.add_object">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#get_object" class="summary-sig-name">get_object</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Returns an object from the game engine datastore</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.get_object">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="fortuneengine.GameEngine.GameEngine-class.html#remove_object" class="summary-sig-name">remove_object</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span><br />
+      Removes an object from the game engine datastore</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.remove_object">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="list_objects"></a><span class="summary-sig-name">list_objects</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Returns a sting of registered objects</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.list_objects">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="toggle_fps"></a><span class="summary-sig-name">toggle_fps</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Toggles fps display</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.toggle_fps">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="art_scale"></a><span class="summary-sig-name">art_scale</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">original</span>,
+        <span class="summary-sig-arg">expected</span>,
+        <span class="summary-sig-arg">width</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.art_scale">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="instance"></a><span class="summary-name">instance</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">width</span>=<span class="sig-default">1200</span>,
+        <span class="sig-arg">height</span>=<span class="sig-default">900</span>,
+        <span class="sig-arg">always_draw</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">fps_cap</span>=<span class="sig-default">15</span>,
+        <span class="sig-arg">version</span>=<span class="sig-default">False</span>,
+        <span class="sig-arg">title</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string">FortuneEngine</code><code class="variable-quote">'</code></span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Constructor for the game engine.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>width</code></strong> - Window width</li>
+        <li><strong class="pname"><code>height</code></strong> - Window height</li>
+        <li><strong class="pname"><code>always_draw</code></strong> - Boolean to set the animation mode to always draw vs draw when 
+          set_dirty is called</li>
+        <li><strong class="pname"><code>fps_cap</code></strong> - Sets the framerate cap. Set to 0 to disable the cap. Warning: 
+          setting the cap to 0 when always draw = False will cause cpu 100%
+          when not driving.</li>
+        <li><strong class="pname"><code>version</code></strong> - If true, use new rendering system, false uses only the draw 
+          system</li>
+        <li><strong class="pname"><code>title</code></strong> - Window Title</li>
+    </ul></dd>
+    <dt>Overrides:
+        object.__init__
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_scene"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_scene</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.get_scene">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns the scene object</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>Returns the scene object held by the game engine</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="start_event_timer"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">start_event_timer</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">function_cb</span>,
+        <span class="sig-arg">time</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.start_event_timer">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Starts a timer that fires a user event into the queue every 
+  &quot;time&quot; milliseconds</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>function_cb</code></strong> - The function to call when timer fires</li>
+        <li><strong class="pname"><code>time</code></strong> - Milliseconds between fires</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="stop_event_timer"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">stop_event_timer</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">function_cb</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.stop_event_timer">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Stops the timer that has id from firing</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>function_cb</code></strong> - The function registered with the timer that should be canceled</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="start_main_loop"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">start_main_loop</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.start_main_loop">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Starts the game loop.</p>
+  <p>This function does not return until after the game loop exits</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="_draw"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_draw</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">tick_time</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine._draw">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Draws all elements in draw callback to the screen</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>tick_time</code></strong> - The amount of time passed since last draw cycle. (should be 
+          produced by pygamme.clock.tick method)</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_event_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_event_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cb</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.add_event_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Adds event callback to the event callback stack</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>cb</code></strong> - Callback to be added to the stack when events are fired.</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="remove_event_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">remove_event_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">cb</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.remove_event_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Removes an event from the event callback stack</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>cb</code></strong> - The callback to remove from the event callback stack</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Returns true if successful in removing callback</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_draw_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_draw_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fnc</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.add_draw_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Adds a callback to the draw list.  Function will be passed the game 
+  screen it should draw too.</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>fnc</code></strong> - The function to call when system is drawing</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="pop_draw_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">pop_draw_callback</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.pop_draw_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Removes top of draw stack and returns it</p>
+  <dl class="fields">
+    <dt>Returns:</dt>
+        <dd>Returns the top callback function that was removed</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="remove_draw_callback"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">remove_draw_callback</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">fnc</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.remove_draw_callback">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Removes a draw callback from the game engine draw function</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>fnc</code></strong> - The callback function to remove</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Returns true if successful removal of the function</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="has_object"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">has_object</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.has_object">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns true if object is stored in game engine</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> - Name of the object to check if exists</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Returns true if object found</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="add_object"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">add_object</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>,
+        <span class="sig-arg">obj</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.add_object">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Adds an object to the game engine datastore</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> - The name used to store the object</li>
+        <li><strong class="pname"><code>obj</code></strong> - The object to store</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="get_object"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">get_object</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.get_object">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Returns an object from the game engine datastore</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> - The name of object to return</li>
+    </ul></dd>
+    <dt>Returns:</dt>
+        <dd>Returns the object</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="remove_object"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">remove_object</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">name</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="fortuneengine.GameEngine-pysrc.html#GameEngine.remove_object">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Removes an object from the game engine datastore</p>
+  <dl class="fields">
+    <dt>Parameters:</dt>
+    <dd><ul class="nomargin-top">
+        <li><strong class="pname"><code>name</code></strong> - The name of the object to remove</li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="fortuneengine-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sun Aug 22 00:13:13 2010
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
