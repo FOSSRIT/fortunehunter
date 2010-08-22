@@ -1,3 +1,5 @@
 *.pyc
 .hidden
 *.swp
+MANIFEST
+dist/
