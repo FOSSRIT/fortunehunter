@@ -6,7 +6,7 @@ class InvalidEnemyException(Exception): pass
 
 import pygame
 from Actor import Actor
-from drawableobject.Spritesheet import Spritesheet
+from Spritesheet import Spritesheet
 ENEMY = {
     '1':{'name':_('Wizard Adept'),'img':"anim_test.gif",'hp':20,'att':2,'weak':'special', 'sprite':(3,2, 156,166)}, #concept_wizard.gif , (1,1, 181,365)
     '2':{'name':_('Goblin'),'img':"dragon.gif",'hp':40,'att':3,'weak':'fire','sprite':(10,8, 75,70)},                #concept_goblin.gif , (1,1, 217,317)
