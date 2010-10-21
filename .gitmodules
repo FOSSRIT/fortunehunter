@@ -1,0 +1,3 @@
+[submodule "MAFH2/fortuneengine"]
+	path = MAFH2/fortuneengine
+	url = git://git.fedorahosted.org/FortuneEngine.git
