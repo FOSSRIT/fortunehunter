@@ -61,12 +61,20 @@ class Profile(GameEngineElement):
             self.name_cb = name_entry_cb
             self.add_to_engine()
 
+    def reload_dungeon(self):
+        self.__load_dungeon(self.game_engine.get_object('dungeon').id)
+        #restore HP
+        self.hero.setHealth(self.hero.maxHealthPoints())
+
     def next_dungeon(self):
+        self.__load_dungeon(self.game_engine.get_object('dungeon').next)
+    
+    def __load_dungeon(self,id):
         self.position = (-1, -1)
-        self.playerFacin = NORTH
+        self.playerFacing = NORTH
         
         d = self.game_engine.get_object('dungeon')
-        self.dungeon_id = d.next
+        self.dungeon_id = id
         d.remove_from_engine()
         self.game_engine.remove_object('dungeon')
         self.game_engine.add_object('dungeon', Dungeon( self.dungeon_id ))

@@ -337,6 +337,7 @@ class BattleEngine(GameEngineElement):
                     hero.defendAttack(enemy.attackPower('basic'))
             if hero.healthPoints() <= 0:
                 self.__youDied()
+                return
         
         self.game_engine.get_object('profile').hero = hero
         self.state = PLAYER_WAIT
@@ -370,11 +371,22 @@ class BattleEngine(GameEngineElement):
         #self terminate
         #print 'end battle called'
         self.remove_from_engine()
-            
+        
         self.game_engine.get_object('battlemenu').remove_from_engine()
+        self.game_engine.remove_object('battlemenu')
         self.game_engine.remove_object('battle')
         
     def __youDied(self):
+        self.remove_from_engine()
+        self.game_engine.get_object('battlemenu').remove_from_engine()
+        self.game_engine.remove_object('battlemenu')
+        self.game_engine.remove_object('battle')
+        
+        self.game_engine.get_object('profile').reload_dungeon( )
+
+        self.game_engine.get_object('mesg').add_line(
+                _("You have been defeated in battle and resurrected."))
+
         #self.remove_from_engine()
         #self.game_engine.get_object('battlemenu').remove_from_engine()
         #self.game_engine.get_object('battle').remove_from_engine()
@@ -383,7 +395,6 @@ class BattleEngine(GameEngineElement):
         #self.game_engine.get_object('mesg').remove_from_engine()
         #self.game_engine.get_object('map').remove_from_engine()
         #self.game_engine.get_object('term
-        pass
         
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
