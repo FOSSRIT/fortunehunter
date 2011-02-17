@@ -145,7 +145,13 @@ class BattleEngine(GameEngineElement):
         elif selection == 'scan':
             menu.set_disp('Enemy Scanned!')
             self.isMagic = False
-            self.__attack_phase(menu)
+            #curTarget is the selected enemy
+            curTarget = self.active_target - 1
+            #next two lines write enemy's HP & weakness to message window
+            self.game_engine.get_object('mesg').add_line(_("Remaining HP: "+repr(self.enemy_list[curTarget].HP)))
+            self.game_engine.get_object('mesg').add_line(_("Enemy Weakness: "+repr(self.enemy_list[curTarget].weakness)))
+            #following removed, enemy no longer attacked
+            #self.__attack_phase(menu)
                 
         elif selection == 'fire1':
             if(0 in self.magic_list):
@@ -314,9 +320,12 @@ class BattleEngine(GameEngineElement):
                 self.enemy_list[curTarget].HP -= int(damage)
                 self.player_input = "Your attack crits for " + str(int(damage)) + " damage"
         else:
-            damage = hero.attackPower('basic')
-            self.enemy_list[curTarget].HP -= damage
-            self.player_input = "You attack for " + str(int(damage)) + " damage"
+#            if selection == 'scan':
+#                self.player_input = "Enemy has been scanned."
+#            else:
+                damage = hero.attackPower('basic')
+                self.enemy_list[curTarget].HP -= damage
+                self.player_input = "You attack for " + str(int(damage)) + " damage"
                 
         
         #generate enemy attack
