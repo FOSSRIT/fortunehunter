@@ -5,7 +5,7 @@ try:
 except:
     # Target system is an xo, so we may not have the module
     # installed, so we want to load the one in our folder
-    print "Using forutune engine from path"
+    print "Using fortune engine from path"
     import sys
     sys.path.append( 'fortuneengine' )
     from fortuneengine.GameEngine import GameEngine
