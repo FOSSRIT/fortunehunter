@@ -10,6 +10,10 @@ from fortuneengine.Scene import Scene
 import pygame
 import time
 
+######################################################################
+#BattleEngine Class: This class is the 'engine' for the battles (attack options, etc.)
+######################################################################
+
 from constants import CHAR_PATH, HUD_PATH
 
 from gettext import gettext as _
@@ -28,8 +32,8 @@ class BattleEngine(GameEngineElement):
 
         self.font = pygame.font.SysFont("cmr10",18,False,False)
 
-        self.enemy_list = []
-        self.magic_list = []
+        self.enemy_list = [] #Holds the list of enemies
+        self.magic_list = [] #Holds list of magic used?
 
         self.spellType = 0  #0 = non, 1-4 are spells in order, 5 is special
         self.isMagic = False
@@ -65,6 +69,7 @@ class BattleEngine(GameEngineElement):
         self.game_engine.get_object('battlemenu').show_menu('selection')
         self.game_engine.get_object('mesg').add_line( _('Enemies present, prepare to fight!') )
 
+    #set menu options and actions that go along with them (during attack)
     def menu_callback(self, selection, menu):
         if selection == 'attack_show':
             menu.set_sec_disp('')
@@ -145,13 +150,10 @@ class BattleEngine(GameEngineElement):
         elif selection == 'scan':
             menu.set_disp('Enemy Scanned!')
             self.isMagic = False
-            #curTarget is the selected enemy
             curTarget = self.active_target - 1
-            #next two lines write enemy's HP & weakness to message window
             self.game_engine.get_object('mesg').add_line(_("Remaining HP: "+repr(self.enemy_list[curTarget].HP)))
             self.game_engine.get_object('mesg').add_line(_("Enemy Weakness: "+repr(self.enemy_list[curTarget].weakness)))
-            #following removed, enemy no longer attacked
-            #self.__attack_phase(menu)
+#            self.__attack_phase(menu)
                 
         elif selection == 'fire1':
             if(0 in self.magic_list):
@@ -283,9 +285,9 @@ class BattleEngine(GameEngineElement):
                     self.__attack_phase(menu)
         elif selection == 'wrongchoice':
             self.__attack_phase(menu)
-
+            
+    #engaging in actual attack--do the correct damage to the correct enemy
     def __attack_phase(self, menu):
-        #do the correct damage to correct enemy
         hero = self.game_engine.get_object('profile').hero
         damage = 0
         curTarget = self.active_target - 1
@@ -310,7 +312,11 @@ class BattleEngine(GameEngineElement):
                 self.enemy_list[curTarget].HP -= int(damage)
                 self.player_input = spellTypes[self.spellType] + ' cast!'
             elif self.spellType == 4:
-                hero.giveHealth(int(hero.attackPower('heal') * tbonus))
+		if self.magicWin:
+                    hero.giveHealth(int(hero.attackPower('heal') * tbonus))
+		    self.player_input = "Healed!"
+		else:
+		    self.player_input = "Failed to heal"
             else:
                 self.player_input = 'Spell fizzles'
         elif self.state == PLAYER_MULT:
@@ -320,12 +326,9 @@ class BattleEngine(GameEngineElement):
                 self.enemy_list[curTarget].HP -= int(damage)
                 self.player_input = "Your attack crits for " + str(int(damage)) + " damage"
         else:
-#            if selection == 'scan':
-#                self.player_input = "Enemy has been scanned."
-#            else:
-                damage = hero.attackPower('basic')
-                self.enemy_list[curTarget].HP -= damage
-                self.player_input = "You attack for " + str(int(damage)) + " damage"
+            damage = hero.attackPower('basic')
+            self.enemy_list[curTarget].HP -= damage
+            self.player_input = "You attack for " + str(int(damage)) + " damage"
                 
         
         #generate enemy attack
@@ -363,6 +366,7 @@ class BattleEngine(GameEngineElement):
         if not self.enemy_list:
             self.__end_battle(menu)
 
+    # ends the battle
     def __end_battle(self, menu):
         #Give items if any
         room = self.game_engine.get_object('dungeon').get_current_room()
@@ -384,7 +388,8 @@ class BattleEngine(GameEngineElement):
         self.game_engine.get_object('battlemenu').remove_from_engine()
         self.game_engine.remove_object('battlemenu')
         self.game_engine.remove_object('battle')
-        
+
+    #Lets actor know when it has been defeated/killed.
     def __youDied(self):
         self.remove_from_engine()
         self.game_engine.get_object('battlemenu').remove_from_engine()
@@ -404,7 +409,8 @@ class BattleEngine(GameEngineElement):
         #self.game_engine.get_object('mesg').remove_from_engine()
         #self.game_engine.get_object('map').remove_from_engine()
         #self.game_engine.get_object('term
-        
+
+    #
     def event_handler(self, event):
         if event.type == pygame.KEYDOWN:
 
@@ -429,6 +435,7 @@ class BattleEngine(GameEngineElement):
         # We don't want to allow other things to run during battle
         return True
 
+    #Draws the sprites/actors/etc. (drawable objects)
     def draw(self):
         x=250
         y=150
