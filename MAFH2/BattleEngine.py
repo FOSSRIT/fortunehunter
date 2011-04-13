@@ -42,6 +42,7 @@ class BattleEngine(GameEngineElement):
         self.player_input = '0'
         self.active_target = 1
         self.battleTimer = -1.0
+        self.tIndex = 0
 
         for i in range(0,4):
             e_index = self.current_room.get_enemy( i )
@@ -96,28 +97,37 @@ class BattleEngine(GameEngineElement):
         
         elif self.state == PLAYER_MULT:
             self.isMagic = False
-            if selection == 'enter':
-                #figure out damage for crit attack
-                if self.player_input == '':
-                    self.player_input = '0'
-                if int(self.player_input) == (self.critAns):
-                    menu.set_disp('Correct!')
-                    self.correct = True
-                else:
-                    menu.set_disp('Incorrect')
-                    self.correct = False
-                
-                menu.set_sec_disp('')
-                self.player_input = ''
-                self.__attack_phase(menu)
+            if self.tIndex<10:
+                if selection == 'enter':
+                    #figure out damage for crit attack
+                    if self.player_input == '':
+                        self.player_input = '0'
+                    if int(self.player_input) == (self.critAns):
+                        menu.set_disp('Correct!') #this is never displayed (covered)?
+                        self.correct = True
+                        self.player_input = ''
+                    else:
+                        menu.set_disp('Incorrect') #wrong display
+                        self.correct = False
 
-            elif selection == 'clear':
-                self.player_input = ''
-                menu.set_sec_disp('')
-                               
+                    menu.set_sec_disp('')
+                    #self.player_input = '' #wrong place, overwrites everything
+                    self.__attack_phase(menu)
+
+                elif selection == 'clear':
+                    self.player_input = ''
+                    menu.set_sec_disp('')
+
+                else:
+                    self.player_input = self.player_input + selection
+                    menu.set_sec_disp( self.player_input )
             else:
-                self.player_input = self.player_input + selection
-                menu.set_sec_disp( self.player_input )
+                menu.set_sec_disp('')
+                if not self.correct:
+                    self.player_input = "Incorrect"
+                else:
+                    self.player_input = ''
+                self.__attack_phase(menu)
             
         elif selection == 'fire':
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
@@ -155,7 +165,7 @@ class BattleEngine(GameEngineElement):
             self.game_engine.get_object('mesg').add_line(_("Enemy Weakness: "+repr(self.enemy_list[curTarget].weakness)))
 #            self.__attack_phase(menu)
                 
-        elif selection == 'fire1':
+        elif selection == 'fire1' and self.tIndex<10:
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -163,7 +173,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'fire2':
+        elif selection == 'fire2' and self.tIndex<10:
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -171,7 +181,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'fire3':
+        elif selection == 'fire3' and self.tIndex<10:
             if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -179,7 +189,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'fire4':
+        elif selection == 'fire4' and self.tIndex<10:
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -187,7 +197,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'lig1':
+        elif selection == 'lig1' and self.tIndex<10:
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -195,7 +205,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'lig2':
+        elif selection == 'lig2' and self.tIndex<10:
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -203,7 +213,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'lig3':
+        elif selection == 'lig3' and self.tIndex<10:
             if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -211,7 +221,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'lig4':
+        elif selection == 'lig4' and self.tIndex<10:
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -219,7 +229,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'miss1':
+        elif selection == 'miss1' and self.tIndex<10:
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -227,7 +237,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'miss2':
+        elif selection == 'miss2' and self.tIndex<10:
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -235,7 +245,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'miss3':
+        elif selection == 'miss3' and self.tIndex<10:
             if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -243,7 +253,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'miss4':
+        elif selection == 'miss4' and self.tIndex<10:
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -251,7 +261,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'heal1':
+        elif selection == 'heal1' and self.tIndex<10:
             if(0 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -259,7 +269,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'heal2':
+        elif selection == 'heal2' and self.tIndex<10:
             if(1 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -267,7 +277,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'heal3':
+        elif selection == 'heal3' and self.tIndex<10:
             if(2 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -275,7 +285,7 @@ class BattleEngine(GameEngineElement):
                 if(len(self.magic_list) > 3):
                     self.magicWin = True
                     self.__attack_phase(menu)
-        elif selection == 'heal4':
+        elif selection == 'heal4' and self.tIndex<10:
             if(3 in self.magic_list):
                 self.__attack_phase(menu)
             else:
@@ -285,7 +295,10 @@ class BattleEngine(GameEngineElement):
                     self.__attack_phase(menu)
         elif selection == 'wrongchoice':
             self.__attack_phase(menu)
-            
+        elif self.tIndex==10:
+            self.magicWin = False
+            self.__attack_phase(menu)
+        
     #engaging in actual attack--do the correct damage to the correct enemy
     def __attack_phase(self, menu):
         hero = self.game_engine.get_object('profile').hero
@@ -299,7 +312,7 @@ class BattleEngine(GameEngineElement):
             timeRatio = 1.0
         tbonus = 1.0 - timeRatio
         tbonus += 1.3
-        if self.isMagic:
+        if self.isMagic and self.tIndex<10:
             weakness = self.enemy_list[curTarget]
             spellTypes = ['none', 'fire', 'lightning', 'missile', 'heal', 'special']
             bonus = 0
@@ -316,20 +329,22 @@ class BattleEngine(GameEngineElement):
                     hero.giveHealth(int(hero.attackPower('heal') * tbonus))
 		    self.player_input = "Healed!"
 		else:
-		    self.player_input = "Failed to heal"
-            else:
+                    self.player_input = "Failed to heal"
+            elif not self.magicWin:
                 self.player_input = 'Spell fizzles'
         elif self.state == PLAYER_MULT:
-            if self.correct:
+            if self.correct and self.tIndex<10:
                 damage = hero.attackPower("critical")
                 damage = damage * tbonus
                 self.enemy_list[curTarget].HP -= int(damage)
                 self.player_input = "Your attack crits for " + str(int(damage)) + " damage"
+        elif self.tIndex==10:
+            self.player_input = "Time's up!"
         else:
             damage = hero.attackPower('basic')
             self.enemy_list[curTarget].HP -= damage
             self.player_input = "You attack for " + str(int(damage)) + " damage"
-                
+        self.tIndex = 0 #reset
         
         #generate enemy attack
         for enemy in self.enemy_list[:]:
@@ -463,9 +478,9 @@ class BattleEngine(GameEngineElement):
         if(self.battleTimer > 0):
             self.__drawableObjects['bt'].makeTransparent(False)
             self.__drawableObjects['bt'].setPosition(25,130)
-            tIndex = int(time.time() - self.battleTimer)
-            if tIndex > 10:
-                tIndex = 10
-            self.__drawableObjects['bt'].goToFrame(tIndex)
+            self.tIndex = int(time.time() - self.battleTimer)
+            if self.tIndex > 10:
+                self.tIndex = 10
+            self.__drawableObjects['bt'].goToFrame(self.tIndex)
         else:
             self.__drawableObjects['bt'].makeTransparent(True)
