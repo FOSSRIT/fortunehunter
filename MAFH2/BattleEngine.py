@@ -108,6 +108,7 @@ class BattleEngine(GameEngineElement):
                         self.player_input = ''
                     else:
                         menu.set_disp('Incorrect') #wrong display
+                        self.player_input = "Incorrect"
                         self.correct = False
 
                     menu.set_sec_disp('')
@@ -122,14 +123,16 @@ class BattleEngine(GameEngineElement):
                     self.player_input = self.player_input + selection
                     menu.set_sec_disp( self.player_input )
             else:
-                menu.set_sec_disp('')
-                if not self.correct:
-                    self.player_input = "Incorrect"
-                else:
-                    self.player_input = ''
+                self.player_input = ''
+               # menu.set_sec_disp('')
+               # if not self.correct:
+                #    self.player_input = "Incorrect"
+                #else:
+                 #   self.player_input = ''
                 self.__attack_phase(menu)
             
         elif selection == 'fire':
+            menu.set_disp('')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('fire')
             self.spellType = 1
@@ -137,6 +140,7 @@ class BattleEngine(GameEngineElement):
             self.magicWin = False
             self.battleTimer = time.time()
         elif selection == 'lightning':
+            menu.set_disp('')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('lightning')
             self.spellType = 2
@@ -144,6 +148,7 @@ class BattleEngine(GameEngineElement):
             self.magicWin = False
             self.battleTimer = time.time()
         elif selection == 'missile':
+            menu.set_disp('')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('missile')
             self.spellType = 3
@@ -151,6 +156,7 @@ class BattleEngine(GameEngineElement):
             self.magicWin = False
             self.battleTimer = time.time()
         elif selection == 'heal':
+            menu.set_disp('')
             self.game_engine.add_object('magicmenu', MagicMenuHolder( self.menu_callback ) )
             self.game_engine.get_object('magicmenu').show_menu('heal')
             self.spellType = 4
@@ -332,8 +338,8 @@ class BattleEngine(GameEngineElement):
                     self.player_input = "Failed to heal"
             elif not self.magicWin:
                 self.player_input = 'Spell fizzles'
-        elif self.state == PLAYER_MULT:
-            if self.correct and self.tIndex<10:
+        elif self.state == PLAYER_MULT and self.tIndex<10:
+            if self.correct:
                 damage = hero.attackPower("critical")
                 damage = damage * tbonus
                 self.enemy_list[curTarget].HP -= int(damage)
