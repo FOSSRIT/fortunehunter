@@ -587,12 +587,14 @@ class Menu:
           else:
             player.popUp=None
           player.curBattle.divisionAttack()
+          player.previousMenu=self
         
         elif name[1:2]=="/":
 	      player.battlePlayer.fractionSum += float(name[0])/float(name[2])
 	      player.curBattle.checkFraction()
         
         elif name=="Magic":
+          player.previousMenu=self
           if not player.magTutorial:
             player.popUp=PopUp(10,10,["Different spells have different effects.","Try casting them on different enemies"])
           else:

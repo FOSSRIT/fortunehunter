@@ -1258,6 +1258,9 @@ class BattleEngine:
           #Check
           player.currentMenu.progress(player,screen)
 
+        elif newKey=='backspace':
+          player.currentMenu.regress(player)
+
 
       self.CheckEndBattle()
     else: 
