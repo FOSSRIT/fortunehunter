@@ -3,7 +3,6 @@ from gettext import gettext as _
 class InvalidItemException(Exception): pass
 
 WEAPONS = {
-    '1':{'name':_("Ancient Amulet"),'power':3,'path':'Weapon.gif'},
     '2':{'name':_("Rusted Blade"),'power':9,'path':'Weapon.gif'},
     '3':{'name':_("Great Sword"),'power':15,'path':'Weapon.gif'},
     '4':{'name':_("Crescent Sword"),'power':25,'path':'Weapon.gif'},
@@ -20,6 +19,7 @@ ARMOR = {
 }
 
 ACCESSORY = {
+    '1':{'name':_("Ancient Amulet"),'power':3,'path':'Weapon.gif'},
     'c':{'name':_("Jewel Shard"),'power':10,'path':'noItem.gif'},
     'd':{'name':_("Broken Hourglass"),'power':10,'path':'noItem.gif'},
     'e':{'name':_("Radiant Vial"),'power':20,'path':'noItem.gif'},
