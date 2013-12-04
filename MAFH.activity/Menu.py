@@ -307,6 +307,8 @@ class Menu:
       elif self.name=="Math Stats":
           font=pygame.font.SysFont("cmr10",40,False,False)
           screen.blit(font.render("Math Stats",True,(0,0,0)),(525,120,0,0))
+          font=pygame.font.SysFont("cmr10",20,False,False)
+          screen.blit(font.render("(Correct/Incorrect)",True,(0,0,50)),(525,145,0,0))
           font=pygame.font.SysFont("cmr10",24,False,False)
           screen.blit(font.render("Multiplication problems:",True,(0,0,50)),(510,160,0,0))
           screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(0,50,0)),(550,200,0,0))
