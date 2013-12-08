@@ -1725,7 +1725,7 @@ def startPuzzle(player):
   player.inPuzzle=True
   player.traversal=False
   if not player.puzzleTutorial:
-    player.popUp=PopUp(10,10,["This door has a special kind of lock","To unlock it, you have to","Re-arrange the tiles","using the arrow keys","to make the image whole"])
+    player.popUp=PopUp(10,10,["This door has a special kind of lock.","To unlock it, you have to","re-arrange the tiles","using the arrow keys","to make the image whole."])
   else:
     player.popUp=None
 def stopPuzzle(player,solved):
@@ -1749,25 +1749,13 @@ def stopPuzzle(player,solved):
     player.puzzleTutorial=True
     player.popUp=None
     if player.playerFacing==NORTH:
-      if player.currentRoom.doorNFlag==PUZZLE:
         player.currentRoom.doorNFlag=UNLOCKED
-      else:
-        player.currentRoom.doorNFlag=LOCKED
     elif player.playerFacing==SOUTH:
-      if player.currentRoom.doorSFlag==PUZZLE:
         player.currentRoom.doorSFlag=UNLOCKED
-      else:
-        player.currentRoom.doorSFlag=LOCKED
     elif player.playerFacing==EAST:
-      if player.currentRoom.doorEFlag==PUZZLE:
         player.currentRoom.doorEFlag=UNLOCKED
-      else:
-        player.currentRoom.doorEFlag=LOCKED
     elif player.playerFacing==WEST:
-      if player.currentRoom.doorWFlag==PUZZLE:
         player.currentRoom.doorWFlag=UNLOCKED
-      else:
-        player.currentRoom.doorWFlag=LOCKED
   player.inPuzzle=False
   player.traversal=True
 
