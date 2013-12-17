@@ -337,9 +337,9 @@ class Menu:
           akhalGroup.draw(screen)
           screen.blit(font.render(repr(self.player.curBattle.checkValue()),True,(0,15,0)),(580,325,0,0))
           k=0
-          for message in player.curBattle.battleItems:
-            screen.blit(font.render(message,True,(0,15,0)),(520,350+k,200,300))
-            k+=40
+          #for message in player.curBattle.battleItems:
+            #screen.blit(font.render(message,True,(0,15,0)),(520,350+k,200,300))
+            #k+=40
       elif self.name=="Defeat":
           screen.blit(pygame.image.load(ENV_PATH+"Black.gif"),(0,0,0,0))
           font=pygame.font.SysFont("cmr10",40,False,False)
@@ -347,6 +347,25 @@ class Menu:
           font=pygame.font.SysFont("cmr10",24,False,False)
           screen.blit(font.render("Continue",True,(150,0,0)),(520,515,0,0))
           screen.blit(font.render("Exit",True,(150,0,0)),(760,515,0,0))
+          #draw player stats
+          screen.blit(font.render("Multiplication problems right/wrong:",True,(150,0,0)),(20,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(150,0,0)),(100,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.multiplicationStats[1][0])+"/"+repr(player.multiplicationStats[1][1]),True,(150,0,0)),(100,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.multiplicationStats[2][0])+"/"+repr(player.multiplicationStats[2][1]),True,(150,0,0)),(100,110,0,0))
+          screen.blit(font.render("Fraction problems right/wrong:",True,(150,0,0)),(450,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.divisionStats[0][0])+"/"+repr(player.divisionStats[0][1]),True,(150,0,0)),(530,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.divisionStats[1][0])+"/"+repr(player.divisionStats[1][1]),True,(150,0,0)),(530,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.divisionStats[2][0])+"/"+repr(player.divisionStats[2][1]),True,(150,0,0)),(530,110,0,0))
+          screen.blit(font.render("Geometry problems right/wrong:",True,(150,0,0)),(830,20,0,0))
+          screen.blit(font.render("Easy: "+repr(player.geometryStats[0][0])+"/"+repr(player.geometryStats[0][1]),True,(150,0,0)),(910,50,0,0))
+          screen.blit(font.render("Medium: "+repr(player.geometryStats[1][0])+"/"+repr(player.geometryStats[1][1]),True,(150,0,0)),(910,80,0,0))
+          screen.blit(font.render("Hard: "+repr(player.geometryStats[2][0])+"/"+repr(player.geometryStats[2][1]),True,(150,0,0)),(910,110,0,0))
+          screen.blit(font.render("Puzzles solved:"+repr(player.puzzlesSolved),True,(150,0,0)),(400,160,0,0))
+      elif self.name == "Complete":
+          screen.blit(pygame.image.load(ENV_PATH+"Black.gif"),(0,0,0,0))
+          font=pygame.font.SysFont("cmr10",40,False,False)
+          screen.blit(font.render("You have defeated the Merchant!",True,(150,0,0)),(450,400,0,0))
+          font=pygame.font.SysFont("cmr10",24,False,False)
           #draw player stats
           screen.blit(font.render("Multiplication problems right/wrong:",True,(150,0,0)),(20,20,0,0))
           screen.blit(font.render("Easy: "+repr(player.multiplicationStats[0][0])+"/"+repr(player.multiplicationStats[0][1]),True,(150,0,0)),(100,50,0,0))
@@ -679,7 +698,7 @@ class Menu:
             player.traversal=False
             player.mainMenu=True
             player.currentMenu=player.MainMenu
-            player.currentMenu.draw(player,screen,0,0,45)
+            #player.currentMenu.draw(player,screen,0,0,45)
             pygame.display.flip()
 
         else:

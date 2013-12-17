@@ -1124,7 +1124,7 @@ class BattleEngine:
       self.battleItems.append(player.currentRoom.it2.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it2)
       player.currentRoom.it2=0
-    if isinstance( player.currentRoom.it3, Item ) and player.currentRoom.i3.battle:
+    if isinstance( player.currentRoom.it3, Item ) and player.currentRoom.it3.battle:
       self.battleItems.append(player.currentRoom.it3.name)
       player.battlePlayer.inv_Ar.append(player.currentRoom.it3)
       player.currentRoom.it3=0
@@ -1133,16 +1133,27 @@ class BattleEngine:
       player.battlePlayer.inv_Ar.append(player.currentRoom.it4)
       player.currentRoom.it4=0
     print(self.battleItems)
+
+    self.player.battle=False
+
+    #the code for ending the game in victory will be similar to this...
+    #if self.player.currentRoom.en1!='0':
+    #    victoryMenu=Menu(["LoseExit"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"],"Complete")
+    #else:
+    self.player.battlePlayer.AL+=1
+    victoryMenu=Menu(["Continue"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif"],"Victory")
+
+
+    #use syntax similar to this to end the game
+    #victoryMenu=Menu(["LoseExit"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif",MENU_PATH+"Blank.gif"],"Complete")
+
+    self.player.currentMenu=victoryMenu
+    self.player.mainMenu=True
+
     self.player.currentRoom.en1=0
     self.player.currentRoom.en2=0
     self.player.currentRoom.en3=0
     self.player.currentRoom.en4=0
-
-    self.player.battlePlayer.AL+=1
-    victoryMenu=Menu(["Continue"],self.player,MENU_PATH+"VictoryScreen.gif",[MENU_PATH+"Blank.gif"],"Victory")
-    self.player.battle=False
-    self.player.mainMenu=True
-    self.player.currentMenu=victoryMenu
 
   ###
   #Called when battle is over and player loses
@@ -2172,6 +2183,7 @@ while pippy.pygame.next_frame():
       drawTextBox(player,screen)
     elif player.currentMenu.name=="Difficulty Menu":
       player.currentMenu.mainMenuDraw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
+    # this next elif should never be reached because of the first conditional - double check later
     elif player.currentMenu.name=="Defeat":
       player.currentMenu.mainMenuDraw(player,screen,500,500,50)
       
