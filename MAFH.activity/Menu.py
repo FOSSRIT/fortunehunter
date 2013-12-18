@@ -440,7 +440,7 @@ class Menu:
                 self.currentOption-=1
 
             else:
-                self.currentOption=self.currentOption.size - 1
+                self.currentOption=self.size - 1
         else:
             if self.currentOption<self.size-1:
                 self.currentOption+=1
