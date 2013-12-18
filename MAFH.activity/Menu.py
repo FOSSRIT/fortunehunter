@@ -440,13 +440,13 @@ class Menu:
                 self.currentOption-=1
 
             else:
-                self.currentOption=0
+                self.currentOption=self.currentOption.size - 1
         else:
             if self.currentOption<self.size-1:
                 self.currentOption+=1
 
             else:
-                self.currentOption=self.size-1
+                self.currentOption=0
 
     def progress(self,player,screen):
         if type(self.options[self.currentOption])==type(self):
