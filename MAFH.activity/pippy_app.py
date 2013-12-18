@@ -2036,6 +2036,10 @@ def updatePuzzle(event,player):
 def drawTraversal(player,screen):
     setImage(player)
 
+def drawControls(player, screen):
+	#placeholder
+	pass
+	
 def drawPuzzle(player,screen):
     #draw background and completed image
     screen.fill((0,0,0),(0,0,1200,900))
