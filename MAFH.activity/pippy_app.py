@@ -737,26 +737,26 @@ class BattleEngine:
           if isinstance(defender,Enemy) and defender.weakness=='fire':
               attacker.setBonusAP(attacker.BAB+50)
           self.player.magicAtk.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Heal":
           attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
           self.player.heal.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Lightning":
           attacker.setBonusAP(int(self.timeBonus)+10)
           if isinstance(defender,Enemy) and defender.weakness=='lightning':
             attacker.setBonusAP(attacker.BAB+60)
           self.player.lightning.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Missile":
           attacker.setBonusAP(int(self.timeBonus)+10)
           if isinstance(defender,Enemy) and defender.weakness=='missile':
               attacker.setBonusAP(attacker.BAB+55)
           self.player.missile.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Division":
           if isinstance(defender,Enemy) and defender.weakness=='special':
@@ -2068,7 +2068,7 @@ def drawWaiting(player,screen):
 def drawMacroMap(player,screen):
     player.dgnMap.drawMacro(player,screen)
 
-def drawNameEntry(player,screen): 
+def drawNameEntry(player,screen):
     text=font.render(player.name,True,(0,0,0))
     textRect=(400,400,400,400)
     screen.blit(pygame.image.load(MENU_PATH+"mafh_splash.gif"),(0,0,1200,900))
