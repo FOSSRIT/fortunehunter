@@ -664,6 +664,7 @@ class BattleEngine:
       enemyGroup.draw(screen)
       self.glyphGroup.draw(screen)
       self.glyphOverlayGroup.draw(screen)
+      drawControls(screen,"","Select","","")
 
       #draw player
       if player.currentMenu.numPad==False:
@@ -737,26 +738,26 @@ class BattleEngine:
           if isinstance(defender,Enemy) and defender.weakness=='fire':
               attacker.setBonusAP(attacker.BAB+50)
           self.player.magicAtk.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Heal":
           attacker.setBonusAP(-1*(int(self.timeBonus*20)+10))
           self.player.heal.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Lightning":
           attacker.setBonusAP(int(self.timeBonus)+10)
           if isinstance(defender,Enemy) and defender.weakness=='lightning':
             attacker.setBonusAP(attacker.BAB+60)
           self.player.lightning.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Missile":
           attacker.setBonusAP(int(self.timeBonus)+10)
           if isinstance(defender,Enemy) and defender.weakness=='missile':
               attacker.setBonusAP(attacker.BAB+55)
           self.player.missile.play()
-          magicSetup()
+          self.magicSetup()
 
       elif attackName=="Division":
           if isinstance(defender,Enemy) and defender.weakness=='special':
@@ -834,24 +835,24 @@ class BattleEngine:
       self.glyphOverlayGroup.empty()
       if name=="Fire":
           shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.fire.rect=(500,350,300,300)
           self.glyphGroup.add(self.fire)
       elif name=="Lightning":
           shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.lightning.rect=(500,350,300,300)
           self.glyphGroup.add(self.lightning)
 
       elif name=="Missile":
           shuffle2D=[("Missile1",self.missile1btn),("Missile2",self.missile2btn),("Missile3",self.missile3btn),("Missile4",self.missile4btn),("Not",self.lightning1btn),("Not",self.heal4btn),("Not",self.fire3btn),("Not",self.lightning3btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.missile.rect=(500,350,300,300)
           self.glyphGroup.add(self.missile)
 
       elif name=="Heal":
           shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.heal.rect=(500,350,300,300)
           self.glyphGroup.add(self.heal)
       #set glyph menu
@@ -2036,6 +2037,21 @@ def updatePuzzle(event,player):
 def drawTraversal(player,screen):
     setImage(player)
 
+def drawControls(screen, circle, check, cross, square):
+	#x=1025
+	#y=775
+	x=1000
+	y=760
+	cfont=pygame.font.SysFont("cmr10",30,False,False)
+	screen.blit(pygame.transform.scale(pygame.image.load(MENU_PATH+"controlButtons.gif"), (50, 50)), (x-25, y-25))
+	circleText = cfont.render(circle, True, (255,255,255))
+	screen.blit(circleText,(x-circleText.get_width()/2,y-55))
+	screen.blit(cfont.render(check, True, (255,255,255)),(x+30,y-17))
+	crossText=cfont.render(cross, True, (255,255,255))
+	screen.blit(crossText,(x-crossText.get_width()/2,y+25))
+	squareText = cfont.render(square, True, (255,255,255))
+	screen.blit(squareText,(x-30-squareText.get_width(),y-17))
+	
 def drawPuzzle(player,screen):
     #draw background and completed image
     screen.fill((0,0,0),(0,0,1200,900))
@@ -2068,7 +2084,7 @@ def drawWaiting(player,screen):
 def drawMacroMap(player,screen):
     player.dgnMap.drawMacro(player,screen)
 
-def drawNameEntry(player,screen): 
+def drawNameEntry(player,screen):
     text=font.render(player.name,True,(0,0,0))
     textRect=(400,400,400,400)
     screen.blit(pygame.image.load(MENU_PATH+"mafh_splash.gif"),(0,0,1200,900))
@@ -2142,12 +2158,30 @@ while pippy.pygame.next_frame():
     ###############DRAW#########################
     #draw based on state
     if player.mainMenu==True:
-        if player.currentMenu.name=="Stats" or player.currentMenu.name=="Inventory" or player.currentMenu.name=="Math Stats" or player.currentMenu.name=="Victory" or player.currentMenu.name=="Defeat":
+        if player.currentMenu.name=="Stats": 
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            drawControls(screen,"Close","Equip","Options","Inventory")
+        elif player.currentMenu.name=="Inventory": 
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            drawControls(screen,"Close","Select","Menu","Math Stats")
+        elif player.currentMenu.name=="Math Stats":
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            drawControls(screen,"Close","","Inventory","Options")
+        elif player.currentMenu.name=="Victory": 
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            #drawControls(screen,"Close","Inventory","Options","Inventory")
+        elif player.currentMenu.name=="Defeat":
             player.currentMenu.pauseMenuDraw(player,screen,450,400,24)
             drawTextBox(player,screen)
+            #drawControls(screen,"Inventory","Take Item","Menu","Map")
         elif player.currentMenu.name=="Pause Menu":
             player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
             drawTextBox(player,screen)
+            drawControls(screen,"Close","Select","Math Stats","Menu")
         elif player.currentMenu.name=="Difficulty Menu":
             player.currentMenu.mainMenuDraw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
         # this next elif should never be reached because of the first conditional - double check later
@@ -2165,6 +2199,7 @@ while pippy.pygame.next_frame():
                 setImage(player)
                 player.currentRoomGroup.draw(screen)
                 player.itemsGroup.draw(screen)
+                drawControls(screen,"Inventory","Take Item","Menu","Map")
         elif player.nameEntry:
             drawNameEntry(player,screen)
         elif player.macroMap:
