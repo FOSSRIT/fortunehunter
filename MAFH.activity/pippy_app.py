@@ -1087,7 +1087,7 @@ class BattleEngine:
     temp2 = (player.battlePlayer.ATT + player.battlePlayer.MHP + player.battlePlayer.AL) / (player.battlePlayer.ATT + player.battlePlayer.MHP)
 
     if temp > 90:
-      defender.defendAttack(enemy.attackPower("special") + (temp2 * 1.5))
+      defender.defendAttack(int(enemy.attackPower("special") + (temp2 * 1.5)))
       self.player.grunt3.play()
       player.migrateMessages("Enemy "+repr(enemy.name)+" "+repr(enemy.place)+" special attacks for "+repr(enemy.attackPower("special"))+" damage")
     #print special message differently depending on name
