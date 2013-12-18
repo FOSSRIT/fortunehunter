@@ -700,8 +700,8 @@ class BattleEngine:
       
       if self.timeBonus<1 and self.timeBonus>=0:
         #screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50)) #TODO Add timer code
-		screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"timer_bg.gif"), (275, 50)), (5, 200))
-		screen.blit(pygame.transform.scale(pyhame.image.load(HUD_PATH+"timer.gif"), (275 * self.timeBonus, 50)), (5, 200))
+        screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"timer_bg.gif"), (275, 50)), (5, 200))
+        screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"timer.gif"), (275 * self.timeBonus, 50)), (5, 200))
     pygame.display.flip()
 
   ###
