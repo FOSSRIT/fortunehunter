@@ -2043,8 +2043,13 @@ def drawControls(screen, circle, check, cross, square):
 	y=500
 	cfont=pygame.font.SysFont("cmr10",30,False,False)
 	screen.blit(pygame.transform.scale(pygame.image.load(MENU_PATH+"controlButtons.gif"), (50, 50)), (x-25, y-25))
-	screen.blit(cfont.render(circle, True, (255,255,255)),(x-25,y-55))
-	screen.blit(cfont.render(check, True, (255,255,255)),(x+30,y-20))
+	circleText = cfont.render(circle, True, (255,255,255))
+	screen.blit(circleText,(x-circleText.get_width()/2,y-55))
+	screen.blit(cfont.render(check, True, (255,255,255)),(x+30,y-17))
+	crossText=cfont.render(cross, True, (255,255,255))
+	screen.blit(crossText,(x-crossText.get_width()/2,y+25))
+	squareText = cfont.render(square, True, (255,255,255))
+	screen.blit(squareText,(x-30-squareText.get_width(),y-17))
 	
 def drawPuzzle(player,screen):
     #draw background and completed image
@@ -2175,7 +2180,7 @@ while pippy.pygame.next_frame():
                 setImage(player)
                 player.currentRoomGroup.draw(screen)
                 player.itemsGroup.draw(screen)
-                drawControls(screen,"circle","check","cross","square")
+                drawControls(screen,"Inventory","Take Item","Menu","square")
         elif player.nameEntry:
             drawNameEntry(player,screen)
         elif player.macroMap:
