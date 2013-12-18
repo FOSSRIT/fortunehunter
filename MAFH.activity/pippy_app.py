@@ -664,6 +664,7 @@ class BattleEngine:
       enemyGroup.draw(screen)
       self.glyphGroup.draw(screen)
       self.glyphOverlayGroup.draw(screen)
+      drawControls(screen,"","Select","","")
 
       #draw player
       if player.currentMenu.numPad==False:
@@ -2039,8 +2040,8 @@ def drawTraversal(player,screen):
 def drawControls(screen, circle, check, cross, square):
 	#x=1025
 	#y=775
-	x=500
-	y=500
+	x=1000
+	y=760
 	cfont=pygame.font.SysFont("cmr10",30,False,False)
 	screen.blit(pygame.transform.scale(pygame.image.load(MENU_PATH+"controlButtons.gif"), (50, 50)), (x-25, y-25))
 	circleText = cfont.render(circle, True, (255,255,255))
@@ -2157,12 +2158,30 @@ while pippy.pygame.next_frame():
     ###############DRAW#########################
     #draw based on state
     if player.mainMenu==True:
-        if player.currentMenu.name=="Stats" or player.currentMenu.name=="Inventory" or player.currentMenu.name=="Math Stats" or player.currentMenu.name=="Victory" or player.currentMenu.name=="Defeat":
+        if player.currentMenu.name=="Stats": 
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            drawControls(screen,"Close","Equip","Options","Inventory")
+        elif player.currentMenu.name=="Inventory": 
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            drawControls(screen,"Close","Menu","Options","Math Stats")
+        elif player.currentMenu.name=="Math Stats":
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            drawControls(screen,"Close","","Inventory","Options")
+        elif player.currentMenu.name=="Victory": 
+            player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
+            drawTextBox(player,screen)
+            #drawControls(screen,"Close","Inventory","Options","Inventory")
+        elif player.currentMenu.name=="Defeat":
             player.currentMenu.pauseMenuDraw(player,screen,450,400,24)
             drawTextBox(player,screen)
+            #drawControls(screen,"Inventory","Take Item","Menu","Map")
         elif player.currentMenu.name=="Pause Menu":
             player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
             drawTextBox(player,screen)
+            drawControls(screen,"Close","Select","Math Stats","Menu")
         elif player.currentMenu.name=="Difficulty Menu":
             player.currentMenu.mainMenuDraw(player,screen,player.currentMenu.sX,player.currentMenu.sY,40)
         # this next elif should never be reached because of the first conditional - double check later
@@ -2180,7 +2199,7 @@ while pippy.pygame.next_frame():
                 setImage(player)
                 player.currentRoomGroup.draw(screen)
                 player.itemsGroup.draw(screen)
-                drawControls(screen,"Inventory","Take Item","Menu","square")
+                drawControls(screen,"Inventory","Take Item","Menu","Map")
         elif player.nameEntry:
             drawNameEntry(player,screen)
         elif player.macroMap:
