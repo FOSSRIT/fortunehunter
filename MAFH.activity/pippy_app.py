@@ -827,24 +827,24 @@ class BattleEngine:
       self.glyphOverlayGroup.empty()
       if name=="Fire":
           shuffle2D=[("Fire1",self.fire1btn),("Fire2",self.fire2btn),("Fire3",self.fire3btn),("Fire4",self.fire4btn),("Not",self.heal1btn),("Not",self.heal4btn),("Not",self.lightning3btn),("Not",self.lightning1btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.fire.rect=(500,350,300,300)
           self.glyphGroup.add(self.fire)
       elif name=="Lightning":
           shuffle2D=[("Lightning1",self.lightning1btn),("Lightning2",self.lightning2btn),("Lightning3",self.lightning3btn),("Lightning4",self.lightning4btn),("Not",self.heal1btn),("Not",self.heal2btn),("Not",self.fire3btn),("Not",self.fire1btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.lightning.rect=(500,350,300,300)
           self.glyphGroup.add(self.lightning)
 
       elif name=="Missile":
           shuffle2D=[("Missile1",self.missile1btn),("Missile2",self.missile2btn),("Missile3",self.missile3btn),("Missile4",self.missile4btn),("Not",self.lightning1btn),("Not",self.heal4btn),("Not",self.fire3btn),("Not",self.lightning3btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.missile.rect=(500,350,300,300)
           self.glyphGroup.add(self.missile)
 
       elif name=="Heal":
           shuffle2D=[("Heal1",self.heal1btn),("Heal2",self.heal2btn),("Heal3",self.heal3btn),("Heal4",self.heal4btn),("Not",self.fire1btn),("Not",self.fire4btn),("Not",self.lightning3btn),("Not",self.lightning2btn)]
-          glyphSetup(shuffle2D)
+          self.glyphSetup(shuffle2D)
           self.heal.rect=(500,350,300,300)
           self.glyphGroup.add(self.heal)
       #set glyph menu
