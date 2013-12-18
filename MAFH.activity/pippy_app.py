@@ -670,7 +670,7 @@ class BattleEngine:
     screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
     #screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))# TODO Add hp
     screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"heart.gif"), (150,150)), (50, 5))
-    screen.blit(font.render(player.battlePlayer.HP, True, (0, 0, 0)), (150, 150))
+    screen.blit(font.render(str(player.battlePlayer.HP), True, (0, 0, 0)), (150, 150))
     enemyGroup.draw(screen)
     self.glyphGroup.draw(screen)
     self.glyphOverlayGroup.draw(screen)
