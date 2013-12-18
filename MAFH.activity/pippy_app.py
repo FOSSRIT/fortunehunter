@@ -668,8 +668,9 @@ class BattleEngine:
 
     player.currentRoomGroup.draw(screen)
     screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
-    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))
-    enemyGroup.draw(screen)
+    #screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))# TODO Add hp
+    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"heart.gif"), (150,150)), (50, 5))
+	enemyGroup.draw(screen)
     self.glyphGroup.draw(screen)
     self.glyphOverlayGroup.draw(screen)
 
@@ -698,7 +699,9 @@ class BattleEngine:
       
       
       if self.timeBonus<1 and self.timeBonus>=0:
-        screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50))
+        #screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"bt_"+repr(int(self.timeBonus*10)*10)+".gif"),(275,50)),(5,200,150,50)) #TODO Add timer code
+		screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"timer_bg.gif"), (275, 50)), (5, 200))
+		screen.blit(pygame.transform.scale(pyhame.image.load(HUD_PATH+"timer.gif"), (275 * self.timeBonus, 50)), (5, 200))
     pygame.display.flip()
 
   ###
