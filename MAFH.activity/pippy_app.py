@@ -2165,7 +2165,7 @@ while pippy.pygame.next_frame():
         elif player.currentMenu.name=="Inventory": 
             player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
             drawTextBox(player,screen)
-            drawControls(screen,"Close","Menu","Options","Math Stats")
+            drawControls(screen,"Close","Select","Menu","Math Stats")
         elif player.currentMenu.name=="Math Stats":
             player.currentMenu.pauseMenuDraw(player,screen,540,240,24)
             drawTextBox(player,screen)
