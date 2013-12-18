@@ -2036,9 +2036,15 @@ def updatePuzzle(event,player):
 def drawTraversal(player,screen):
     setImage(player)
 
-def drawControls(player, screen):
-	#placeholder
-	pass
+def drawControls(screen, circle, check, cross, square):
+	#x=1025
+	#y=775
+	x=500
+	y=500
+	cfont=pygame.font.SysFont("cmr10",30,False,False)
+	screen.blit(pygame.transform.scale(pygame.image.load(MENU_PATH+"controlButtons.gif"), (50, 50)), (x-25, y-25))
+	screen.blit(cfont.render(circle, True, (255,255,255)),(x-25,y-55))
+	screen.blit(cfont.render(check, True, (255,255,255)),(x+30,y-20))
 	
 def drawPuzzle(player,screen):
     #draw background and completed image
@@ -2169,6 +2175,7 @@ while pippy.pygame.next_frame():
                 setImage(player)
                 player.currentRoomGroup.draw(screen)
                 player.itemsGroup.draw(screen)
+                drawControls(screen,"circle","check","cross","square")
         elif player.nameEntry:
             drawNameEntry(player,screen)
         elif player.macroMap:
