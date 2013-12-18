@@ -1,6 +1,6 @@
 from Items import get_item
 from random import *
-import pygame
+import pygame, sys
 from pygame.locals import *
 from constants import MENU_PATH, CHAR_PATH
 
