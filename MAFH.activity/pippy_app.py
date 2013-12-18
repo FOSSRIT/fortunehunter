@@ -669,7 +669,7 @@ class BattleEngine:
     player.currentRoomGroup.draw(screen)
     #screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
     #screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))# TODO Add hp
-    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"heart.gif"), (70, 90)), (50, 45))
+    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"heart.gif"), (90, 90)), (40, 45))
     screen.blit(font.render(str(player.battlePlayer.HP), True, (255, 255, 255)), (75, 55))
     enemyGroup.draw(screen)
     self.glyphGroup.draw(screen)
