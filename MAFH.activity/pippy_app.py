@@ -651,7 +651,7 @@ class BattleEngine:
 
   def draw(self,player,screen):
     #draw enemies
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, 52)
     x=250
     y=150
     enemyGroup=pygame.sprite.Group()
@@ -667,10 +667,10 @@ class BattleEngine:
       enemyGroup.add(enemy.sprite)
 
     player.currentRoomGroup.draw(screen)
-    screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
+    #screen.blit(font.render("HP:",True,(0,0,0)),(5,10,40,40))
     #screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"hp_"+repr(int(float(player.battlePlayer.HP)/float(player.battlePlayer.MHP)*10)*10)+".gif"),(150,150)),(50,5,50,50))# TODO Add hp
-    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"heart.gif"), (75, 75)), (50, 5))
-    screen.blit(font.render(str(player.battlePlayer.HP), True, (255, 255, 255)), (50, 5))
+    screen.blit(pygame.transform.scale(pygame.image.load(HUD_PATH+"heart.gif"), (90, 90)), (100, 5))
+    screen.blit(font.render(str(player.battlePlayer.HP), True, (255, 255, 255)), (1450, 50))
     enemyGroup.draw(screen)
     self.glyphGroup.draw(screen)
     self.glyphOverlayGroup.draw(screen)
